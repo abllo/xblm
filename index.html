@@ -563,7 +563,7 @@ function cardHTML(r, i){
     '<div class="cacts">'+
       '<a href="'+link+'" target="_blank" class="btn bp bbl bsm">فتح الوصفة في xBloom</a>'+
       '<div style="display:flex;gap:6px">'+
-        '<button class="btn bs bbl bsm" onclick="brew('+idx+')" style="flex:3">☕ قمت بتحضيرها ('+cnt+')</button>'+
+        '<button class="btn bs bbl bsm" onclick="brew('+idx+')" style="flex:3; display:none;">☕ قمت بتحضيرها ('+cnt+')</button>'+
         (cnt>0 ?
           '<button class="btn bsm" onclick="brewControl('+idx+')" style="background:var(--up);border:2px solid var(--br);color:var(--t2);padding:7px 10px" title="التحكم بالعداد">⚙️</button>'
           : '')+
@@ -892,13 +892,14 @@ function brewAdj(delta){
   if(el) el.textContent = val;
   saveAll();
   // Update the brew button count in the card without closing modal
-  var btns = document.getElementById('grid').querySelectorAll('.btn');
-  for(var i=0; i<btns.length; i++){
+var btns = document.getElementById('grid').querySelectorAll('.btn');
+for(var i=0; i<btns.length; i++){
     if(btns[i].textContent.indexOf('قمت بتحضيرها') >= 0 && btns[i].getAttribute('onclick') === 'brew('+idx+')'){
-      btns[i].textContent = '☕ قمت بتحضيرها (' + val + ')';
-      break;
+        // هذا السطر يقوم بإخفاء الزر بالكامل من الصفحة
+        btns[i].style.display = 'none'; 
+        break;
     }
-  }
+}
 }
 
 function brewReset(){
@@ -912,13 +913,14 @@ function brewReset(){
   if(el) el.textContent = '0';
   saveAll();
   // Update card
-  var btns = document.getElementById('grid').querySelectorAll('.btn');
-  for(var i=0; i<btns.length; i++){
+ var btns = document.getElementById('grid').querySelectorAll('.btn');
+for(var i=0; i<btns.length; i++){
     if(btns[i].textContent.indexOf('قمت بتحضيرها') >= 0 && btns[i].getAttribute('onclick') === 'brew('+idx+')'){
-      btns[i].textContent = '☕ قمت بتحضيرها (0)';
-      break;
+        // هذا السطر يقوم بإخفاء الزر بالكامل من الصفحة
+        btns[i].style.display = 'none'; 
+        break;
     }
-  }
+}
   closeBrewOv();
   toast('تم إعادة التعيين ✅');
 }
