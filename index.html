@@ -166,8 +166,8 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <header>
   <h1>☕ xBloom Recipes</h1>
-  <p class="sub">وصفات مجتمع اكس بلوم</p>
-  <button class="btn bp bsm" onclick="openAdd()">➕ إضافة وصفة</button>
+  <p class="sub">وصفات مجتمع اكسبلوم</p>
+  <button class="btn bp bsm" onclick="openAdd()">➕  إضافة وصفة جديدة</button>
 </header>
 
 <!-- Admin Panel -->
@@ -192,7 +192,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="sc"><div class="sv" id="sOth">0</div><div class="sl">Other</div></div>
       <div class="sc"><div class="sv" id="sH">0</div><div class="sl">🔥 حارة</div></div>
       <div class="sc"><div class="sv" id="sC">0</div><div class="sl">🧊 باردة</div></div>
-      <div class="sc"><div class="sv" id="sS">0</div><div class="sl">🔧 سيرفر</div></div>
+      <div class="sc"><div class="sv" id="sS">0</div><div class="sl">🔧 غسيل وترطيب السيرفر</div></div>
     </div>
   </div>
   <div id="tRec" class="ac">
@@ -220,7 +220,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <p style="color:var(--t2);margin-top:7px;font-size:.83em">.xlsx  .xls</p>
     </div>
     <input type="file" id="xlsIn" accept=".xlsx,.xls" style="display:none" onchange="doImport(event)">
-    <button class="btn bg bbl" onclick="dlTemplate()">📥 تحميل ملف نموذجي</button>
+    <button class="btn bg bbl" onclick="dlTemplate()">📥 تحميل ملف (النموذج))</button>
   </div>
   <div id="tExp" class="ac">
     <h3 style="margin-bottom:13px">📥 التصدير</h3>
@@ -253,7 +253,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     </div>
   </div>
   <div class="fsec">
-    <div class="flbl">☕ المحضّر:</div>
+    <div class="flbl">☕ الفلتر:</div>
     <div class="ftabs" id="brewG">
       <button class="ftab on"  onclick="setF('brew','all',this)"><span class="cnt" id="bAll">0</span> الكل</button>
       <button class="ftab"     onclick="setF('brew','Omni',this)"><span class="cnt" id="bOmni">0</span> Omni</button>
@@ -279,10 +279,10 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <footer>
   <div class="fc" id="fcount">الوصفات: 0</div>
-  <p>مجتمع <a href="#" style="color:var(--ta)">xBloom</a></p>
+  <p>مجتمع <a href="#" style="color:var(--ta)">xBloom - عبدالإله | ABDULELAH </a></p>
   <p style="margin-top:7px;font-size:.83em">⭐ تقييمات &nbsp;|&nbsp; 💙 مفضلة &nbsp;|&nbsp; ☕ تحضير</p>
   <div style="margin-top:22px">
-    <button class="btn bs bsm" onclick="openLogin()">🔐 دخول الإداريين</button>
+    <button class="btn bs bsm" onclick="openLogin()">تسجيل الدخول</button>
   </div>
 </footer>
 </div>
@@ -291,7 +291,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="ov" id="recOv">
 <div class="modal">
   <div class="mh">
-    <h3 class="mt" id="recT">➕ إضافة وصفة</h3>
+    <h3 class="mt" id="recT">➕  إضافة وصفة جديدة</h3>
     <button class="mx" onclick="closeRec()">×</button>
   </div>
   <form onsubmit="saveRec(event)">
@@ -316,7 +316,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="tsel">
         <div class="topt hot"> <input type="radio" name="rc" id="rHot"  value="hot"    required><label for="rHot">🔥 حار</label></div>
         <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold">          <label for="rCold">🧊 بارد</label></div>
-        <div class="topt srv"> <input type="radio" name="rc" id="rSrv"  value="server">        <label for="rSrv">🔧 غسيل سيرفر</label></div>
+        <div class="topt srv"> <input type="radio" name="rc" id="rSrv"  value="server">        <label for="rSrv">🔧 غسيل السيرفر</label></div>
       </div>
     </div>
     <div class="fg"><label class="fl req">رابط الوصفة</label><input type="url" class="fi" id="rL" placeholder="https://..." required></div>
