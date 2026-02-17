@@ -166,8 +166,8 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <header>
   <h1>☕ xBloom Recipes</h1>
-  <p class="sub">وصفات مجتمع اكسبلوم</p>
-  <button class="btn bp bsm" onclick="openAdd()">➕  إضافة وصفة جديدة</button>
+  <p class="sub">وصفات مجتمع اكس بلوم</p>
+  <button class="btn bp bsm" onclick="openAdd()"> إضافة وصفة جديدة ➕</button>
 </header>
 
 <!-- Admin Panel -->
@@ -190,9 +190,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="sc"><div class="sv" id="sO">0</div><div class="sl">Omni</div></div>
       <div class="sc"><div class="sv" id="sX">0</div><div class="sl">xPod</div></div>
       <div class="sc"><div class="sv" id="sOth">0</div><div class="sl">Other</div></div>
-      <div class="sc"><div class="sv" id="sH">0</div><div class="sl">🔥 حارة</div></div>
-      <div class="sc"><div class="sv" id="sC">0</div><div class="sl">🧊 باردة</div></div>
-      <div class="sc"><div class="sv" id="sS">0</div><div class="sl">🔧 غسيل وترطيب السيرفر</div></div>
+      <div class="sc"><div class="sv" id="sH">0</div><div class="sl">🔥 وصفات حارة</div></div>
+      <div class="sc"><div class="sv" id="sC">0</div><div class="sl">🧊 وصفات باردة</div></div>
+      <div class="sc"><div class="sv" id="sS">0</div><div class="sl"> غسيل السيرفر</div></div>
     </div>
   </div>
   <div id="tRec" class="ac">
@@ -220,7 +220,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <p style="color:var(--t2);margin-top:7px;font-size:.83em">.xlsx  .xls</p>
     </div>
     <input type="file" id="xlsIn" accept=".xlsx,.xls" style="display:none" onchange="doImport(event)">
-    <button class="btn bg bbl" onclick="dlTemplate()">📥 تحميل ملف (النموذج))</button>
+    <button class="btn bg bbl" onclick="dlTemplate()">📥 تحميل ملف نموذجي</button>
   </div>
   <div id="tExp" class="ac">
     <h3 style="margin-bottom:13px">📥 التصدير</h3>
@@ -253,7 +253,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     </div>
   </div>
   <div class="fsec">
-    <div class="flbl">☕ الفلتر:</div>
+    <div class="flbl">☕ المحضّر:</div>
     <div class="ftabs" id="brewG">
       <button class="ftab on"  onclick="setF('brew','all',this)"><span class="cnt" id="bAll">0</span> الكل</button>
       <button class="ftab"     onclick="setF('brew','Omni',this)"><span class="cnt" id="bOmni">0</span> Omni</button>
@@ -279,7 +279,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <footer>
   <div class="fc" id="fcount">الوصفات: 0</div>
-  <p>مجتمع <a href="#" style="color:var(--ta)">xBloom - عبدالإله | ABDULELAH </a></p>
+  <p>مجتمع <a href="#" style="color:var(--ta)">xBloom</a></p>
   <p style="margin-top:7px;font-size:.83em">⭐ تقييمات &nbsp;|&nbsp; 💙 مفضلة &nbsp;|&nbsp; ☕ تحضير</p>
   <div style="margin-top:22px">
     <button class="btn bs bsm" onclick="openLogin()">تسجيل الدخول</button>
@@ -291,7 +291,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="ov" id="recOv">
 <div class="modal">
   <div class="mh">
-    <h3 class="mt" id="recT">➕  إضافة وصفة جديدة</h3>
+    <h3 class="mt" id="recT">➕ إضافة وصفة جديدة</h3>
     <button class="mx" onclick="closeRec()">×</button>
   </div>
   <form onsubmit="saveRec(event)">
@@ -314,9 +314,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <div class="fg">
       <label class="fl req">نوع التحضير</label>
       <div class="tsel">
-        <div class="topt hot"> <input type="radio" name="rc" id="rHot"  value="hot"    required><label for="rHot">🔥 حار</label></div>
-        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold">          <label for="rCold">🧊 بارد</label></div>
-        <div class="topt srv"> <input type="radio" name="rc" id="rSrv"  value="server">        <label for="rSrv">🔧 غسيل السيرفر</label></div>
+        <div class="topt hot"> <input type="radio" name="rc" id="rHot"  value="hot"    required><label for="rHot">🔥 وصفات حاره</label></div>
+        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold">          <label for="rCold">🧊 وصفات بارده</label></div>
+        <div class="topt srv"> <input type="radio" name="rc" id="rSrv"  value="server">        <label for="rSrv">غسيل سيرفر</label></div>
       </div>
     </div>
     <div class="fg"><label class="fl req">رابط الوصفة</label><input type="url" class="fi" id="rL" placeholder="https://..." required></div>
@@ -332,7 +332,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="ov" id="logOv">
 <div class="modal" style="max-width:360px">
   <div class="mh">
-    <h3 class="mt">🔐 تسجيل الدخول</h3>
+    <h3 class="mt">تسجيل الدخول</h3>
     <button class="mx" onclick="closeLogin()">×</button>
   </div>
   <form onsubmit="doLogin(event)">
@@ -501,7 +501,7 @@ function render(){
   var grid = document.getElementById('grid');
 
   if(list.length===0){
-    grid.innerHTML = '<div class="empty"><h2>😔 لا توجد نتائج</h2><p style="color:var(--t2)">جرّب تغيير الفلتر أو كلمة البحث</p></div>';
+    grid.innerHTML = '<div class="empty"><h2> لا توجد نتائج</h2><p style="color:var(--t2)">جرّب تغيير الفلتر أو كلمة البحث</p></div>';
     document.getElementById('pgn').innerHTML = '';
     document.getElementById('ppinfo').innerHTML = 'لا توجد نتائج';
     return;
@@ -532,7 +532,7 @@ function cardHTML(r, i){
   var cat   = r.category||'hot';
   var bTag  = r.brewer==='Omni'?'to': r.brewer==='xPod'?'tx':'tth';
   var cTag  = cat==='cold'?'tc': cat==='server'?'ts':'th';
-  var cLbl  = cat==='cold'?'🧊 بارد': cat==='server'?'🔧 غسيل سيرفر':'🔥 حار';
+  var cLbl  = cat==='cold'?'بارد 🧊': cat==='server'?' غسيل وترطيب سيرفر':'حار 🔥';
   var link  = r.link||'#';
   var name  = esc(str(r.name));
   var auth  = esc(str(r.author));
@@ -562,7 +562,12 @@ function cardHTML(r, i){
     '<div class="cstars">'+stars+'</div>'+
     '<div class="cacts">'+
       '<a href="'+link+'" target="_blank" class="btn bp bbl bsm">فتح الوصفة في xBloom</a>'+
-      '<button class="btn bs bbl bsm" onclick="brew('+idx+')">☕ قمت بتحضيرها ('+cnt+')</button>'+
+      '<div style="display:flex;gap:6px">'+
+        '<button class="btn bs bbl bsm" onclick="brew('+idx+')" style="flex:3">☕ قمت بتحضيرها ('+cnt+')</button>'+
+        (cnt>0 ?
+          '<button class="btn bsm" onclick="brewControl('+idx+')" style="background:var(--up);border:2px solid var(--br);color:var(--t2);padding:7px 10px" title="التحكم بالعداد">⚙️</button>'
+          : '')+
+      '</div>'+
       (ADMIN ?
         '<div style="display:flex;gap:6px">'+
           '<button class="btn bw bbl bsm" onclick="openEdit('+idx+')">✏️ تعديل</button>'+
@@ -817,7 +822,7 @@ function expBackup(){
   a.click(); toast('تم النسخ الاحتياطي');
 }
 function doReset(){
-  if(!confirm('استعادة الـ 200 وصفة الأصلية؟')) return;
+  if(!confirm('استعادة الـوصفات المرفوعة الأصلية؟')) return;
   RR=clone(INIT);
   saveR(); updateCounts(); render();
   if(ADMIN) renderTable();
@@ -826,6 +831,96 @@ function doReset(){
 function doClear(){
   if(!confirm('مسح كل البيانات؟')) return;
   localStorage.clear(); location.reload();
+}
+
+// ════════════════════════════════════════════════
+// BREW CONTROL
+// ════════════════════════════════════════════════
+function brewControl(idx){
+  var r    = RR[idx];
+  var cnt  = BREW[r.link]||0;
+  var name = str(r.name).substring(0,35);
+
+  var modal = document.createElement('div');
+  modal.className = 'ov open';
+  modal.id = 'brewOv';
+
+  var inner = document.createElement('div');
+  inner.className = 'modal';
+  inner.style.maxWidth = '360px';
+
+  // Store current idx on modal for brewAdj/brewReset to read
+  modal.dataset.idx = idx;
+
+  inner.innerHTML =
+    '<div class="mh">' +
+      '<h3 class="mt">التحكم بالتحضير</h3>' +
+      '<button class="mx" onclick="closeBrewOv()">×</button>' +
+    '</div>' +
+    '<p style="color:var(--t2);font-size:.88em;margin-bottom:14px">' + esc(name) + '</p>' +
+    '<div style="background:var(--up);border-radius:10px;padding:16px;text-align:center;margin-bottom:18px">' +
+      '<p style="color:var(--t2);font-size:.82em;margin-bottom:10px">عدد مرات التحضير</p>' +
+      '<div style="display:flex;align-items:center;justify-content:center;gap:18px">' +
+        '<button class="btn bd" onclick="brewAdj(-1)" style="width:40px;height:40px;border-radius:50%;justify-content:center;padding:0;font-size:20px;flex-shrink:0">−</button>' +
+        '<span id="brewVal" style="font-size:2.4em;font-weight:900;min-width:55px;text-align:center">' + cnt + '</span>' +
+        '<button class="btn bp" onclick="brewAdj(1)" style="width:40px;height:40px;border-radius:50%;justify-content:center;padding:0;font-size:20px;flex-shrink:0">+</button>' +
+      '</div>' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px">' +
+      '<button class="btn bd bbl" onclick="brewReset()">🔄 إعادة تعيين العدد</button>' +
+      '<button class="btn bs bbl" onclick="closeBrewOv()">إغلاق</button>' +
+    '</div>';
+
+  modal.appendChild(inner);
+  document.body.appendChild(modal);
+  modal.addEventListener('click', function(e){ if(e.target===modal) closeBrewOv(); });
+}
+
+function closeBrewOv(){
+  var ov = document.getElementById('brewOv');
+  if(ov) ov.remove();
+}
+
+function brewAdj(delta){
+  var ov  = document.getElementById('brewOv');
+  if(!ov) return;
+  var idx  = parseInt(ov.dataset.idx);
+  var link = RR[idx].link;
+  var val  = Math.max(0, (BREW[link]||0) + delta);
+  BREW[link] = val;
+  var el = document.getElementById('brewVal');
+  if(el) el.textContent = val;
+  saveAll();
+  // Update the brew button count in the card without closing modal
+  var btns = document.getElementById('grid').querySelectorAll('.btn');
+  for(var i=0; i<btns.length; i++){
+    if(btns[i].textContent.indexOf('قمت بتحضيرها') >= 0 && btns[i].getAttribute('onclick') === 'brew('+idx+')'){
+      btns[i].textContent = '☕ قمت بتحضيرها (' + val + ')';
+      break;
+    }
+  }
+}
+
+function brewReset(){
+  if(!confirm('إعادة تعيين عداد التحضيرات؟')) return;
+  var ov  = document.getElementById('brewOv');
+  if(!ov) return;
+  var idx  = parseInt(ov.dataset.idx);
+  var link = RR[idx].link;
+  BREW[link] = 0;
+  var el = document.getElementById('brewVal');
+  if(el) el.textContent = '0';
+  saveAll();
+  // Update card
+  var btns = document.getElementById('grid').querySelectorAll('.btn');
+  for(var i=0; i<btns.length; i++){
+    if(btns[i].textContent.indexOf('قمت بتحضيرها') >= 0 && btns[i].getAttribute('onclick') === 'brew('+idx+')'){
+      btns[i].textContent = '☕ قمت بتحضيرها (0)';
+      break;
+    }
+  }
+  closeBrewOv();
+  toast('تم إعادة التعيين ✅');
 }
 
 // ════════════════════════════════════════════════
