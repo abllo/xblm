@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | Xbloom</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;align-items:center;justify-content:center}
+
+/* Login Screen */
+#loginScreen{width:100%;max-width:360px;padding:20px}
+.lbox{background:var(--card);border-radius:16px;border:1px solid var(--br);padding:32px;text-align:center;position:relative;overflow:hidden}
+.lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
+.lbox h1{font-size:1.7em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.lbox p{color:var(--t2);font-size:.85em;margin-bottom:24px}
+.fi{width:100%;padding:12px 14px;background:var(--up);border:2px solid var(--br);border-radius:10px;color:var(--t1);font-size:15px;font-family:inherit;margin-bottom:12px;text-align:right}
+.fi:focus{outline:none;border-color:var(--ta)}
+.lerr{color:#f5576c;font-size:.82em;margin-bottom:10px;min-height:18px}
+.btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:5px}
+.btn:active{transform:scale(.95)}
+.bp{background:var(--gr);color:#fff;width:100%;justify-content:center;padding:13px}
+.bd{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.bg{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#fff}
+.bw{background:linear-gradient(135deg,#ffd89b,#ff9a56);color:#fff}
+.bsm{padding:7px 13px;font-size:12px}
+.bbl{width:100%;justify-content:center}
+
+/* Admin Panel */
+#adminPanel{display:none;width:100%;min-height:100vh;padding:16px;align-items:flex-start;justify-content:center}
+.apwrap{max-width:1100px;width:100%}
+.aheader{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;overflow:hidden}
+.aheader::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
+.aheader h1{font-size:1.3em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.aheader .acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.atb{padding:10px 16px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.atb.on{background:var(--gr);color:#fff;border-color:transparent}
+.atb:active{transform:scale(.96)}
+.acard{background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:16px;display:none}
+.acard.open{display:block}
+
+/* Stats */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.sc{background:var(--up);border-radius:10px;padding:14px;text-align:center}
+.sv{font-size:1.9em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sl{font-size:.78em;color:var(--t2);margin-top:3px}
+
+/* Table */
+.tw{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;min-width:600px}
+.tbl th,.tbl td{padding:10px 11px;text-align:right;border-bottom:1px solid var(--br);font-size:.83em}
+.tbl th{background:var(--up);font-weight:700;color:var(--t2)}
+.tbl tr:hover td{background:var(--up)}
+.tbl a{color:var(--ta);text-decoration:none;font-size:.8em}
+.tbl a:hover{text-decoration:underline}
+.tblacts{display:flex;gap:5px;justify-content:flex-end}
+
+/* Form Modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:12px;overflow-y:auto}
+.ov.open{display:flex}
+.modal{background:var(--card);border-radius:14px;border:1px solid var(--br);width:100%;max-width:550px;position:relative;max-height:92vh;overflow-y:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--br);position:sticky;top:0;background:var(--card);z-index:2}
+.mt{font-size:1.05em;font-weight:700}
+.mx{background:none;border:none;color:var(--t2);font-size:1.6em;cursor:pointer;padding:0 4px;line-height:1}
+.mf{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.fg label{font-size:.82em;color:var(--t2);display:block;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--ta)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tsel{display:flex;flex-direction:column;gap:7px}
+.topt{padding:10px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em}
+.topt.hot{border-color:#ff6b6b}
+.topt.cold{border-color:#48dbfb}
+.topt.srv{border-color:#667eea}
+.topt input[type=radio]{accent-color:var(--ta)}
+.fb-badge{padding:2px 7px;border-radius:6px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff}
+
+/* Upload zone */
+.upl{border:2px dashed var(--br);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px}
+.upl:hover{border-color:var(--ta)}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);padding:12px 18px;border-radius:10px;border:1px solid var(--br);z-index:3000;opacity:0;transition:.3s;max-width:88%;font-size:13px;text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tok{border-color:#43e97b}
+.terr{border-color:#f5576c}
+
+/* Confirm Modal */
+#confirmOv{z-index:1100}
+.cmodal{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:28px;max-width:360px;width:100%;text-align:center}
+.cmodal h3{margin-bottom:10px}
+.cmodal p{color:var(--t2);font-size:.9em;margin-bottom:20px}
+.cmodal .cbts{display:flex;gap:10px;justify-content:center}
+@media(min-width:768px){#adminPanel{padding:24px}}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="loginScreen">
+  <div class="lbox">
+    <h1>&#x2615; Xbloom</h1>
+    <p>لوحة تحكم المشرف</p>
+    <input class="fi" type="text"     id="lu" placeholder="اسم المستخدم" autocomplete="username">
+    <input class="fi" type="password" id="lp" placeholder="كلمة المرور" autocomplete="current-password">
+    <div class="lerr" id="lerr"></div>
+    <button class="btn bp" onclick="doLogin()">دخول &#x1F510;</button>
+    <p style="margin-top:18px;font-size:.78em;color:#3a3a3a">
+      <a href="/" style="color:var(--ta)">&#x2190; العودة للموقع</a>
+    </p>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel">
+<div class="apwrap">
+  <div class="aheader">
+    <h1>&#x1F4CA; لوحة التحكم — Xbloom</h1>
+    <div class="acts">
+      <a href="/" class="btn bsm" style="background:var(--up);color:var(--t2);border:1px solid var(--br)">&#x1F30D; الموقع</a>
+      <button class="btn bsm bd" onclick="doLogout()">&#x1F6AA; خروج</button>
+    </div>
+  </div>
+
+  <div class="atabs">
+    <button class="atb on" onclick="switchTab(this,'tStats')">&#x1F4CA; إحصائيات</button>
+    <button class="atb"    onclick="switchTab(this,'tAdd')">&#x2795; إضافة وصفة</button>
+    <button class="atb"    onclick="switchTab(this,'tRec')">&#x1F4DD; إدارة الوصفات</button>
+    <button class="atb"    onclick="switchTab(this,'tImp')">&#x1F4E4; استيراد Excel</button>
+    <button class="atb"    onclick="switchTab(this,'tExp')">&#x1F4E5; تصدير</button>
+  </div>
+
+  <!-- Stats -->
+  <div id="tStats" class="acard open">
+    <div class="sg">
+      <div class="sc"><div class="sv" id="sT">0</div><div class="sl">الإجمالي</div></div>
+      <div class="sc"><div class="sv" id="sFB">0</div><div class="sl">&#x2601;&#xFE0F; Firebase</div></div>
+      <div class="sc"><div class="sv" id="sO">0</div><div class="sl">Omni</div></div>
+      <div class="sc"><div class="sv" id="sX">0</div><div class="sl">xPod</div></div>
+      <div class="sc"><div class="sv" id="sOth">0</div><div class="sl">Other</div></div>
+      <div class="sc"><div class="sv" id="sH">0</div><div class="sl">&#x1F525; حارة</div></div>
+      <div class="sc"><div class="sv" id="sC">0</div><div class="sl">&#x1F9CA; باردة</div></div>
+      <div class="sc"><div class="sv" id="sS">0</div><div class="sl">غسيل سيرفر</div></div>
+    </div>
+  </div>
+
+  <!-- Add Recipe -->
+  <div id="tAdd" class="acard">
+    <h3 style="margin-bottom:16px">&#x2795; إضافة وصفة جديدة</h3>
+    <form id="addForm" onsubmit="saveRec(event)">
+      <input type="hidden" id="rFbKey" value="">
+      <div class="fr2">
+        <div class="fg"><label>الاسم *</label><input id="rN" required placeholder="اسم الوصفة"></div>
+        <div class="fg"><label>المؤلف</label><input id="rA" placeholder="اسم المؤلف"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label>المحضّر *</label>
+          <select id="rBr" required>
+            <option value="">اختر</option>
+            <option value="Omni">Omni</option>
+            <option value="xPod">xPod</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="fg"><label>الجرعة *</label><input id="rD" required placeholder="15g"></div>
+      </div>
+      <div class="fg"><label>النسبة</label><input id="rR" placeholder="1:16"></div>
+      <div class="fg"><label>نوع التحضير *</label>
+        <div class="tsel">
+          <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required><label for="rHot">&#x1F525; وصفة حار</label></div>
+          <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold"><label for="rCold">&#x1F9CA; وصفة بارد</label></div>
+          <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server"><label for="rSrv">غسيل وترطيب سيرفر</label></div>
+        </div>
+      </div>
+      <div class="fg"><label>رابط الوصفة *</label><input type="url" id="rL" required placeholder="https://share-h5.xbloom.com/?id=..."></div>
+      <div style="display:flex;gap:9px;margin-top:6px;flex-wrap:wrap">
+        <button type="submit" class="btn bp" style="flex:1;justify-content:center">&#x1F4BE; حفظ الوصفة</button>
+        <button type="button" class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="resetForm()">&#x1F504; مسح</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Manage Recipes Table -->
+  <div id="tRec" class="acard">
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px">
+      <input class="fg" style="flex:1;min-width:160px;padding:9px 12px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-family:inherit" id="aQ" placeholder="&#x1F50D; بحث في الوصفات..." oninput="renderTable()">
+      <select style="padding:9px;border-radius:9px;background:var(--up);color:var(--t1);border:1px solid var(--br);font-family:inherit" id="aBr" onchange="renderTable()">
+        <option value="all">الكل</option>
+        <option value="Omni">Omni</option>
+        <option value="xPod">xPod</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="tw">
+      <table class="tbl">
+        <thead><tr><th>#</th><th>الاسم</th><th>المؤلف</th><th>المحضّر</th><th>النوع</th><th>المصدر</th><th>الإجراءات</th></tr></thead>
+        <tbody id="aTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Import Excel -->
+  <div id="tImp" class="acard">
+    <h3 style="margin-bottom:14px">&#x1F4E4; استيراد من Excel</h3>
+    <div class="upl" id="dropZ" onclick="document.getElementById('xlsIn').click()">
+      <div style="font-size:2.5em;margin-bottom:8px">&#x1F4C1;</div>
+      <h4>اسحب ملف Excel هنا أو اضغط للاختيار</h4>
+      <p style="color:var(--t2);margin-top:8px;font-size:.83em">.xlsx | .xls</p>
+    </div>
+    <input type="file" id="xlsIn" accept=".xlsx,.xls" style="display:none" onchange="doImport(event)">
+    <button class="btn bg bbl" onclick="dlTemplate()">&#x1F4E5; تحميل نموذج Excel</button>
+  </div>
+
+  <!-- Export -->
+  <div id="tExp" class="acard">
+    <h3 style="margin-bottom:14px">&#x1F4E5; تصدير البيانات</h3>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn bp bbl" onclick="expXLS()">&#x1F4CA; تصدير Excel</button>
+      <button class="btn bg bbl" onclick="expJSON()">&#x1F4C4; تصدير JSON</button>
+      <button class="btn bw bbl" onclick="expBackup()">&#x1F4BE; نسخة احتياطية كاملة</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="ov" id="confirmOv">
+  <div class="cmodal">
+    <h3 id="confirmTitle">تأكيد الحذف</h3>
+    <p id="confirmMsg">هل تريد حذف هذه الوصفة؟</p>
+    <div class="cbts">
+      <button class="btn bd" id="confirmOk">حذف</button>
+      <button class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="document.getElementById('confirmOv').classList.remove('open')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp }                                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, push, set, remove }         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ════ CONFIG ════
+const CREDENTIALS = { user: '66000134', pass: '490238' };
+
+const firebaseConfig = {
+  apiKey:      "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:   "xbloom-recipes-hub"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+const recipesRef = ref(db, 'recipes');
+
+// ════ STATE ════
+let FB_RECIPES = [];
+let FB_COUNT   = 0;
+let editingKey  = null;   // مفتاح Firebase للتعديل الحالي
+
+// ════ HELPERS ════
+function toast(msg, cls) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (cls||'tok') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function setEl(id, v) { const el = document.getElementById(id); if(el) el.textContent = v; }
+function str(v) { return v == null ? '' : String(v); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+const CKW = ['بارد','ثلج','ice','🧊','iced','الثلج','cold','باردة','مثلج','بارده','مثلجة','مثلجه'];
+const SKW = ['غسيل','ترطيب','سيرفر','غسل','server','cleaning','wash'];
+function ensureCat(r) {
+  if (!r.category) { const t = (str(r.name)+' '+str(r.author)).toLowerCase(); r.category = SKW.some(k=>t.includes(k)) ? 'server' : CKW.some(k=>t.includes(k)) ? 'cold' : 'hot'; }
+  return r;
+}
+
+// ════ AUTH ════
+window.doLogin = function() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value.trim();
+  if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
+    sessionStorage.setItem('xbadmin','1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display  = 'flex';
+    startFirebase();
+  } else {
+    document.getElementById('lerr').textContent = 'بيانات الدخول غير صحيحة';
+  }
+};
+window.doLogout = function() {
+  sessionStorage.removeItem('xbadmin');
+  location.reload();
+};
+
+// Auto-login if session exists
+if (sessionStorage.getItem('xbadmin') === '1') {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminPanel').style.display  = 'flex';
+  startFirebase();
+}
+
+// Enter key on login
+['lu','lp'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key === 'Enter') window.doLogin(); });
+});
+
+// ════ FIREBASE ════
+function startFirebase() {
+  onValue(recipesRef, snap => {
+    FB_RECIPES = [];
+    snap.forEach(child => { const r = child.val(); r._fbKey = child.key; ensureCat(r); FB_RECIPES.push(r); });
+    FB_COUNT = FB_RECIPES.length;
+    updateStats();
+    renderTable();
+  });
+}
+
+// ════ STATS ════
+function updateStats() {
+  let h=0,c=0,s=0,o=0,x=0,ot=0;
+  FB_RECIPES.forEach(r => {
+    const cat=r.category||'hot',b=r.brewer||'';
+    if(cat==='hot')h++;else if(cat==='cold')c++;else s++;
+    if(b==='Omni')o++;else if(b==='xPod')x++;else ot++;
+  });
+  setEl('sT',FB_COUNT);setEl('sFB',FB_COUNT);setEl('sO',o);setEl('sX',x);setEl('sOth',ot);
+  setEl('sH',h);setEl('sC',c);setEl('sS',s);
+}
+
+// ════ TABS ════
+window.switchTab = function(btn, id) {
+  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
+  btn.classList.add('on');
+  document.getElementById(id).classList.add('open');
+};
+
+// ════ TABLE ════
+window.renderTable = function() {
+  const q  = (document.getElementById('aQ')?.value||'').toLowerCase().trim();
+  const br = document.getElementById('aBr')?.value || 'all';
+  const list = FB_RECIPES.filter(r => {
+    if(br !== 'all' && r.brewer !== br) return false;
+    if(q) { const t = (str(r.name)+' '+str(r.author)).toLowerCase(); if(!t.includes(q)) return false; }
+    return true;
+  });
+  const tbody = document.getElementById('aTbody');
+  if(!list.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:20px">لا توجد وصفات من Firebase بعد</td></tr>`; return; }
+  tbody.innerHTML = list.map((r,i) => {
+    const cat = r.category||'hot';
+    const catLbl = cat==='hot'?'🔥 حار':cat==='cold'?'🧊 بارد':'⚙️ سيرفر';
+    return `<tr>
+      <td>${i+1}</td>
+      <td><a href="${esc(str(r.link))}" target="_blank">${esc(str(r.name))}</a></td>
+      <td>${esc(str(r.author))}</td>
+      <td>${esc(str(r.brewer))}</td>
+      <td>${catLbl}</td>
+      <td><span class="fb-badge">☁️ Firebase</span></td>
+      <td><div class="tblacts">
+        <button class="btn bsm bw" onclick="editRec('${r._fbKey}')">✏️ تعديل</button>
+        <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(str(r.name))}')">🗑️ حذف</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+};
+
+// ════ ADD / EDIT FORM ════
+window.resetForm = function() {
+  document.getElementById('addForm').reset();
+  document.getElementById('rFbKey').value = '';
+  editingKey = null;
+  document.querySelector('#tAdd h3').textContent = '➕ إضافة وصفة جديدة';
+};
+
+window.editRec = function(fbKey) {
+  const r = FB_RECIPES.find(x => x._fbKey === fbKey);
+  if (!r) return;
+  editingKey = fbKey;
+  document.getElementById('rFbKey').value = fbKey;
+  document.getElementById('rN').value  = str(r.name);
+  document.getElementById('rA').value  = str(r.author);
+  document.getElementById('rBr').value = str(r.brewer);
+  document.getElementById('rD').value  = str(r.dose);
+  document.getElementById('rR').value  = str(r.ratio);
+  document.getElementById('rL').value  = str(r.link);
+  const cat = r.category || 'hot';
+  if(cat==='cold') document.getElementById('rCold').checked = true;
+  else if(cat==='server') document.getElementById('rSrv').checked = true;
+  else document.getElementById('rHot').checked = true;
+  document.querySelector('#tAdd h3').textContent = '✏️ تعديل الوصفة';
+  // Switch to Add tab
+  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
+  document.querySelector('.atb:nth-child(2)').classList.add('on');
+  document.getElementById('tAdd').classList.add('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+window.saveRec = function(e) {
+  e.preventDefault();
+  const name   = document.getElementById('rN').value.trim();
+  const author = document.getElementById('rA').value.trim();
+  const brewer = document.getElementById('rBr').value;
+  const dose   = document.getElementById('rD').value.trim();
+  const ratio  = document.getElementById('rR').value.trim();
+  const link   = document.getElementById('rL').value.trim();
+  const catSel = document.querySelector('input[name="rc"]:checked');
+  if(!catSel) { toast('اختر نوع التحضير', 'terr'); return; }
+  const category = catSel.value;
+  const r = { name, author, brewer, dose, ratio, link, category };
+
+  if (editingKey) {
+    set(ref(db, 'recipes/' + editingKey), r)
+      .then(() => { toast('تم التعديل ✅'); resetForm(); })
+      .catch(err => toast('خطأ: ' + err.message, 'terr'));
+  } else {
+    push(recipesRef, r)
+      .then(() => { toast('تمت الإضافة ✅'); resetForm(); })
+      .catch(err => toast('خطأ: ' + err.message, 'terr'));
+  }
+};
+
+// ════ DELETE ════
+window.confirmDel = function(fbKey, name) {
+  document.getElementById('confirmMsg').textContent = 'حذف: ' + name + '؟';
+  const ov = document.getElementById('confirmOv');
+  ov.classList.add('open');
+  document.getElementById('confirmOk').onclick = () => {
+    ov.classList.remove('open');
+    remove(ref(db, 'recipes/' + fbKey))
+      .then(() => toast('تم الحذف'))
+      .catch(err => toast('خطأ: ' + err.message, 'terr'));
+  };
+};
+
+// ════ IMPORT EXCEL ════
+window.doImport = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb   = XLSX.read(e.target.result, { type: 'array' });
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      const promises = rows.filter(row => row.name && row.link).map(row => {
+        const r = {
+          name:     str(row.name),
+          author:   str(row.author||''),
+          brewer:   str(row.brewer||'Other'),
+          dose:     str(row.dose||''),
+          ratio:    str(row.ratio||''),
+          link:     str(row.link),
+          category: str(row.category||'hot')
+        };
+        ensureCat(r);
+        return push(recipesRef, r);
+      });
+      Promise.all(promises)
+        .then(() => toast('تم استيراد ' + promises.length + ' وصفة ✅'))
+        .catch(err => toast('خطأ: ' + err.message, 'terr'));
+    } catch(err) { toast('خطأ في قراءة الملف', 'terr'); }
+    event.target.value = '';
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+window.dlTemplate = function() {
+  const ws = XLSX.utils.aoa_to_sheet([
+    ['name','author','brewer','dose','ratio','link','category'],
+    ['وصفة تجريبية','محمد','Omni','15g','1:15','https://share-h5.xbloom.com/?id=xxx','hot']
+  ]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Recipes');
+  XLSX.writeFile(wb, 'xbloom_template.xlsx');
+};
+
+// ════ EXPORT ════
+window.expXLS = function() {
+  const rows = FB_RECIPES.map(r => ({name:r.name,author:r.author,brewer:r.brewer,dose:r.dose,ratio:r.ratio,link:r.link,category:r.category}));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Recipes');
+  XLSX.writeFile(wb, 'xbloom_recipes.xlsx');
+};
+
+window.expJSON = function() {
+  const blob = new Blob([JSON.stringify(FB_RECIPES, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'xbloom_recipes.json'; a.click();
+};
+
+window.expBackup = function() {
+  const blob = new Blob([JSON.stringify({timestamp: new Date().toISOString(), firebase_count: FB_COUNT, recipes: FB_RECIPES}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'xbloom_backup_' + new Date().toISOString().slice(0,10) + '.json'; a.click();
+};
+</script>
+</body>
+</html>
