@@ -167,13 +167,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="ov" id="addOv">
 <div class="modal">
   <div class="mh">
-    <h3>&#x2615; شارك وصفتك مع المجتمع</h3>
+    <h3>&#x2615; اضافة وصفة جديدة</h3>
     <button class="mx" onclick="closeAddModal()">&#xD7;</button>
   </div>
   <form class="mf" onsubmit="submitRecipe(event)">
     <div class="fr2">
-      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: اثيوبي 15g"></div>
-      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="اسمك أو كنيتك"></div>
+      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة المجتمع 15g"></div>
+      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="اسم مالك الوصفة"></div>
     </div>
     <div class="fr2">
       <div class="fg"><label>المحضّر *</label>
@@ -186,12 +186,12 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       </div>
       <div class="fg"><label>الجرعة *</label><input class="fi" id="rD" required placeholder="15g"></div>
     </div>
-    <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16"></div>
+    <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16 أو 225مل"></div>
     <div class="fg"><label>نوع التحضير *</label>
       <div class="tsel">
-        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; وصفة حار</label></div>
-        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة بارد</label></div>
-        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل وترطيب سيرفر</label></div>
+        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; ةوصفة حار</label></div>
+        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة باردة</label></div>
+        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل سيرفر</label></div>
       </div>
     </div>
     <div class="fg" id="iceField" style="display:none;animation:fi .3s ease">
