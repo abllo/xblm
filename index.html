@@ -408,6 +408,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // ════════════════════════════════════════════════
 // LOAD / SAVE
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// LOAD / SAVE
+// ════════════════════════════════════════════════
 function load() {
   // الاتصال بـ Firebase لجلب الوصفات الجديدة فوراً
   onValue(recipesRef, (snapshot) => {
@@ -430,12 +433,16 @@ function load() {
   try { BREW = JSON.parse(localStorage.getItem('xbb') || '{}'); } catch (e) { BREW = {}; }
 }
 
-  updateCounts();
-  render();
+function saveR() { 
+    try { localStorage.setItem('xbr', JSON.stringify(RR)); } catch(e) {} 
 }
 
-function saveR() { try{ localStorage.setItem('xbr', JSON.stringify(RR)); }catch(e){} }
 function saveAll(){
+  saveR();
+  try { localStorage.setItem('xbf', JSON.stringify([...FAV])); } catch(e) {}
+  try { localStorage.setItem('xbs', JSON.stringify(STARS)); } catch(e) {}
+  try { localStorage.setItem('xbb', JSON.stringify(BREW)); } catch(e) {}
+}
   saveR();
   try{ localStorage.setItem('xbf', JSON.stringify([...FAV])); }catch(e){}
   try{ localStorage.setItem('xbs', JSON.stringify(STARS)); }catch(e){}
