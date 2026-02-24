@@ -116,7 +116,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <header>
   <h1>&#x2615; Xbloom Recipes</h1>
   <p class="sub">وصفات مجتمع اكس بلوم</p>
-  <button class="btn bp add-header-btn" onclick="openAddModal()">&#x2795; اضافة وصفة جديدة</button>
+  <button class="btn bp add-header-btn" onclick="openAddModal()">&#x2795; شارك وصفتك</button>
 </header>
 <div class="ctrls">
   <div class="sbox"><input type="text" id="srch" placeholder="ابحث عن وصفة..." autocomplete="off"></div>
@@ -189,10 +189,18 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16"></div>
     <div class="fg"><label>نوع التحضير *</label>
       <div class="tsel">
-        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required><label for="rHot">&#x1F525; وصفة حار</label></div>
-        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold"><label for="rCold">&#x1F9CA; وصفة بارد</label></div>
-        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server"><label for="rSrv">&#x2699;&#xFE0F; غسيل وترطيب سيرفر</label></div>
+        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; وصفة حار</label></div>
+        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة بارد</label></div>
+        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل وترطيب سيرفر</label></div>
       </div>
+    </div>
+    <div class="fg" id="iceField" style="display:none;animation:fi .3s ease">
+      <label style="color:#48dbfb">&#x1F9CA; وزن الثلج المضاف *</label>
+      <div style="position:relative">
+        <input class="fi" type="number" id="rIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
+      </div>
+      <div style="font-size:.75em;color:var(--t2);margin-top:5px">كمية الثلج التي تستخدمها في هذه الوصفة</div>
     </div>
     <div class="fg">
       <label>رابط الوصفة من xBloom *</label>
@@ -319,20 +327,41 @@ window.openAddModal  = ()=>{ document.getElementById('addOv').classList.add('ope
 window.closeAddModal = ()=>{ document.getElementById('addOv').classList.remove('open'); document.body.style.overflow=''; };
 document.getElementById('addOv').addEventListener('click', e=>{ if(e.target===e.currentTarget) window.closeAddModal(); });
 
+window.onTypeChange = function(radio) {
+  const iceField = document.getElementById('iceField');
+  const iceInput = document.getElementById('rIce');
+  if (radio.value === 'cold') {
+    iceField.style.display = 'block';
+    iceInput.required = true;
+  } else {
+    iceField.style.display = 'none';
+    iceInput.required = false;
+    iceInput.value = '';
+  }
+};
+
 window.submitRecipe = function(e) {
   e.preventDefault();
   const catSel = document.querySelector('input[name="rc"]:checked');
   if(!catSel){ toast('اختر نوع التحضير ❗','terr'); return; }
+  const category = catSel.value;
+  let name = document.getElementById('rN').value.trim();
+  const iceVal = document.getElementById('rIce').value.trim();
+  // إضافة وزن الثلج لاسم الوصفة إذا كانت باردة
+  if (category === 'cold' && iceVal) {
+    name = name + ' (الثلج ' + iceVal + ' جرام)';
+  }
   const r = {
-    name:     document.getElementById('rN').value.trim(),
+    name,
     author:   document.getElementById('rA').value.trim(),
     brewer:   document.getElementById('rBr').value,
     dose:     document.getElementById('rD').value.trim(),
     ratio:    document.getElementById('rR').value.trim(),
     link:     document.getElementById('rL').value.trim(),
-    category: catSel.value,
+    category,
     addedAt:  Date.now()
   };
+  if (category === 'cold' && iceVal) r.ice = iceVal;
   const btn = document.getElementById('submitBtn');
   btn.textContent='⏳ جاري النشر...'; btn.disabled=true;
   push(recipesRef, r)
@@ -345,6 +374,9 @@ window.submitRecipe = function(e) {
       document.getElementById('rD').value='';
       document.getElementById('rR').value='';
       document.getElementById('rL').value='';
+      document.getElementById('rIce').value='';
+      document.getElementById('iceField').style.display='none';
+      document.getElementById('rIce').required=false;
       document.querySelectorAll('input[name="rc"]').forEach(r=>r.checked=false);
     })
     .catch(err=>{ toast('خطأ في النشر: '+err.message,'terr'); })
