@@ -352,7 +352,22 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+    // استيراد مكتبات Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // إعدادات الربط الخاصة بك
+    const firebaseConfig = {
+        apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+        authDomain: "xbloom-recipes-hub.firebaseapp.com",
+        projectId: "xbloom-recipes-hub",
+        databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const recipesRef = ref(db, 'recipes');
 // ════════════════════════════════════════════════
 // DATA  (will be replaced by Python)
 // ════════════════════════════════════════════════
@@ -667,13 +682,22 @@ function saveRec(e){
     category: cat,
     link:   document.getElementById('rL').value.trim()
   };
-  if(idx===-1){
-    var dup=false;
-    for(var i=0;i<RR.length;i++){ if(RR[i].link===r.link){ dup=true; break; } }
-    if(dup){ toast('الوصفة موجودة مسبقاً','terr'); return; }
-    RR.push(r); toast('تمت الإضافة ✅');
+ if (idx === -1) {
+    // إرسال للـ Firebase
+    push(recipesRef, r).then(() => {
+      toast('تمت الإضافة بنجاح ✅');
+      closeRec();
+    }).catch(() => {
+      toast('خطأ في الإرسال ❌', 'terr');
+    });
   } else {
-    RR[idx]=r; toast('تم التحديث ✅');
+    // تحديث محلي (للمسؤول)
+    RR[idx] = r;
+    saveR(); updateCounts(); render();
+    window.saveRec = saveRec;
+    if (ADMIN) renderTable();
+    closeRec();
+    toast('تم التحديث ✅');
   }
   saveR(); updateCounts(); render();
   if(ADMIN) renderTable();
@@ -937,6 +961,23 @@ function toast(msg, cls){
 function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+// ربط الدوال بالنافذة العامة لتشغيل الأزرار
+window.saveRec = saveRec;
+window.openAdd = openAdd;
+window.setF = setF;
+window.rate = rate;
+window.toggleFav = toggleFav;
+window.shareR = shareR;
+window.brew = brew;
+window.openLogin = openLogin;
+window.closeRec = closeRec;
+window.closeLogin = closeLogin;
+window.doLogin = doLogin;
+window.delR = delR;
+window.brewControl = brewControl;
+window.brewAdj = brewAdj;
+window.brewReset = brewReset;
+window.closeBrewOv = closeBrewOv;
 </script>
 </body>
 </html>
