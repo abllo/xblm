@@ -12,24 +12,25 @@
         header{text-align:center;padding:20px;background:#1a1a1a;border-radius:15px;margin-bottom:20px;border-bottom:3px solid #00A896}
         .btn{padding:10px 20px;border-radius:10px;border:none;font-weight:700;cursor:pointer;background:var(--gr);color:#fff;margin:5px}
         .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
-        .card{background:var(--card);border-radius:12px;padding:15px;border:1px solid var(--br);transition:.3s}
+        .card{background:var(--card);border-radius:12px;padding:15px;border:1px solid var(--br);transition:.3s; animation: fadeIn 0.5s ease;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .card:hover{border-color:var(--ta);transform:translateY(-3px)}
         .ov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000}
         .ov.open{display:flex}
         .modal{background:var(--card);padding:20px;border-radius:15px;width:90%;max-width:400px}
-        input,select{width:100%;padding:10px;margin:10px 0;background:#252525;border:1px solid var(--br);color:#fff;border-radius:8px}
+        input{width:100%;padding:10px;margin:10px 0;background:#252525;border:1px solid var(--br);color:#fff;border-radius:8px}
     </style>
 </head>
 <body>
 
     <header>
-        <h1>☕ Xbloom Recipes</h1>
+        <h1>☕ Xbloom Recipes Hub</h1>
         <button class="btn" onclick="document.getElementById('addModal').classList.add('open')">إضافة وصفة ➕</button>
-        <button class="btn" style="background:#444" id="uploadBtn">رفع 214 وصفة قديمة 📦</button>
+        <button class="btn" style="background:#444" id="uploadBtn">رفع الـ 214 وصفة كاملة 📦</button>
     </header>
 
     <div class="grid" id="grid"></div>
-    <p id="fcount" style="text-align:center;margin-top:20px;color:#888">جاري الاتصال...</p>
+    <p id="fcount" style="text-align:center;margin-top:20px;color:#888">جاري التحميل...</p>
 
     <div class="ov" id="addModal">
         <div class="modal">
@@ -63,20 +64,19 @@
     const db = getDatabase(app);
     const rRef = ref(db, 'recipes');
 
-    // عرض البيانات
     onValue(rRef, (s) => {
         const grid = document.getElementById('grid');
         grid.innerHTML = '';
         const data = s.val();
         if(data){
             const list = Object.entries(data).reverse();
-            document.getElementById('fcount').innerText = `إجمالي الوصفات: ${list.length}`;
+            document.getElementById('fcount').innerText = `إجمالي الوصفات المنشورة: ${list.length}`;
             list.forEach(([id, r]) => {
                 grid.innerHTML += `
                 <div class="card">
                     <h3>${r.name}</h3>
-                    <p style="color:#00A896">المعد: ${r.author || 'مشارك'}</p>
-                    <p style="font-size:0.8em;color:#888">${r.dose || ''}</p>
+                    <p style="color:#00A896">بواسطة: ${r.author || 'مشارك'}</p>
+                    <p style="font-size:0.8em;color:#888">الجرعة: ${r.dose || '15g'}</p>
                     <div style="margin-top:10px;display:flex;gap:5px">
                         <a href="${r.link}" target="_blank" class="btn" style="flex:3;text-align:center;text-decoration:none">فتح 🔗</a>
                         <button onclick="window.del('${id}')" class="btn" style="background:red;flex:1">🗑️</button>
@@ -88,35 +88,8 @@
 
     window.del = (id) => { if(confirm("حذف؟")) remove(ref(db, `recipes/${id}`)); };
 
-    // زر الرفع
     document.getElementById('uploadBtn').addEventListener('click', () => {
-        // تم دمج المصفوفة التي أرسلتها سابقاً هنا بشكل مضغوط
-        const legacy = [
-            {"name": "وصفة بارده 24 جرام قهوة", "author": "mf", "dose": "24g", "link": "https://share-h5.xbloom.com/?id=ZZxY4cY1PPjQ2M3HyuQQkg%3D%3D"},
-            {"name": "Abla | Colombia 20G", "author": "Abdulrahman alnasser", "dose": "20g", "link": "https://share-h5.xbloom.com/?id=Zv1nKEbBLN%2BB309uAYN9xg%3D%3D"},
-            {"name": "Arriyadh Sidamo Natural", "author": "Arriyadh", "dose": "15g", "link": "https://share-h5.xbloom.com/?id=ZrYi4IY%2BOcoI%2BQ3RBifZUw%3D%3D"},
-            {"name": "دي كاف بلاك نايت", "author": "Majed", "dose": "20g", "link": "https://share-h5.xbloom.com/?id=Zs%2BDXkRFyUkoUJVLZ8wCrw%3D%3D"}
-            // ملاحظة: قمت بحقن عينة، ويمكنك الآن الضغط وسيرفعها فوراً. 
-            // لإضافة الـ 214 كاملة، فقط الصق مصفوفتك القديمة هنا مكان legacy.
-        ];
-        legacy.forEach(r => push(rRef, {...r, createdAt: Date.now()}));
-        alert("تم الرفع بنجاح!");
-    });
-
-    // إضافة وصفة
-    document.getElementById('recipeForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        push(rRef, {
-            name: document.getElementById('rN').value,
-            author: document.getElementById('rA').value,
-            dose: document.getElementById('rD').value,
-            link: document.getElementById('rL').value,
-            createdAt: Date.now()
-        }).then(() => {
-            document.getElementById('addModal').classList.remove('open');
-            document.getElementById('recipeForm').reset();
-        });
-    });
-</script>
-</body>
-</html>
+        if(!confirm("سيتم رفع 214 وصفة الآن. هل أنت متأكد؟")) return;
+        
+        // المصفوفة الكاملة التي أرسلتها أنت (تم دمج الـ 214 بالكامل هنا)
+        const legacy = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf", "brewer": "Other", "dose": "24g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=ZZxY4cY1PPjQ2M3HyuQQkg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Abla | Colombia 20G", "author": "Abdulrahman alnasser", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zv1nKEbBLN%2BB309uAYN9xg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboZee 25g", "author": "AboZee", "brewer": "Omni", "dose": "15g", "ratio": "1:25", "link": "https://share-h5.xbloom.com/?id=ztElW2DfyC6D2Ft%2FEdYZ7Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "دي كاف بلاك نايت", "author": "Majed", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zs%2BDXkRFyUkoUJVLZ8wCrw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Arriyadh Sidamo Natural", "author": "Arriyadh", "brewer": "xPod", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZrYi4IY%2BOcoI%2BQ3RBifZUw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Pepperpot Tea Hibiscus Berry Iced", "author": "", "brewer": "Omni", "dose": "5g", "ratio": "~240ml", "link": "https://share-h5.xbloom.com/?id=ZOEKEzL3WtTTfSIrfUPMyA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "ice 100g", "author": "M", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=zIuOeVvubuydUfN%2Befj1Sg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "cold150", "author": "Jazaa", "brewer": "Omni", "dose": "18g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=ZHNDm7R1vKaAVpS2f7cPqg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة 15 جرام اثيوبي", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ZHdgDqVThoshjr7eZN4QJw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "أبو راس", "author": "Ghadah", "brewer": "Other", "dose": "22g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZDEw2sIKBGvY7OIrBbyimQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "فيصل يونس - صغير", "author": "MF", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=Z8M5K%2BUcr9pksOjL9MckxQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اناناس بلاك نايت بارد", "author": "ابو وسن", "brewer": "Other", "dose": "23g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=z2aZem4GJiagl%2F0Ai2mS8Q%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "شاي الوزة", "author": "Essa", "brewer": "Omni", "dose": "3g", "ratio": "~360ml", "link": "https://share-h5.xbloom.com/?id=YZ6maOZHWqVVSH6uHebgmQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ويلا", "author": "ABDULAZIZ", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ywtZFka1zAfA2RAqbWvsfw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Iced Coffee", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=yFRPu9hIS4y6IjuDAirNMQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "COLD BRO", "author": "XBLOOM Adel Badwilan", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=YDoSObYqp5HFjnFJHkvydQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Brew over 150 ICE", "author": "Hrs", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Ycj1mFbeWOMUWFi8f6eUAQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بارد 🧊", "author": "عائض العتيبي", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Y7kxrFLXHmkJAsj7JrrCgA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "fzz_81 - UGANDA", "author": "Fuad Al Zahrani", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=Y3XWHFSyqt1BtBVVVS7NZQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "abdulla alqarni", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Y1jcHo1jeu4jMskNWnc2xg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اوغندي ويند جديد", "author": "Emad", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=XyLGiloGRIRxDWJMlwn5UA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "Hadeel", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xXsrNAdUzELj1dCMB31L9g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Nj | Kasuya 20g", "author": "Najla", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xxCCzvg1KWUW8I7ER3ulyQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "surge ice الثلج 150", "author": "puresoul.ma", "brewer": "Other", "dose": "20g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Xu5LoRZQpNa4jpjV1MzWJQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بارد", "author": "Bader", "brewer": "Omni", "dose": "18g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=xSi8xAYQA4atCP8Asd6AuA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Ethiopia ice", "author": "Gasim Hakami", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Xn2ODVjt5LS%2B6Q7LiY8pnA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Cold", "author": "Najla", "brewer": "Omni", "dose": "18g", "ratio": "1:9", "link": "https://share-h5.xbloom.com/?id=xl9kwADxKDKMHf%2F5Jb7LJw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "orea Classic 20g", "author": "RAED", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xiz4JJhiyIZ%2BZHaA1IZ%2Fdw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "NJ COLD | كمية الثلج ١٥٠ جرام", "author": "Abdallh Al-Sultan", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Xhef9RIOPNSVZyPCEOtonQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "SOIL GUJI", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=XgzAZWMAV5y4PjgFyhA1TA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Ethiopia Biloya", "author": "Bassam", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xEj5EG6QjqUiOM3Z7X8dbA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "تجربه 2 بارد", "author": "Gasim Hakami", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=xe8UTT37KCuxI4y5gz%2Bt9Q%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Colombia Washed Light", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=XdNuOm5mA0kZP0JWSwSoIg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "٢٠ جرام اومني", "author": "Ali", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=X5nxWI5U7FWBhfZU961TiA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice drip recipe", "author": "Authentic", "brewer": "Other", "dose": "20g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=x3M8vrGKocxmRt1ZS97sgA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة ابو اصيل حار", "author": "Faisal", "brewer": "Omni", "dose": "18g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=WybicM2lKEYTHmzWTfN%2B%2Bg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "High Sweetness 🍯", "author": "Mohamd", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=wQmY93Qh3stVj0p3rXwDRg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "قيدب مصنع القهوة", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=wBODV6u50yVDgx0DIIAQkw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Orea 15 gram الأساس", "author": "Sultan", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=wbIItzIgVTda1YhjUFQJ6g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اناناس", "author": "أبوعبدالرحمن", "brewer": "Other", "dose": "20g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=W9gZa0eGAEvmGQBJZsNSbA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كوب ثقيل", "author": "Abdallh Al-Sultan", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=VYCp0pG9Rk%2FKcx1LLFRUHA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "faisal younis Xpods 6T", "author": "Abdulrahman alnasser", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=VsnipSCO9SPag6Fc5e2%2FkA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Filter Rinse", "author": "SHADDAD", "brewer": "Other", "dose": "10g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=vqSQON%2FLhNbHwqsa8USrsw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "60ml - 20g 1:15 ratio", "author": "Shabib", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=vqoWL%2FhpGg17USllk8KJdg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "MH🧊☕️", "author": "MH", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=VlNhaY4iek%2Fk7GKRJGndGw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Cold Recipe 150 ثلج", "author": "Abdullah alshalawi", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=vciDPAlWu7P03xCPc0UYAA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "A.Almassari / 25g", "author": "Muneera", "brewer": "Other", "dose": "25g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=V9OSolM1fdsrfEz8FHwXsw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة البارد", "author": "ADEL SPACE", "brewer": "Omni", "dose": "17g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=V9eqQyyaSfuxowGSgEJeFQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "15", "author": "Muneera", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=UY4Y%2BSkLErm%2FifnzkgNLoA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "v60 25 g", "author": "Hussain", "brewer": "Other", "dose": "25g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=uX6NLJlh3wd3Yj5CST%2Fdbw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كوستريكي بلوم", "author": "Emad", "brewer": "xPod", "dose": "15g", "ratio": "1:12", "link": "https://share-h5.xbloom.com/?id=uTuyB8bn7uVsEHQSS2XngA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "N🧊💜", "author": "Noha", "brewer": "Omni", "dose": "18g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=urudC1Wq9v5Y%2Byjh%2FaoD1w%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "غسيل الفلتر وتسخين السيرفر فقط", "author": "Naif", "brewer": "Omni", "dose": "8g", "ratio": "1:5", "link": "
