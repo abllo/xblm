@@ -79,6 +79,33 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);padding:12px 18px;border-radius:10px;border:1px solid var(--br);z-index:2000;opacity:0;transition:.3s;max-width:88%;font-size:13px;text-align:center;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .tok{border-color:#43e97b}
+.terr{border-color:#f5576c}
+/* Add Recipe Modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:none;align-items:center;justify-content:center;padding:12px;overflow-y:auto}
+.ov.open{display:flex}
+.modal{background:var(--card);border-radius:16px;border:1px solid var(--br);width:100%;max-width:520px;position:relative;max-height:94vh;overflow-y:auto;animation:fi .3s ease}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--br);position:sticky;top:0;background:var(--card);z-index:2}
+.mh h3{font-size:1.05em;font-weight:700}
+.mx{background:none;border:none;color:var(--t2);font-size:1.8em;cursor:pointer;padding:0 4px;line-height:1}
+.mf{padding:18px 20px;display:flex;flex-direction:column;gap:13px}
+.fg label{font-size:.82em;color:var(--t2);display:block;margin-bottom:5px;font-weight:700}
+.fi{width:100%;padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit}
+.fi:focus{outline:none;border-color:var(--ta)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tsel{display:flex;flex-direction:column;gap:7px}
+.topt{padding:11px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em;transition:.2s}
+.topt:has(input:checked){border-color:var(--ta);background:rgba(0,168,150,.08)}
+.topt.hot{border-color:rgba(255,107,107,.4)}
+.topt.cold{border-color:rgba(72,219,251,.4)}
+.topt.srv{border-color:rgba(102,126,234,.4)}
+.topt input[type=radio]{accent-color:var(--ta);width:16px;height:16px}
+.add-fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
+.add-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,168,150,.7)}
+.add-fab:active{transform:scale(.94)}
+.add-header-btn{margin-top:14px}
+.badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
+.spinning{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(min-width:768px){body{padding:20px}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}.card{padding:22px}}
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
@@ -89,6 +116,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <header>
   <h1>&#x2615; Xbloom Recipes</h1>
   <p class="sub">وصفات مجتمع اكس بلوم</p>
+  <button class="btn bp add-header-btn" onclick="openAddModal()">&#x2795; اضافة وصفة جديدة</button>
 </header>
 <div class="ctrls">
   <div class="sbox"><input type="text" id="srch" placeholder="ابحث عن وصفة..." autocomplete="off"></div>
@@ -131,9 +159,56 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </footer>
 </div>
 <div class="toast" id="toast"></div>
+
+<!-- FAB زر عائم -->
+<button class="add-fab" onclick="openAddModal()" title="أضف وصفة">&#x2795;</button>
+
+<!-- Modal: Add Recipe -->
+<div class="ov" id="addOv">
+<div class="modal">
+  <div class="mh">
+    <h3>&#x2615; شارك وصفتك مع المجتمع</h3>
+    <button class="mx" onclick="closeAddModal()">&#xD7;</button>
+  </div>
+  <form class="mf" onsubmit="submitRecipe(event)">
+    <div class="fr2">
+      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: اثيوبي 15g"></div>
+      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="اسمك أو كنيتك"></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label>المحضّر *</label>
+        <select class="fi" id="rBr" required>
+          <option value="">اختر</option>
+          <option value="Omni">Omni</option>
+          <option value="xPod">xPod</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>الجرعة *</label><input class="fi" id="rD" required placeholder="15g"></div>
+    </div>
+    <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16"></div>
+    <div class="fg"><label>نوع التحضير *</label>
+      <div class="tsel">
+        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required><label for="rHot">&#x1F525; وصفة حار</label></div>
+        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold"><label for="rCold">&#x1F9CA; وصفة بارد</label></div>
+        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server"><label for="rSrv">&#x2699;&#xFE0F; غسيل وترطيب سيرفر</label></div>
+      </div>
+    </div>
+    <div class="fg">
+      <label>رابط الوصفة من xBloom *</label>
+      <input class="fi" type="url" id="rL" required placeholder="https://share-h5.xbloom.com/?id=...">
+      <div style="font-size:.75em;color:var(--t2);margin-top:5px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
+    </div>
+    <button type="submit" class="btn bp bbl" id="submitBtn" style="padding:14px;font-size:14px">
+      &#x1F4E4; نشر الوصفة
+    </button>
+  </form>
+</div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",projectId:"xbloom-recipes-hub"};
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
@@ -238,6 +313,43 @@ onValue(recipesRef,snap=>{
   mergeData(fbList);
 },err=>{console.warn(err);});
 document.getElementById('srch').addEventListener('input',e=>{Q=e.target.value.toLowerCase().trim();PAGE=1;render();});
+
+// ════ ADD RECIPE MODAL ════
+window.openAddModal  = ()=>{ document.getElementById('addOv').classList.add('open'); document.body.style.overflow='hidden'; };
+window.closeAddModal = ()=>{ document.getElementById('addOv').classList.remove('open'); document.body.style.overflow=''; };
+document.getElementById('addOv').addEventListener('click', e=>{ if(e.target===e.currentTarget) window.closeAddModal(); });
+
+window.submitRecipe = function(e) {
+  e.preventDefault();
+  const catSel = document.querySelector('input[name="rc"]:checked');
+  if(!catSel){ toast('اختر نوع التحضير ❗','terr'); return; }
+  const r = {
+    name:     document.getElementById('rN').value.trim(),
+    author:   document.getElementById('rA').value.trim(),
+    brewer:   document.getElementById('rBr').value,
+    dose:     document.getElementById('rD').value.trim(),
+    ratio:    document.getElementById('rR').value.trim(),
+    link:     document.getElementById('rL').value.trim(),
+    category: catSel.value,
+    addedAt:  Date.now()
+  };
+  const btn = document.getElementById('submitBtn');
+  btn.textContent='⏳ جاري النشر...'; btn.disabled=true;
+  push(recipesRef, r)
+    .then(()=>{
+      toast('تم نشر وصفتك بنجاح ✅ شكراً لك!');
+      window.closeAddModal();
+      document.getElementById('rN').value='';
+      document.getElementById('rA').value='';
+      document.getElementById('rBr').value='';
+      document.getElementById('rD').value='';
+      document.getElementById('rR').value='';
+      document.getElementById('rL').value='';
+      document.querySelectorAll('input[name="rc"]').forEach(r=>r.checked=false);
+    })
+    .catch(err=>{ toast('خطأ في النشر: '+err.message,'terr'); })
+    .finally(()=>{ btn.textContent='📤 نشر الوصفة'; btn.disabled=false; });
+};
 </script>
 </body>
 </html>
