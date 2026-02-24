@@ -409,27 +409,26 @@ document.addEventListener('DOMContentLoaded', function() {
 // LOAD / SAVE
 // ════════════════════════════════════════════════
 function load() {
-  var saved = localStorage.getItem('xbr');
-  if(saved) {
-    try { RR = JSON.parse(saved); } catch(e){ RR = clone(INIT); }
-  } else {
-    RR = clone(INIT);
-  }
-  // Ensure category field
-  var dirty = false;
-  for(var i=0; i<RR.length; i++){
-    var r = RR[i];
-    if(!r.category){
-      var t = (str(r.name)+' '+str(r.author)+' '+str(r.ratio)+' '+str(r.dose)).toLowerCase();
-      r.category = hasSKW(t) ? 'server' : hasCKW(t) ? 'cold' : 'hot';
-      dirty = true;
+  // الاتصال بـ Firebase لجلب الوصفات الجديدة فوراً
+  onValue(recipesRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      // تحويل وصفات المجتمع إلى مصفوفة ودمجها فوق وصفاتك الـ 214 الأصلية
+      const communityRecipes = Object.values(data).reverse();
+      RR = [...communityRecipes, ...clone(INIT)];
+    } else {
+      RR = clone(INIT);
     }
-  }
-  if(dirty) saveR();
+    // تحديث الأرقام والرسم على الشاشة
+    updateCounts();
+    render();
+  });
 
-  try { FAV   = new Set(JSON.parse(localStorage.getItem('xbf')||'[]')); } catch(e){ FAV=new Set(); }
-  try { STARS = JSON.parse(localStorage.getItem('xbs')||'{}'); } catch(e){ STARS={}; }
-  try { BREW  = JSON.parse(localStorage.getItem('xbb')||'{}'); } catch(e){ BREW={}; }
+  // استعادة الأشياء الشخصية (المفضلة والتقييمات) من متصفحك
+  try { FAV = new Set(JSON.parse(localStorage.getItem('xbf') || '[]')); } catch (e) { FAV = new Set(); }
+  try { STARS = JSON.parse(localStorage.getItem('xbs') || '{}'); } catch (e) { STARS = {}; }
+  try { BREW = JSON.parse(localStorage.getItem('xbb') || '{}'); } catch (e) { BREW = {}; }
+}
 
   updateCounts();
   render();
