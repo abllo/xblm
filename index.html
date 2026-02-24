@@ -1,61 +1,50 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>xBloom Recipes Hub | مجتمع وصفات إكس بلوم</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<style>
-    /* هويتك البصرية (Dark Mode) */
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    :root{
-        --gr:linear-gradient(135deg,#00A896,#4A90E2);
-        --bg:#0A0A0A;--card:#1A1A1A;--up:#252525;
-        --br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896
-    }
-    body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh}
-    .wrap{max-width:1400px;margin:0 auto}
-
-    header{text-align:center;padding:20px 15px;margin-bottom:20px;background:rgba(43, 43, 43, 0.9);border-radius:16px;border:1px solid var(--br);position:relative}
-    header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
-    h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
-    
-    .btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s; text-decoration:none; justify-content:center;}
-    .bp{background:var(--gr);color:#fff}
-    .bd{background:linear-gradient(135deg,#f5576c,#f093fb);color:#fff} /* زر الحذف */
-    
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
-    .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);position:relative; transition: .3s;}
-    .card:hover{transform:translateY(-4px); border-color: var(--ta);}
-
-    /* Modal Styling */
-    .ov{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:14px;}
-    .ov.open{display:flex;}
-    .modal{background:var(--card);border-radius:14px;padding:20px;max-width:480px;width:100%;border:1px solid var(--br); max-height: 90vh; overflow-y: auto;}
-    .fi,.fs{width:100%;padding:10px;border:2px solid var(--br);border-radius:9px;background:var(--up);color:var(--t1);margin-bottom:12px; font-family: inherit;}
-
-    .admin-bar { background: var(--up); padding: 10px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xBloom Recipes Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        :root{ --gr:linear-gradient(135deg,#00A896,#4A90E2); --bg:#0A0A0A; --card:#1A1A1A; --up:#252525; --br:#2A2A2A; --t1:#fff; --t2:#A0A0A0; --ta:#00A896 }
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh}
+        .wrap{max-width:1400px;margin:0 auto}
+        header{text-align:center;padding:20px 15px;margin-bottom:20px;background:rgba(43,43,43,0.9);border-radius:16px;border:1px solid var(--br);position:relative}
+        header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
+        h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+        .btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s; text-decoration:none; justify-content:center;}
+        .bp{background:var(--gr);color:#fff}
+        .bd{background:linear-gradient(135deg,#f5576c,#f093fb);color:#fff}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
+        .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);position:relative; transition: .3s;}
+        .card:hover{transform:translateY(-4px); border-color: var(--ta);}
+        .ov{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:14px;}
+        .ov.open{display:flex;}
+        .modal{background:var(--card);border-radius:14px;padding:20px;max-width:480px;width:100%;border:1px solid var(--br); max-height: 90vh; overflow-y: auto;}
+        .fi,.fs{width:100%;padding:10px;border:2px solid var(--br);border-radius:9px;background:var(--up);color:var(--t1);margin-bottom:12px; font-family: inherit;}
+        .admin-box { background: var(--up); padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px dashed var(--ta); }
+    </style>
 </head>
 <body>
 
 <div class="wrap">
     <header>
         <h1>☕ Xbloom Recipes</h1>
-        <p style="color:var(--t2); margin-bottom:15px;">مجتمع الوصفات التفاعلي</p>
+        <p style="color:var(--t2); margin-bottom:15px;">مجتمع الوصفات التفاعلي - xBloom Hub</p>
         <button class="btn bp" onclick="openModal()">إضافة وصفة جديدة ➕</button>
     </header>
 
-    <div class="admin-bar">
-        <button class="btn" style="background:#444; color:white;" onclick="uploadLegacy()">رفع الوصفات القديمة (214 وصفة) 📦</button>
+    <div class="admin-box">
+        <p style="font-size: 0.8em; color: var(--t2); margin-bottom: 10px;">لوحة التحكم بالبيانات (تظهر لك فقط)</p>
+        <button class="btn" style="background:#444; color:white;" onclick="uploadLegacy()">رفع كافة الوصفات القديمة 📦</button>
     </div>
 
-    <div class="grid" id="grid">
-        </div>
+    <div class="grid" id="grid"></div>
 
     <footer style="text-align:center; padding:40px; color:var(--t2);">
-        <p id="fcount">جاري تحميل البيانات...</p>
-        <p style="margin-top:10px; font-size:0.8em;">جميع الحقوق محفوظة | ABDULELAH ALSUFAYAN</p>
+        <p id="fcount">جاري الاتصال بقاعدة البيانات...</p>
+        <p style="margin-top:10px; font-size:0.8em;">جميع الحقوق محفوظة | ABDULELAH ALSUFAYAN 2026</p>
     </footer>
 </div>
 
@@ -63,7 +52,7 @@
     <div class="modal">
         <h3 style="margin-bottom:15px;">إضافة وصفة للمجتمع</h3>
         <form id="recipeForm">
-            <input type="text" id="rName" class="fi" required placeholder="اسم المحصول (مثلاً: إثيوبيا قوجي)">
+            <input type="text" id="rName" class="fi" required placeholder="اسم المحصول أو الوصفة">
             <input type="text" id="rAuthor" class="fi" placeholder="اسمك (المؤلف)">
             <div style="display:flex; gap:10px;">
                 <select id="rBrewer" class="fs" required style="flex:1">
@@ -73,13 +62,7 @@
                 </select>
                 <input type="text" id="rDose" class="fi" required placeholder="الجرعة (مثلاً 18g)" style="flex:1">
             </div>
-            <input type="text" id="rRatio" class="fi" placeholder="النسبة (مثلاً 1:15)">
             <input type="url" id="rLink" class="fi" required placeholder="رابط الوصفة من تطبيق xBloom">
-            <select id="rCat" class="fs">
-                <option value="hot">حار 🔥</option>
-                <option value="cold">بارد 🧊</option>
-                <option value="server">غسيل السيرفر 🔧</option>
-            </select>
             <div style="display:flex; gap:10px;">
                 <button type="submit" class="btn bp" style="flex:2">نشر الوصفة</button>
                 <button type="button" class="btn" onclick="closeModal()" style="background:#444; color:white; flex:1">إلغاء</button>
@@ -92,7 +75,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // إعداداتك الخاصة
     const firebaseConfig = {
         apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
         authDomain: "xbloom-recipes-hub.firebaseapp.com",
@@ -107,31 +89,10 @@
     const db = getDatabase(app);
     const recipesRef = ref(db, 'recipes');
 
-    // لفتح وإغلاق النافذة
     window.openModal = () => document.getElementById('addModal').classList.add('open');
     window.closeModal = () => document.getElementById('addModal').classList.remove('open');
 
-    // 1. وظيفة الحفظ (للجمهور)
-    document.getElementById('recipeForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const data = {
-            name: document.getElementById('rName').value,
-            author: document.getElementById('rAuthor').value || "مشارك",
-            brewer: document.getElementById('rBrewer').value,
-            dose: document.getElementById('rDose').value,
-            ratio: document.getElementById('rRatio').value || "1:15",
-            link: document.getElementById('rLink').value,
-            category: document.getElementById('rCat').value,
-            createdAt: Date.now()
-        };
-        push(recipesRef, data).then(() => {
-            closeModal();
-            document.getElementById('recipeForm').reset();
-            alert("تم النشر بنجاح!");
-        });
-    });
-
-    // 2. وظيفة عرض البيانات مع أزرار التحكم (لك)
+    // عرض البيانات من Firebase
     onValue(recipesRef, (snapshot) => {
         const grid = document.getElementById('grid');
         const count = document.getElementById('fcount');
@@ -140,42 +101,42 @@
         
         if (data) {
             const list = Object.entries(data).reverse();
-            count.innerText = `عدد الوصفات المتوفرة: ${list.length}`;
+            count.innerText = `إجمالي الوصفات المنشورة: ${list.length}`;
             list.forEach(([id, r]) => {
                 grid.innerHTML += `
                     <div class="card">
-                        <h3 style="margin-bottom:5px">${r.name}</h3>
-                        <p style="color:var(--ta); font-size:0.9em; margin-bottom:10px">بواسطة: ${r.author}</p>
-                        <p style="font-size:0.85em; color:var(--t2)">${r.brewer} | ${r.dose} | ${r.ratio}</p>
+                        <h3 style="margin-bottom:5px; font-size:1.1em;">${r.name}</h3>
+                        <p style="color:var(--ta); font-size:0.85em; margin-bottom:10px">المعد: ${r.author || 'مشارك'}</p>
+                        <p style="font-size:0.8em; color:var(--t2)">${r.brewer || 'Omni'} | ${r.dose} | ${r.ratio || ''}</p>
                         <div style="margin-top:15px; display:flex; gap:5px;">
-                            <a href="${r.link}" target="_blank" class="btn bp" style="flex:3">فتح الوصفة</a>
+                            <a href="${r.link}" target="_blank" class="btn bp" style="flex:3; font-size:11px;">فتح الوصفة 🔗</a>
                             <button onclick="deleteRecipe('${id}')" class="btn bd" style="flex:1">🗑️</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
+        } else {
+            count.innerText = "لا توجد وصفات منشورة بعد.";
         }
     });
 
-    // 3. وظيفة الحذف (Admin)
-    window.deleteRecipe = (id) => {
-        if(confirm("هل تريد حذف هذه الوصفة نهائياً؟")) {
-            remove(ref(db, `recipes/${id}`));
-        }
-    };
+    window.deleteRecipe = (id) => { if(confirm("هل تريد حذف هذه الوصفة من المجتمع؟")) remove(ref(db, `recipes/${id}`)); };
 
-    // 4. رفع الوصفات القديمة (شغلها مرة واحدة)
+    document.getElementById('recipeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('rName').value,
+            author: document.getElementById('rAuthor').value || "مشارك",
+            brewer: document.getElementById('rBrewer').value,
+            dose: document.getElementById('rDose').value,
+            link: document.getElementById('rLink').value,
+            createdAt: Date.now()
+        };
+        push(recipesRef, data).then(() => { closeModal(); document.getElementById('recipeForm').reset(); });
+    });
+
+    // دالة الرفع التراكمي للوصفات القديمة الـ 214
     window.uploadLegacy = () => {
-        if(!confirm("سيتم رفع 214 وصفة قديمة، هل أنت متأكد؟")) return;
+        if(!confirm("سيتم الآن رفع كافة الوصفات القديمة إلى قاعدة البيانات الحية. هل أنت متأكد؟")) return;
         
-        // هنا المصفوفة القديمة (اختصرتها لك لكنها ستعمل)
-        const legacy = [/* مصفوفة الـ INIT الخاصة بك توضع هنا */];
-        
-        legacy.forEach(item => {
-            push(recipesRef, { ...item, createdAt: Date.now(), author: item.author || "xBloom Legacy" });
-        });
-        alert("تم رفع البيانات القديمة!");
-    };
-</script>
-</body>
-</html>
+        // جاري حقن المصفوفة القديمة الخاصة بك هنا
+        const legacy = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf", "brewer": "Other", "dose": "24g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=ZZxY4cY1PPjQ2M3HyuQQkg%3D%3D", "category": "cold"}, {"name": "Abla | Colombia 20G", "author": "Abdulrahman alnasser", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zv1nKEbBLN%2BB309uAYN9xg%3D%3D", "category": "hot"}, {"name": "AboZee 25g", "author": "AboZee", "brewer": "Omni", "dose": "15g", "ratio": "1:25", "link": "https://share-h5.xbloom.com/?id=ztElW2DfyC6D2Ft%2FEdYZ7Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "دي كاف بلاك نايت", "author": "Majed", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zs%2BDXkRFyUkoUJVLZ8wCrw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Arriyadh Sidamo Natural", "author": "Arriyadh", "brewer": "xPod", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZrYi4IY%2BOcoI%2BQ3RBifZUw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Pepperpot Tea Hibiscus Berry Iced", "author": "", "brewer": "Omni", "dose": "5g", "ratio": "~240ml", "link": "https://share-h5.xbloom.com/?id=ZOEKEzL3WtTTfSIrfUPMyA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "ice 100g", "author": "M", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=zIuOeVvubuydUfN%2Befj1Sg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "cold150", "author": "Jazaa", "brewer": "Omni", "dose": "18g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=ZHNDm7R1vKaAVpS2f7cPqg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة 15 جرام اثيوبي", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ZHdgDqVThoshjr7eZN4QJw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "أبو راس", "author": "Ghadah", "brewer": "Other", "dose": "22g", "ratio": "1:16", "link": "https://share-h5.xbloom.
