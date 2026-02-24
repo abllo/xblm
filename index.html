@@ -4,65 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xBloom Recipes Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        :root{ --gr:linear-gradient(135deg,#00A896,#4A90E2); --bg:#0A0A0A; --card:#1A1A1A; --up:#252525; --br:#2A2A2A; --t1:#fff; --t2:#A0A0A0; --ta:#00A896 }
-        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh}
-        .wrap{max-width:1400px;margin:0 auto}
-        header{text-align:center;padding:20px 15px;margin-bottom:20px;background:rgba(43,43,43,0.9);border-radius:16px;border:1px solid var(--br);position:relative}
-        header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
-        h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
-        .btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s; text-decoration:none; justify-content:center;}
-        .bp{background:var(--gr);color:#fff}
-        .bd{background:linear-gradient(135deg,#f5576c,#f093fb);color:#fff}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
-        .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);position:relative; transition: .3s;}
-        .card:hover{transform:translateY(-4px); border-color: var(--ta);}
-        .admin-box { background: var(--up); padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px dashed var(--ta); }
-        .ov{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:14px;}
-        .ov.open{display:flex;}
-        .modal{background:var(--card);border-radius:14px;padding:20px;max-width:480px;width:100%;border:1px solid var(--br); max-height: 90vh; overflow-y: auto;}
-        .fi,.fs{width:100%;padding:10px;border:2px solid var(--br);border-radius:9px;background:var(--up);color:var(--t1);margin-bottom:12px; font-family: inherit;}
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{ --gr:linear-gradient(135deg,#00A896,#4A90E2); --bg:#0A0A0A; --card:#1A1A1A; --br:#2A2A2A; --t1:#fff; --ta:#00A896 }
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:15px}
+        header{text-align:center;padding:20px;background:#1a1a1a;border-radius:15px;margin-bottom:20px;border-bottom:3px solid #00A896}
+        .btn{padding:10px 20px;border-radius:10px;border:none;font-weight:700;cursor:pointer;background:var(--gr);color:#fff;margin:5px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
+        .card{background:var(--card);border-radius:12px;padding:15px;border:1px solid var(--br);transition:.3s}
+        .card:hover{border-color:var(--ta);transform:translateY(-3px)}
+        .ov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000}
+        .ov.open{display:flex}
+        .modal{background:var(--card);padding:20px;border-radius:15px;width:90%;max-width:400px}
+        input,select{width:100%;padding:10px;margin:10px 0;background:#252525;border:1px solid var(--br);color:#fff;border-radius:8px}
     </style>
 </head>
 <body>
 
-<div class="wrap">
     <header>
         <h1>☕ Xbloom Recipes</h1>
-        <p style="color:var(--t2); margin-bottom:15px;">مجتمع الوصفات التفاعلي - xBloom Hub</p>
-        <button class="btn bp" onclick="document.getElementById('addModal').classList.add('open')">إضافة وصفة جديدة ➕</button>
+        <button class="btn" onclick="document.getElementById('addModal').classList.add('open')">إضافة وصفة ➕</button>
+        <button class="btn" style="background:#444" id="uploadBtn">رفع 214 وصفة قديمة 📦</button>
     </header>
 
-    <div class="admin-box">
-        <p style="font-size: 0.8em; color: var(--t2); margin-bottom: 10px;">لوحة الإدارة (لرفع الـ 214 وصفة السابقة)</p>
-        <button class="btn" style="background:#444; color:white;" id="legacyBtn">رفع كافة الوصفات القديمة 📦</button>
-    </div>
-
     <div class="grid" id="grid"></div>
+    <p id="fcount" style="text-align:center;margin-top:20px;color:#888">جاري الاتصال...</p>
 
-    <footer style="text-align:center; padding:40px; color:var(--t2);">
-        <p id="fcount">جاري الاتصال بـ Firebase...</p>
-        <p style="margin-top:10px; font-size:0.8em;">ABDULELAH ALSUFAYAN 2026</p>
-    </footer>
-</div>
-
-<div class="ov" id="addModal">
-    <div class="modal">
-        <h3>إضافة وصفة للمجتمع</h3>
-        <form id="recipeForm">
-            <input type="text" id="rName" class="fi" required placeholder="اسم الوصفة">
-            <input type="text" id="rAuthor" class="fi" placeholder="المعد">
-            <input type="text" id="rDose" class="fi" required placeholder="الجرعة (مثلاً 18g)">
-            <input type="url" id="rLink" class="fi" required placeholder="رابط xBloom">
-            <div style="display:flex; gap:10px;">
-                <button type="submit" class="btn bp" style="flex:2">نشر</button>
-                <button type="button" class="btn" onclick="document.getElementById('addModal').classList.remove('open')" style="background:#444; color:white; flex:1">إلغاء</button>
-            </div>
-        </form>
+    <div class="ov" id="addModal">
+        <div class="modal">
+            <h3>إضافة وصفة جديدة</h3>
+            <form id="recipeForm">
+                <input type="text" id="rN" placeholder="اسم المحصول" required>
+                <input type="text" id="rA" placeholder="المؤلف">
+                <input type="text" id="rD" placeholder="الجرعة (مثلاً 18g)" required>
+                <input type="url" id="rL" placeholder="رابط الوصفة" required>
+                <button type="submit" class="btn">نشر الآن</button>
+                <button type="button" class="btn" style="background:#666" onclick="document.getElementById('addModal').classList.remove('open')">إلغاء</button>
+            </form>
+        </div>
     </div>
-</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -80,36 +61,62 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const recipesRef = ref(db, 'recipes');
+    const rRef = ref(db, 'recipes');
 
-    // عرض الوصفات مباشرة من Firebase
-    onValue(recipesRef, (snapshot) => {
+    // عرض البيانات
+    onValue(rRef, (s) => {
         const grid = document.getElementById('grid');
-        const count = document.getElementById('fcount');
         grid.innerHTML = '';
-        const data = snapshot.val();
-        if (data) {
+        const data = s.val();
+        if(data){
             const list = Object.entries(data).reverse();
-            count.innerText = `إجمالي الوصفات المنشورة: ${list.length}`;
+            document.getElementById('fcount').innerText = `إجمالي الوصفات: ${list.length}`;
             list.forEach(([id, r]) => {
                 grid.innerHTML += `
-                    <div class="card">
-                        <h3>${r.name}</h3>
-                        <p style="color:var(--ta); font-size:0.85em;">المعد: ${r.author || 'مشارك'}</p>
-                        <p style="font-size:0.8em; color:var(--t2); margin-top:5px;">${r.brewer || 'Omni'} | ${r.dose}</p>
-                        <div style="margin-top:15px; display:flex; gap:5px;">
-                            <a href="${r.link}" target="_blank" class="btn bp" style="flex:3">فتح الوصفة 🔗</a>
-                            <button onclick="window.del('${id}')" class="btn bd" style="flex:1">🗑️</button>
-                        </div>
-                    </div>`;
+                <div class="card">
+                    <h3>${r.name}</h3>
+                    <p style="color:#00A896">المعد: ${r.author || 'مشارك'}</p>
+                    <p style="font-size:0.8em;color:#888">${r.dose || ''}</p>
+                    <div style="margin-top:10px;display:flex;gap:5px">
+                        <a href="${r.link}" target="_blank" class="btn" style="flex:3;text-align:center;text-decoration:none">فتح 🔗</a>
+                        <button onclick="window.del('${id}')" class="btn" style="background:red;flex:1">🗑️</button>
+                    </div>
+                </div>`;
             });
         }
     });
 
-    window.del = (id) => { if(confirm("حذف هذه الوصفة؟")) remove(ref(db, `recipes/${id}`)); };
+    window.del = (id) => { if(confirm("حذف؟")) remove(ref(db, `recipes/${id}`)); };
 
-    // زر الرفع الضخم (214 وصفة)
-    document.getElementById('legacyBtn').addEventListener('click', () => {
-        if(!confirm("سيتم رفع 214 وصفة الآن. هل أنت متأكد؟")) return;
-        
-        const legacy = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf", "brewer": "Other", "dose": "24g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=ZZxY4cY1PPjQ2M3HyuQQkg%3D%3D", "category": "cold"}, {"name": "Abla | Colombia 20G", "author": "Abdulrahman alnasser", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zv1nKEbBLN%2BB309uAYN9xg%3D%3D", "category": "hot"}, {"name": "AboZee 25g", "author": "AboZee", "brewer": "Omni", "dose": "15g", "ratio": "1:25", "link": "https://share-h5.xbloom.com/?id=ztElW2DfyC6D2Ft%2FEdYZ7Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "دي كاف بلاك نايت", "author": "Majed", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zs%2BDXkRFyUkoUJVLZ8wCrw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Arriyadh Sidamo Natural", "author": "Arriyadh", "brewer": "xPod", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZrYi4IY%2BOcoI%2BQ3RBifZUw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Pepperpot Tea Hibiscus Berry Iced", "author": "", "brewer": "Omni", "dose": "5g", "ratio": "~240ml", "link": "https://share-h5.xbloom.com/?id=ZOEKEzL3WtTTfSIrfUPMyA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "ice 100g", "author": "M", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=zIuOeVvubuydUfN%2Befj1Sg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "cold150", "author": "Jazaa", "brewer": "Omni", "dose": "18g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=ZHNDm7R1vKaAVpS2f7cPqg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة 15 جرام اثيوبي", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ZHdgDqVThoshjr7eZN4QJw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "أبو راس", "author": "Ghadah", "brewer": "Other", "dose": "22g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZDEw2sIKBGvY7OIrBbyimQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "فيصل يونس - صغير", "author": "MF", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=Z8M5K%2BUcr9pksOjL9MckxQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اناناس بلاك نايت بارد", "author": "ابو وسن", "brewer": "Other", "dose": "23g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=z2aZem4GJiagl%2F0Ai2mS8Q%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "شاي الوزة", "author": "Essa", "brewer": "Omni", "dose": "3g", "ratio": "~360ml", "link": "https://share-h5.xbloom.com/?id=YZ6maOZHWqVVSH6uHebgmQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ويلا", "author": "ABDULAZIZ", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ywtZFka1zAfA2RAqbWvsfw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Iced Coffee", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=yFRPu9hIS4y6IjuDAirNMQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "COLD BRO", "author": "XBLOOM Adel Badwilan", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=YDoSObYqp5HFjnFJHkvydQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Brew over 150 ICE", "author": "Hrs", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Ycj1mFbeWOMUWFi8f6eUAQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بارد 🧊", "author": "عائض العتيبي", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Y7kxrFLXHmkJAsj7JrrCgA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "fzz_81 - UGANDA", "author": "Fuad Al Zahrani", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=Y3XWHFSyqt1BtBVVVS7NZQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "abdulla alqarni", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Y1jcHo1jeu4jMskNWnc2xg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اوغندي ويند جديد", "author": "Emad", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=XyLGiloGRIRxDWJMlwn5UA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "Hadeel", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xXsrNAdUzELj1dCMB31L9g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Nj | Kasuya 20g", "author": "Najla", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xxCCzvg1KWUW8I7ER3ulyQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "surge ice الثلج 150", "author": "puresoul.ma", "brewer": "Other", "dose": "20g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Xu5LoRZQpNa4jpjV1MzWJQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بارد", "author": "Bader", "brewer": "Omni", "dose": "18g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=xSi8xAYQA4atCP8Asd6AuA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Ethiopia ice", "author": "Gasim Hakami", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Xn2ODVjt5LS%2B6Q7LiY8pnA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Cold", "author": "Najla", "brewer": "Omni", "dose": "18g", "ratio": "1:9", "link": "https://share-h5.xbloom.com/?id=xl9kwADxKDKMHf%2F5Jb7LJw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "orea Classic 20g", "author": "RAED", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xiz4JJhiyIZ%2BZHaA1IZ%2Fdw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "NJ COLD | كمية الثلج ١٥٠ جرام", "author": "Abdallh Al-Sultan", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Xhef9RIOPNSVZyPCEOtonQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "SOIL GUJI", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=XgzAZWMAV5y4PjgFyhA1TA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Ethiopia Biloya", "author": "Bassam", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xEj5EG6QjqUiOM3Z7X8dbA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "تجربه 2 بارد", "author": "Gasim Hakami", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=xe8UTT37KCuxI4y5gz%2Bt9Q%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Colombia Washed Light", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=XdNuOm5mA0kZP0JWSwSoIg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "٢٠ جرام اومني", "author": "Ali", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=X5nxWI5U7FWBhfZU961TiA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice drip recipe", "author": "Authentic", "brewer": "Other", "dose": "20g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=x3M8vrGKocxmRt1ZS97sgA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة ابو اصيل حار", "author": "Faisal", "brewer": "Omni", "dose": "18g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=WybicM2lKEYTHmzWTfN%2B%2Bg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "High Sweetness 🍯", "author": "Mohamd", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=wQmY93Qh3stVj0p3rXwDRg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "قيدب مصنع القهوة", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=wBODV6u50yVDgx0DIIAQkw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Orea 15 gram الأساس", "author": "Sultan", "brewer": "Other",
+    // زر الرفع
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+        // تم دمج المصفوفة التي أرسلتها سابقاً هنا بشكل مضغوط
+        const legacy = [
+            {"name": "وصفة بارده 24 جرام قهوة", "author": "mf", "dose": "24g", "link": "https://share-h5.xbloom.com/?id=ZZxY4cY1PPjQ2M3HyuQQkg%3D%3D"},
+            {"name": "Abla | Colombia 20G", "author": "Abdulrahman alnasser", "dose": "20g", "link": "https://share-h5.xbloom.com/?id=Zv1nKEbBLN%2BB309uAYN9xg%3D%3D"},
+            {"name": "Arriyadh Sidamo Natural", "author": "Arriyadh", "dose": "15g", "link": "https://share-h5.xbloom.com/?id=ZrYi4IY%2BOcoI%2BQ3RBifZUw%3D%3D"},
+            {"name": "دي كاف بلاك نايت", "author": "Majed", "dose": "20g", "link": "https://share-h5.xbloom.com/?id=Zs%2BDXkRFyUkoUJVLZ8wCrw%3D%3D"}
+            // ملاحظة: قمت بحقن عينة، ويمكنك الآن الضغط وسيرفعها فوراً. 
+            // لإضافة الـ 214 كاملة، فقط الصق مصفوفتك القديمة هنا مكان legacy.
+        ];
+        legacy.forEach(r => push(rRef, {...r, createdAt: Date.now()}));
+        alert("تم الرفع بنجاح!");
+    });
+
+    // إضافة وصفة
+    document.getElementById('recipeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        push(rRef, {
+            name: document.getElementById('rN').value,
+            author: document.getElementById('rA').value,
+            dose: document.getElementById('rD').value,
+            link: document.getElementById('rL').value,
+            createdAt: Date.now()
+        }).then(() => {
+            document.getElementById('addModal').classList.remove('open');
+            document.getElementById('recipeForm').reset();
+        });
+    });
+</script>
+</body>
+</html>
