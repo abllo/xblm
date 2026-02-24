@@ -120,6 +120,12 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 @media(min-width:768px){body{padding:20px}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}.card{padding:22px}}
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
+/* Sort tabs */
+.sort-wrap{margin-bottom:14px}
+.sort-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.sort-tab{padding:8px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
+.sort-tab:active{transform:scale(.96)}
+.sort-tab.on{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-color:transparent}
 </style>
 </head>
 <body>
@@ -150,6 +156,15 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     </div>
   </div>
 </div>
+<div class="sort-wrap">
+  <div class="flbl">&#x1F4CA; الترتيب:</div>
+  <div class="sort-tabs">
+    <button class="sort-tab on" onclick="setSort('default',this)">&#x1F4CB; الافتراضي</button>
+    <button class="sort-tab"   onclick="setSort('top',this)">&#x2B50; الأعلى تقييماً</button>
+    <button class="sort-tab"   onclick="setSort('newest',this)">&#x1F195; الأحدث إضافة</button>
+    <button class="sort-tab"   onclick="setSort('oldest',this)">&#x1F553; الأقدم إضافة</button>
+  </div>
+</div>
 <div class="ppbar">
   <label>عرض:</label>
   <select onchange="setPP(this.value)">
@@ -172,7 +187,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="toast" id="toast"></div>
 
 <!-- FAB زر عائم -->
-<button class="add-fab" onclick="openAddModal()" title="أضف وصفة">&#x2795;</button>
+<button class="add-fab" onclick="openAddModal()" title="أضافة وصفة">&#x2795;</button>
 
 <!-- Modal: Add Recipe -->
 <div class="ov" id="addOv">
@@ -184,7 +199,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   <form class="mf" onsubmit="submitRecipe(event)">
     <div class="fr2">
       <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم 15g"></div>
-      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="اسم مالك الوصفة"></div>
+      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="  اسم مالك الوصفة "></div>
     </div>
     <div class="fr2">
       <div class="fg"><label>المحضّر *</label>
@@ -211,7 +226,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
         <input class="fi" type="number" id="rIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
         <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
       </div>
-      <div style="font-size:.75em;color:var(--t2);margin-top:5px">كمية الثلج التي تستخدمها في هذه الوصفة</div>
+      <div style="font-size:.75em;color:var(--t2);margin-top:5px">كمية الثلج المطلوبة في هذه الوصفة</div>
     </div>
     <div class="fg">
       <label>رابط الوصفة من xBloom *</label>
@@ -237,6 +252,7 @@ const INIT = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf
 const CKW=['بارد','ثلج','ice','🧊','iced','الثلج','cold','باردة','مثلج','بارده','مثلجة','مثلجه'];
 const SKW=['غسيل','ترطيب','سيرفر','غسل','server','cleaning','wash'];
 let RR=[],FAV=new Set(),BREW={},RATINGS={},USER_RATINGS={};
+let SORT='default';
 let fTemp='all',fBrew='all',Q='',PAGE=1,PP=24;
 function str(v){return v==null?'':String(v);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -271,6 +287,12 @@ function updateCounts(){
   setEl('bAll',t);setEl('bOmni',o);setEl('bXPod',x);setEl('bOther',ot);
   setEl('fcount','الوصفات: '+t);
 }
+window.setSort=function(s,btn){
+  SORT=s;
+  document.querySelectorAll('.sort-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  PAGE=1;render();
+};
 window.setF=function(type,val,btn){
   if(type==='temp'){fTemp=val;document.getElementById('tempG').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));}
   else{fBrew=val;document.getElementById('brewG').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));}
@@ -278,12 +300,30 @@ window.setF=function(type,val,btn){
 };
 window.setPP=function(v){PP=parseInt(v);PAGE=1;render();};
 window.goPage=function(p){PAGE=p;render();window.scrollTo({top:0,behavior:'smooth'});};
-function getList(){return RR.filter(r=>{
-  if(fTemp!=='all'&&(r.category||'hot')!==fTemp)return false;
-  if(fBrew!=='all'&&(r.brewer||'')!==fBrew)return false;
-  if(Q){const t=(str(r.name)+' '+str(r.author)+' '+str(r.dose)+' '+str(r.ratio)).toLowerCase();if(!t.includes(Q))return false;}
-  return true;
-});}
+function getList(){
+  let list=RR.filter(r=>{
+    if(fTemp!=='all'&&(r.category||'hot')!==fTemp)return false;
+    if(fBrew!=='all'&&(r.brewer||'')!==fBrew)return false;
+    if(Q){const t=(str(r.name)+' '+str(r.author)+' '+str(r.dose)+' '+str(r.ratio)).toLowerCase();if(!t.includes(Q))return false;}
+    return true;
+  });
+  if(SORT==='top'){
+    list.sort((a,b)=>{
+      const ra=RATINGS[ratingKey(a.link)]||{total:0,count:0};
+      const rb=RATINGS[ratingKey(b.link)]||{total:0,count:0};
+      const avgA=ra.count>0?ra.total/ra.count:0;
+      const avgB=rb.count>0?rb.total/rb.count:0;
+      // ترتيب: أعلى متوسط أولاً، وعند التعادل الأكثر تقييماً أولاً
+      if(avgB!==avgA)return avgB-avgA;
+      return rb.count-ra.count;
+    });
+  } else if(SORT==='newest'){
+    list.sort((a,b)=>(b.addedAt||0)-(a.addedAt||0));
+  } else if(SORT==='oldest'){
+    list.sort((a,b)=>(a.addedAt||0)-(b.addedAt||0));
+  }
+  return list;
+}
 function render(){
   const list=getList();const grid=document.getElementById('grid');
   if(!list.length){grid.innerHTML='<div class="empty"><h2>لا توجد نتائج</h2><p style="color:var(--t2)">جرّب تغيير الفلتر أو كلمة البحث</p></div>';document.getElementById('pgn').innerHTML='';document.getElementById('ppinfo').innerHTML='لا توجد نتائج';return;}
