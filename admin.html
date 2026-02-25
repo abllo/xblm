@@ -576,18 +576,18 @@ window.resetAllRatings = function(){
   document.getElementById('confirmOk').onclick=()=>{
     ov.classList.remove('open');
     set(ref(db,'ratings'),null)
-      .then(()=>toast('تم تصفير جميع التقييمات ✅'))
+      .then(()=>toast('تم حذف جميع التقييمات ✅'))
       .catch(err=>toast('خطأ: '+err.message,'terr'));
   };
 };
 
 window.resetOneRating = function(key,name){
-  document.getElementById('confirmMsg').textContent='تصفير تقييمات: '+name+'؟';
+  document.getElementById('confirmMsg').textContent='حذف تقييمات: '+name+'؟';
   const ov=document.getElementById('confirmOv'); ov.classList.add('open');
   document.getElementById('confirmOk').onclick=()=>{
     ov.classList.remove('open');
     remove(ref(db,'ratings/'+key))
-      .then(()=>toast('تم تصفير التقييم ✅'))
+      .then(()=>toast('تم حذف التقييم ✅'))
       .catch(err=>toast('خطأ: '+err.message,'terr'));
   };
 };
