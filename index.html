@@ -163,8 +163,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   <div class="sort-tabs">
     <button class="sort-tab on" onclick="setSort('default',this)">&#x1F4CB; الافتراضي</button>
     <button class="sort-tab"   onclick="setSort('top',this)">&#x2B50; الأعلى تقييماً</button>
-    <button class="sort-tab"   onclick="setSort('newest',this)">&#x1F195; الأحدث إضافة</button>
-    <button class="sort-tab"   onclick="setSort('oldest',this)">&#x1F553; الأقدم إضافة</button>
+    <button class="sort-tab"   onclick="setSort('newest',this)">&#x1F195; المضافة حديثاً</button>
   </div>
 </div>
 <div class="ppbar">
@@ -180,7 +179,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="grid" id="grid"></div>
 <div class="pgn" id="pgn"></div>
 <footer>
-  <div class="fc" id="fcount">عدد الوصفات: 0</div>
+  <div class="fc" id="fcount">عدد الوصفات في المجتمع: 0</div>
   <p>&#169; 2026 Xbloom Recipes</p>
   <p style="margin-top:6px;font-size:.8em">جميع حقوق الوصفات محفوظة لمنشئيها</p>
   <p style="margin-top:5px;font-size:.75em;color:#3a3a3a">ABDULELAH ALSUFAYAN</p>
@@ -200,7 +199,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </div>
   <form class="mf" onsubmit="submitRecipe(event)">
     <div class="fr2">
-      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم 15g"></div>
+      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم g"></div>
       <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="  اسم مالك الوصفة "></div>
     </div>
     <div class="fr2">
@@ -214,16 +213,16 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       </div>
       <div class="fg"><label>الجرعة *</label><input class="fi" id="rD" required placeholder="15g"></div>
     </div>
-    <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16"></div>
+    <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16 - 225ML"></div>
     <div class="fg"><label>نوع التحضير *</label>
       <div class="tsel">
-        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; وصفة حار</label></div>
-        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة بارد</label></div>
-        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل وترطيب سيرفر</label></div>
+        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; وصفة حارة</label></div>
+        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة باردة</label></div>
+        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل الفلتر </label></div>
       </div>
     </div>
     <div class="fg" id="iceField" style="display:none;animation:fi .3s ease">
-      <label style="color:#48dbfb">&#x1F9CA; وزن الثلج المضاف *</label>
+      <label style="color:#48dbfb">&#x1F9CA; وزن الثلج في الكوب *</label>
       <div style="position:relative">
         <input class="fi" type="number" id="rIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
         <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
