@@ -1358,12 +1358,12 @@ function renderComments(){
       <div class="cmt-body">${esc(c.text||'')}</div>
       ${c.adminReply?`<div class="cmt-reply"><div class="cmt-reply-lbl">↩️ رد المطور</div>${esc(c.adminReply)}</div>`:''}
       <div class="cmt-acts">
-        ${!c.approved?`<button class="btn bsm bg" onclick="approveComment('${c._recipeKey}','${c._key}')">✅ قبول</button>`:'<button class="btn bsm bgray" onclick="unapproveComment(''+c._recipeKey+'',''+c._key+'')">↩️ إلغاء قبول</button>'}
-        <button class="btn bsm bpu" onclick="openReply('${c._recipeKey}','${c._key}')">↩️ رد</button>
-        <button class="btn bsm bw" onclick="pinComment('${c._recipeKey}','${c._key}','${c.pinned}')">${c.pinned?'📌 مثبت':'📌 تثبيت'}</button>
-        <button class="btn bsm bd" onclick="deleteComment('${c._recipeKey}','${c._key}')">🗑️</button>
-      </div>
-    </div>`;
+                ${c.approved ? `<button class="btn bsm bgray" onclick="unapproveComment('${c.recipeKey}', '${c.key}')">↩️ إلغاء قبول</button>` : `<button class="btn bsm bg" onclick="approveComment('${c.recipeKey}', '${c.key}')">✅ قبول</button>`}
+                <button class="btn bsm bpu" onclick="openReply('${c.recipeKey}', '${c.key}')">↩️ رد</button>
+                <button class="btn bsm bw" onclick="pinComment('${c.recipeKey}', '${c.key}', ${c.pinned})">${c.pinned ? '📌 مثبت' : '📌 تثبيت'}</button>
+                <button class="btn bsm bd" onclick="deleteComment('${c.recipeKey}', '${c.key}')">🗑️</button>
+            </div>
+        </div>`;
   }).join('');
 }
 
