@@ -433,16 +433,13 @@ const INIT = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ════ CREDENTIALS (SHA-256 hashed) ════
-// user: abdulelah → hash
-// pass: 490238 → hash
-const CRED_USER_HASH = 'd10da9a9c0206bbb2d4ede31fe856cf89614ddfe3747c652519e4c29c9c5b447';
-const CRED_PASS_HASH = 'ca9d267904af0ed9bacd2625f5b629dfafa649bf7678368db635c5dc34c50f97';
+// ════ CREDENTIALS (obfuscated) ════
+// user: abdulelah | pass: 490238
+const _CU = 'YWJkdWxlbGFo';
+const _CP = 'NDkwMjM4';
+function _dc(s){ try{ return atob(s); }catch(e){ return ''; } }
 
-async function sha256(msg) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+async function sha256(msg) { return msg; } // fallback (unused)
 
 const FB_CFG = {
   apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
@@ -478,23 +475,17 @@ function setFbStatus(state, msg) {
 }
 
 // ════ AUTH ════
-window.doLogin = async function() {
+window.doLogin = function() {
   const u = document.getElementById('lu').value.trim();
   const p = document.getElementById('lp').value.trim();
   if(!u || !p) { document.getElementById('lerr').textContent = 'يرجى إدخال البيانات ❗'; return; }
-  document.getElementById('lerr').textContent = '...';
-  try {
-    const [uh, ph] = await Promise.all([sha256(u), sha256(p)]);
-    if(uh === CRED_USER_HASH && ph === CRED_PASS_HASH) {
-      sessionStorage.setItem('xba','1');
-      document.getElementById('loginScreen').style.display='none';
-      document.getElementById('adminPanel').style.display='block';
-      initFirebase();
-    } else {
-      document.getElementById('lerr').textContent = 'بيانات الدخول غير صحيحة ❌';
-    }
-  } catch(e) {
-    document.getElementById('lerr').textContent = 'خطأ: ' + e.message;
+  if(u === _dc(_CU) && p === _dc(_CP)) {
+    sessionStorage.setItem('xba','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    initFirebase();
+  } else {
+    document.getElementById('lerr').textContent = 'بيانات الدخول غير صحيحة ❌';
   }
 };
 window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload(); };
