@@ -774,46 +774,56 @@ window.saveAdsSetting = function(){
 };
 
 // ════ PINNED RECIPES ════
+let PINNED_SEARCH_RESULTS = [];
+
 window.searchPinnedRecipe = function(){
   const q=document.getElementById('pinnedSearch').value.toLowerCase().trim();
   const res=document.getElementById('pinnedSearchResults');
-  if(q.length<2){ res.innerHTML=''; return; }
-  const found=ALL_RECIPES.filter(r=>str(r.name).toLowerCase().includes(q)||str(r.author).toLowerCase().includes(q)).slice(0,5);
-  if(!found.length){ res.innerHTML='<p style="color:var(--t2);font-size:.82em">لا توجد نتائج</p>'; return; }
-  res.innerHTML=found.map(r=>`<div class="pinned-recipe-card">
+  if(q.length<2){ res.innerHTML=''; PINNED_SEARCH_RESULTS=[]; return; }
+  PINNED_SEARCH_RESULTS=ALL_RECIPES.filter(r=>str(r.name).toLowerCase().includes(q)||str(r.author).toLowerCase().includes(q)).slice(0,5);
+  if(!PINNED_SEARCH_RESULTS.length){ res.innerHTML='<p style="color:var(--t2);font-size:.82em">لا توجد نتائج</p>'; return; }
+  res.innerHTML=PINNED_SEARCH_RESULTS.map((r,i)=>`<div class="pinned-recipe-card">
     <div><div style="font-weight:700">${esc(str(r.name))}</div><div style="font-size:.8em;color:var(--t2)">${esc(str(r.author))} • ${str(r.brewer)}</div></div>
-    <button class="btn bp bsm" onclick="pinRecipe('${encodeURIComponent(JSON.stringify({name:r.name,author:r.author,brewer:r.brewer,link:r.link,category:r.category||'hot'}))}')" >📌 تثبيت</button>
+    <button class="btn bp bsm" onclick="pinRecipe(${i})">📌 تثبيت</button>
   </div>`).join('');
 };
 
-window.pinRecipe = function(encodedR){
+// Store pinned list globally for index-based unpin
+let CURRENT_PINNED = [];
+
+window.pinRecipe = function(idx){
   if(!db){ toast('Firebase غير متصل!','terr'); return; }
-  const r=JSON.parse(decodeURIComponent(encodedR));
+  const r = PINNED_SEARCH_RESULTS[idx];
+  if(!r) return;
   get(ref(db,'siteSettings/pinnedRecipes')).then(snap=>{
     const list=snap.val()||[];
     if(list.find(x=>x.link===r.link)){ toast('هذه الوصفة مثبتة بالفعل','twin'); return; }
-    list.unshift({...r, pinnedAt:Date.now()});
+    list.unshift({name:r.name,author:r.author,brewer:r.brewer,link:r.link,category:r.category||'hot', pinnedAt:Date.now()});
     set(ref(db,'siteSettings/pinnedRecipes'),list)
-      .then(()=>{ toast('تم تثبيت الوصفة ✅'); document.getElementById('pinnedSearch').value=''; document.getElementById('pinnedSearchResults').innerHTML=''; })
+      .then(()=>{ toast('تم تثبيت الوصفة ✅'); document.getElementById('pinnedSearch').value=''; document.getElementById('pinnedSearchResults').innerHTML=''; PINNED_SEARCH_RESULTS=[]; })
       .catch(err=>toast('خطأ: '+err.message,'terr'));
   });
 };
 
-window.unpinRecipe = function(link){
+window.unpinRecipe = function(idx){
   if(!db) return;
   get(ref(db,'siteSettings/pinnedRecipes')).then(snap=>{
-    const list=(snap.val()||[]).filter(r=>r.link!==link);
-    set(ref(db,'siteSettings/pinnedRecipes'),list).then(()=>toast('تم إلغاء التثبيت ✅'));
+    const list=snap.val()||[];
+    list.splice(idx,1);
+    set(ref(db,'siteSettings/pinnedRecipes'),list)
+      .then(()=>toast('تم إلغاء التثبيت ✅'))
+      .catch(err=>toast('خطأ: '+err.message,'terr'));
   });
 };
 
 function renderPinnedList(list){
+  CURRENT_PINNED=list||[];
   const el=document.getElementById('pinnedList');
   if(!list||!list.length){ el.innerHTML='<p style="color:var(--t2);font-size:.85em">لا توجد وصفات مثبتة</p>'; return; }
-  el.innerHTML=list.map(r=>`<div class="pinned-recipe-card">
+  el.innerHTML=list.map((r,i)=>`<div class="pinned-recipe-card">
     <span class="pin-icon">📌</span>
     <div style="flex:1"><div style="font-weight:700">${esc(str(r.name))}</div><div style="font-size:.8em;color:var(--t2)">${esc(str(r.author))} • ${str(r.brewer)}</div></div>
-    <button class="btn bsm bd" onclick="unpinRecipe('${encodeURIComponent(str(r.link))}')">❌ إلغاء التثبيت</button>
+    <button class="btn bsm bd" onclick="unpinRecipe(${i})">❌ إلغاء التثبيت</button>
   </div>`).join('');
 }
 

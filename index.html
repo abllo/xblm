@@ -155,8 +155,10 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .star-sel{font-size:26px;cursor:pointer;transition:.15s;line-height:1;filter:grayscale(1);opacity:.4}
 .star-sel.active{filter:none;opacity:1;transform:scale(1.15)}
 .star-sel:hover{filter:none;opacity:1}
-.comment-textarea{width:100%;padding:10px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:13px;font-family:inherit;resize:vertical;min-height:70px;margin-bottom:8px}
-.comment-textarea:focus{outline:none;border-color:var(--ta)}
+.comment-textarea,.comment-author-input{width:100%;padding:10px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:13px;font-family:inherit;margin-bottom:7px}
+.comment-textarea{resize:vertical;min-height:70px}
+.comment-textarea:focus,.comment-author-input:focus{outline:none;border-color:var(--ta)}
+.comment-textarea:disabled,.comment-author-input:disabled{opacity:.4;cursor:not-allowed}
 .comment-submit{padding:8px 16px;background:var(--gr);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
 .comment-submit:disabled{opacity:.5;cursor:not-allowed}
 .comments-list{margin-top:10px;display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto}
@@ -443,12 +445,13 @@ function cardHTML(r,i){
           <div class="stars-select" id="cstars-${rKey}">
             ${[1,2,3,4,5].map(n=>`<span class="star-sel ${myRating>=n?'active':''}" onclick="selectCommentStar('${rKey}',${n})" title="${n} نجوم">⭐</span>`).join('')}
           </div>
+          <input class="comment-textarea" id="cauthor-${rKey}" placeholder="اسمك (اختياري)" style="padding:8px 12px;margin-bottom:7px;min-height:unset;resize:none;border-radius:8px;font-size:13px" ${myRating===0?'disabled':''}>
           <textarea class="comment-textarea" id="ctxt-${rKey}" placeholder="${myRating===0?'قيّم الوصفة أولاً بالنجوم أعلاه':'اكتب تعليقك هنا...'}" ${myRating===0?'disabled':''}></textarea>
           <button class="comment-submit" onclick="submitComment('${rKey}')" id="csub-${rKey}" ${myRating===0?'disabled':''}>
             ✉️ نشر التعليق
           </button>
         </div>
-        <div class="comments-list" id="clist-${rKey}">جاري التحميل...</div>
+        <div class="comments-list" id="clist-${rKey}"><p style="color:var(--t2);font-size:.82em;text-align:center;padding:8px">جاري التحميل...</p></div>
       </div>
     </div>
   </div>`;
@@ -637,12 +640,17 @@ window.toggleComments = function(rKey, btn) {
   const isOpen = box.classList.contains('open');
   box.classList.toggle('open', !isOpen);
   if(!isOpen) {
-    // render comments
     const clist = document.getElementById('clist-' + rKey);
-    if(clist) renderCommentList(rKey, clist);
-    // Update count
-    const n = Object.keys(COMMENTS[rKey] || {}).length;
-    document.getElementById('ccount-' + rKey).textContent = '💬 ' + n + ' تعليق';
+    // Always fetch fresh from Firebase when opening
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js').then(({get, ref: fbRef}) => {
+      get(fbRef(db, 'comments/' + rKey)).then(snap => {
+        COMMENTS[rKey] = snap.val() || {};
+        if(clist) renderCommentList(rKey, clist);
+        const n = Object.keys(COMMENTS[rKey]).length;
+        const cnt = document.getElementById('ccount-' + rKey);
+        if(cnt) cnt.textContent = '💬 ' + n + ' تعليق';
+      }).catch(() => { if(clist) renderCommentList(rKey, clist); });
+    });
   }
 };
 
@@ -652,11 +660,21 @@ function renderCommentList(rKey, container) {
   arr.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
   if(!arr.length) { container.innerHTML = '<p style="color:var(--t2);font-size:.82em;text-align:center;padding:8px">لا توجد تعليقات بعد — كن الأول!</p>'; return; }
   container.innerHTML = arr.map(c => {
-    const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('ar-SA') : '';
-    const stars = '⭐'.repeat(c.rating||0);
+    const stars = '⭐'.repeat(Math.min(c.rating||0,5));
+    let dateStr = '';
+    if(c.createdAt) {
+      const d = new Date(c.createdAt);
+      const dateAr = d.toLocaleDateString('ar-SA', {year:'numeric',month:'short',day:'numeric'});
+      const timeAr = d.toLocaleTimeString('ar-SA', {hour:'2-digit',minute:'2-digit'});
+      dateStr = dateAr + ' — ' + timeAr;
+    }
     return `<div class="comment-item">
-      <div class="comment-meta">${c.author?'👤 '+esc(String(c.author))+' | ':''} 🕐 ${date}</div>
-      <div class="comment-rating">${stars}</div>
+      <div class="comment-meta">
+        <span style="color:var(--t1);font-weight:700">👤 ${esc(String(c.author||'زائر'))}</span>
+        <span style="margin:0 6px;color:var(--br)">|</span>
+        <span>🕐 ${dateStr}</span>
+      </div>
+      <div class="comment-rating">${stars} <span style="font-size:.78em;color:var(--t2)">(${c.rating||0}/5)</span></div>
       <div class="comment-text">${esc(String(c.text))}</div>
     </div>`;
   }).join('');
@@ -664,30 +682,39 @@ function renderCommentList(rKey, container) {
 
 window.selectCommentStar = function(rKey, n) {
   COMMENT_RATINGS[rKey] = n;
-  // Update stars UI
-  const stars = document.querySelectorAll(`#cstars-${rKey} .star-sel`);
+  const stars = document.querySelectorAll('#cstars-' + rKey + ' .star-sel');
   stars.forEach((s, i) => s.classList.toggle('active', i < n));
-  // Enable textarea and submit
   const txt = document.getElementById('ctxt-' + rKey);
   const sub = document.getElementById('csub-' + rKey);
+  const authorEl = document.getElementById('cauthor-' + rKey);
   if(txt) { txt.disabled = false; txt.placeholder = 'اكتب تعليقك هنا...'; }
+  if(authorEl) authorEl.disabled = false;
   if(sub) sub.disabled = false;
+  // Load comments when opening
+  const clist = document.getElementById('clist-' + rKey);
+  if(clist) renderCommentList(rKey, clist);
 };
 
 window.submitComment = function(rKey) {
   const txt = document.getElementById('ctxt-' + rKey);
   const sub = document.getElementById('csub-' + rKey);
+  const authorEl = document.getElementById('cauthor-' + rKey);
   const rating = COMMENT_RATINGS[rKey] || USER_RATINGS[rKey] || 0;
   if(!rating) { toast('يجب التقييم بالنجوم أولاً ⭐', 'terr'); return; }
   const text = txt ? txt.value.trim() : '';
-  if(!text) { toast('اكتب تعليقاً أولاً', 'terr'); return; }
+  if(text.length < 2) { toast('اكتب تعليقاً أولاً (حرفان على الأقل)', 'terr'); return; }
   if(sub) { sub.disabled=true; sub.textContent='⏳...'; }
-  const comment = { text, rating, createdAt: Date.now() };
+  const author = authorEl ? authorEl.value.trim() : '';
+  const comment = { text, rating, author: author || 'زائر', createdAt: Date.now() };
   push(ref(db, 'comments/' + rKey), comment)
     .then(() => {
       toast('تم نشر تعليقك ✅ شكراً!');
       if(txt) txt.value = '';
+      if(authorEl) authorEl.value = '';
       if(sub) { sub.disabled=false; sub.textContent='✉️ نشر التعليق'; }
+      // re-render comments list immediately
+      const clist = document.getElementById('clist-' + rKey);
+      if(clist && COMMENTS[rKey]) renderCommentList(rKey, clist);
     })
     .catch(err => {
       toast('خطأ: ' + err.message, 'terr');
