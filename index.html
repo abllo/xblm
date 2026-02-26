@@ -119,6 +119,52 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
 .spinning{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* ═══ ANNOUNCEMENT BAR ═══ */
+.anno-bar{padding:10px 16px;text-align:center;font-size:.88em;font-weight:700;position:relative;z-index:200;display:none}
+.anno-bar.show{display:block}
+.anno-bar.info{background:linear-gradient(135deg,#4A90E2,#357abd);color:#fff}
+.anno-bar.success{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000}
+.anno-bar.warning{background:linear-gradient(135deg,#ffd89b,#ff9a56);color:#000}
+.anno-bar.promo{background:linear-gradient(135deg,#f093fb,#f5576c,#00A896);color:#fff}
+.anno-close{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:inherit;font-size:1.2em;cursor:pointer;opacity:.7}
+.anno-close:hover{opacity:1}
+/* ═══ PROMO TICKER ═══ */
+.promo-ticker{background:var(--up);border-top:1px solid var(--br);border-bottom:1px solid var(--br);padding:8px 0;overflow:hidden;display:none;position:relative}
+.promo-ticker.show{display:block}
+.promo-ticker-inner{display:flex;gap:40px;animation:ticker 30s linear infinite;width:max-content}
+.promo-ticker-inner:hover{animation-play-state:paused}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.promo-item{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:.82em}
+.promo-item-code{font-family:monospace;font-weight:900;color:var(--ta);background:rgba(0,168,150,.12);padding:2px 8px;border-radius:6px;letter-spacing:1px}
+/* ═══ ADS INJECTION ═══ */
+.ads-container{margin:14px 0;text-align:center;min-height:90px;background:rgba(255,255,255,.02);border:1px dashed var(--br);border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.78em}
+.ads-container:empty{display:none}
+/* ═══ PINNED RECIPES ═══ */
+.pinned-banner{margin-bottom:16px}
+.pinned-label{font-size:.82em;color:#ffd700;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.card-pinned{border:2px solid rgba(255,215,0,.4)!important;background:linear-gradient(135deg,rgba(255,215,0,.05),rgba(255,165,0,.03))!important}
+.card-pinned::before{background:linear-gradient(135deg,#ffd700,#ff9a56)!important}
+.pinned-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;font-size:.72em;font-weight:700;background:linear-gradient(135deg,#ffd700,#ff9a56);color:#000;margin-bottom:8px}
+/* ═══ COMMENTS ═══ */
+.comments-section{margin-top:14px;border-top:1px solid var(--br);padding-top:12px}
+.comments-toggle{font-size:.82em;color:var(--ta);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:700;padding:0;display:flex;align-items:center;gap:4px}
+.comments-box{margin-top:10px;display:none}
+.comments-box.open{display:block}
+.rating-required-hint{font-size:.75em;color:var(--t2);margin-bottom:8px;padding:6px 10px;background:rgba(0,168,150,.08);border-radius:7px;border:1px solid rgba(0,168,150,.2)}
+.stars-select{display:flex;gap:4px;margin-bottom:10px;justify-content:center}
+.star-sel{font-size:26px;cursor:pointer;transition:.15s;line-height:1;filter:grayscale(1);opacity:.4}
+.star-sel.active{filter:none;opacity:1;transform:scale(1.15)}
+.star-sel:hover{filter:none;opacity:1}
+.comment-textarea{width:100%;padding:10px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:13px;font-family:inherit;resize:vertical;min-height:70px;margin-bottom:8px}
+.comment-textarea:focus{outline:none;border-color:var(--ta)}
+.comment-submit{padding:8px 16px;background:var(--gr);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.comment-submit:disabled{opacity:.5;cursor:not-allowed}
+.comments-list{margin-top:10px;display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto}
+.comment-item{background:var(--up);border-radius:8px;padding:10px 12px;border:1px solid var(--br)}
+.comment-meta{font-size:.72em;color:var(--t2);margin-bottom:4px}
+.comment-rating{color:#ffd700;font-size:.82em}
+.comment-text{font-size:.85em;line-height:1.5;margin-top:4px}
+
 @media(min-width:768px){body{padding:20px}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}.card{padding:22px}}
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
@@ -131,6 +177,15 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </style>
 </head>
 <body>
+<!-- ANNOUNCEMENT BAR -->
+<div class="anno-bar" id="annoBar">
+  <span id="annoText"></span>
+  <button class="anno-close" onclick="this.parentElement.classList.remove('show')" title="إغلاق">✕</button>
+</div>
+<!-- PROMO TICKER -->
+<div class="promo-ticker" id="promoTicker">
+  <div class="promo-ticker-inner" id="promoTickerInner"></div>
+</div>
 <div class="wrap">
 <header>
   <h1>&#x2615; Xbloom Recipes</h1>
@@ -176,13 +231,20 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </select>
   <div class="ppinfo" id="ppinfo">جاري التحميل...</div>
 </div>
+<!-- ADS TOP INJECTION -->
+<div class="ads-container" id="adsTopContainer"></div>
+<!-- PINNED RECIPES -->
+<div class="pinned-banner" id="pinnedBanner" style="display:none">
+  <div class="pinned-label">📌 وصفات مثبتة</div>
+  <div class="grid" id="pinnedGrid"></div>
+</div>
 <div class="grid" id="grid"></div>
 <div class="pgn" id="pgn"></div>
-<footer>
+<footer id="siteFooter">
   <div class="fc" id="fcount">عدد الوصفات في المجتمع: 0</div>
-  <p>&#169; 2026 Xbloom Recipes</p>
-  <p style="margin-top:6px;font-size:.8em">جميع حقوق الوصفات محفوظة لمنشئيها</p>
-  <p style="margin-top:5px;font-size:.75em;color:#3a3a3a">ABDULELAH ALSUFAYAN</p>
+  <p id="footerCopy">&#169; 2026 Xbloom Recipes</p>
+  <p id="footerSub" style="margin-top:6px;font-size:.8em">جميع حقوق الوصفات محفوظة لمنشئيها</p>
+  <p id="footerDev" style="margin-top:5px;font-size:.75em;color:#3a3a3a">ABDULELAH ALSUFAYAN</p>
 </footer>
 </div>
 <div class="toast" id="toast"></div>
@@ -243,7 +305,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, push, runTransaction, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",projectId:"xbloom-recipes-hub"};
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
@@ -371,6 +433,24 @@ function cardHTML(r,i){
       </div>
     </div>
     <div class="cacts"><a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm">فتح الوصفة في xBloom</a></div>
+    <div class="comments-section">
+      <button class="comments-toggle" onclick="toggleComments('${rKey}',this)">
+        💬 <span id="ccount-${rKey}">التعليقات</span>
+      </button>
+      <div class="comments-box" id="cbox-${rKey}">
+        ${myRating===0?'<div class="rating-required-hint">⭐ يجب التقييم أولاً قبل كتابة تعليق</div>':''}
+        <div style="margin-bottom:10px">
+          <div class="stars-select" id="cstars-${rKey}">
+            ${[1,2,3,4,5].map(n=>`<span class="star-sel ${myRating>=n?'active':''}" onclick="selectCommentStar('${rKey}',${n})" title="${n} نجوم">⭐</span>`).join('')}
+          </div>
+          <textarea class="comment-textarea" id="ctxt-${rKey}" placeholder="${myRating===0?'قيّم الوصفة أولاً بالنجوم أعلاه':'اكتب تعليقك هنا...'}" ${myRating===0?'disabled':''}></textarea>
+          <button class="comment-submit" onclick="submitComment('${rKey}')" id="csub-${rKey}" ${myRating===0?'disabled':''}>
+            ✉️ نشر التعليق
+          </button>
+        </div>
+        <div class="comments-list" id="clist-${rKey}">جاري التحميل...</div>
+      </div>
+    </div>
   </div>`;
 }
 function renderPgn(total){
@@ -450,6 +530,171 @@ window.rate=function(rKey,s,idx){
 
 window.toggleFav=function(idx){const link=RR[idx].link;if(FAV.has(link)){FAV.delete(link);toast('تم الإزالة');}else{FAV.add(link);toast('أضيفت للمفضلة 💙');}saveLocal();render();};
 window.shareR=function(idx){const link=RR[idx].link;if(navigator.share)navigator.share({title:'وصفة xBloom',url:link}).catch(()=>{});else{navigator.clipboard.writeText(link);toast('تم نسخ الرابط 🔗');}};
+
+// ════ SITE SETTINGS LOADER ════
+const settingsRef2 = ref(db, 'siteSettings');
+const commentsRef2 = ref(db, 'comments');
+
+onValue(settingsRef2, snap => {
+  const s = snap.val() || {};
+  
+  // Announcement bar
+  const bar = document.getElementById('annoBar');
+  if(s.annoEnabled && s.annoText) {
+    document.getElementById('annoText').textContent = s.annoText;
+    bar.className = 'anno-bar show ' + (s.annoType || 'info');
+  } else {
+    bar.classList.remove('show');
+  }
+  
+  // Promo ticker
+  const ticker = document.getElementById('promoTicker');
+  const tickerInner = document.getElementById('promoTickerInner');
+  if(s.promoBarEnabled && s.promoCodes && s.promoCodes.length) {
+    const items = [...s.promoCodes, ...s.promoCodes].map(p =>
+      `<span class="promo-item">🎫 <strong>${esc(String(p.name))}</strong>: <span class="promo-item-code">${esc(String(p.code))}</span> ${p.desc ? '— '+esc(String(p.desc)) : ''}</span>`
+    ).join('');
+    tickerInner.innerHTML = items;
+    ticker.classList.add('show');
+  } else {
+    ticker.classList.remove('show');
+  }
+  
+  // Footer
+  if(s.footerCopy) document.getElementById('footerCopy').textContent = s.footerCopy;
+  if(s.footerSub) document.getElementById('footerSub').textContent = s.footerSub;
+  if(s.footerDev) document.getElementById('footerDev').textContent = s.footerDev;
+  
+  // Site title
+  if(s.siteTitle) document.title = s.siteTitle;
+  if(s.siteSubtitle) { const el=document.querySelector('.sub'); if(el) el.textContent=s.siteSubtitle; }
+  
+  // AdSense injection
+  const adsTop = document.getElementById('adsTopContainer');
+  if(s.adsEnabled && s.adsCode) {
+    if(s.adsPosition === 'top' || !s.adsPosition) {
+      adsTop.innerHTML = s.adsCode;
+      // Execute scripts
+      adsTop.querySelectorAll('script').forEach(old => {
+        const s2 = document.createElement('script');
+        s2.textContent = old.textContent;
+        [...old.attributes].forEach(a => s2.setAttribute(a.name, a.value));
+        old.parentNode.replaceChild(s2, old);
+      });
+    }
+  } else {
+    adsTop.innerHTML = '';
+  }
+  
+  // Pinned recipes
+  const pinnedBanner = document.getElementById('pinnedBanner');
+  const pinnedGrid = document.getElementById('pinnedGrid');
+  if(s.pinnedRecipes && s.pinnedRecipes.length) {
+    pinnedBanner.style.display = 'block';
+    pinnedGrid.innerHTML = s.pinnedRecipes.map((r, i) => {
+      const rKey = ratingKey(r.link || '');
+      const rd = RATINGS[rKey] || {total:0,count:0};
+      const avg = rd.count > 0 ? rd.total/rd.count : 0;
+      const cat = r.category || 'hot';
+      const cLbl = cat==='cold'?'بارد 🧊':cat==='server'?'غسيل':'حار 🔥';
+      const bTag = r.brewer==='Omni'?'to':r.brewer==='xPod'?'tx':'tth';
+      const cTag = cat==='cold'?'tc':cat==='server'?'ts':'th';
+      return `<div class="card card-pinned ani">
+        <div class="pinned-badge">📌 مثبتة</div>
+        <div class="ch"><h3 class="cn">${esc(String(r.name||''))}</h3></div>
+        ${r.author ? `<div class="cauth">بواسطة ${esc(String(r.author))}</div>` : ''}
+        <div class="ctags"><span class="tag ${bTag}">${esc(String(r.brewer||''))}</span><span class="tag ${cTag}">${cLbl}</span></div>
+        ${avg>0?`<div class="rinfo" style="justify-content:center;margin-bottom:10px"><span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rd.count} تقييم</span></div>`:''}
+        <div class="cacts"><a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm">فتح الوصفة في xBloom</a></div>
+      </div>`;
+    }).join('');
+  } else {
+    pinnedBanner.style.display = 'none';
+  }
+}, err => { console.warn('settings:', err); });
+
+// ════ COMMENTS SYSTEM ════
+let COMMENTS = {};
+let COMMENT_RATINGS = {}; // per-recipe selected star for comment
+
+onValue(commentsRef2, snap => {
+  COMMENTS = {};
+  snap.forEach(child => { COMMENTS[child.key] = child.val(); });
+  // Update comment counts in open boxes
+  Object.keys(COMMENTS).forEach(rKey => {
+    const cnt = document.getElementById('ccount-' + rKey);
+    if(cnt) {
+      const n = Object.keys(COMMENTS[rKey] || {}).length;
+      cnt.textContent = '💬 ' + n + ' تعليق';
+    }
+    const clist = document.getElementById('clist-' + rKey);
+    if(clist) renderCommentList(rKey, clist);
+  });
+}, err => { console.warn('comments:', err); });
+
+window.toggleComments = function(rKey, btn) {
+  const box = document.getElementById('cbox-' + rKey);
+  const isOpen = box.classList.contains('open');
+  box.classList.toggle('open', !isOpen);
+  if(!isOpen) {
+    // render comments
+    const clist = document.getElementById('clist-' + rKey);
+    if(clist) renderCommentList(rKey, clist);
+    // Update count
+    const n = Object.keys(COMMENTS[rKey] || {}).length;
+    document.getElementById('ccount-' + rKey).textContent = '💬 ' + n + ' تعليق';
+  }
+};
+
+function renderCommentList(rKey, container) {
+  const items = COMMENTS[rKey] || {};
+  const arr = Object.values(items).filter(c => c && c.text);
+  arr.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  if(!arr.length) { container.innerHTML = '<p style="color:var(--t2);font-size:.82em;text-align:center;padding:8px">لا توجد تعليقات بعد — كن الأول!</p>'; return; }
+  container.innerHTML = arr.map(c => {
+    const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('ar-SA') : '';
+    const stars = '⭐'.repeat(c.rating||0);
+    return `<div class="comment-item">
+      <div class="comment-meta">${c.author?'👤 '+esc(String(c.author))+' | ':''} 🕐 ${date}</div>
+      <div class="comment-rating">${stars}</div>
+      <div class="comment-text">${esc(String(c.text))}</div>
+    </div>`;
+  }).join('');
+}
+
+window.selectCommentStar = function(rKey, n) {
+  COMMENT_RATINGS[rKey] = n;
+  // Update stars UI
+  const stars = document.querySelectorAll(`#cstars-${rKey} .star-sel`);
+  stars.forEach((s, i) => s.classList.toggle('active', i < n));
+  // Enable textarea and submit
+  const txt = document.getElementById('ctxt-' + rKey);
+  const sub = document.getElementById('csub-' + rKey);
+  if(txt) { txt.disabled = false; txt.placeholder = 'اكتب تعليقك هنا...'; }
+  if(sub) sub.disabled = false;
+};
+
+window.submitComment = function(rKey) {
+  const txt = document.getElementById('ctxt-' + rKey);
+  const sub = document.getElementById('csub-' + rKey);
+  const rating = COMMENT_RATINGS[rKey] || USER_RATINGS[rKey] || 0;
+  if(!rating) { toast('يجب التقييم بالنجوم أولاً ⭐', 'terr'); return; }
+  const text = txt ? txt.value.trim() : '';
+  if(!text) { toast('اكتب تعليقاً أولاً', 'terr'); return; }
+  if(sub) { sub.disabled=true; sub.textContent='⏳...'; }
+  const comment = { text, rating, createdAt: Date.now() };
+  push(ref(db, 'comments/' + rKey), comment)
+    .then(() => {
+      toast('تم نشر تعليقك ✅ شكراً!');
+      if(txt) txt.value = '';
+      if(sub) { sub.disabled=false; sub.textContent='✉️ نشر التعليق'; }
+    })
+    .catch(err => {
+      toast('خطأ: ' + err.message, 'terr');
+      if(sub) { sub.disabled=false; sub.textContent='✉️ نشر التعليق'; }
+    });
+};
+
 // Boot
 loadLocal();
 mergeData([]);
