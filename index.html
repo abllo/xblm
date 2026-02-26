@@ -233,7 +233,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <button class="ftab on"  onclick="setF('temp','all',this)"><span class="cnt" id="nAll">0</span> الكل</button>
       <button class="ftab"     onclick="setF('temp','hot',this)"><span class="cnt" id="nHot">0</span> &#x1F525; وصفات حارة</button>
       <button class="ftab"     onclick="setF('temp','cold',this)"><span class="cnt" id="nCold">0</span> &#x1F9CA; وصفات باردة</button>
-      <button class="ftab"     onclick="setF('temp','server',this)"><span class="cnt" id="nSrv">0</span> غسيل وترطيب السيرفر</button>
+      <button class="ftab"     onclick="setF('temp','server',this)"><span class="cnt" id="nSrv">0</span> غسيل وترطيب الفلتر</button>
     </div>
   </div>
   <div class="fsec">
@@ -465,7 +465,7 @@ function cardHTML(r,i){
   const idx=RR.indexOf(r);
   const cat=r.category||'hot',bTag=r.brewer==='Omni'?'to':r.brewer==='xPod'?'tx':'tth';
   const cTag=cat==='cold'?'tc':cat==='server'?'ts':'th';
-  const cLbl=cat==='cold'?'بارد 🧊':cat==='server'?'غسيل وترطيب سيرفر':'حار 🔥';
+  const cLbl=cat==='cold'?'بارد 🧊':cat==='server'?غسيل الفلتر':'حار 🔥';
   const rKey=ratingKey(r.link);
   const rd=RATINGS[rKey]||{total:0,count:0};
   const avg=rd.count>0?rd.total/rd.count:0;
