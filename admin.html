@@ -488,6 +488,92 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
+  <!-- ═══ AFFILIATE MANAGER ═══ -->
+  <div id="tAff" class="acard">
+    <h3 style="margin-bottom:6px">🛒 Affiliate Manager</h3>
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:18px;line-height:1.6">
+      أضف رابط شراء لأي وصفة — سيظهر كزر مميز بجانب "فتح الوصفة".<br>
+      يدعم Amazon، محلات البن المحلية، وأي رابط آخر.
+    </p>
+
+    <div class="fr2" style="gap:10px;margin-bottom:12px">
+      <div class="fg">
+        <label>🔍 ابحث عن وصفة لإضافة رابط لها</label>
+        <input class="form-input" id="affSearch" placeholder="اكتب اسم الوصفة..." oninput="searchAffRecipe()">
+        <div id="affSearchResults" style="margin-top:6px"></div>
+      </div>
+      <div class="fg">
+        <label>الوصفة المختارة</label>
+        <div id="affSelectedName" style="background:var(--bg);border:1px solid var(--br);border-radius:9px;padding:11px 14px;font-size:.85em;color:var(--ta);min-height:44px;display:flex;align-items:center">لم يتم الاختيار بعد</div>
+        <input type="hidden" id="affSelectedKey">
+      </div>
+    </div>
+
+    <div class="fr2" style="gap:10px;margin-bottom:12px">
+      <div class="fg">
+        <label>رابط الشراء</label>
+        <input class="form-input" id="affUrl" placeholder="https://amazon.sa/...">
+      </div>
+      <div class="fg">
+        <label>نص الزر (ما يظهر للزائر)</label>
+        <input class="form-input" id="affLabel" placeholder="شراء من Amazon" maxlength="30" oninput="updateAffPreview()">
+      </div>
+    </div>
+
+    <div class="fg" style="margin-bottom:14px">
+      <label>أيقونة الزر</label>
+      <div style="display:flex;gap:7px;flex-wrap:wrap" id="affIconPicker">
+        <button class="aff-icon-btn on" data-icon="🛒" onclick="pickAffIcon(this)">🛒</button>
+        <button class="aff-icon-btn" data-icon="☕" onclick="pickAffIcon(this)">☕</button>
+        <button class="aff-icon-btn" data-icon="📦" onclick="pickAffIcon(this)">📦</button>
+        <button class="aff-icon-btn" data-icon="🏷️" onclick="pickAffIcon(this)">🏷️</button>
+        <button class="aff-icon-btn" data-icon="🔗" onclick="pickAffIcon(this)">🔗</button>
+      </div>
+      <div style="margin-top:10px">
+        <span style="font-size:.8em;color:var(--t2);margin-left:8px">معاينة:</span>
+        <span id="affBtnPreview" style="background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a1a;font-weight:700;padding:7px 16px;border-radius:9px;font-size:.85em;display:inline-block;margin-top:6px">🛒 شراء</span>
+      </div>
+    </div>
+
+    <button class="btn bp bbl" onclick="saveAffLink()" style="margin-bottom:24px">💾 حفظ رابط الـ Affiliate</button>
+
+    <div style="border-top:1px solid var(--br);padding-top:16px">
+      <h4 style="margin-bottom:12px;color:var(--t2);font-size:.88em;font-weight:700">📋 الروابط المضافة حالياً</h4>
+      <div id="affList"><p style="color:var(--t2);font-size:.85em">لا توجد روابط مضافة بعد</p></div>
+    </div>
+  </div>
+
+  <!-- ═══ BREW ANALYTICS ═══ -->
+  <div id="tBrew" class="acard">
+    <h3 style="margin-bottom:6px">🔥 Brew Analytics</h3>
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:18px;line-height:1.6">
+      تتبع أكثر الوصفات تحضيراً بناءً على نقرات الزوار على "فتح الوصفة في xBloom".
+    </p>
+
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn bp bsm" onclick="loadBrewAnalytics()">🔄 تحديث الإحصائيات</button>
+      <button class="btn bd bsm" onclick="clearBrewData()">🗑️ مسح جميع البيانات</button>
+    </div>
+
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:16px;margin-bottom:16px">
+      <h4 style="margin-bottom:14px;font-size:.88em;font-weight:700">📈 أكثر الوصفات تحضيراً</h4>
+      <div id="brewChart">
+        <p style="color:var(--t2);font-size:.85em;text-align:center;padding:24px">
+          اضغط "تحديث الإحصائيات" لعرض البيانات
+        </p>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:16px">
+      <h4 style="margin-bottom:14px;font-size:.88em;font-weight:700">🛒 نقرات روابط Affiliate</h4>
+      <div id="affClicksChart">
+        <p style="color:var(--t2);font-size:.83em;text-align:center;padding:16px">
+          لا توجد بيانات بعد
+        </p>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
