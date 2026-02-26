@@ -112,9 +112,20 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .pinned-recipe-card{background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(255,165,0,.04));border:2px solid rgba(255,215,0,.3);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .pin-icon{font-size:1.3em}
 @media(min-width:768px){#adminPanel{padding:24px}.fr2{grid-template-columns:1fr 1fr}}
+.aff-icon-btn{width:40px;height:40px;border-radius:8px;background:var(--up);border:1px solid var(--br);font-size:1.3em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.aff-icon-btn.on{background:var(--gr);border-color:transparent}
+.aff-item{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--br);border-radius:10px;margin-bottom:8px}
+.aff-item-name{flex:1;font-size:.87em;font-weight:700}
+.aff-item-url{font-size:.75em;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.brew-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.brew-bar-label{width:160px;font-size:.78em;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;flex-shrink:0}
+.brew-bar-track{flex:1;height:22px;background:var(--up);border-radius:6px;overflow:hidden;position:relative}
+.brew-bar-fill{height:100%;background:var(--gr);border-radius:6px;transition:.6s}
+.brew-bar-val{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:.75em;font-weight:700;color:#fff;mix-blend-mode:difference}
 .pass-strength-weak{color:#f5576c!important}
-.pass-strength-fair{color:#ffd700!important}  
+.pass-strength-fair{color:#ffd700!important}
 .pass-strength-good{color:#43e97b!important}
+
 @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .acard.open{animation:slideIn .25s ease}
 </style>
@@ -173,6 +184,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد</button>
     <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
     <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
+    <button class="atb" onclick="switchTab(this,'tAff')">🛒 Affiliate</button>
+    <button class="atb" onclick="switchTab(this,'tBrew')">🔥 Brew Analytics</button>
   </div>
 
   <!-- STATS -->
@@ -499,7 +512,7 @@ import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.g
 // ════ CREDENTIALS (obfuscated) ════
 // user: abdulelah | pass: 490238
 const _CU = 'YWJkdWxlbGFo';
-const _CP = 'QEJMbG8xNTk3NTM=';
+const _CP = 'NDkwMjM4';
 function _dc(s){ try{ return atob(s); }catch(e){ return ''; } }
 
 async function sha256(msg) { return msg; } // fallback (unused)
@@ -514,6 +527,8 @@ const CKW = ['بارد','ثلج','ice','🧊','iced','الثلج','cold','بار
 const SKW = ['غسيل','ترطيب','سيرفر','غسل','server','cleaning','wash'];
 
 let app, db, recipesRef, ratingsRef, settingsRef, commentsRef;
+let FB_AFFILIATE = {};
+let SELECTED_AFF_ICON = '🛒';
 let FB_RECIPES = [], FB_RATINGS = {}, ALL_RECIPES = [], FB_COMMENTS = {};
 let editingKey = null;
 
@@ -572,6 +587,11 @@ function initFirebase() {
     recipesRef = ref(db,'recipes');
     ratingsRef = ref(db,'ratings');
     settingsRef = ref(db,'siteSettings');
+    // Affiliate realtime
+    onValue(ref(db,'affiliate'), snap => {
+      FB_AFFILIATE = snap.val() || {};
+      renderAffList();
+    });
     commentsRef = ref(db,'comments');
   } catch(e) {
     setFbStatus('err','خطأ: ' + e.message); return;
@@ -1086,6 +1106,158 @@ window.copyPassCode = function(){
       document.body.removeChild(ta);
       toast('تم النسخ! 📋');
     });
+};
+
+// ════ AFFILIATE MANAGER ════
+let AFF_SEARCH_RES = [];
+
+window.searchAffRecipe = function(){
+  const q = document.getElementById('affSearch').value.toLowerCase().trim();
+  const res = document.getElementById('affSearchResults');
+  if(q.length < 2){ res.innerHTML=''; AFF_SEARCH_RES=[]; return; }
+  AFF_SEARCH_RES = ALL_RECIPES.filter(r=>str(r.name).toLowerCase().includes(q)||str(r.author).toLowerCase().includes(q)).slice(0,4);
+  if(!AFF_SEARCH_RES.length){ res.innerHTML='<p style="font-size:.8em;color:var(--t2)">لا نتائج</p>'; return; }
+  res.innerHTML = AFF_SEARCH_RES.map((r,i)=>`
+    <div onclick="selectAffRecipe(${i})" style="padding:8px 12px;background:var(--bg);border:1px solid var(--br);border-radius:8px;cursor:pointer;margin-bottom:5px;font-size:.83em;transition:.15s" onmouseover="this.style.borderColor='var(--ta)'" onmouseout="this.style.borderColor='var(--br)'">
+      <strong>${esc(str(r.name))}</strong> <span style="color:var(--t2)">• ${esc(str(r.author))}</span>
+    </div>`).join('');
+};
+
+window.selectAffRecipe = function(i){
+  const r = AFF_SEARCH_RES[i];
+  if(!r) return;
+  const key = rKey(r.link||r.name);
+  document.getElementById('affSelectedKey').value = key;
+  document.getElementById('affSelectedName').textContent = r.name + ' — ' + r.author;
+  document.getElementById('affSearchResults').innerHTML = '';
+  document.getElementById('affSearch').value = '';
+  // Pre-fill if existing
+  const ex = FB_AFFILIATE[key];
+  if(ex){
+    document.getElementById('affUrl').value = ex.url || '';
+    document.getElementById('affLabel').value = ex.label || '';
+    SELECTED_AFF_ICON = ex.icon || '🛒';
+    document.querySelectorAll('.aff-icon-btn').forEach(b=>b.classList.toggle('on',b.dataset.icon===SELECTED_AFF_ICON));
+    updateAffPreview();
+  }
+};
+
+window.pickAffIcon = function(btn){
+  document.querySelectorAll('.aff-icon-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  SELECTED_AFF_ICON = btn.dataset.icon;
+  updateAffPreview();
+};
+
+function updateAffPreview(){
+  const lbl = document.getElementById('affLabel').value || 'شراء';
+  document.getElementById('affBtnPreview').innerHTML =
+    `<span style="background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a1a;font-weight:700;padding:8px 16px;border-radius:9px;font-size:.85em;display:inline-block">${SELECTED_AFF_ICON} ${esc(lbl)}</span>`;
+}
+document.addEventListener('input', e => { if(e.target.id==='affLabel') updateAffPreview(); });
+
+window.saveAffLink = function(){
+  const key = document.getElementById('affSelectedKey').value;
+  const url = document.getElementById('affUrl').value.trim();
+  const label = document.getElementById('affLabel').value.trim();
+  if(!key){ toast('اختر وصفة أولاً','terr'); return; }
+  if(!url){ toast('أدخل رابط الشراء','terr'); return; }
+  if(!label){ toast('أدخل نص الزر','terr'); return; }
+  const data = { url, label, icon: SELECTED_AFF_ICON, createdAt: Date.now() };
+  set(ref(db,'affiliate/'+key), data)
+    .then(()=>{ toast('تم حفظ رابط الـ Affiliate ✅'); document.getElementById('affSelectedKey').value=''; document.getElementById('affSelectedName').textContent='لم يتم الاختيار'; document.getElementById('affUrl').value=''; document.getElementById('affLabel').value=''; })
+    .catch(err=>toast('خطأ: '+err.message,'terr'));
+};
+
+function renderAffList(){
+  const el = document.getElementById('affList');
+  if(!el) return;
+  const entries = Object.entries(FB_AFFILIATE);
+  if(!entries.length){ el.innerHTML='<p style="color:var(--t2);font-size:.85em">لا توجد روابط مضافة</p>'; return; }
+  // Get recipe names
+  el.innerHTML = entries.map(([k,v])=>{
+    const r = ALL_RECIPES.find(x=>rKey(x.link||x.name)===k)||{name:k};
+    return `<div class="aff-item">
+      <span style="font-size:1.4em">${v.icon||'🛒'}</span>
+      <div style="flex:1;min-width:0">
+        <div class="aff-item-name">${esc(str(r.name))}</div>
+        <div class="aff-item-url">${esc(v.url||'')}</div>
+        <div style="font-size:.75em;margin-top:2px"><span style="background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a1a;padding:2px 8px;border-radius:5px;font-weight:700">${v.icon} ${esc(v.label||'')}</span></div>
+      </div>
+      <button class="btn bd bsm" onclick="deleteAffLink('${k}')">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+window.deleteAffLink = function(key){
+  if(!confirm('حذف هذا الرابط؟')) return;
+  set(ref(db,'affiliate/'+key),null).then(()=>toast('تم الحذف ✅'));
+};
+
+// helper: same key function as index.html
+function rKey(link){ try{ return btoa(unescape(encodeURIComponent(link||''))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'').slice(0,40); }catch(e){return link||'';} }
+
+// ════ BREW ANALYTICS ════
+window.loadBrewAnalytics = function(){
+  if(!db){ toast('Firebase غير متصل','terr'); return; }
+  const brewEl = document.getElementById('brewChart');
+  const affEl  = document.getElementById('affClicksChart');
+  brewEl.innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">⏳ جاري التحميل...</p>';
+  
+  Promise.all([
+    get(ref(db,'brew_clicks')),
+    get(ref(db,'affiliate_clicks'))
+  ]).then(([brewSnap, affSnap])=>{
+    const brewData = brewSnap.val() || {};
+    const affData  = affSnap.val()  || {};
+    
+    // Brew clicks chart
+    const brewEntries = Object.entries(brewData).sort((a,b)=>b[1]-a[1]).slice(0,15);
+    if(!brewEntries.length){ brewEl.innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">لا توجد بيانات بعد — انتظر أول نقرة من الزوار</p>'; }
+    else {
+      const max = brewEntries[0][1]||1;
+      let total = Object.values(brewData).reduce((a,b)=>a+b,0);
+      brewEl.innerHTML = `<p style="font-size:.8em;color:var(--t2);margin-bottom:14px">إجمالي النقرات: <strong style="color:var(--ta)">${total}</strong></p>` +
+        brewEntries.map(([k,v])=>{
+          const r = ALL_RECIPES.find(x=>rKey(x.link||x.name)===k)||{name:k.slice(0,20)+'…'};
+          const pct = Math.round((v/max)*100);
+          return `<div class="brew-bar-row">
+            <div class="brew-bar-label" title="${esc(str(r.name))}">${esc(str(r.name))}</div>
+            <div class="brew-bar-track">
+              <div class="brew-bar-fill" style="width:${pct}%"></div>
+              <span class="brew-bar-val">${v}</span>
+            </div>
+          </div>`;
+        }).join('');
+    }
+    
+    // Affiliate clicks
+    const affEntries = Object.entries(affData).sort((a,b)=>b[1]-a[1]);
+    if(!affEntries.length){ affEl.innerHTML='<p style="color:var(--t2);font-size:.83em">لا توجد نقرات على روابط Affiliate بعد</p>'; }
+    else {
+      const amax = affEntries[0][1]||1;
+      affEl.innerHTML = affEntries.map(([k,v])=>{
+        const r = ALL_RECIPES.find(x=>rKey(x.link||x.name)===k)||{name:k.slice(0,20)+'…'};
+        const pct = Math.round((v/amax)*100);
+        return `<div class="brew-bar-row">
+          <div class="brew-bar-label" title="${esc(str(r.name))}">${esc(str(r.name))}</div>
+          <div class="brew-bar-track">
+            <div class="brew-bar-fill" style="width:${pct}%;background:linear-gradient(135deg,#f7971e,#ffd200)"></div>
+            <span class="brew-bar-val" style="color:#1a1a1a">${v}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    toast('تم تحديث البيانات ✅');
+  }).catch(err=>{ brewEl.innerHTML='<p style="color:#f5576c">خطأ: '+err.message+'</p>'; });
+};
+
+window.clearBrewData = function(){
+  if(!confirm('سيتم مسح كل إحصائيات النقرات. هل أنت متأكد؟')) return;
+  Promise.all([
+    set(ref(db,'brew_clicks'), null),
+    set(ref(db,'affiliate_clicks'), null)
+  ]).then(()=>{ toast('تم مسح البيانات ✅'); document.getElementById('brewChart').innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">تمت إعادة التعيين</p>'; document.getElementById('affClicksChart').innerHTML='<p style="color:var(--t2);font-size:.83em">لا توجد بيانات</p>'; }).catch(err=>toast('خطأ: '+err.message,'terr'));
 };
 
 </script>
