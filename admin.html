@@ -6,214 +6,124 @@
 <title>لوحة التحكم | Xbloom Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--red:linear-gradient(135deg,#f093fb,#f5576c);--green:linear-gradient(135deg,#43e97b,#38f9d7);--orange:linear-gradient(135deg,#ffd89b,#ff9a56);--purple:linear-gradient(135deg,#667eea,#764ba2)}
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--red:linear-gradient(135deg,#f093fb,#f5576c);--green:linear-gradient(135deg,#43e97b,#38f9d7);--orange:linear-gradient(135deg,#ffd89b,#ff9a56)}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
 
-/* LOGIN */
+/* ═══ LOGIN ═══ */
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.lbox{background:var(--card);border-radius:18px;border:1px solid var(--br);padding:36px;text-align:center;width:100%;max-width:400px;position:relative;overflow:hidden}
+.lbox{background:var(--card);border-radius:18px;border:1px solid var(--br);padding:36px;text-align:center;width:100%;max-width:380px;position:relative;overflow:hidden}
 .lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
 .lbox h1{font-size:2em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
-.lbox p{color:var(--t2);font-size:.85em;margin-bottom:24px}
-.lerr{color:#f5576c;font-size:.82em;margin-bottom:10px;min-height:18px;font-weight:700}
+.lbox p{color:var(--t2);font-size:.85em;margin-bottom:26px}
+.fi{width:100%;padding:13px 15px;background:var(--up);border:2px solid var(--br);border-radius:10px;color:var(--t1);font-size:15px;font-family:inherit;margin-bottom:12px;text-align:right;transition:.2s}
+.fi:focus{outline:none;border-color:var(--ta)}
+.lerr{color:#f5576c;font-size:.82em;margin-bottom:12px;min-height:18px;font-weight:700}
 
-/* BUTTONS */
+/* ═══ BUTTONS ═══ */
 .btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:5px;text-decoration:none;white-space:nowrap}
 .btn:active{transform:scale(.95)}
 .bp{background:var(--gr);color:#fff}
 .bp-full{background:var(--gr);color:#fff;width:100%;justify-content:center;padding:14px;font-size:15px}
 .bd{background:var(--red);color:#fff}
-.bg{background:var(--green);color:#000}
-.bw{background:var(--orange);color:#000}
-.bpu{background:var(--purple);color:#fff}
+.bg{background:var(--green);color:#fff}
+.bw{background:var(--orange);color:#fff}
 .bsm{padding:7px 12px;font-size:12px}
 .bbl{width:100%;justify-content:center}
 .bgray{background:var(--up);border:1px solid var(--br);color:var(--t2)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
 
-/* ADMIN */
+/* ═══ ADMIN PANEL ═══ */
 #adminPanel{display:none;min-height:100vh;padding:16px}
-.apwrap{max-width:1300px;margin:0 auto}
+.apwrap{max-width:1200px;margin:0 auto}
+
+/* Header */
 .aheader{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;overflow:hidden}
 .aheader::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
-.aheader h1{font-size:1.2em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.fb-dot{width:9px;height:9px;border-radius:50%;background:#555;display:inline-block;margin-left:6px}
+.aheader-title{display:flex;align-items:center;gap:12px}
+.aheader-title h1{font-size:1.25em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.fb-dot{width:9px;height:9px;border-radius:50%;background:#555;transition:.5s}
 .fb-dot.ok{background:#43e97b;box-shadow:0 0 8px #43e97b}
 .fb-dot.err{background:#f5576c}
 .fb-dot.loading{background:#ffd700;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .fb-lbl{font-size:.78em;color:var(--t2)}
+.acts{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 
-/* TABS */
-.atabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;background:var(--card);padding:10px;border-radius:12px;border:1px solid var(--br)}
-.atb{padding:9px 14px;border-radius:8px;background:transparent;border:none;color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;position:relative}
-.atb.on{background:var(--gr);color:#fff}
-.atb:hover:not(.on){background:var(--up);color:var(--t1)}
-.badge-tab{position:absolute;top:-4px;right:-4px;background:#f5576c;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;display:none}
-.badge-tab.show{display:flex}
+/* Tabs */
+.atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.atb{padding:10px 16px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.atb.on{background:var(--gr);color:#fff;border-color:transparent}
+.atb:hover:not(.on){border-color:var(--ta)}
 .acard{background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:14px;display:none}
-.acard.open{display:block;animation:slideIn .25s ease}
-@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.acard.open{display:block}
 
-/* STATS */
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:16px}
-.sc{background:var(--up);border-radius:10px;padding:16px;text-align:center;border:1px solid var(--br)}
-.sc.s-green{border-top:3px solid #43e97b}
-.sc.s-blue{border-top:3px solid #4A90E2}
-.sc.s-red{border-top:3px solid #f5576c}
-.sc.s-yellow{border-top:3px solid #ffd565}
-.sc.s-purple{border-top:3px solid #a78bfa}
-.sc.s-teal{border-top:3px solid #00A896}
-.sv{font-size:1.8em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
-.sl{font-size:.72em;color:var(--t2);margin-top:4px}
+/* Alert box */
+.alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;font-size:.88em;line-height:1.6;display:none}
+.alert.show{display:block}
+.alert-warn{background:rgba(255,213,101,.12);border:1px solid rgba(255,213,101,.4);color:#ffd565}
+.alert-err{background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.4);color:#f5576c}
+.alert code{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:.93em}
 
-/* TABLE */
+/* Stats */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.sc{background:var(--up);border-radius:10px;padding:16px;text-align:center}
+.sv{font-size:2em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.sl{font-size:.78em;color:var(--t2);margin-top:4px}
+.sc.fb-sc{border:1px solid rgba(0,168,150,.3)}
+
+/* Table */
 .tw{overflow-x:auto;margin-top:12px}
-.tbl{width:100%;border-collapse:collapse;min-width:600px}
-.tbl th,.tbl td{padding:9px 11px;text-align:right;border-bottom:1px solid var(--br);font-size:.82em}
-.tbl th{background:var(--up);font-weight:700;color:var(--t2);position:sticky;top:0;z-index:1}
-.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.tbl{width:100%;border-collapse:collapse;min-width:650px}
+.tbl th,.tbl td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--br);font-size:.83em}
+.tbl th{background:var(--up);font-weight:700;color:var(--t2);position:sticky;top:0}
+.tbl tr:hover td{background:rgba(255,255,255,.03)}
 .tbl a{color:var(--ta);text-decoration:none}
-.tblacts{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap}
-.badge-fb{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff}
-.badge-init{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:var(--up);color:var(--t2);border:1px solid var(--br)}
-.badge-pend{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:linear-gradient(135deg,#ffd89b,#ff9a56);color:#000}
-.badge-feat{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
-.badge-hidden{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:rgba(245,87,108,.2);color:#f5576c;border:1px solid #f5576c}
-.badge-approved{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:rgba(67,233,123,.2);color:#43e97b;border:1px solid #43e97b}
-.badge-sponsored{padding:2px 8px;border-radius:6px;font-size:.68em;font-weight:700;background:linear-gradient(135deg,#ffd700,#ff9500);color:#000}
+.tbl a:hover{text-decoration:underline}
+.tblacts{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.badge-fb{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff}
+.badge-init{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:var(--up);color:var(--t2);border:1px solid var(--br)}
 
-/* FORM */
+/* Form */
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .fg label{font-size:.82em;color:var(--t2);font-weight:700}
-.fi{padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit;width:100%;transition:.2s}
-.fi:focus{outline:none;border-color:var(--ta)}
-textarea.fi{resize:vertical;min-height:80px}
+.form-input{padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit;width:100%;transition:.2s}
+.form-input:focus{outline:none;border-color:var(--ta)}
 .fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.topt{padding:11px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em;transition:.2s;margin-bottom:6px}
+.tsel{display:flex;flex-direction:column;gap:7px}
+.topt{padding:11px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em;transition:.2s}
 .topt:has(input:checked){border-color:var(--ta);background:rgba(0,168,150,.08)}
 .topt input[type=radio]{accent-color:var(--ta);width:16px;height:16px}
 
-/* TOGGLE SWITCH */
-.tog-wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--up);border-radius:10px;margin-bottom:10px;border:1px solid var(--br)}
-.tog-info{flex:1}
-.tog-title{font-size:.9em;font-weight:700}
-.tog-desc{font-size:.75em;color:var(--t2);margin-top:2px}
-.tog{position:relative;width:44px;height:24px;flex-shrink:0}
-.tog input{opacity:0;width:0;height:0}
-.tog-slider{position:absolute;cursor:pointer;inset:0;background:#333;border-radius:24px;transition:.3s}
-.tog-slider:before{content:'';position:absolute;height:18px;width:18px;right:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
-.tog input:checked + .tog-slider{background:var(--ta)}
-.tog input:checked + .tog-slider:before{transform:translateX(-20px)}
-
-/* RATING */
-.rcard{background:var(--up);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--br);flex-wrap:wrap;margin-bottom:8px}
-.rcard-name{font-size:.88em;font-weight:700;flex:1}
-.rcard-stars{color:#ffd700;font-size:1em}
-.rcard-info{font-size:.75em;color:var(--t2)}
-
-/* COMMENT */
-.cmt{background:var(--up);border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--br)}
-.cmt.pinned{border-color:#ffd700;background:rgba(255,215,0,.05)}
-.cmt-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px}
-.cmt-author{font-weight:700;font-size:.9em}
-.cmt-ts{font-size:.72em;color:var(--t2)}
-.cmt-body{font-size:.88em;line-height:1.6;color:var(--t1);margin-bottom:8px}
-.cmt-reply{background:rgba(0,168,150,.1);border-right:3px solid var(--ta);padding:10px 12px;border-radius:8px;margin-top:8px;font-size:.83em}
-.cmt-reply-lbl{font-size:.72em;color:var(--ta);font-weight:700;margin-bottom:4px}
-.cmt-acts{display:flex;gap:5px;flex-wrap:wrap}
-
-/* IMPORT */
-.upl{border:2px dashed var(--br);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px}
+/* Import zone */
+.upl{border:2px dashed var(--br);border-radius:10px;padding:32px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px}
 .upl:hover{border-color:var(--ta);background:rgba(0,168,150,.04)}
 
-/* ACTIVITY LOG */
-.act-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid var(--br);font-size:.83em}
-.act-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.act-add{background:rgba(67,233,123,.15);color:#43e97b}
-.act-del{background:rgba(245,87,108,.15);color:#f5576c}
-.act-edit{background:rgba(74,144,226,.15);color:#4A90E2}
-.act-login{background:rgba(0,168,150,.15);color:#00A896}
-.act-setting{background:rgba(102,126,234,.15);color:#a78bfa}
-.act-approve{background:rgba(255,216,155,.15);color:#ffd89b}
-.act-text{flex:1}
-.act-ts{font-size:.75em;color:var(--t2);white-space:nowrap}
-
-/* PROMO CODES */
-.promo-card{background:var(--up);border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--br);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.promo-code{font-family:monospace;font-size:1.1em;font-weight:900;color:#ffd700;letter-spacing:2px}
-.promo-info{font-size:.78em;color:var(--t2)}
-
-/* AFFILIATE */
-.aff-card{background:var(--up);border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--br)}
-.aff-title{font-weight:700;font-size:.9em;margin-bottom:4px}
-.aff-url{font-size:.75em;color:var(--ta);word-break:break-all}
-.aff-price{font-size:.82em;color:#43e97b;font-weight:700}
-
-/* CHART */
-.chart-wrap{background:var(--up);border-radius:10px;padding:16px;border:1px solid var(--br)}
-.chart-title{font-size:.85em;color:var(--t2);font-weight:700;margin-bottom:12px}
-
-/* TOAST */
+/* Toast */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--card);padding:13px 20px;border-radius:10px;border:1px solid var(--br);z-index:3000;opacity:0;transition:.3s;max-width:88%;font-size:13px;text-align:center;pointer-events:none;font-weight:700}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .tok{border-color:#43e97b;color:#43e97b}
 .terr{border-color:#f5576c;color:#f5576c}
 .twin{border-color:#ffd565;color:#ffd565}
 
-/* CONFIRM MODAL */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+/* Confirm */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:none;align-items:center;justify-content:center;padding:16px}
 .ov.open{display:flex}
-.cmod{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:28px;max-width:420px;width:100%;text-align:center}
+.cmod{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:28px;max-width:380px;width:100%;text-align:center}
 .cmod h3{font-size:1.1em;margin-bottom:8px}
 .cmod p{color:var(--t2);font-size:.88em;margin-bottom:20px;line-height:1.5}
 .cmod-acts{display:flex;gap:10px;justify-content:center}
 
-/* ALERT */
-.alert{padding:12px 16px;border-radius:10px;margin-bottom:14px;font-size:.85em;line-height:1.6;display:none}
-.alert.show{display:block}
-.alert-warn{background:rgba(255,213,101,.12);border:1px solid rgba(255,213,101,.4);color:#ffd565}
-.alert-err{background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.4);color:#f5576c}
-.alert-info{background:rgba(0,168,150,.12);border:1px solid rgba(0,168,150,.3);color:#00A896}
-.alert code{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-family:monospace}
+/* Ratings tab */
+.rcard{background:var(--up);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--br);flex-wrap:wrap}
+.rcard-name{font-size:.9em;font-weight:700;flex:1}
+.rcard-stars{color:#ffd700;font-size:1.1em}
+.rcard-info{font-size:.78em;color:var(--t2)}
+.rlist{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto}
 
-/* SECTION HEADER */
-.sec-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
-.sec-head h3{font-size:1em;font-weight:700}
-.sec-head .acts{display:flex;gap:6px;flex-wrap:wrap}
-
-/* LINK HEALTH */
-.lh-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;margin-bottom:6px;font-size:.83em}
-.lh-ok{background:rgba(67,233,123,.1);border:1px solid rgba(67,233,123,.3)}
-.lh-err{background:rgba(245,87,108,.1);border:1px solid rgba(245,87,108,.3)}
-.lh-status{width:50px;font-weight:700;text-align:center;flex-shrink:0}
-
-/* BULK BAR */
-.bulk-bar{display:none;position:sticky;bottom:10px;background:var(--card);border:1px solid #4A90E2;border-radius:10px;padding:12px 16px;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;z-index:100;margin-top:10px;box-shadow:0 4px 20px rgba(74,144,226,.2)}
-.bulk-bar.show{display:flex}
-
-/* DANGER ZONE */
-.danger-zone{border:1px solid rgba(245,87,108,.4);border-radius:10px;padding:16px;margin-top:16px}
-.danger-zone h4{color:#f5576c;font-size:.9em;margin-bottom:12px}
-.danger-actions{display:flex;flex-direction:column;gap:8px}
-
-/* ANALYTICS */
-.brew-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--up);border-radius:8px;margin-bottom:6px}
-.brew-bar-wrap{flex:1;height:8px;background:var(--br);border-radius:4px;overflow:hidden}
-.brew-bar{height:100%;background:var(--gr);border-radius:4px;transition:width .5s}
-.brew-count{font-weight:700;font-size:.85em;color:#00A896;min-width:50px;text-align:left}
-
-/* MOBILE */
-@media(max-width:768px){
-  #adminPanel{padding:10px}
-  .fr2,.fr3{grid-template-columns:1fr}
-  .atabs{gap:4px}
-  .atb{padding:8px 10px;font-size:11px}
-}
+@media(min-width:768px){#adminPanel{padding:24px}.fr2{grid-template-columns:1fr 1fr}}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.acard.open{animation:slideIn .25s ease}
 </style>
 </head>
 <body>
@@ -222,14 +132,12 @@ textarea.fi{resize:vertical;min-height:80px}
 <div id="loginScreen">
   <div class="lbox">
     <h1>☕ Xbloom</h1>
-    <p>لوحة تحكم المشرف المتقدمة</p>
+    <p>لوحة تحكم المشرف</p>
     <input class="fi" type="text" id="lu" placeholder="اسم المستخدم" autocomplete="username">
-    <div style="height:10px"></div>
     <input class="fi" type="password" id="lp" placeholder="كلمة المرور" autocomplete="current-password">
     <div class="lerr" id="lerr"></div>
-    <button class="btn bp-full" onclick="doLogin()">🔐 دخول آمن</button>
-    <p style="margin-top:8px;font-size:.72em;color:var(--t2)">🔒 يستخدم تشفير SHA-256</p>
-    <p style="margin-top:14px;font-size:.8em"><a href="/" style="color:var(--ta)">← العودة للموقع</a></p>
+    <button class="btn bp-full" onclick="doLogin()">🔐 دخول</button>
+    <p style="margin-top:20px;font-size:.8em"><a href="/" style="color:var(--ta)">← العودة للموقع</a></p>
   </div>
 </div>
 
@@ -239,487 +147,149 @@ textarea.fi{resize:vertical;min-height:80px}
 
   <!-- Header -->
   <div class="aheader">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div class="fb-dot loading" id="fbDot"></div>
+    <div class="aheader-title">
       <div>
-        <h1>📊 لوحة تحكم Xbloom المتقدمة</h1>
-        <div class="fb-lbl" id="fbLbl">جاري الاتصال...</div>
+        <div class="fb-dot loading" id="fbDot"></div>
+      </div>
+      <div>
+        <h1>📊 لوحة التحكم — Xbloom</h1>
+        <div class="fb-lbl" id="fbLbl">جاري الاتصال بـ Firebase...</div>
       </div>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+    <div class="acts">
       <a href="/" class="btn bgray bsm" target="_blank">🌐 الموقع</a>
-      <button class="btn bsm bgray" onclick="switchTab(document.querySelector('.atb[data-tab=tSecurity]'),'tSecurity')">🔒 الأمان</button>
       <button class="btn bd bsm" onclick="doLogout()">🚪 خروج</button>
     </div>
   </div>
 
   <!-- Firebase Error Alert -->
   <div class="alert alert-err" id="fbAlert">
-    ⚠️ <strong>تعذّر الاتصال بـ Firebase</strong> — افتح
-    <a href="https://console.firebase.google.com/project/xbloom-recipes-hub/database/xbloom-recipes-hub-default-rtdb/rules" target="_blank" style="color:#f5576c;font-weight:700">Firebase Console → Rules</a>
-    وتأكد من صحة القواعد.
+    ⚠️ <strong>تعذّر الاتصال بـ Firebase</strong> — السبب الأكثر شيوعاً هو قواعد الحماية (Rules). افتح
+    <a href="https://console.firebase.google.com/project/xbloom-recipes-hub/database/xbloom-recipes-hub-default-rtdb/rules" target="_blank" style="color:#f5576c;font-weight:700">Firebase Console ← Rules</a>
+    وغيّر القواعد إلى:
+    <br><br>
+    <code>{ "rules": { ".read": true, ".write": true } }</code>
+    <br><br>
+    ثم اضغط <strong>Publish</strong>.
   </div>
 
   <!-- Tabs -->
   <div class="atabs">
-    <button class="atb on" data-tab="tDash"    onclick="switchTab(this,'tDash')">📊 داشبورد</button>
-    <button class="atb"    data-tab="tPending"  onclick="switchTab(this,'tPending')">⏳ مراجعة<span class="badge-tab" id="pendBadge">0</span></button>
-    <button class="atb"    data-tab="tRec"      onclick="switchTab(this,'tRec')">📝 الوصفات</button>
-    <button class="atb"    data-tab="tComments" onclick="switchTab(this,'tComments')">💬 التعليقات<span class="badge-tab" id="cmtBadge">0</span></button>
-    <button class="atb"    data-tab="tRatings"  onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
-    <button class="atb"    data-tab="tAnalytics" onclick="switchTab(this,'tAnalytics')">📈 تحليلات</button>
-    <button class="atb"    data-tab="tBanner"   onclick="switchTab(this,'tBanner')">📢 إشعارات</button>
-    <button class="atb"    data-tab="tMoney"    onclick="switchTab(this,'tMoney')">💰 إيرادات</button>
-    <button class="atb"    data-tab="tSettings" onclick="switchTab(this,'tSettings')">⚙️ الإعدادات</button>
-    <button class="atb"    data-tab="tSecurity" onclick="switchTab(this,'tSecurity')">🔒 الأمان</button>
-    <button class="atb"    data-tab="tTools"    onclick="switchTab(this,'tTools')">🔧 أدوات</button>
-    <button class="atb"    data-tab="tAdd"      onclick="switchTab(this,'tAdd')">➕ إضافة</button>
+    <button class="atb on" onclick="switchTab(this,'tStats')">📊 إحصائيات</button>
+    <button class="atb"    onclick="switchTab(this,'tAdd')">➕ إضافة وصفة</button>
+    <button class="atb"    onclick="switchTab(this,'tRec')">📝 إدارة الوصفات</button>
+    <button class="atb"    onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
+    <button class="atb"    onclick="switchTab(this,'tImp')">📤 استيراد</button>
+    <button class="atb"    onclick="switchTab(this,'tExp')">📥 تصدير</button>
   </div>
 
-  <!-- ══════════════ DASHBOARD ══════════════ -->
-  <div id="tDash" class="acard open">
-    <div class="sec-head">
-      <h3>📊 لمحة عامة</h3>
-      <span class="fb-lbl" id="lastSync">—</span>
-    </div>
-    <div class="sg" id="dashStats"></div>
-    <div class="fr2" style="gap:14px;margin-top:14px">
-      <div class="chart-wrap">
-        <div class="chart-title">📂 توزيع الفئات</div>
-        <canvas id="catChart" height="200"></canvas>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-title">☕ توزيع المحضّرات</div>
-        <canvas id="brewChart" height="200"></canvas>
-      </div>
-    </div>
-    <div style="margin-top:14px" class="fr2">
-      <div>
-        <h4 style="margin-bottom:10px;font-size:.85em;color:var(--t2)">🏆 أعلى 5 تقييماً</h4>
-        <div id="topRated"></div>
-      </div>
-      <div>
-        <h4 style="margin-bottom:10px;font-size:.85em;color:var(--t2)">📋 آخر النشاطات</h4>
-        <div id="recentActs"></div>
-      </div>
+  <!-- STATS -->
+  <div id="tStats" class="acard open">
+    <h3 style="margin-bottom:14px;font-size:1em;color:var(--t2)">إجمالي الموقع (INIT + Firebase)</h3>
+    <div class="sg">
+      <div class="sc"><div class="sv" id="sTotal">—</div><div class="sl">📋 الكل</div></div>
+      <div class="sc fb-sc"><div class="sv" id="sFB">—</div><div class="sl">☁️ Firebase فقط</div></div>
+      <div class="sc"><div class="sv" id="sInit">214</div><div class="sl">📁 INIT ثابتة</div></div>
+      <div class="sc"><div class="sv" id="sH">—</div><div class="sl">🔥 حارة</div></div>
+      <div class="sc"><div class="sv" id="sC">—</div><div class="sl">🧊 باردة</div></div>
+      <div class="sc"><div class="sv" id="sS">—</div><div class="sl">⚙️ سيرفر</div></div>
+      <div class="sc"><div class="sv" id="sO">—</div><div class="sl">Omni</div></div>
+      <div class="sc"><div class="sv" id="sX">—</div><div class="sl">xPod</div></div>
+      <div class="sc"><div class="sv" id="sOth">—</div><div class="sl">Other</div></div>
+      <div class="sc fb-sc"><div class="sv" id="sRated">—</div><div class="sl">⭐ مُقيَّمة</div></div>
     </div>
   </div>
 
-  <!-- ══════════════ PENDING ══════════════ -->
-  <div id="tPending" class="acard">
-    <div class="sec-head">
-      <h3>⏳ قائمة المراجعة</h3>
-      <div class="acts">
-        <button class="btn bsm bd" onclick="rejectAllPending()">🗑️ رفض الكل</button>
-        <button class="btn bsm bg" onclick="approveAllPending()">✅ قبول الكل</button>
-      </div>
-    </div>
-    <div id="pendingList"></div>
-  </div>
-
-  <!-- ══════════════ RECIPES ══════════════ -->
-  <div id="tRec" class="acard">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
-      <input class="fi" style="flex:1;min-width:160px" id="aQ" placeholder="🔍 بحث..." oninput="renderTable()">
-      <select class="fi" style="width:120px" id="aBr" onchange="renderTable()">
-        <option value="all">كل المحضّرات</option>
-        <option value="Omni">Omni</option>
-        <option value="xPod">xPod</option>
-        <option value="Other">Other</option>
-      </select>
-      <select class="fi" style="width:110px" id="aCat" onchange="renderTable()">
-        <option value="all">كل الأنواع</option>
-        <option value="hot">🔥 حار</option>
-        <option value="cold">🧊 بارد</option>
-        <option value="server">⚙️ سيرفر</option>
-      </select>
-      <select class="fi" style="width:120px" id="aSrc" onchange="renderTable()">
-        <option value="all">كل المصادر</option>
-        <option value="fb">☁️ Firebase</option>
-        <option value="init">📁 INIT</option>
-      </select>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
-      <div id="tableCount" style="font-size:.82em;color:var(--t2);flex:1"></div>
-      <label style="display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer;color:var(--t2)">
-        <input type="checkbox" id="selAll" onchange="toggleSelectAll(this)" style="width:14px;height:14px"> تحديد الكل
-      </label>
-    </div>
-    <div class="tw">
-      <table class="tbl">
-        <thead><tr><th style="width:30px"></th><th>#</th><th>الاسم</th><th>المؤلف</th><th>المحضّر</th><th>النوع</th><th>المصدر</th><th>التقييم</th><th>الإجراءات</th></tr></thead>
-        <tbody id="aTbody"></tbody>
-      </table>
-    </div>
-    <div class="bulk-bar" id="bulkBar">
-      <span id="bulkCount" style="font-size:.85em;font-weight:700"></span>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn bsm bd" onclick="bulkDelete()">🗑️ حذف المحدد</button>
-        <button class="btn bsm bpu" onclick="bulkFeature(true)">📌 تمييز المحدد</button>
-        <button class="btn bsm bgray" onclick="bulkFeature(false)">📍 إلغاء التمييز</button>
-        <button class="btn bsm bgray" onclick="clearSelection()">✕ إلغاء</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════ COMMENTS ══════════════ -->
-  <div id="tComments" class="acard">
-    <div class="sec-head">
-      <h3>💬 إدارة التعليقات</h3>
-      <div class="acts">
-        <select class="fi bsm" id="cmtFilter" onchange="renderComments()" style="width:150px">
-          <option value="pending">⏳ في الانتظار</option>
-          <option value="approved">✅ مقبولة</option>
-          <option value="all">الكل</option>
-        </select>
-        <button class="btn bsm bg" onclick="approveAllComments()">✅ قبول الكل المعلق</button>
-      </div>
-    </div>
-    <div id="commentsList"></div>
-  </div>
-
-  <!-- ══════════════ RATINGS ══════════════ -->
-  <div id="tRatings" class="acard">
-    <div class="sec-head">
-      <h3>⭐ إدارة التقييمات</h3>
-      <button class="btn bd bsm" onclick="resetAllRatings()">🗑️ تصفير الكل</button>
-    </div>
-    <div class="sg" id="ratingsStats" style="margin-bottom:16px"></div>
-    <div id="ratingsList" style="max-height:500px;overflow-y:auto"></div>
-  </div>
-
-  <!-- ══════════════ ANALYTICS ══════════════ -->
-  <div id="tAnalytics" class="acard">
-    <div class="sec-head">
-      <h3>📈 تحليلات التحضير</h3>
-      <button class="btn bsm bgray" onclick="loadAnalytics()">🔄 تحديث</button>
-    </div>
-    <p style="font-size:.82em;color:var(--t2);margin-bottom:14px">عدد مرات فتح الوصفة في تطبيق xBloom</p>
-    <div id="analyticsChart" style="max-height:400px;overflow-y:auto"></div>
-  </div>
-
-  <!-- ══════════════ BANNER / PROMO ══════════════ -->
-  <div id="tBanner" class="acard">
-    <!-- ANNOUNCEMENT -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:14px">📢 شريط الإعلانات</h3>
-      <div class="fg"><label>نص الإعلان</label><textarea class="fi" id="banText" placeholder="أكتب إعلانك هنا..." rows="3"></textarea></div>
-      <div class="fg"><label>نوع الإعلان</label>
-        <select class="fi" id="banType">
-          <option value="info">ℹ️ معلومات (أزرق)</option>
-          <option value="warn">⚠️ تحذير (أصفر)</option>
-          <option value="success">✅ نجاح (أخضر)</option>
-          <option value="error">🚨 خطأ (أحمر)</option>
-        </select>
-      </div>
-      <div id="banPreview" style="margin-bottom:12px"></div>
-      <div style="display:flex;gap:8px">
-        <button class="btn bp" onclick="publishBanner()">📢 نشر الإعلان</button>
-        <button class="btn bd" onclick="removeBanner()">✕ إلغاء</button>
-      </div>
-      <div id="banStatus" style="margin-top:10px;font-size:.82em;color:var(--t2)"></div>
-    </div>
-
-    <!-- PROMO CODES -->
-    <h3 style="margin-bottom:14px">🏷️ أكواد الخصم</h3>
-    <div class="fr2" style="margin-bottom:12px">
-      <div class="fg"><label>الكود *</label><input class="fi" id="promoCode" placeholder="COFFEE20" style="font-family:monospace;text-transform:uppercase"></div>
-      <div class="fg"><label>المحمصة</label><input class="fi" id="promoRoastery" placeholder="اسم المحمصة"></div>
-    </div>
-    <div class="fr2" style="margin-bottom:12px">
-      <div class="fg"><label>الوصف</label><input class="fi" id="promoDesc" placeholder="خصم 20% على الطلبات"></div>
-      <div class="fg"><label>تاريخ الانتهاء</label><input class="fi" type="date" id="promoExpiry"></div>
-    </div>
-    <button class="btn bg bbl" onclick="addPromo()" style="margin-bottom:14px">➕ إضافة كود</button>
-    <div id="promoList"></div>
-  </div>
-
-  <!-- ══════════════ MONETIZATION ══════════════ -->
-  <div id="tMoney" class="acard">
-    <!-- ADS -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:12px">📺 نظام الإعلانات (AdSense)</h3>
-      <div class="fg"><label>كود AdSense للحقن في الموقع</label>
-        <textarea class="fi" id="adsCode" placeholder="أنسخ كود الإعلان من Google AdSense هنا..." rows="5"></textarea>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn bp" onclick="saveAdsCode()">💾 حفظ كود الإعلان</button>
-        <button class="btn bd" onclick="clearAdsCode()">✕ حذف الإعلان</button>
-      </div>
-    </div>
-
-    <!-- TIP JAR -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:12px">☕ رابط الدعم (Buy Me a Coffee)</h3>
-      <div class="fg"><label>رابط الدعم</label>
-        <input class="fi" id="tipJarUrl" placeholder="https://www.buymeacoffee.com/username">
-      </div>
-      <button class="btn bp" onclick="saveTipJar()">💾 حفظ الرابط</button>
-    </div>
-
-    <!-- AFFILIATE -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:12px">🔗 روابط الشراء التابعة (Affiliate)</h3>
-      <div class="fr2" style="margin-bottom:8px">
-        <div class="fg"><label>رابط الوصفة (للربط)</label>
-          <select class="fi" id="affRecipe">
-            <option value="">اختر الوصفة (Firebase)</option>
-          </select>
-        </div>
-        <div class="fg"><label>عنوان المنتج</label><input class="fi" id="affTitle" placeholder="قهوة اثيوبية - أمازون"></div>
-      </div>
-      <div class="fr2" style="margin-bottom:8px">
-        <div class="fg"><label>رابط الشراء</label><input class="fi" id="affUrl" placeholder="https://amazon.sa/..."></div>
-        <div class="fg"><label>السعر (اختياري)</label><input class="fi" id="affPrice" placeholder="120 ريال"></div>
-      </div>
-      <button class="btn bg bbl" onclick="saveAffiliate()" style="margin-bottom:14px">💾 حفظ الرابط التابع</button>
-      <div id="affiliateList"></div>
-    </div>
-
-    <!-- FEATURED TODAY -->
-    <div>
-      <h3 style="margin-bottom:12px">⭐ وصفة اليوم</h3>
-      <div class="fr2">
-        <div class="fg"><label>اختر وصفة اليوم</label>
-          <select class="fi" id="featTodaySelect">
-            <option value="">بلا اختيار</option>
-          </select>
-        </div>
-        <div style="display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding-bottom:12px">
-          <button class="btn bp" onclick="setFeaturedToday()">⭐ تعيين وصفة اليوم</button>
-          <button class="btn bd bsm" onclick="clearFeaturedToday()">✕ إلغاء وصفة اليوم</button>
-        </div>
-      </div>
-      <div id="featTodayStatus" style="font-size:.82em;color:var(--t2)"></div>
-    </div>
-  </div>
-
-  <!-- ══════════════ SETTINGS ══════════════ -->
-  <div id="tSettings" class="acard">
-    <!-- SITE CONTROLS -->
-    <h3 style="margin-bottom:14px">🎛️ إعدادات الموقع</h3>
-    <div id="settingToggles">
-      <div class="tog-wrap">
-        <div class="tog-info"><div class="tog-title">🔧 وضع الصيانة</div><div class="tog-desc">إخفاء الموقع عن الزوار وعرض صفحة صيانة</div></div>
-        <label class="tog"><input type="checkbox" id="tog-maintenance" onchange="saveSetting('maintenance.enabled',this.checked)"><span class="tog-slider"></span></label>
-      </div>
-      <div class="tog-wrap">
-        <div class="tog-info"><div class="tog-title">📤 السماح بمشاركة الوصفات</div><div class="tog-desc">تفعيل/تعطيل زر "شارك وصفتك"</div></div>
-        <label class="tog"><input type="checkbox" id="tog-submissions" onchange="saveSetting('submissions_enabled',this.checked)"><span class="tog-slider"></span></label>
-      </div>
-      <div class="tog-wrap">
-        <div class="tog-info"><div class="tog-title">✅ طلب الموافقة قبل النشر</div><div class="tog-desc">الوصفات الجديدة تذهب لقائمة المراجعة</div></div>
-        <label class="tog"><input type="checkbox" id="tog-approval" onchange="saveSetting('require_approval',this.checked)"><span class="tog-slider"></span></label>
-      </div>
-      <div class="tog-wrap">
-        <div class="tog-info"><div class="tog-title">⭐ نظام التقييمات</div><div class="tog-desc">تفعيل/تعطيل نجوم التقييم</div></div>
-        <label class="tog"><input type="checkbox" id="tog-ratings" onchange="saveSetting('ratings_enabled',this.checked)"><span class="tog-slider"></span></label>
-      </div>
-      <div class="tog-wrap">
-        <div class="tog-info"><div class="tog-title">💬 نظام التعليقات</div><div class="tog-desc">السماح للمستخدمين بكتابة تعليقات</div></div>
-        <label class="tog"><input type="checkbox" id="tog-comments" onchange="saveSetting('comments_enabled',this.checked)"><span class="tog-slider"></span></label>
-      </div>
-      <div class="tog-wrap">
-        <div class="tog-info"><div class="tog-title">🔗 زر المشاركة</div><div class="tog-desc">تفعيل/تعطيل زر نسخ رابط الوصفة</div></div>
-        <label class="tog"><input type="checkbox" id="tog-share" onchange="saveSetting('share_enabled',this.checked)"><span class="tog-slider"></span></label>
-      </div>
-    </div>
-
-    <!-- GLOBAL CONSTANTS -->
-    <h3 style="margin-top:20px;margin-bottom:14px">✏️ ثوابت الموقع (بدون لمس الكود)</h3>
-    <div class="fr2">
-      <div class="fg"><label>عنوان الموقع</label><input class="fi" id="siteTitle" placeholder="Xbloom Recipes | وصفات اكس بلوم"></div>
-      <div class="fg"><label>نص الـ Footer</label><input class="fi" id="footerText" placeholder="جميع حقوق الوصفات محفوظة..."></div>
-    </div>
-    <div class="fr2">
-      <div class="fg"><label>نص حقوق النشر</label><input class="fi" id="copyText" placeholder="© 2026 Xbloom Recipes"></div>
-      <div class="fg"><label>رسالة صفحة الصيانة</label><input class="fi" id="maintMsg" placeholder="الموقع تحت الصيانة..."></div>
-    </div>
-    <button class="btn bp" onclick="saveConstants()" style="margin-bottom:20px">💾 حفظ الثوابت</button>
-
-    <!-- DYNAMIC BREW TYPES -->
-    <h3 style="margin-bottom:14px">☕ أنواع المحضّرات الديناميكية</h3>
-    <div id="brewTypesList" style="margin-bottom:12px"></div>
-    <div style="display:flex;gap:8px">
-      <input class="fi" id="newBrewType" placeholder="اسم المحضّر الجديد (مثل: xBloom 2)" style="flex:1">
-      <button class="btn bg" onclick="addBrewType()">➕ إضافة</button>
-    </div>
-
-    <div class="danger-zone">
-      <h4>⚠️ منطقة الخطر</h4>
-      <div class="danger-actions">
-        <button class="btn bd" onclick="dangerDeleteAll()">🗑️ حذف جميع وصفات Firebase</button>
-        <button class="btn bd" onclick="dangerClearPending()">🗑️ مسح قائمة المراجعة</button>
-        <button class="btn bd" onclick="resetAllRatings()">🗑️ تصفير جميع التقييمات</button>
-        <button class="btn bd" onclick="dangerClearComments()">🗑️ حذف جميع التعليقات</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════ SECURITY ══════════════ -->
-  <div id="tSecurity" class="acard">
-    <!-- PASSWORD ROTATOR -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:14px">🔑 تغيير كلمة المرور</h3>
-      <div class="alert alert-warn show">⚠️ تغيير كلمة المرور لا يؤثر على الكود الثابت. سيتم حفظ الهاش الجديد في Firebase وستستخدمه الجلسات القادمة.</div>
-      <div class="fg"><label>كلمة المرور الجديدة</label><input class="fi" type="password" id="newPass" placeholder="أدخل كلمة المرور الجديدة"></div>
-      <div class="fg"><label>تأكيد كلمة المرور</label><input class="fi" type="password" id="confPass" placeholder="أعد إدخال كلمة المرور"></div>
-      <button class="btn bp" onclick="rotatePassword()">🔐 تحديث كلمة المرور</button>
-    </div>
-
-    <!-- FIREBASE RULES -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:12px">📋 قواعد Firebase الموصى بها</h3>
-      <div class="alert alert-info show">انسخ هذه القواعد وضعها في Firebase Console → Realtime Database → Rules</div>
-      <pre style="background:var(--up);padding:16px;border-radius:10px;border:1px solid var(--br);font-size:.82em;overflow-x:auto;color:#43e97b;margin-top:10px">{
-  "rules": {
-    "recipes": {
-      ".read": true,
-      ".write": "auth != null || root.child('settings/adminSession').val() == true"
-    },
-    "pending": {
-      ".read": "root.child('settings/adminSession').val() == true",
-      ".write": true
-    },
-    "ratings": { ".read": true, ".write": true },
-    "comments": {
-      ".read": true,
-      ".write": true
-    },
-    "settings": {
-      ".read": true,
-      ".write": "root.child('settings/adminSession').val() == true"
-    },
-    "activity": {
-      ".read": "root.child('settings/adminSession').val() == true",
-      ".write": true
-    },
-    "analytics": { ".read": true, ".write": true },
-    "promo_codes": { ".read": true, ".write": true },
-    "affiliate": { ".read": true, ".write": true }
-  }
-}</pre>
-      <p style="font-size:.75em;color:var(--t2);margin-top:8px">ملاحظة: للبيئة الإنتاجية المثلى، استخدم Firebase Authentication للأمان الكامل.</p>
-    </div>
-
-    <!-- AUDIT LOG -->
-    <div>
-      <div class="sec-head">
-        <h3>📋 سجل التدقيق (Audit Log)</h3>
-        <button class="btn bsm bd" onclick="clearActivityLog()">🗑️ مسح السجل</button>
-      </div>
-      <div id="activityLog" style="max-height:400px;overflow-y:auto;border:1px solid var(--br);border-radius:10px"></div>
-    </div>
-  </div>
-
-  <!-- ══════════════ TOOLS ══════════════ -->
-  <div id="tTools" class="acard">
-    <!-- LINK HEALTH CHECK -->
-    <div style="margin-bottom:24px">
-      <div class="sec-head">
-        <h3>🔗 فحص صحة الروابط</h3>
-        <button class="btn bp bsm" onclick="runLinkCheck()">🔍 فحص الآن</button>
-      </div>
-      <p style="font-size:.82em;color:var(--t2);margin-bottom:12px">يفحص روابط xBloom في وصفات Firebase ويكتشف الروابط المعطوبة</p>
-      <div id="linkCheckStatus" style="font-size:.85em;margin-bottom:10px"></div>
-      <div id="linkCheckResults" style="max-height:350px;overflow-y:auto"></div>
-    </div>
-
-    <!-- DATA VALIDATOR -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:12px">🛡️ مدقق البيانات</h3>
-      <div class="fr2">
-        <div class="fg"><label>الحد الأقصى لحجم الوصفة (بايت)</label>
-          <input class="fi" type="number" id="maxSize" value="5000" min="100" max="50000">
-        </div>
-        <div style="display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:12px">
-          <button class="btn bp" onclick="runValidator()">🔍 تحقق</button>
-        </div>
-      </div>
-      <div id="validatorResults"></div>
-    </div>
-
-    <!-- CLEANUP TOOL -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:12px">🧹 أداة التنظيف</h3>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button class="btn bd" onclick="cleanupOldPending()">🗑️ حذف وصفات مراجعة قديمة (أكثر من 30 يوم)</button>
-        <button class="btn bd" onclick="cleanupHiddenRecipes()">🗑️ حذف الوصفات المخفية</button>
-        <button class="btn bw" onclick="cleanupDuplicates()">🔄 فحص وحذف التكرارات</button>
-      </div>
-      <div id="cleanupResults" style="margin-top:10px"></div>
-    </div>
-
-    <!-- IMPORT -->
-    <div style="margin-bottom:24px">
-      <h3 style="margin-bottom:14px">📤 استيراد من Excel</h3>
-      <div class="upl" onclick="document.getElementById('xlsIn').click()">
-        <div style="font-size:2.5em;margin-bottom:8px">📁</div>
-        <h4>اسحب ملف Excel أو اضغط للاختيار</h4>
-        <p style="color:var(--t2);margin-top:6px;font-size:.82em">.xlsx | .xls</p>
-      </div>
-      <input type="file" id="xlsIn" accept=".xlsx,.xls" style="display:none" onchange="doImport(event)">
-      <button class="btn bg bbl" onclick="dlTemplate()">📥 تحميل نموذج Excel</button>
-    </div>
-
-    <!-- EXPORT -->
-    <div>
-      <h3 style="margin-bottom:14px">📥 تصدير البيانات</h3>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button class="btn bp bbl" onclick="expXLS()">📊 تصدير Firebase → Excel</button>
-        <button class="btn bg bbl" onclick="expAllXLS()">📊 تصدير الكل (FB + INIT) → Excel</button>
-        <button class="btn bpu bbl" onclick="expJSON()">📄 تصدير JSON</button>
-        <button class="btn bw bbl" onclick="expBackup()">💾 نسخة احتياطية شاملة</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════ ADD/EDIT ══════════════ -->
+  <!-- ADD RECIPE -->
   <div id="tAdd" class="acard">
     <h3 id="addFormTitle" style="margin-bottom:16px">➕ إضافة وصفة جديدة</h3>
     <form id="addForm" onsubmit="saveRec(event)">
       <input type="hidden" id="rFbKey">
       <div class="fr2">
-        <div class="fg"><label>الاسم *</label><input class="fi" id="rN" required placeholder="اسم الوصفة"></div>
-        <div class="fg"><label>المؤلف</label><input class="fi" id="rA" placeholder="اسم المؤلف"></div>
+        <div class="fg"><label>الاسم *</label><input class="form-input" id="rN" required placeholder="اسم الوصفة"></div>
+        <div class="fg"><label>المؤلف</label><input class="form-input" id="rA" placeholder="اسم المؤلف"></div>
       </div>
       <div class="fr2">
         <div class="fg"><label>المحضّر *</label>
-          <select class="fi" id="rBr" required>
+          <select class="form-input" id="rBr" required>
             <option value="">اختر</option>
             <option value="Omni">Omni</option>
             <option value="xPod">xPod</option>
             <option value="Other">Other</option>
           </select>
         </div>
-        <div class="fg"><label>الجرعة *</label><input class="fi" id="rD" required placeholder="15g"></div>
+        <div class="fg"><label>الجرعة *</label><input class="form-input" id="rD" required placeholder="15g"></div>
       </div>
-      <div class="fr2">
-        <div class="fg"><label>النسبة</label><input class="fi" id="rR" placeholder="1:16"></div>
-        <div class="fg"><label>رابط الوصفة *</label><input type="url" class="fi" id="rL" required placeholder="https://share-h5.xbloom.com/?id=..."></div>
-      </div>
+      <div class="fg"><label>النسبة</label><input class="form-input" id="rR" placeholder="1:16"></div>
       <div class="fg"><label>نوع التحضير *</label>
-        <div>
+        <div class="tsel">
           <div class="topt"><input type="radio" name="rc" id="rHot" value="hot" required><label for="rHot">🔥 وصفة حار</label></div>
           <div class="topt"><input type="radio" name="rc" id="rCold" value="cold"><label for="rCold">🧊 وصفة بارد</label></div>
           <div class="topt"><input type="radio" name="rc" id="rSrv" value="server"><label for="rSrv">⚙️ غسيل وترطيب سيرفر</label></div>
         </div>
       </div>
-      <div class="fr2" style="margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px;background:var(--up);border-radius:9px;border:1px solid var(--br)">
-          <input type="checkbox" id="rFeat" style="width:16px;height:16px;accent-color:var(--ta)">
-          <span style="font-size:.88em">📌 وصفة مميزة (مثبتة في الأعلى)</span>
-        </label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px;background:var(--up);border-radius:9px;border:1px solid var(--br)">
-          <input type="checkbox" id="rSponsored" style="width:16px;height:16px;accent-color:#ffd700">
-          <span style="font-size:.88em">🌟 وصفة مدفوعة (Sponsored)</span>
-        </label>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="fg"><label>رابط الوصفة *</label><input type="url" class="form-input" id="rL" required placeholder="https://share-h5.xbloom.com/?id=..."></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
         <button type="submit" class="btn bp" style="flex:1;justify-content:center" id="saveBtn">💾 حفظ</button>
         <button type="button" class="btn bgray" onclick="resetForm()">🔄 مسح</button>
       </div>
     </form>
+  </div>
+
+  <!-- MANAGE RECIPES -->
+  <div id="tRec" class="acard">
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+      <input class="form-input" style="flex:1;min-width:180px" id="aQ" placeholder="🔍 بحث..." oninput="renderTable()">
+      <select class="form-input" style="width:130px" id="aBr" onchange="renderTable()">
+        <option value="all">كل المحضّرات</option>
+        <option value="Omni">Omni</option>
+        <option value="xPod">xPod</option>
+        <option value="Other">Other</option>
+      </select>
+      <select class="form-input" style="width:130px" id="aSrc" onchange="renderTable()">
+        <option value="all">كل المصادر</option>
+        <option value="fb">☁️ Firebase فقط</option>
+        <option value="init">📁 INIT فقط</option>
+      </select>
+    </div>
+    <div id="tableCount" style="font-size:.82em;color:var(--t2);margin-bottom:10px"></div>
+    <div class="tw">
+      <table class="tbl">
+        <thead><tr><th>#</th><th>الاسم</th><th>المؤلف</th><th>المحضّر</th><th>النوع</th><th>المصدر</th><th>الإجراءات</th></tr></thead>
+        <tbody id="aTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RATINGS -->
+  <div id="tRatings" class="acard">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+      <h3>⭐ إدارة التقييمات</h3>
+      <button class="btn bd bsm" onclick="resetAllRatings()">🗑️ تصفير جميع التقييمات</button>
+    </div>
+    <div id="ratingsList" class="rlist"><p style="color:var(--t2);text-align:center;padding:20px">جاري تحميل التقييمات...</p></div>
+  </div>
+
+  <!-- IMPORT -->
+  <div id="tImp" class="acard">
+    <h3 style="margin-bottom:14px">📤 استيراد من Excel</h3>
+    <div class="upl" onclick="document.getElementById('xlsIn').click()">
+      <div style="font-size:2.5em;margin-bottom:8px">📁</div>
+      <h4>اسحب ملف Excel هنا أو اضغط للاختيار</h4>
+      <p style="color:var(--t2);margin-top:8px;font-size:.82em">.xlsx | .xls</p>
+    </div>
+    <input type="file" id="xlsIn" accept=".xlsx,.xls" style="display:none" onchange="doImport(event)">
+    <button class="btn bg bbl" onclick="dlTemplate()" style="margin-top:8px">📥 تحميل نموذج Excel</button>
+  </div>
+
+  <!-- EXPORT -->
+  <div id="tExp" class="acard">
+    <h3 style="margin-bottom:14px">📥 تصدير البيانات</h3>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn bp bbl" onclick="expXLS()">📊 تصدير وصفات Firebase → Excel</button>
+      <button class="btn bg bbl" onclick="expJSON()">📄 تصدير JSON</button>
+      <button class="btn bw bbl" onclick="expBackup()">💾 نسخة احتياطية كاملة</button>
+    </div>
   </div>
 
 </div>
@@ -737,27 +307,14 @@ textarea.fi{resize:vertical;min-height:80px}
   </div>
 </div>
 
-<!-- Admin Reply Modal -->
-<div class="ov" id="replyOv">
-  <div class="cmod" style="max-width:500px">
-    <h3>↩️ رد المطور</h3>
-    <textarea class="fi" id="replyText" rows="4" placeholder="اكتب ردك هنا..." style="margin:12px 0"></textarea>
-    <div class="cmod-acts">
-      <button class="btn bp" id="replyOk">إرسال الرد</button>
-      <button class="btn bgray" onclick="document.getElementById('replyOv').classList.remove('open')">إلغاء</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script type="module">
-import { initializeApp }                                                from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, remove, get, update }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp }                                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, push, set, remove, get }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // ════ CONFIG ════
-const PASS_HASH  = "f4769037706d860d4b966601f016e78a631f4a9743c748c0817c7d4e3e3b3970";
-const USER_HASH  = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+const CREDENTIALS = { user: '66000134', pass: 'ece2ce4aead4ef6f571ef1cc66cabc81937bbc4d' };
 const FB_CFG = {
   apiKey:      "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
   databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
@@ -770,83 +327,54 @@ const CKW = ['بارد','ثلج','ice','🧊','iced','الثلج','cold','بار
 const SKW = ['غسيل','ترطيب','سيرفر','غسل','server','cleaning','wash'];
 
 // ════ STATE ════
-let app, db;
-let FB_RECIPES = [], ALL_RECIPES = [];
-let FB_RATINGS = {}, FB_SETTINGS = {}, FB_ACTIVITY = [];
-let PENDING = [], ALL_COMMENTS = [];
-let PROMO_CODES = {}, AFFILIATE = {};
-let ANALYTICS = {};
-let editingKey = null, selectedKeys = new Set();
-
-// ════ SHA-256 ════
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+let app, db, recipesRef, ratingsRef;
+let FB_RECIPES = [];
+let FB_RATINGS = {};
+let ALL_RECIPES = [];   // FB + INIT merged
+let editingKey  = null;
 
 // ════ HELPERS ════
 function toast(msg, cls='tok') {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+cls+' show';
-  setTimeout(()=>t.classList.remove('show'),3200);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + cls + ' show';
+  setTimeout(() => t.classList.remove('show'), 3200);
 }
-function setEl(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
-function str(v){ return v==null?'':String(v); }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function ensureCat(r){
+function setEl(id, v) { const el=document.getElementById(id); if(el) el.textContent=v; }
+function str(v) { return v==null?'':String(v); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function ensureCat(r) {
   if(!r.category){const t=(str(r.name)+' '+str(r.author)).toLowerCase();r.category=SKW.some(k=>t.includes(k))?'server':CKW.some(k=>t.includes(k))?'cold':'hot';}
   return r;
 }
-function ratingKey(link){
-  try{return btoa(unescape(encodeURIComponent(link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
-  catch(e){return 'k'+Math.abs([...link].reduce((a,c)=>a*31+c.charCodeAt(0)|0,0));}
+function setFbStatus(state, msg) {
+  const dot=document.getElementById('fbDot');
+  const lbl=document.getElementById('fbLbl');
+  dot.className='fb-dot '+state;
+  lbl.textContent=msg;
+  const alert=document.getElementById('fbAlert');
+  if(state==='err') alert.classList.add('show');
+  else alert.classList.remove('show');
 }
-function relTime(ts){
-  const d=Date.now()-ts, m=60000,h=3600000,day=86400000;
-  if(d<m) return 'الآن';
-  if(d<h) return Math.floor(d/m)+' دقيقة مضت';
-  if(d<day) return Math.floor(d/h)+' ساعة مضت';
-  return new Date(ts).toLocaleDateString('ar-SA');
-}
-function confirm2(title,msg,cb){
-  setEl('confirmTitle',title); setEl('confirmMsg',msg);
-  document.getElementById('confirmOv').classList.add('open');
-  document.getElementById('confirmOk').onclick=()=>{document.getElementById('confirmOv').classList.remove('open'); cb();} ;
-}
-function setFbStatus(state,msg){
-  const dot=document.getElementById('fbDot'); dot.className='fb-dot '+state;
-  setEl('fbLbl',msg);
-  document.getElementById('fbAlert').classList.toggle('show',state==='err');
-}
-
-// ════ TABS ════
-window.switchTab=function(btn,id){
-  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
-  btn.classList.add('on'); document.getElementById(id).classList.add('open');
-};
 
 // ════ AUTH ════
-window.doLogin=async function(){
-  const u=document.getElementById('lu').value.trim();
-  const p=document.getElementById('lp').value.trim();
-  const [uh,ph]=await Promise.all([sha256(u),sha256(p)]);
-  // Check Firebase stored hash first
-  const storedHash=FB_SETTINGS?.authHash;
-  const passOk=ph===PASS_HASH||(storedHash&&ph===storedHash);
-  const userOk=uh===USER_HASH;
-  if(userOk&&passOk){
+window.doLogin = function() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value.trim();
+  if(u===CREDENTIALS.user && p===CREDENTIALS.pass){
     sessionStorage.setItem('xba','1');
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminPanel').style.display='block';
-    initFirebase(); await logActivity('login','🔐 تسجيل دخول الأدمن');
+    initFirebase();
   } else {
     document.getElementById('lerr').textContent='بيانات الدخول غير صحيحة ❌';
-    setTimeout(()=>setEl('lerr',''),3000);
   }
 };
-window.doLogout=function(){ sessionStorage.removeItem('xba'); location.reload(); };
-['lu','lp'].forEach(id=>{document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')window.doLogin();});});
+window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload(); };
+
+['lu','lp'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') window.doLogin(); });
+});
+
 if(sessionStorage.getItem('xba')==='1'){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminPanel').style.display='block';
@@ -854,800 +382,112 @@ if(sessionStorage.getItem('xba')==='1'){
 }
 
 // ════ FIREBASE INIT ════
-function initFirebase(){
+function initFirebase() {
   setFbStatus('loading','جاري الاتصال...');
-  try{app=initializeApp(FB_CFG);db=getDatabase(app);}
-  catch(e){setFbStatus('err','خطأ: '+e.message);return;}
-
-  // RECIPES
-  onValue(ref(db,'recipes'),snap=>{
-    FB_RECIPES=[];
-    snap.forEach(child=>{const r=child.val();r._fbKey=child.key;r._src='fb';ensureCat(r);FB_RECIPES.push(r);});
-    const fbLinks=new Set(FB_RECIPES.map(r=>r.link));
-    const initClone=JSON.parse(JSON.stringify(INIT)).filter(r=>!fbLinks.has(r.link));
-    initClone.forEach(r=>{r._src='init';ensureCat(r);});
-    ALL_RECIPES=FB_RECIPES.concat(initClone);
-    setFbStatus('ok','✅ متصل — '+FB_RECIPES.length+' Firebase + '+initClone.length+' INIT');
-    setEl('lastSync','آخر تحديث: '+new Date().toLocaleTimeString('ar-SA'));
-    updateDashboard(); renderTable();
-    populateSelects();
-  },err=>setFbStatus('err','فشل — '+err.message));
-
-  // RATINGS
-  onValue(ref(db,'ratings'),snap=>{
-    FB_RATINGS={};
-    snap.forEach(child=>{FB_RATINGS[child.key]=child.val();});
-    renderRatings(); updateDashboard();
-  },()=>{});
-
-  // SETTINGS
-  onValue(ref(db,'settings'),snap=>{
-    FB_SETTINGS=snap.val()||{};
-    applySettings();
-  },()=>{});
-
-  // PENDING
-  onValue(ref(db,'pending'),snap=>{
-    PENDING=[];
-    snap.forEach(child=>{const r=child.val();r._fbKey=child.key;PENDING.push(r);});
-    renderPending();
-    const badge=document.getElementById('pendBadge');
-    badge.textContent=PENDING.length;
-    badge.classList.toggle('show',PENDING.length>0);
-  },()=>{});
-
-  // ACTIVITY
-  onValue(ref(db,'activity'),snap=>{
-    FA_ACTIVITY=[];
-    snap.forEach(child=>{FA_ACTIVITY.push({...child.val(),_key:child.key});});
-    FA_ACTIVITY.sort((a,b)=>b.ts-a.ts);
-    renderActivity();
-  },()=>{});
-
-  // COMMENTS
-  onValue(ref(db,'comments'),snap=>{
-    ALL_COMMENTS=[];
-    snap.forEach(recipeSnap=>{
-      recipeSnap.forEach(cmtSnap=>{
-        ALL_COMMENTS.push({...cmtSnap.val(),_key:cmtSnap.key,_recipeKey:recipeSnap.key});
-      });
-    });
-    ALL_COMMENTS.sort((a,b)=>b.ts-a.ts);
-    renderComments();
-    const pending=ALL_COMMENTS.filter(c=>!c.approved);
-    const badge=document.getElementById('cmtBadge');
-    badge.textContent=pending.length;
-    badge.classList.toggle('show',pending.length>0);
-  },()=>{});
-
-  // PROMO
-  onValue(ref(db,'promo_codes'),snap=>{
-    PROMO_CODES={};
-    snap.forEach(child=>{PROMO_CODES[child.key]=child.val();});
-    renderPromos();
-  },()=>{});
-
-  // AFFILIATE
-  onValue(ref(db,'affiliate'),snap=>{
-    AFFILIATE={};
-    snap.forEach(child=>{AFFILIATE[child.key]=child.val();});
-    renderAffiliates();
-  },()=>{});
-
-  // ANALYTICS
-  onValue(ref(db,'analytics/brew'),snap=>{
-    ANALYTICS={};
-    snap.forEach(child=>{ANALYTICS[child.key]=child.val();});
-    renderAnalytics();
-  },()=>{});
-}
-
-let FA_ACTIVITY = [];
-
-// ════ ACTIVITY LOGGER ════
-async function logActivity(type,text){
-  if(!db) return;
-  try{await push(ref(db,'activity'),{type,text,ts:Date.now()});}catch(e){}
-}
-
-// ════ DASHBOARD ════
-function updateDashboard(){
-  let h=0,c=0,s=0,o=0,x=0,ot=0,feat=0,hidden=0;
-  ALL_RECIPES.forEach(r=>{
-    const cat=r.category||'hot',b=r.brewer||'';
-    if(cat==='hot')h++;else if(cat==='cold')c++;else s++;
-    if(b==='Omni')o++;else if(b==='xPod')x++;else ot++;
-    if(r.featured)feat++;if(r.hidden)hidden++;
-  });
-  const rated=Object.keys(FB_RATINGS).length;
-  document.getElementById('dashStats').innerHTML=`
-    <div class="sc s-teal"><div class="sv">${ALL_RECIPES.length}</div><div class="sl">📋 الكل</div></div>
-    <div class="sc s-blue"><div class="sv">${FB_RECIPES.length}</div><div class="sl">☁️ Firebase</div></div>
-    <div class="sc s-red"><div class="sv">${PENDING.length}</div><div class="sl">⏳ مراجعة</div></div>
-    <div class="sc s-green"><div class="sv">${rated}</div><div class="sl">⭐ مقيّمة</div></div>
-    <div class="sc s-purple"><div class="sv">${feat}</div><div class="sl">📌 مميزة</div></div>
-    <div class="sc s-yellow"><div class="sv">${hidden}</div><div class="sl">🙈 مخفية</div></div>
-    <div class="sc"><div class="sv">${h}</div><div class="sl">🔥 حارة</div></div>
-    <div class="sc"><div class="sv">${c}</div><div class="sl">🧊 باردة</div></div>
-    <div class="sc"><div class="sv">${s}</div><div class="sl">⚙️ سيرفر</div></div>
-  `;
-  renderDashCharts(h,c,s,o,x,ot);
-  renderTopRated();
-  renderRecentActivity();
-}
-
-let catChartObj=null, brewChartObj=null;
-function renderDashCharts(h,c,s,o,x,ot){
-  const catCtx=document.getElementById('catChart');
-  const brewCtx=document.getElementById('brewChart');
-  if(!catCtx||!brewCtx) return;
-  const opts={responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#A0A0A0',font:{family:'Cairo'}}}}};
-  if(catChartObj) catChartObj.destroy();
-  if(brewChartObj) brewChartObj.destroy();
-  catChartObj=new Chart(catCtx,{type:'doughnut',data:{labels:['🔥 حار','🧊 بارد','⚙️ سيرفر'],datasets:[{data:[h,c,s],backgroundColor:['#f5576c','#4facfe','#a78bfa'],borderColor:'#1A1A1A',borderWidth:2}]},options:opts});
-  brewChartObj=new Chart(brewCtx,{type:'doughnut',data:{labels:['Omni','xPod','Other'],datasets:[{data:[o,x,ot],backgroundColor:['#00A896','#4A90E2','#ffd89b'],borderColor:'#1A1A1A',borderWidth:2}]},options:opts});
-}
-
-function renderTopRated(){
-  const el=document.getElementById('topRated'); if(!el) return;
-  const sorted=Object.entries(FB_RATINGS).map(([k,v])=>{
-    const avg=v.count>0?v.total/v.count:0;
-    const recipe=ALL_RECIPES.find(r=>{try{return ratingKey(r.link)===k;}catch{return false;}});
-    return {avg,count:v.count,name:recipe?str(recipe.name):'وصفة غير معروفة'};
-  }).sort((a,b)=>b.avg-a.avg).slice(0,5);
-  if(!sorted.length){el.innerHTML='<p style="color:var(--t2);font-size:.82em">لا توجد تقييمات بعد</p>';return;}
-  el.innerHTML=sorted.map((r,i)=>{
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--up);border-radius:8px;margin-bottom:6px;font-size:.83em">
-      <span>${medal} ${esc(r.name)}</span>
-      <span style="color:#ffd700;font-weight:700">${r.avg.toFixed(1)}⭐ (${r.count})</span>
-    </div>`;
-  }).join('');
-}
-
-function renderRecentActivity(){
-  const el=document.getElementById('recentActs'); if(!el) return;
-  const recent=FA_ACTIVITY.slice(0,5);
-  if(!recent.length){el.innerHTML='<p style="color:var(--t2);font-size:.82em">لا يوجد نشاط بعد</p>';return;}
-  el.innerHTML=recent.map(a=>{
-    const icons={add:'➕',del:'🗑️',edit:'✏️',login:'🔐',setting:'⚙️',approve:'✅',reject:'❌'};
-    return `<div style="display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--up);border-radius:8px;margin-bottom:6px;font-size:.82em">
-      <span>${icons[a.type]||'•'}</span>
-      <span style="flex:1">${esc(a.text)}</span>
-      <span style="color:var(--t2);font-size:.9em">${relTime(a.ts)}</span>
-    </div>`;
-  }).join('');
-}
-
-// ════ SETTINGS ════
-function applySettings(){
-  const s=FB_SETTINGS;
-  const sets={
-    'tog-maintenance':s.maintenance?.enabled,
-    'tog-submissions':s.submissions_enabled!==false,
-    'tog-approval':s.require_approval,
-    'tog-ratings':s.ratings_enabled!==false,
-    'tog-comments':s.comments_enabled!==false,
-    'tog-share':s.share_enabled!==false,
-  };
-  Object.entries(sets).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.checked=!!v;});
-  if(s.banner?.text) setEl('banStatus','✅ إعلان نشط: '+s.banner.text);
-  if(s.ads_code) document.getElementById('adsCode').value=s.ads_code;
-  if(s.tip_jar_url) document.getElementById('tipJarUrl').value=s.tip_jar_url;
-  if(s.site_title) document.getElementById('siteTitle').value=s.site_title;
-  if(s.footer_text) document.getElementById('footerText').value=s.footer_text;
-  if(s.copyright) document.getElementById('copyText').value=s.copyright;
-  if(s.maintenance?.message) document.getElementById('maintMsg').value=s.maintenance.message;
-  if(s.featured_today) setEl('featTodayStatus','⭐ وصفة اليوم الحالية: '+s.featured_today);
-  renderBrewTypes();
-}
-
-window.saveSetting=async function(path,val){
-  if(!db){toast('Firebase غير متصل!','terr');return;}
-  const parts=path.split('.');
-  let obj={};
-  if(parts.length===2) obj[parts[0]]={...((FB_SETTINGS||{})[parts[0]]||{}), [parts[1]]:val};
-  else obj[path]=val;
-  try{
-    await update(ref(db,'settings'),obj);
-    toast('تم الحفظ ✅');
-    await logActivity('setting','⚙️ تعديل إعداد: '+path+' → '+val);
-  }catch(e){toast('خطأ: '+e.message,'terr');}
-};
-
-window.saveConstants=async function(){
-  if(!db) return;
-  const data={
-    site_title:document.getElementById('siteTitle').value,
-    footer_text:document.getElementById('footerText').value,
-    copyright:document.getElementById('copyText').value,
-    'maintenance.message':document.getElementById('maintMsg').value
-  };
-  try{
-    await update(ref(db,'settings'),{
-      site_title:data.site_title,
-      footer_text:data.footer_text,
-      copyright:data.copyright,
-      maintenance:{...((FB_SETTINGS||{}).maintenance||{}),message:data['maintenance.message']}
-    });
-    toast('تم حفظ الثوابت ✅');
-    await logActivity('setting','⚙️ تعديل ثوابت الموقع');
-  }catch(e){toast('خطأ: '+e.message,'terr');}
-};
-
-// ════ BREW TYPES ════
-function renderBrewTypes(){
-  const el=document.getElementById('brewTypesList'); if(!el) return;
-  const types=FB_SETTINGS?.brew_types||{Omni:true,xPod:true,Other:true};
-  el.innerHTML=Object.entries(types).map(([name,active])=>
-    `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--up);border-radius:8px;margin-bottom:6px">
-      <span style="flex:1;font-weight:700">${esc(name)}</span>
-      <label class="tog" style="scale:.8"><input type="checkbox" ${active?'checked':''} onchange="toggleBrewType('${name}',this.checked)"><span class="tog-slider"></span></label>
-      ${!['Omni','xPod','Other'].includes(name)?`<button class="btn bsm bd" onclick="removeBrewType('${name}')">✕</button>`:'(ثابت)'}
-    </div>`
-  ).join('');
-}
-
-window.addBrewType=async function(){
-  const n=document.getElementById('newBrewType').value.trim();
-  if(!n){toast('أدخل اسم المحضّر','terr');return;}
-  const types={...(FB_SETTINGS?.brew_types||{Omni:true,xPod:true,Other:true}),[n]:true};
-  await update(ref(db,'settings'),{brew_types:types});
-  document.getElementById('newBrewType').value='';
-  toast('تمت الإضافة ✅');
-  // Also update the brewer select
-  const sel=document.getElementById('rBr');
-  if(sel&&!sel.querySelector(`option[value="${n}"]`)){
-    const opt=document.createElement('option');opt.value=n;opt.textContent=n;sel.appendChild(opt);
+  try {
+    app        = initializeApp(FB_CFG);
+    db         = getDatabase(app);
+    recipesRef = ref(db,'recipes');
+    ratingsRef = ref(db,'ratings');
+  } catch(e) {
+    setFbStatus('err','خطأ في إعداد Firebase: ' + e.message);
+    return;
   }
-};
-window.toggleBrewType=async function(name,val){
-  const types={...(FB_SETTINGS?.brew_types||{}), [name]:val};
-  await update(ref(db,'settings'),{brew_types:types});
-};
-window.removeBrewType=async function(name){
-  const types={...(FB_SETTINGS?.brew_types||{})};
-  delete types[name];
-  await update(ref(db,'settings'),{brew_types:types});
-  toast('تم الحذف');
-};
 
-// ════ PENDING ════
-function renderPending(){
-  const el=document.getElementById('pendingList');
-  if(!PENDING.length){el.innerHTML='<p style="color:var(--t2);text-align:center;padding:30px">لا توجد وصفات في قائمة المراجعة 🎉</p>';return;}
-  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
-    ${PENDING.map(r=>`
-      <div style="background:var(--up);border-radius:12px;padding:16px;border:1px solid rgba(255,213,101,.3)">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-          <div>
-            <div style="font-weight:700;font-size:.95em">${esc(str(r.name))}</div>
-            <div style="font-size:.78em;color:var(--ta)">بواسطة ${esc(str(r.author||'مجهول'))}</div>
-            <div style="font-size:.72em;color:var(--t2);margin-top:3px">${relTime(r.addedAt||0)}</div>
-          </div>
-          <span class="badge-pend">انتظار</span>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-          <span style="font-size:.75em;padding:3px 8px;background:var(--card);border-radius:6px">${esc(str(r.brewer))}</span>
-          <span style="font-size:.75em;padding:3px 8px;background:var(--card);border-radius:6px">${esc(str(r.dose))}</span>
-          <span style="font-size:.75em;padding:3px 8px;background:var(--card);border-radius:6px">${r.category==='cold'?'🧊':r.category==='server'?'⚙️':'🔥'}</span>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button class="btn bg bsm" style="flex:1" onclick="approvePending('${r._fbKey}')">✅ قبول</button>
-          <a href="${esc(str(r.link))}" target="_blank" class="btn bgray bsm">🔗</a>
-          <button class="btn bd bsm" onclick="rejectPending('${r._fbKey}')">✕</button>
-        </div>
-      </div>
-    `).join('')}
-  </div>`;
+  // Watch recipes
+  onValue(recipesRef, snap => {
+    FB_RECIPES = [];
+    snap.forEach(child=>{ const r=child.val(); r._fbKey=child.key; r._src='fb'; ensureCat(r); FB_RECIPES.push(r); });
+    // Merge with INIT (exclude duplicates by link)
+    const fbLinks = new Set(FB_RECIPES.map(r=>r.link));
+    const initClone = JSON.parse(JSON.stringify(INIT)).filter(r=>!fbLinks.has(r.link));
+    initClone.forEach(r=>{ r._src='init'; ensureCat(r); });
+    ALL_RECIPES = FB_RECIPES.concat(initClone);
+    setFbStatus('ok', '✅ متصل — ' + FB_RECIPES.length + ' وصفة Firebase + ' + initClone.length + ' INIT');
+    updateStats();
+    renderTable();
+  }, err => {
+    setFbStatus('err', 'فشل الاتصال — ' + err.message);
+  });
+
+  // Watch ratings
+  onValue(ratingsRef, snap => {
+    FB_RATINGS = {};
+    snap.forEach(child=>{ FB_RATINGS[child.key]=child.val(); });
+    renderRatings();
+    updateStats();
+  }, ()=>{});
 }
 
-window.approvePending=async function(key){
-  const r=PENDING.find(p=>p._fbKey===key);
-  if(!r) return;
-  const {_fbKey,...data}=r;
-  try{
-    await push(ref(db,'recipes'),{...data,addedAt:r.addedAt||Date.now()});
-    await remove(ref(db,'pending/'+key));
-    toast('تمت الموافقة ✅'); await logActivity('approve','✅ قبول وصفة: '+str(r.name));
-  }catch(e){toast('خطأ: '+e.message,'terr');}
-};
-
-window.rejectPending=function(key){
-  const r=PENDING.find(p=>p._fbKey===key);
-  confirm2('رفض الوصفة','رفض وحذف: '+(r?str(r.name):'الوصفة')+'؟',async()=>{
-    try{
-      await remove(ref(db,'pending/'+key));
-      toast('تم الرفض'); await logActivity('reject','❌ رفض وصفة: '+(r?str(r.name):''));
-    }catch(e){toast('خطأ','terr');}
+// ════ STATS ════
+function updateStats() {
+  let h=0,c=0,s=0,o=0,x=0,ot=0;
+  ALL_RECIPES.forEach(r=>{
+    const cat=r.category||'hot', b=r.brewer||'';
+    if(cat==='hot')h++; else if(cat==='cold')c++; else s++;
+    if(b==='Omni')o++; else if(b==='xPod')x++; else ot++;
   });
-};
+  setEl('sTotal', ALL_RECIPES.length);
+  setEl('sFB',    FB_RECIPES.length);
+  setEl('sH',h); setEl('sC',c); setEl('sS',s);
+  setEl('sO',o); setEl('sX',x); setEl('sOth',ot);
+  setEl('sRated', Object.keys(FB_RATINGS).length);
+}
 
-window.approveAllPending=function(){
-  if(!PENDING.length){toast('لا يوجد شيء','twin');return;}
-  confirm2('قبول الكل','قبول جميع الوصفات المعلقة ('+PENDING.length+')؟',async()=>{
-    for(const r of PENDING) await approvePending(r._fbKey);
-  });
-};
-
-window.rejectAllPending=function(){
-  if(!PENDING.length){toast('لا يوجد شيء','twin');return;}
-  confirm2('رفض الكل','رفض وحذف جميع الوصفات المعلقة؟',async()=>{
-    for(const r of PENDING){
-      try{await remove(ref(db,'pending/'+r._fbKey));}catch{}
-    }
-    await logActivity('reject','❌ رفض جميع الوصفات المعلقة');
-    toast('تم رفض الكل');
-  });
+// ════ TABS ════
+window.switchTab = function(btn,id){
+  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
+  btn.classList.add('on');
+  document.getElementById(id).classList.add('open');
 };
 
 // ════ TABLE ════
-window.renderTable=function(){
-  const q=(document.getElementById('aQ')?.value||'').toLowerCase().trim();
-  const br=document.getElementById('aBr')?.value||'all';
-  const cat=document.getElementById('aCat')?.value||'all';
-  const src=document.getElementById('aSrc')?.value||'all';
-  const list=ALL_RECIPES.filter(r=>{
+window.renderTable = function() {
+  const q   = (document.getElementById('aQ')?.value||'').toLowerCase().trim();
+  const br  = document.getElementById('aBr')?.value||'all';
+  const src = document.getElementById('aSrc')?.value||'all';
+  const list = ALL_RECIPES.filter(r=>{
     if(br!=='all'&&r.brewer!==br) return false;
-    if(cat!=='all'&&(r.category||'hot')!==cat) return false;
     if(src==='fb'&&r._src!=='fb') return false;
     if(src==='init'&&r._src!=='init') return false;
-    if(q){const t=(str(r.name)+' '+str(r.author)).toLowerCase();if(!t.includes(q)) return false;}
+    if(q){ const t=(str(r.name)+' '+str(r.author)).toLowerCase(); if(!t.includes(q)) return false; }
     return true;
   });
   setEl('tableCount','عرض '+list.length+' وصفة');
   const tbody=document.getElementById('aTbody');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:20px">لا توجد نتائج</td></tr>'; return; }
   tbody.innerHTML=list.map((r,i)=>{
-    const cat2=r.category||'hot';
-    const catLbl=cat2==='hot'?'🔥':cat2==='cold'?'🧊':'⚙️';
-    const srcBadge=r._src==='fb'?'<span class="badge-fb">☁️</span>':'<span class="badge-init">📁</span>';
-    const featBadge=r.featured?'<span class="badge-feat">📌</span>':'';
-    const hidBadge=r.hidden?'<span class="badge-hidden">🙈</span>':'';
-    const spBadge=r.sponsored?'<span class="badge-sponsored">🌟</span>':'';
-    const rKey=ratingKey(r.link);
-    const rd=FB_RATINGS[rKey]||{total:0,count:0};
-    const avg=rd.count>0?(rd.total/rd.count).toFixed(1):'—';
-    const actions=r._src==='fb'?`
-      <button class="btn bsm bw" onclick="editRec('${r._fbKey}')">✏️</button>
-      <button class="btn bsm bgray" onclick="toggleFeatured('${r._fbKey}','${r.featured}')">${r.featured?'📍':'📌'}</button>
-      <button class="btn bsm bgray" onclick="toggleHidden('${r._fbKey}','${r.hidden}')">${r.hidden?'👁':'🙈'}</button>
+    const cat=r.category||'hot';
+    const catLbl=cat==='hot'?'🔥 حار':cat==='cold'?'🧊 بارد':'⚙️ سيرفر';
+    const srcBadge=r._src==='fb'?'<span class="badge-fb">☁️ Firebase</span>':'<span class="badge-init">📁 INIT</span>';
+    const actions=r._src==='fb'?`<button class="btn bsm bw" onclick="editRec('${r._fbKey}')">✏️</button>
       <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(str(r.name))}')">🗑️</button>`
-      :'<span style="font-size:.72em;color:var(--t2)">للقراءة فقط</span>';
-    const chk=r._src==='fb'?`<input type="checkbox" class="row-chk" value="${r._fbKey}" onchange="updateSelection()" style="width:14px;height:14px">`:' ';
+      :'<span style="font-size:.75em;color:var(--t2)">للقراءة فقط</span>';
     return `<tr>
-      <td>${chk}</td>
       <td>${i+1}</td>
-      <td style="max-width:150px"><a href="${esc(str(r.link))}" target="_blank" title="${esc(str(r.name))}">${esc(str(r.name)).slice(0,30)}</a> ${featBadge}${hidBadge}${spBadge}</td>
-      <td style="font-size:.78em">${esc(str(r.author)).slice(0,20)}</td>
-      <td><span style="font-size:.78em">${esc(str(r.brewer))}</span></td>
+      <td><a href="${esc(str(r.link))}" target="_blank">${esc(str(r.name))}</a></td>
+      <td>${esc(str(r.author))}</td>
+      <td>${esc(str(r.brewer))}</td>
       <td>${catLbl}</td>
       <td>${srcBadge}</td>
-      <td style="color:#ffd700;font-size:.82em">${avg!=='—'?avg+'⭐':avg}</td>
       <td><div class="tblacts">${actions}</div></td>
     </tr>`;
   }).join('');
 };
 
-// SELECTION
-window.updateSelection=function(){
-  const checks=[...document.querySelectorAll('.row-chk:checked')];
-  selectedKeys=new Set(checks.map(c=>c.value));
-  const bar=document.getElementById('bulkBar');
-  bar.classList.toggle('show',selectedKeys.size>0);
-  setEl('bulkCount',selectedKeys.size+' محددة');
-};
-window.toggleSelectAll=function(cb){
-  document.querySelectorAll('.row-chk').forEach(c=>{c.checked=cb.checked;});
-  updateSelection();
-};
-window.clearSelection=function(){
-  selectedKeys.clear();
-  document.querySelectorAll('.row-chk').forEach(c=>c.checked=false);
-  document.getElementById('bulkBar').classList.remove('show');
-  const sa=document.getElementById('selAll');if(sa)sa.checked=false;
-};
-window.bulkDelete=function(){
-  if(!selectedKeys.size) return;
-  confirm2('حذف المحدد','حذف '+selectedKeys.size+' وصفة؟',async()=>{
-    for(const k of selectedKeys){try{await remove(ref(db,'recipes/'+k));}catch{}}
-    clearSelection(); toast('تم حذف المحدد'); await logActivity('del','🗑️ حذف مجمّع: '+selectedKeys.size+' وصفة');
-  });
-};
-window.bulkFeature=async function(val){
-  for(const k of selectedKeys){
-    try{await update(ref(db,'recipes/'+k),{featured:val});}catch{}
-  }
-  clearSelection(); toast(val?'تم التمييز ✅':'تم إلغاء التمييز');
-};
-
-// TOGGLE ACTIONS
-window.toggleFeatured=async function(key,current){
-  const newVal=!current||current==='false'||current===false;
-  await update(ref(db,'recipes/'+key),{featured:newVal});
-  toast(newVal?'📌 تم التثبيت':'📍 تم الإلغاء'); await logActivity('edit','📌 تغيير تمييز: '+key);
-};
-window.toggleHidden=async function(key,current){
-  const newVal=!current||current==='false'||current===false;
-  await update(ref(db,'recipes/'+key),{hidden:newVal});
-  toast(newVal?'🙈 تم الإخفاء':'👁 تم الإظهار');
-};
-
-// ════ RATINGS ════
-function renderRatings(){
-  const statsEl=document.getElementById('ratingsStats');
-  const listEl=document.getElementById('ratingsList');
-  const keys=Object.keys(FB_RATINGS);
-  const totalVotes=Object.values(FB_RATINGS).reduce((a,v)=>a+(v.count||0),0);
-  const totalSum=Object.values(FB_RATINGS).reduce((a,v)=>a+(v.total||0),0);
-  const siteAvg=totalVotes>0?(totalSum/totalVotes).toFixed(2):0;
-  if(statsEl) statsEl.innerHTML=`
-    <div class="sc s-yellow"><div class="sv">${keys.length}</div><div class="sl">وصفات مقيّمة</div></div>
-    <div class="sc s-green"><div class="sv">${totalVotes}</div><div class="sl">إجمالي التقييمات</div></div>
-    <div class="sc s-teal"><div class="sv">${siteAvg}</div><div class="sl">متوسط الموقع</div></div>
-  `;
-  if(!keys.length){listEl.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تقييمات</p>';return;}
-  const sorted=keys.map(k=>{
-    const v=FB_RATINGS[k];
-    const avg=v.count>0?v.total/v.count:0;
-    const r=ALL_RECIPES.find(r=>{try{return ratingKey(r.link)===k;}catch{return false;}});
-    return {key:k,avg,count:v.count,name:r?str(r.name):'غير معروف'};
-  }).sort((a,b)=>b.avg-a.avg);
-  listEl.innerHTML=sorted.map((r,i)=>{
-    const stars='⭐'.repeat(Math.round(r.avg));
-    const medal=i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';
-    return `<div class="rcard">
-      <div class="rcard-name">${medal}${i+1}. ${esc(r.name)}</div>
-      <div><div class="rcard-stars">${stars} <strong>${r.avg.toFixed(1)}</strong>/5</div><div class="rcard-info">${r.count} مقيّم</div></div>
-      <button class="btn bsm bd" onclick="resetOneRating('${r.key}','${esc(r.name)}')">🗑️ تصفير</button>
-    </div>`;
-  }).join('');
-}
-
-window.resetAllRatings=function(){
-  confirm2('تصفير كل التقييمات','سيتم حذف جميع التقييمات. لا يمكن التراجع.',async()=>{
-    await set(ref(db,'ratings'),null);
-    toast('تم تصفير الكل ✅'); await logActivity('del','🗑️ تصفير جميع التقييمات');
-  });
-};
-window.resetOneRating=function(key,name){
-  confirm2('تصفير تقييم','تصفير: '+name+'؟',async()=>{
-    await remove(ref(db,'ratings/'+key)); toast('تم التصفير ✅');
-  });
-};
-
-// ════ ANALYTICS ════
-window.loadAnalytics=function(){renderAnalytics();};
-function renderAnalytics(){
-  const el=document.getElementById('analyticsChart');if(!el)return;
-  const entries=Object.entries(ANALYTICS).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){el.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد بيانات تحليل بعد</p>';return;}
-  const max=entries[0]?.[1]||1;
-  el.innerHTML=entries.slice(0,50).map(([k,count])=>{
-    const recipe=ALL_RECIPES.find(r=>{try{return ratingKey(r.link)===k;}catch{return false;}});
-    const name=recipe?str(recipe.name):'وصفة';
-    return `<div class="brew-item">
-      <span style="font-size:.82em;flex:0 0 150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(name)}">${esc(name)}</span>
-      <div class="brew-bar-wrap"><div class="brew-bar" style="width:${(count/max*100).toFixed(1)}%"></div></div>
-      <span class="brew-count">${count}</span>
-    </div>`;
-  }).join('');
-}
-
-// ════ COMMENTS ════
-function renderComments(){
-  const el=document.getElementById('commentsList');if(!el)return;
-  const filter=document.getElementById('cmtFilter')?.value||'pending';
-  let list=ALL_COMMENTS;
-  if(filter==='pending') list=list.filter(c=>!c.approved);
-  else if(filter==='approved') list=list.filter(c=>c.approved);
-  if(!list.length){el.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تعليقات</p>';return;}
-  el.innerHTML=list.map(c=>{
-    const recipe=ALL_RECIPES.find(r=>ratingKey(r.link)===c._recipeKey||r._fbKey===c._recipeKey);
-    const recipeNm=recipe?str(recipe.name):'وصفة غير معروفة';
-    return `<div class="cmt${c.pinned?' pinned':''}">
-      <div class="cmt-head">
-        <div>
-          <div class="cmt-author">${esc(c.author||'مجهول')} ${c.rating?'⭐'.repeat(c.rating):''}</div>
-          <div style="font-size:.75em;color:var(--ta)">على: ${esc(recipeNm)}</div>
-        </div>
-        <div style="display:flex;gap:4px;align-items:center">
-          ${c.approved?'<span class="badge-approved">✅ مقبول</span>':'<span class="badge-pend">⏳ انتظار</span>'}
-          <span class="cmt-ts">${relTime(c.ts||0)}</span>
-        </div>
-      </div>
-      <div class="cmt-body">${esc(c.text||'')}</div>
-      ${c.adminReply?`<div class="cmt-reply"><div class="cmt-reply-lbl">↩️ رد المطور</div>${esc(c.adminReply)}</div>`:''}
-      <div class="cmt-acts">
-                ${c.approved ? `<button class="btn bsm bgray" onclick="unapproveComment('${c.recipeKey}', '${c.key}')">↩️ إلغاء قبول</button>` : `<button class="btn bsm bg" onclick="approveComment('${c.recipeKey}', '${c.key}')">✅ قبول</button>`}
-                <button class="btn bsm bpu" onclick="openReply('${c.recipeKey}', '${c.key}')">↩️ رد</button>
-                <button class="btn bsm bw" onclick="pinComment('${c.recipeKey}', '${c.key}', ${c.pinned})">${c.pinned ? '📌 مثبت' : '📌 تثبيت'}</button>
-                <button class="btn bsm bd" onclick="deleteComment('${c.recipeKey}', '${c.key}')">🗑️</button>
-            </div>
-        </div>`;
-  }).join('');
-}
-
-window.approveComment=async function(rKey,cKey){
-  await update(ref(db,'comments/'+rKey+'/'+cKey),{approved:true});
-  toast('تم القبول ✅');
-};
-window.unapproveComment=async function(rKey,cKey){
-  await update(ref(db,'comments/'+rKey+'/'+cKey),{approved:false});
-  toast('تم إلغاء القبول');
-};
-window.deleteComment=function(rKey,cKey){
-  confirm2('حذف تعليق','حذف هذا التعليق؟',async()=>{
-    await remove(ref(db,'comments/'+rKey+'/'+cKey)); toast('تم الحذف');
-  });
-};
-window.pinComment=async function(rKey,cKey,pinned){
-  const newVal=!pinned||pinned==='false';
-  await update(ref(db,'comments/'+rKey+'/'+cKey),{pinned:newVal});
-  toast(newVal?'📌 تم التثبيت':'تم إلغاء التثبيت');
-};
-window.openReply=function(rKey,cKey){
-  document.getElementById('replyText').value='';
-  document.getElementById('replyOv').classList.add('open');
-  document.getElementById('replyOk').onclick=async()=>{
-    const txt=document.getElementById('replyText').value.trim();
-    if(!txt){toast('أكتب ردك','terr');return;}
-    await update(ref(db,'comments/'+rKey+'/'+cKey),{adminReply:txt});
-    document.getElementById('replyOv').classList.remove('open');
-    toast('تم إرسال الرد ✅');
-  };
-};
-window.approveAllComments=async function(){
-  const pending=ALL_COMMENTS.filter(c=>!c.approved);
-  if(!pending.length){toast('لا يوجد معلق','twin');return;}
-  for(const c of pending){
-    try{await update(ref(db,'comments/'+c._recipeKey+'/'+c._key),{approved:true});}catch{}
-  }
-  toast('تم قبول '+pending.length+' تعليق ✅');
-};
-
-// ════ BANNER ════
-document.getElementById('banText').addEventListener('input',previewBanner);
-document.getElementById('banType').addEventListener('change',previewBanner);
-function previewBanner(){
-  const txt=document.getElementById('banText').value;
-  const type=document.getElementById('banType').value;
-  const colors={info:'#4A90E2',warn:'#ffd565',success:'#43e97b',error:'#f5576c'};
-  const el=document.getElementById('banPreview');
-  if(txt) el.innerHTML=`<div style="padding:12px 16px;background:rgba(${type==='error'?'245,87,108':type==='warn'?'255,213,101':type==='success'?'67,233,123':'74,144,226'},.15);border:1px solid ${colors[type]};border-radius:8px;color:${colors[type]};font-size:.9em">${esc(txt)}</div>`;
-  else el.innerHTML='';
-}
-
-window.publishBanner=async function(){
-  const txt=document.getElementById('banText').value.trim();
-  if(!txt){toast('أكتب نص الإعلان','terr');return;}
-  await update(ref(db,'settings'),{banner:{enabled:true,text:txt,type:document.getElementById('banType').value}});
-  toast('تم نشر الإعلان 📢'); await logActivity('setting','📢 نشر إعلان جديد');
-};
-window.removeBanner=async function(){
-  await update(ref(db,'settings'),{banner:{enabled:false,text:'',type:'info'}});
-  setEl('banStatus',''); toast('تم إلغاء الإعلان'); document.getElementById('banText').value='';
-  document.getElementById('banPreview').innerHTML='';
-};
-
-// ════ PROMO CODES ════
-window.addPromo=async function(){
-  const code=document.getElementById('promoCode').value.trim().toUpperCase();
-  if(!code){toast('أدخل الكود','terr');return;}
-  const data={code,roastery:document.getElementById('promoRoastery').value.trim(),
-    desc:document.getElementById('promoDesc').value.trim(),
-    expiry:document.getElementById('promoExpiry').value,active:true,ts:Date.now()};
-  await push(ref(db,'promo_codes'),data);
-  document.getElementById('promoCode').value='';document.getElementById('promoRoastery').value='';
-  document.getElementById('promoDesc').value='';document.getElementById('promoExpiry').value='';
-  toast('تم إضافة الكود ✅');
-};
-function renderPromos(){
-  const el=document.getElementById('promoList');if(!el)return;
-  const list=Object.entries(PROMO_CODES);
-  if(!list.length){el.innerHTML='<p style="color:var(--t2);text-align:center;padding:16px">لا توجد أكواد</p>';return;}
-  el.innerHTML=list.map(([k,p])=>`
-    <div class="promo-card">
-      <div>
-        <div class="promo-code">${esc(p.code)}</div>
-        <div class="promo-info">${esc(p.roastery||'')} • ${esc(p.desc||'')}</div>
-        ${p.expiry?`<div class="promo-info">ينتهي: ${p.expiry}</div>`:''}
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <label class="tog" style="scale:.75"><input type="checkbox" ${p.active?'checked':''} onchange="togglePromo('${k}',this.checked)"><span class="tog-slider"></span></label>
-        <button class="btn bsm bd" onclick="deletePromo('${k}')">🗑️</button>
-      </div>
-    </div>
-  `).join('');
-}
-window.togglePromo=async function(k,val){await update(ref(db,'promo_codes/'+k),{active:val});};
-window.deletePromo=function(k){confirm2('حذف كود','حذف هذا الكود؟',async()=>{await remove(ref(db,'promo_codes/'+k));toast('تم الحذف');});};
-
-// ════ ADS ════
-window.saveAdsCode=async function(){
-  const code=document.getElementById('adsCode').value;
-  await update(ref(db,'settings'),{ads_code:code});
-  toast('تم حفظ كود الإعلان ✅');
-};
-window.clearAdsCode=async function(){
-  await update(ref(db,'settings'),{ads_code:''});
-  document.getElementById('adsCode').value='';
-  toast('تم حذف الإعلان');
-};
-
-// ════ TIP JAR ════
-window.saveTipJar=async function(){
-  const url=document.getElementById('tipJarUrl').value.trim();
-  await update(ref(db,'settings'),{tip_jar_url:url});
-  toast('تم حفظ الرابط ✅');
-};
-
-// ════ AFFILIATE ════
-function populateSelects(){
-  const recSel=document.getElementById('affRecipe');
-  const featSel=document.getElementById('featTodaySelect');
-  if(!recSel||!featSel) return;
-  const fbOpts=FB_RECIPES.map(r=>`<option value="${r._fbKey}">${esc(str(r.name)).slice(0,40)}</option>`).join('');
-  recSel.innerHTML='<option value="">اختر الوصفة</option>'+fbOpts;
-  featSel.innerHTML='<option value="">بلا اختيار</option>'+FB_RECIPES.map(r=>`<option value="${r.link}" ${FB_SETTINGS?.featured_today===r.link?'selected':''}>${esc(str(r.name)).slice(0,40)}</option>`).join('');
-}
-
-window.saveAffiliate=async function(){
-  const key=document.getElementById('affRecipe').value;
-  const title=document.getElementById('affTitle').value.trim();
-  const url=document.getElementById('affUrl').value.trim();
-  const price=document.getElementById('affPrice').value.trim();
-  if(!key||!title||!url){toast('يرجى ملء الحقول الإلزامية','terr');return;}
-  await set(ref(db,'affiliate/'+key),{title,url,price,ts:Date.now()});
-  toast('تم حفظ الرابط التابع ✅');
-};
-function renderAffiliates(){
-  const el=document.getElementById('affiliateList');if(!el)return;
-  const list=Object.entries(AFFILIATE);
-  if(!list.length){el.innerHTML='<p style="color:var(--t2);text-align:center;padding:12px">لا توجد روابط</p>';return;}
-  el.innerHTML=list.map(([k,a])=>{
-    const recipe=FB_RECIPES.find(r=>r._fbKey===k);
-    const nm=recipe?str(recipe.name):'غير معروف';
-    return `<div class="aff-card">
-      <div class="aff-title">${esc(a.title)} <span style="font-size:.75em;color:var(--t2)">— ${esc(nm)}</span></div>
-      ${a.price?`<div class="aff-price">${esc(a.price)}</div>`:''}
-      <div class="aff-url">${esc(a.url)}</div>
-      <div style="margin-top:8px;display:flex;gap:6px">
-        <a href="${esc(a.url)}" target="_blank" class="btn bsm bgray">🔗 فتح</a>
-        <button class="btn bsm bd" onclick="deleteAffiliate('${k}')">🗑️</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-window.deleteAffiliate=function(k){confirm2('حذف رابط','حذف هذا الرابط التابع؟',async()=>{await remove(ref(db,'affiliate/'+k));toast('تم الحذف');});};
-
-// ════ FEATURED TODAY ════
-window.setFeaturedToday=async function(){
-  const link=document.getElementById('featTodaySelect').value;
-  await update(ref(db,'settings'),{featured_today:link});
-  const recipe=FB_RECIPES.find(r=>r.link===link);
-  setEl('featTodayStatus',link?'⭐ وصفة اليوم: '+(recipe?str(recipe.name):link):'');
-  toast('تم تعيين وصفة اليوم ✅');
-};
-window.clearFeaturedToday=async function(){
-  await update(ref(db,'settings'),{featured_today:''});
-  setEl('featTodayStatus',''); toast('تم إلغاء وصفة اليوم');
-};
-
-// ════ SECURITY ════
-window.rotatePassword=async function(){
-  const np=document.getElementById('newPass').value;
-  const cp=document.getElementById('confPass').value;
-  if(!np||!cp){toast('أدخل كلمة المرور','terr');return;}
-  if(np!==cp){toast('كلمتا المرور لا تتطابقان','terr');return;}
-  if(np.length<6){toast('يجب أن تكون 6 أحرف على الأقل','terr');return;}
-  const h=await sha256(np);
-  await update(ref(db,'settings'),{authHash:h});
-  document.getElementById('newPass').value=''; document.getElementById('confPass').value='';
-  toast('تم تحديث كلمة المرور ✅');
-  await logActivity('setting','🔐 تغيير كلمة المرور');
-};
-
-function renderActivity(){
-  const el=document.getElementById('activityLog');if(!el)return;
-  if(!FA_ACTIVITY.length){el.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">السجل فارغ</p>';return;}
-  const icons={add:'act-add',del:'act-del',edit:'act-edit',login:'act-login',setting:'act-setting',approve:'act-approve',reject:'act-del'};
-  const emojis={add:'➕',del:'🗑️',edit:'✏️',login:'🔐',setting:'⚙️',approve:'✅',reject:'❌'};
-  el.innerHTML=FA_ACTIVITY.slice(0,50).map(a=>{
-    const cls=icons[a.type]||'act-edit';
-    const emoji=emojis[a.type]||'•';
-    return `<div class="act-item">
-      <div class="act-icon ${cls}">${emoji}</div>
-      <div class="act-text">${esc(a.text||'')}</div>
-      <div class="act-ts">${relTime(a.ts||0)}</div>
-    </div>`;
-  }).join('');
-}
-
-window.clearActivityLog=function(){
-  confirm2('مسح السجل','مسح جميع سجلات النشاط؟',async()=>{
-    await set(ref(db,'activity'),null); FA_ACTIVITY=[]; renderActivity(); toast('تم المسح');
-  });
-};
-
-// ════ TOOLS ════
-window.runLinkCheck=async function(){
-  const statusEl=document.getElementById('linkCheckStatus');
-  const resultsEl=document.getElementById('linkCheckResults');
-  const fbLinks=FB_RECIPES.filter(r=>r.link);
-  setEl('linkCheckStatus','⏳ فحص '+fbLinks.length+' رابط...');
-  resultsEl.innerHTML='';
-  let ok=0,failed=0;
-  const results=[];
-  for(const r of fbLinks.slice(0,20)){  // limit to 20 due to CORS
-    try{
-      const ctrl=new AbortController(); const tid=setTimeout(()=>ctrl.abort(),5000);
-      const res=await fetch(r.link,{method:'HEAD',signal:ctrl.signal,mode:'no-cors'}).catch(()=>null);
-      clearTimeout(tid);
-      const status=res?'✅':'⚠️';
-      if(res) ok++; else failed++;
-      results.push(`<div class="lh-item lh-${res?'ok':'err'}">
-        <span class="lh-status">${status}</span>
-        <span style="flex:1;font-size:.8em;word-break:break-all">${esc(str(r.name))} — <a href="${esc(r.link)}" target="_blank" style="color:var(--ta)">فتح</a></span>
-      </div>`);
-    }catch(e){failed++;}
-  }
-  setEl('linkCheckStatus','نتيجة الفحص: ✅ '+ok+' سليم، ⚠️ '+failed+' مشبوه (ملاحظة: بسبب CORS بعض النتائج تقديرية)');
-  resultsEl.innerHTML=results.join('');
-};
-
-window.runValidator=function(){
-  const max=parseInt(document.getElementById('maxSize').value)||5000;
-  const oversized=FB_RECIPES.filter(r=>JSON.stringify(r).length>max);
-  const el=document.getElementById('validatorResults');
-  if(!oversized.length){el.innerHTML='<div class="alert alert-info show">✅ جميع الوصفات ضمن الحجم المسموح ('+(FB_RECIPES.length)+' وصفة)</div>';return;}
-  el.innerHTML=`<div class="alert alert-warn show">⚠️ ${oversized.length} وصفة تتجاوز ${max} بايت</div>
-    ${oversized.map(r=>`<div style="padding:8px 12px;background:var(--up);border-radius:8px;margin-bottom:6px;font-size:.83em;border:1px solid rgba(255,213,101,.3)">
-      <strong>${esc(str(r.name))}</strong> — ${JSON.stringify(r).length} بايت
-    </div>`).join('')}`;
-};
-
-window.cleanupOldPending=function(){
-  const old=PENDING.filter(r=>(Date.now()-(r.addedAt||0))>30*86400000);
-  if(!old.length){toast('لا يوجد قديم');return;}
-  confirm2('حذف القديم','حذف '+old.length+' وصفة معلقة قديمة (أكثر من 30 يوم)؟',async()=>{
-    for(const r of old){try{await remove(ref(db,'pending/'+r._fbKey));}catch{}}
-    toast('تم الحذف');
-  });
-};
-
-window.cleanupHiddenRecipes=function(){
-  const hidden=FB_RECIPES.filter(r=>r.hidden);
-  if(!hidden.length){toast('لا يوجد مخفي');return;}
-  confirm2('حذف المخفية','حذف '+hidden.length+' وصفة مخفية؟',async()=>{
-    for(const r of hidden){try{await remove(ref(db,'recipes/'+r._fbKey));}catch{}}
-    toast('تم الحذف'); await logActivity('del','🗑️ حذف الوصفات المخفية: '+hidden.length);
-  });
-};
-
-window.cleanupDuplicates=function(){
-  const seen=new Map();
-  const dups=[];
-  FB_RECIPES.forEach(r=>{
-    if(seen.has(r.link)) dups.push(r);
-    else seen.set(r.link,r);
-  });
-  const el=document.getElementById('cleanupResults');
-  if(!dups.length){el.innerHTML='<div class="alert alert-info show">✅ لا توجد تكرارات في Firebase</div>';return;}
-  el.innerHTML=`<div class="alert alert-warn show">⚠️ ${dups.length} تكرار محتمل</div>
-    ${dups.map(r=>`<div style="padding:8px 12px;background:var(--up);border-radius:8px;margin-bottom:6px;font-size:.83em">${esc(str(r.name))} <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(str(r.name))}')">🗑️</button></div>`).join('')}`;
-};
-
 // ════ ADD / EDIT ════
-window.resetForm=function(){
+window.resetForm = function(){
   document.getElementById('addForm').reset();
   document.getElementById('rFbKey').value='';
   editingKey=null;
-  setEl('addFormTitle','➕ إضافة وصفة جديدة');
-  setEl('saveBtn','💾 حفظ');
+  document.getElementById('addFormTitle').textContent='➕ إضافة وصفة جديدة';
+  document.getElementById('saveBtn').textContent='💾 حفظ';
 };
 
-window.editRec=function(fbKey){
-  const r=FB_RECIPES.find(x=>x._fbKey===fbKey);if(!r) return;
+window.editRec = function(fbKey){
+  const r=FB_RECIPES.find(x=>x._fbKey===fbKey);
+  if(!r) return;
   editingKey=fbKey;
   document.getElementById('rFbKey').value=fbKey;
   document.getElementById('rN').value=str(r.name);
@@ -1658,87 +498,118 @@ window.editRec=function(fbKey){
   document.getElementById('rL').value=str(r.link);
   const cat=r.category||'hot';
   document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked=true;
-  document.getElementById('rFeat').checked=!!r.featured;
-  document.getElementById('rSponsored').checked=!!r.sponsored;
-  setEl('addFormTitle','✏️ تعديل الوصفة');
-  setEl('saveBtn','💾 حفظ التعديل');
-  switchTab(document.querySelector('[data-tab=tAdd]'),'tAdd');
+  document.getElementById('addFormTitle').textContent='✏️ تعديل الوصفة';
+  document.getElementById('saveBtn').textContent='💾 حفظ التعديل';
+  // Switch to add tab
+  document.querySelectorAll('.atb').forEach((b,i)=>{ b.classList.toggle('on',i===1); });
+  document.querySelectorAll('.acard').forEach((c,i)=>{ c.classList.toggle('open',i===1); });
   window.scrollTo({top:0,behavior:'smooth'});
 };
 
-window.saveRec=async function(e){
+window.saveRec = function(e){
   e.preventDefault();
-  if(!db){toast('Firebase غير متصل!','terr');return;}
+  if(!db){ toast('Firebase غير متصل!','terr'); return; }
   const catSel=document.querySelector('input[name="rc"]:checked');
-  if(!catSel){toast('اختر نوع التحضير','terr');return;}
+  if(!catSel){ toast('اختر نوع التحضير','terr'); return; }
   const r={
-    name:document.getElementById('rN').value.trim(),
-    author:document.getElementById('rA').value.trim(),
-    brewer:document.getElementById('rBr').value,
-    dose:document.getElementById('rD').value.trim(),
-    ratio:document.getElementById('rR').value.trim(),
-    link:document.getElementById('rL').value.trim(),
-    category:catSel.value,
-    featured:document.getElementById('rFeat').checked,
-    sponsored:document.getElementById('rSponsored').checked
+    name:   document.getElementById('rN').value.trim(),
+    author: document.getElementById('rA').value.trim(),
+    brewer: document.getElementById('rBr').value,
+    dose:   document.getElementById('rD').value.trim(),
+    ratio:  document.getElementById('rR').value.trim(),
+    link:   document.getElementById('rL').value.trim(),
+    category: catSel.value
   };
   const btn=document.getElementById('saveBtn');
-  btn.disabled=true;btn.textContent='⏳...';
-  try{
-    if(editingKey) await set(ref(db,'recipes/'+editingKey),r);
-    else {r.addedAt=Date.now();await push(ref(db,'recipes'),r);}
-    toast(editingKey?'تم التعديل ✅':'تمت الإضافة ✅');
-    await logActivity(editingKey?'edit':'add',(editingKey?'✏️ تعديل: ':'➕ إضافة: ')+r.name);
-    resetForm();
-  }catch(err){toast('خطأ: '+err.message,'terr');}
-  finally{btn.disabled=false;btn.textContent='💾 حفظ';}
+  btn.textContent='⏳...'; btn.disabled=true;
+  const op = editingKey ? set(ref(db,'recipes/'+editingKey),r) : push(recipesRef,r);
+  op.then(()=>{ toast(editingKey?'تم التعديل ✅':'تمت الإضافة ✅'); resetForm(); })
+    .catch(err=>{ toast('خطأ: '+err.message,'terr'); })
+    .finally(()=>{ btn.textContent='💾 حفظ'; btn.disabled=false; });
 };
 
-window.confirmDel=function(fbKey,name){
-  confirm2('حذف وصفة','حذف: '+name+'؟ لا يمكن التراجع.',async()=>{
-    await remove(ref(db,'recipes/'+fbKey));
-    toast('تم الحذف ✅'); await logActivity('del','🗑️ حذف: '+name);
-  });
+// ════ DELETE ════
+window.confirmDel = function(fbKey,name){
+  document.getElementById('confirmMsg').textContent='حذف: '+name+'؟ هذا الإجراء لا يمكن التراجع عنه.';
+  const ov=document.getElementById('confirmOv'); ov.classList.add('open');
+  document.getElementById('confirmOk').onclick=()=>{
+    ov.classList.remove('open');
+    remove(ref(db,'recipes/'+fbKey))
+      .then(()=>toast('تم الحذف ✅'))
+      .catch(err=>toast('خطأ: '+err.message,'terr'));
+  };
 };
 
-// ════ DANGER ════
-window.dangerDeleteAll=function(){
-  confirm2('⚠️ خطر!','حذف جميع وصفات Firebase؟ لا يمكن التراجع!',async()=>{
-    await set(ref(db,'recipes'),null); toast('تم الحذف'); await logActivity('del','⚠️ حذف جميع وصفات Firebase');
+// ════ RATINGS ════
+function renderRatings(){
+  const container=document.getElementById('ratingsList');
+  const keys=Object.keys(FB_RATINGS);
+  if(!keys.length){ container.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تقييمات بعد</p>'; return; }
+  // Sort by average desc
+  const sorted=keys.map(k=>({key:k,...FB_RATINGS[k]})).sort((a,b)=>{
+    const avgA=a.count>0?a.total/a.count:0;
+    const avgB=b.count>0?b.total/b.count:0;
+    return avgB-avgA;
   });
-};
-window.dangerClearPending=function(){
-  confirm2('مسح المراجعة','مسح جميع الوصفات المعلقة؟',async()=>{
-    await set(ref(db,'pending'),null); toast('تم المسح');
-  });
-};
-window.dangerClearComments=function(){
-  confirm2('حذف التعليقات','حذف جميع التعليقات؟',async()=>{
-    await set(ref(db,'comments'),null); toast('تم الحذف');
-  });
+  container.innerHTML=sorted.map((rd,i)=>{
+    const avg=rd.count>0?(rd.total/rd.count).toFixed(1):0;
+    const stars='⭐'.repeat(Math.round(Number(avg)));
+    // Try to find recipe name
+    const recipe=ALL_RECIPES.find(r=>{
+      try{return btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===rd.key;}catch(e){return false;}
+    });
+    const name=recipe?str(recipe.name):'وصفة غير معروفة';
+    return `<div class="rcard">
+      <div class="rcard-name">${i+1}. ${esc(name)}</div>
+      <div>
+        <div class="rcard-stars">${stars} <strong>${avg}</strong>/5</div>
+        <div class="rcard-info">${rd.count} مقيّم • مجموع النجوم: ${rd.total}</div>
+      </div>
+      <button class="btn bsm bd" onclick="resetOneRating('${rd.key}','${esc(name)}')">🗑️ تصفير</button>
+    </div>`;
+  }).join('');
+}
+
+window.resetAllRatings = function(){
+  document.getElementById('confirmMsg').textContent='سيتم حذف جميع التقييمات لجميع الوصفات. هذا لا يمكن التراجع عنه.';
+  const ov=document.getElementById('confirmOv'); ov.classList.add('open');
+  document.getElementById('confirmOk').onclick=()=>{
+    ov.classList.remove('open');
+    set(ref(db,'ratings'),null)
+      .then(()=>toast('تم حذف جميع التقييمات ✅'))
+      .catch(err=>toast('خطأ: '+err.message,'terr'));
+  };
 };
 
-// ════ IMPORT / EXPORT ════
-window.doImport=function(event){
-  if(!db){toast('Firebase غير متصل!','terr');return;}
-  const file=event.target.files[0];if(!file)return;
+window.resetOneRating = function(key,name){
+  document.getElementById('confirmMsg').textContent='حذف تقييمات: '+name+'؟';
+  const ov=document.getElementById('confirmOv'); ov.classList.add('open');
+  document.getElementById('confirmOk').onclick=()=>{
+    ov.classList.remove('open');
+    remove(ref(db,'ratings/'+key))
+      .then(()=>toast('تم حذف التقييم ✅'))
+      .catch(err=>toast('خطأ: '+err.message,'terr'));
+  };
+};
+
+// ════ IMPORT ════
+window.doImport = function(event){
+  if(!db){ toast('Firebase غير متصل!','terr'); return; }
+  const file=event.target.files[0]; if(!file) return;
   const reader=new FileReader();
-  reader.onload=async e=>{
+  reader.onload=e=>{
     try{
       const wb=XLSX.read(e.target.result,{type:'array'});
       const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
       const valid=rows.filter(r=>r.name&&r.link);
-      if(!valid.length){toast('لا صفوف صالحة','terr');return;}
-      const target=FB_SETTINGS?.require_approval?'pending':'recipes';
-      await Promise.all(valid.map(row=>{
+      if(!valid.length){ toast('لا توجد صفوف صالحة','terr'); return; }
+      Promise.all(valid.map(row=>{
         const r={name:str(row.name),author:str(row.author||''),brewer:str(row.brewer||'Other'),
-          dose:str(row.dose||''),ratio:str(row.ratio||''),link:str(row.link),category:str(row.category||'hot'),
-          affiliate_url:str(row.affiliate_url||''),addedAt:Date.now()};
-        ensureCat(r); return push(ref(db,target),r);
-      }));
-      toast('تم استيراد '+valid.length+' وصفة ✅');
-      await logActivity('add','📥 استيراد '+valid.length+' وصفة');
-    }catch(err){toast('خطأ في الملف','terr');}
+          dose:str(row.dose||''),ratio:str(row.ratio||''),link:str(row.link),category:str(row.category||'hot')};
+        ensureCat(r); return push(recipesRef,r);
+      })).then(()=>toast('تم استيراد '+valid.length+' وصفة ✅'))
+         .catch(err=>toast('خطأ: '+err.message,'terr'));
+    }catch(err){ toast('خطأ في قراءة الملف','terr'); }
     event.target.value='';
   };
   reader.readAsArrayBuffer(file);
@@ -1746,37 +617,29 @@ window.doImport=function(event){
 
 window.dlTemplate=function(){
   const ws=XLSX.utils.aoa_to_sheet([
-    ['name','author','brewer','dose','ratio','link','category','affiliate_url'],
-    ['وصفة تجريبية','محمد','Omni','15g','1:15','https://share-h5.xbloom.com/?id=xxx','hot','']
+    ['name','author','brewer','dose','ratio','link','category'],
+    ['وصفة تجريبية','محمد','Omni','15g','1:15','https://share-h5.xbloom.com/?id=xxx','hot']
   ]);
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Recipes');
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Recipes');
   XLSX.writeFile(wb,'xbloom_template.xlsx');
 };
+
+// ════ EXPORT ════
 window.expXLS=function(){
-  const rows=FB_RECIPES.map(r=>{const {_fbKey,_src,...rest}=r;return rest;});
-  const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Recipes');XLSX.writeFile(wb,'xbloom_fb_recipes.xlsx');
-};
-window.expAllXLS=function(){
-  const rows=ALL_RECIPES.map(r=>{const {_fbKey,_src,...rest}=r;return rest;});
-  const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'All');XLSX.writeFile(wb,'xbloom_all_recipes.xlsx');
+  const rows=FB_RECIPES.map(r=>({name:r.name,author:r.author,brewer:r.brewer,dose:r.dose,ratio:r.ratio,link:r.link,category:r.category}));
+  const ws=XLSX.utils.json_to_sheet(rows); const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Recipes'); XLSX.writeFile(wb,'xbloom_fb_recipes.xlsx');
 };
 window.expJSON=function(){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(FB_RECIPES,null,2)],{type:'application/json'}));
-  a.download='xbloom_recipes.json';a.click();
+  a.download='xbloom_recipes.json'; a.click();
 };
 window.expBackup=function(){
-  const data={
-    timestamp:new Date().toISOString(),
-    fb_recipes:FB_RECIPES,ratings:FB_RATINGS,settings:FB_SETTINGS,
-    pending:PENDING,promo_codes:PROMO_CODES,affiliate:AFFILIATE
-  };
+  const data={timestamp:new Date().toISOString(),fb_recipes:FB_RECIPES,ratings:FB_RATINGS};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-  a.download='xbloom_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
-  toast('تم تحميل النسخة الاحتياطية');
+  a.download='xbloom_backup_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
 };
 </script>
 </body>
