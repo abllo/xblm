@@ -1,74 +1,98 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5237747574783843"
-     crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5237747574783843" crossorigin="anonymous"></script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Xbloom Recipes | وصفات اكس بلوم</title>
+<title id="pageTitle">Xbloom Recipes | وصفات اكس بلوم</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh}
 .wrap{max-width:1400px;margin:0 auto}
-header{text-align:center;padding:24px 15px;margin-bottom:20px;background:rgba(43,43,43,.9);border-radius:16px;border:1px solid var(--br);position:relative}
+
+/* MAINTENANCE */
+#maintScreen{display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;align-items:center;justify-content:center;text-align:center;padding:30px}
+#maintScreen.show{display:flex}
+.maint-box{max-width:450px}
+.maint-box h1{font-size:2em;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+.maint-box p{color:var(--t2);line-height:1.7}
+
+/* ANNOUNCEMENT BANNER */
+#announceBanner{display:none;padding:10px 16px;text-align:center;font-size:.88em;font-weight:700;animation:slideDown .4s ease}
+#announceBanner.show{display:block}
+.ban-info{background:rgba(74,144,226,.2);border-bottom:1px solid rgba(74,144,226,.4);color:#4A90E2}
+.ban-warn{background:rgba(255,213,101,.15);border-bottom:1px solid rgba(255,213,101,.4);color:#ffd565}
+.ban-success{background:rgba(67,233,123,.15);border-bottom:1px solid rgba(67,233,123,.4);color:#43e97b}
+.ban-error{background:rgba(245,87,108,.15);border-bottom:1px solid rgba(245,87,108,.4);color:#f5576c}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+/* PROMO BAR */
+#promoBar{display:none;background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,149,0,.1));border-bottom:1px solid rgba(255,215,0,.3);padding:8px 16px;font-size:.82em;text-align:center;color:#ffd700;cursor:pointer;overflow:hidden;white-space:nowrap}
+#promoBar.show{display:block;animation:marqueeSetup .3s ease}
+.promo-inner{display:inline-block;animation:marquee 25s linear infinite}
+@keyframes marquee{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* HEADER */
+header{text-align:center;padding:22px 15px;margin-bottom:18px;background:rgba(43,43,43,.9);border-radius:16px;border:1px solid var(--br);position:relative}
 header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
-h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
-.sub{color:var(--t2);font-size:.9em}
+h1{font-size:clamp(1.6em,5vw,2.6em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.sub{color:var(--t2);font-size:.88em}
+.header-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+
+/* BUTTONS */
 .btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
 .btn:active{transform:scale(.95)}
 .bp{background:var(--gr);color:#fff}
 .bs{background:transparent;border:2px solid var(--br);color:var(--t2)}
 .bsm{padding:7px 13px;font-size:12px}
 .bbl{width:100%;justify-content:center}
-.ctrls{margin-bottom:16px}
-.sbox{position:relative;margin-bottom:13px}
+
+/* FILTERS */
+.ctrls{margin-bottom:14px}
+.sbox{position:relative;margin-bottom:12px}
 .sbox input{width:100%;padding:13px 48px 13px 14px;font-size:15px;border:2px solid var(--br);border-radius:10px;background:var(--card);color:var(--t1);font-family:inherit}
 .sbox input:focus{outline:none;border-color:var(--ta)}
 .sbox::after{content:"\1F50D";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px}
 .fsec{margin-bottom:12px}
 .flbl{font-size:.82em;color:var(--t2);margin-bottom:7px;font-weight:700}
 .ftabs{display:flex;gap:7px;flex-wrap:wrap}
-.ftab{padding:9px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.ftab{padding:9px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
 .ftab:active{transform:scale(.96)}
 .ftab.on{background:var(--gr);color:#fff;border-color:transparent}
 .cnt{display:inline-block;margin-right:4px;padding:1px 6px;background:rgba(255,255,255,.2);border-radius:7px;font-size:11px}
-.ppbar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border-radius:10px;border:1px solid var(--br);margin-bottom:16px;flex-wrap:wrap}
+.ppbar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border-radius:10px;border:1px solid var(--br);margin-bottom:14px;flex-wrap:wrap}
 .ppbar label{font-size:.82em;color:var(--t2)}
 .ppbar select{padding:6px 10px;border-radius:7px;background:var(--up);color:var(--t1);border:1px solid var(--br);font-family:inherit;font-size:13px}
 .ppinfo{font-size:.82em;color:var(--t2);flex:1;text-align:center}
 .ppinfo b{color:var(--t1)}
+
+/* SORT */
+.sort-wrap{margin-bottom:14px}
+.sort-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.sort-tab{padding:8px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
+.sort-tab.on{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-color:transparent}
+
+/* GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
 .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);transform:scaleX(0);transition:.3s}
 .card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,168,150,.2)}
 .card:hover::before{transform:scaleX(1)}
+.card.featured{border-color:rgba(102,126,234,.5);box-shadow:0 0 0 1px rgba(102,126,234,.3)}
+.card.featured-today{border-color:#ffd700;box-shadow:0 0 20px rgba(255,215,0,.3);animation:todayGlow 2s infinite alternate}
+@keyframes todayGlow{from{box-shadow:0 0 10px rgba(255,215,0,.2)}to{box-shadow:0 0 30px rgba(255,215,0,.5)}}
+.card.sponsored{border-color:rgba(255,215,0,.4)}
+.feat-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:3px 8px;border-radius:8px;font-size:.68em;font-weight:700}
+.today-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#ffd700,#ff9500);color:#000;padding:3px 8px;border-radius:8px;font-size:.68em;font-weight:700}
+.sponsored-badge{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ffd700,#ff9500);color:#000;padding:3px 8px;border-radius:8px;font-size:.65em;font-weight:700}
 .ch{display:flex;justify-content:space-between;margin-bottom:9px;gap:8px}
 .cn{font-size:1.05em;font-weight:700;line-height:1.3;flex:1}
 .cicos{display:flex;gap:5px}
-.ib{width:34px;height:34px;border-radius:8px;background:var(--up);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s}
+.ib{width:31px;height:31px;border-radius:7px;background:var(--up);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px}
 .ib:active{transform:scale(.88)}
-.ib.share:hover{background:var(--gr);border-color:transparent}
-/* Share Modal */
-.share-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1500;display:none;align-items:flex-end;justify-content:center;padding:0}
-.share-ov.open{display:flex}
-@media(min-width:600px){.share-ov{align-items:center}}
-.share-box{background:#1e1e1e;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:24px 20px 32px;border:1px solid var(--br);border-bottom:none;animation:slideUp .3s ease}
-@media(min-width:600px){.share-box{border-radius:16px;border:1px solid var(--br)}}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.share-title{font-size:1em;font-weight:700;margin-bottom:4px;text-align:center}
-.share-recipe-name{font-size:.82em;color:var(--ta);text-align:center;margin-bottom:18px;padding:6px 14px;background:rgba(0,168,150,.08);border-radius:20px}
-.share-link-box{background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:11px 14px;font-size:.78em;color:var(--t2);word-break:break-all;margin-bottom:14px;font-family:monospace;line-height:1.5}
-.share-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
-.share-btn{padding:12px 10px;border-radius:11px;border:none;font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
-.share-btn:active{transform:scale(.96)}
-.share-btn-copy{background:var(--gr);color:#fff}
-.share-btn-native{background:var(--up);border:1px solid var(--br);color:var(--t1)}
-.share-btn-wa{background:#25D366;color:#fff}
-.share-btn-x{background:#000;color:#fff;border:1px solid #333}
-.share-close-btn{width:100%;padding:11px;border-radius:10px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.85em;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
-.share-close-btn:hover{background:rgba(245,87,108,.15);border-color:rgba(245,87,108,.3);color:#f5576c}
+.ib.fav{background:var(--gr)}
 .cauth{color:var(--ta);font-size:.88em;margin-bottom:10px}
 .ctags{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
 .tag{padding:4px 9px;border-radius:10px;font-size:.78em;font-weight:700;color:#fff}
@@ -82,9 +106,10 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .det{background:var(--up);padding:7px;border-radius:7px;text-align:center}
 .dl{font-size:.73em;color:var(--t2);display:block;margin-bottom:2px}
 .dv{font-size:.95em;font-weight:700}
-/* ═══ Rating System ═══ */
-.rating-wrap{margin-bottom:12px}
-.cstars{display:flex;gap:3px;justify-content:center;margin-bottom:6px}
+
+/* RATING */
+.rating-wrap{margin-bottom:11px}
+.cstars{display:flex;gap:3px;justify-content:center;margin-bottom:5px}
 .star{font-size:22px;cursor:pointer;transition:transform .12s,filter .12s;line-height:1;display:inline-block}
 .star:hover{transform:scale(1.25)}
 .son{filter:none;opacity:1}
@@ -94,10 +119,37 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 @keyframes starPop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
 .rinfo{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.78em;color:var(--t2)}
 .ravg{font-weight:700;color:#ffd700;font-size:.88em}
-.rcnt{color:var(--t2)}
 .rmine{font-size:.72em;color:var(--ta);background:rgba(0,168,150,.12);padding:2px 8px;border-radius:10px}
-.rloading{opacity:.5;pointer-events:none}
+
+/* AFFILIATE */
+.aff-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,149,0,.15));border:1px solid rgba(255,215,0,.3);border-radius:8px;color:#ffd700;font-size:.8em;font-weight:700;cursor:pointer;text-decoration:none;justify-content:center;transition:.2s;width:100%;margin-bottom:6px}
+.aff-btn:hover{background:linear-gradient(135deg,rgba(255,215,0,.25),rgba(255,149,0,.25))}
+
+/* COMMENTS */
+.cmt-section{margin-top:12px;border-top:1px solid var(--br);padding-top:12px;display:none}
+.cmt-section.open{display:block}
+.cmt-toggle{background:var(--up);border:1px solid var(--br);color:var(--t2);padding:7px 12px;border-radius:8px;font-size:.78em;font-weight:700;cursor:pointer;width:100%;font-family:inherit;margin-bottom:8px;display:flex;align-items:center;gap:6px;justify-content:center}
+.cmt-item{background:var(--up);border-radius:8px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--br)}
+.cmt-item.pinned{border-color:#ffd700;background:rgba(255,215,0,.05)}
+.cmt-item.admin-reply{border-color:rgba(0,168,150,.5);background:rgba(0,168,150,.05)}
+.cmt-author{font-weight:700;font-size:.83em;margin-bottom:4px}
+.cmt-stars{color:#ffd700;font-size:.85em}
+.cmt-body{font-size:.85em;line-height:1.5;color:var(--t1)}
+.admin-reply-block{background:rgba(0,168,150,.1);border-right:3px solid var(--ta);padding:8px 10px;border-radius:6px;margin-top:6px;font-size:.82em}
+.admin-reply-lbl{font-size:.7em;color:var(--ta);font-weight:700;margin-bottom:3px}
+.cmt-form{margin-top:8px}
+.cmt-input{width:100%;padding:9px 11px;background:var(--card);border:2px solid var(--br);border-radius:8px;color:var(--t1);font-size:13px;font-family:inherit;resize:vertical;min-height:60px}
+.cmt-input:focus{outline:none;border-color:var(--ta)}
+.cmt-name-input{width:100%;padding:8px 11px;background:var(--card);border:2px solid var(--br);border-radius:8px;color:var(--t1);font-size:13px;font-family:inherit;margin-bottom:6px}
+.cmt-name-input:focus{outline:none;border-color:var(--ta)}
+
+/* ADS */
+#adsContainer{margin:16px 0;text-align:center}
+
+/* ACTIONS */
 .cacts{display:flex;flex-direction:column;gap:7px}
+
+/* PAGINATION */
 .pgn{display:flex;justify-content:center;align-items:center;gap:7px;margin:16px 0 40px;flex-wrap:wrap}
 .pb{min-width:38px;height:38px;padding:0 11px;border-radius:8px;background:var(--card);border:1px solid var(--br);color:var(--t2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .pb:disabled{opacity:.4;cursor:not-allowed}
@@ -105,14 +157,18 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .pb:hover:not(.on):not(:disabled){background:var(--up)}
 .dots{color:var(--t2);padding:0 5px}
 .empty{grid-column:1/-1;text-align:center;padding:55px 20px}
-.empty h2{font-size:1.7em;color:var(--t1);margin-bottom:8px}
+
+/* FOOTER */
 footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:var(--t2);font-size:.88em}
-.fc{display:inline-block;padding:9px 22px;background:var(--gr);border-radius:18px;font-weight:700;color:#fff;margin-bottom:13px}
+.fc{display:inline-block;padding:9px 22px;background:var(--gr);border-radius:18px;font-weight:700;color:#fff;margin-bottom:12px}
+
+/* TOAST */
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);padding:12px 18px;border-radius:10px;border:1px solid var(--br);z-index:2000;opacity:0;transition:.3s;max-width:88%;font-size:13px;text-align:center;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .tok{border-color:#43e97b}
 .terr{border-color:#f5576c}
-/* Add Recipe Modal */
+
+/* ADD MODAL */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:none;align-items:center;justify-content:center;padding:12px;overflow-y:auto}
 .ov.open{display:flex}
 .modal{background:var(--card);border-radius:16px;border:1px solid var(--br);width:100%;max-width:520px;position:relative;max-height:94vh;overflow-y:auto;animation:fi .3s ease}
@@ -127,134 +183,178 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .tsel{display:flex;flex-direction:column;gap:7px}
 .topt{padding:11px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em;transition:.2s}
 .topt:has(input:checked){border-color:var(--ta);background:rgba(0,168,150,.08)}
-.topt.hot{border-color:rgba(255,107,107,.4)}
-.topt.cold{border-color:rgba(72,219,251,.4)}
-.topt.srv{border-color:rgba(102,126,234,.4)}
 .topt input[type=radio]{accent-color:var(--ta);width:16px;height:16px}
-.add-fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
-.add-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,168,150,.7)}
-.add-fab:active{transform:scale(.94)}
-.add-header-btn{margin-top:14px}
-.badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
-.spinning{animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-/* ═══ ANNOUNCEMENT BAR ═══ */
-.anno-bar{padding:10px 16px;text-align:center;font-size:.88em;font-weight:700;position:relative;z-index:200;display:none}
-.anno-bar.show{display:block}
-.anno-bar.info{background:linear-gradient(135deg,#4A90E2,#357abd);color:#fff}
-.anno-bar.success{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000}
-.anno-bar.warning{background:linear-gradient(135deg,#ffd89b,#ff9a56);color:#000}
-.anno-bar.promo{background:linear-gradient(135deg,#f093fb,#f5576c,#00A896);color:#fff}
-.anno-close{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:inherit;font-size:1.2em;cursor:pointer;opacity:.7}
-.anno-close:hover{opacity:1}
-/* ═══ PROMO TICKER ═══ */
-.promo-ticker{background:linear-gradient(135deg,#1a1a2e,#16213e);border-top:1px solid rgba(0,168,150,.3);border-bottom:1px solid rgba(0,168,150,.3);padding:0;overflow:hidden;display:none;position:relative}
-.promo-ticker.show{display:block}
-.promo-ticker-label{position:absolute;right:0;top:0;bottom:0;background:var(--gr);padding:0 16px;display:flex;align-items:center;font-size:.75em;font-weight:900;color:#fff;z-index:2;white-space:nowrap;letter-spacing:.5px}
-.promo-ticker-label::after{content:'';position:absolute;left:-12px;top:0;bottom:0;width:0;height:0;border-top:50px solid transparent;border-bottom:0px solid transparent;border-right:13px solid transparent;border-left:0px;display:none}
-.promo-ticker-track{padding:0 16px 0 0;overflow:hidden;margin-right:90px}
-.promo-ticker-inner{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;align-items:stretch}
-.promo-ticker-inner:hover{animation-play-state:paused}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.promo-item{display:flex;align-items:center;gap:0;white-space:nowrap;font-size:.82em;padding:10px 0;border-left:1px solid rgba(255,255,255,.07);margin-left:0}
-.promo-item-inner{display:flex;align-items:center;gap:8px;padding:0 20px}
-.promo-item-name{color:var(--t2);font-size:.85em}
-.promo-item-code{font-family:monospace;font-weight:900;color:#fff;background:rgba(0,168,150,.25);border:1px solid rgba(0,168,150,.5);padding:3px 10px;border-radius:5px;letter-spacing:2px;font-size:.9em}
-.promo-item-desc{color:var(--t2);font-size:.8em}
-.promo-item a{color:#fff;text-decoration:none}
-.promo-item a:hover .promo-item-code{background:rgba(0,168,150,.5)}
-.promo-item-link-icon{color:var(--ta);font-size:.8em}
-/* ═══ ADS INJECTION ═══ */
-.ads-container{margin:14px 0;text-align:center;min-height:90px;background:rgba(255,255,255,.02);border:1px dashed var(--br);border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.78em}
-.ads-container:empty{display:none}
-/* ═══ PINNED RECIPES ═══ */
-.pinned-banner{margin-bottom:16px}
-.pinned-label{font-size:.82em;color:#ffd700;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.card-pinned{border:2px solid rgba(255,215,0,.4)!important;background:linear-gradient(135deg,rgba(255,215,0,.05),rgba(255,165,0,.03))!important}
-.card-pinned::before{background:linear-gradient(135deg,#ffd700,#ff9a56)!important}
-.pinned-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;font-size:.72em;font-weight:700;background:linear-gradient(135deg,#ffd700,#ff9a56);color:#000;margin-bottom:8px}
-/* ═══ COMMENTS ═══ */
-.comments-section{margin-top:14px;border-top:1px solid var(--br);padding-top:12px}
-.comments-toggle{font-size:.82em;color:var(--ta);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:700;padding:0;display:flex;align-items:center;gap:4px}
-.comments-box{margin-top:10px;display:none}
-.comments-box.open{display:block}
-.rating-required-hint{font-size:.75em;color:var(--t2);margin-bottom:8px;padding:6px 10px;background:rgba(0,168,150,.08);border-radius:7px;border:1px solid rgba(0,168,150,.2)}
-.stars-select{display:flex;gap:4px;margin-bottom:10px;justify-content:center}
-.star-sel{font-size:26px;cursor:pointer;transition:.15s;line-height:1;filter:grayscale(1);opacity:.4}
-.star-sel.active{filter:none;opacity:1;transform:scale(1.15)}
-.star-sel:hover{filter:none;opacity:1}
-.comment-textarea,.comment-author-input{width:100%;padding:10px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:13px;font-family:inherit;margin-bottom:7px}
-.comment-textarea{resize:vertical;min-height:70px}
-.comment-textarea:focus,.comment-author-input:focus{outline:none;border-color:var(--ta)}
-.comment-textarea:disabled,.comment-author-input:disabled{opacity:.4;cursor:not-allowed}
-.comment-submit{padding:8px 16px;background:var(--gr);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
-.comment-submit:disabled{opacity:.5;cursor:not-allowed}
-.comments-list{margin-top:10px;display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto}
-.comment-item{background:var(--up);border-radius:8px;padding:10px 12px;border:1px solid var(--br)}
-.comment-meta{font-size:.72em;color:var(--t2);margin-bottom:4px}
-.comment-rating{color:#ffd700;font-size:.82em}
-.comment-text{font-size:.85em;line-height:1.5;margin-top:4px}
 
-@media(min-width:768px){body{padding:20px}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}.card{padding:22px}}
+/* FAB */
+.add-fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
+.add-fab:hover{transform:scale(1.08)}
+.add-fab:active{transform:scale(.94)}
+
+/* TIP JAR */
+.tip-jar{display:none;margin:0 auto 16px;text-align:center}
+.tip-jar.show{display:block}
+.tip-jar a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:linear-gradient(135deg,#ffd89b,#ff9a56);color:#000;border-radius:12px;font-weight:700;font-size:.88em;text-decoration:none;transition:.2s}
+.tip-jar a:hover{transform:scale(1.04)}
+
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
-/* Sort tabs */
-.sort-wrap{margin-bottom:14px}
-.sort-tabs{display:flex;gap:7px;flex-wrap:wrap}
-.sort-tab{padding:8px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
-.sort-tab:active{transform:scale(.96)}
-.sort-tab.on{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-color:transparent}
+/* ── Small phones (≤ 360px) ── */
+@media(max-width:360px){
+  body{padding:8px 6px}
+  .header{padding:14px 12px}
+  .site-title{font-size:1.3em}
+  .header-acts{gap:5px}
+  .btn{padding:7px 11px;font-size:12px}
+  .grid{gap:10px}
+  .card{padding:13px}
+  .cn{font-size:.95em}
+  .cdets{grid-template-columns:1fr}
+  .ftabs .btn,.sort-tabs .btn{padding:6px 10px;font-size:11px}
+  .pgn button{padding:6px 10px;font-size:12px}
+  .promo-bar{font-size:.78em}
+  .ppbar{flex-direction:column;align-items:flex-start;gap:6px}
+  .modal-content{width:96vw;max-height:90vh}
+  .add-fab{bottom:16px;left:16px;width:48px;height:48px;font-size:20px}
+}
+
+/* ── Regular phones (361px – 480px) ── */
+@media(max-width:480px){
+  body{padding:10px 8px}
+  .header{padding:15px 14px}
+  .site-title{font-size:1.45em}
+  .grid{grid-template-columns:1fr;gap:12px}
+  .card{padding:15px}
+  .fr2{grid-template-columns:1fr}
+  .cdets{grid-template-columns:1fr 1fr}
+  .ppbar{flex-wrap:wrap;gap:7px}
+  .ppinfo{min-width:100%;text-align:right}
+  .sort-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .sort-tabs .btn{white-space:nowrap;flex-shrink:0}
+  .ftabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .ftabs .btn{white-space:nowrap;flex-shrink:0}
+  .modal-content{width:95vw;max-height:88vh;overflow-y:auto}
+  .mf{padding:14px 16px}
+  .pgn{gap:5px}
+  .tip-jar a{padding:9px 16px;font-size:.82em}
+}
+
+/* ── Large phones / small tablets (481px – 767px) ── */
+@media(min-width:481px) and (max-width:767px){
+  body{padding:12px 10px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:13px}
+  .card{padding:16px}
+  .modal-content{width:90vw}
+}
+
+/* ── Tablets (768px – 1023px) ── */
+@media(min-width:768px) and (max-width:1023px){
+  body{padding:16px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .card{padding:18px}
+  .header{padding:18px 20px}
+}
+
+/* ── Desktop (≥ 1024px) ── */
+@media(min-width:1024px){
+  body{padding:20px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
+  .card{padding:22px}
+  .header{padding:20px 28px}
+}
+
+/* ── Touch device improvements ── */
+@media(hover:none) and (pointer:coarse){
+  .btn,.ib,.cmt-toggle,.aff-btn{min-height:44px}
+  .cstars label{padding:4px}
+  .topt{padding:14px 16px}
+  .pgn button{min-width:40px;min-height:40px}
+  .sort-tabs,.ftabs{scroll-snap-type:x mandatory}
+  .sort-tabs .btn,.ftabs .btn{scroll-snap-align:start}
+}
+
+/* ── Landscape phones ── */
+@media(max-height:500px) and (orientation:landscape){
+  .modal-content{max-height:82vh;overflow-y:auto}
+  .header{padding:10px 16px}
+  .site-title{font-size:1.2em}
+  .add-fab{bottom:12px;left:12px;width:44px;height:44px;font-size:18px}
+}
+
+/* ── RTL / Arabic text fixes ── */
+.card,.header,.modal-content,.ppbar{direction:rtl}
+.ftabs,.sort-tabs{direction:rtl}
+.sort-tabs,.ftabs{scrollbar-width:none}
+.sort-tabs::-webkit-scrollbar,.ftabs::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
-<!-- ANNOUNCEMENT BAR -->
-<div class="anno-bar" id="annoBar">
-  <span id="annoText"></span>
-  <button class="anno-close" onclick="this.parentElement.classList.remove('show')" title="إغلاق">✕</button>
-</div>
-<!-- PROMO TICKER -->
-<div class="promo-ticker" id="promoTicker">
-  <div class="promo-ticker-label">🎫 عروض</div>
-  <div class="promo-ticker-track">
-    <div class="promo-ticker-inner" id="promoTickerInner"></div>
+
+<!-- MAINTENANCE -->
+<div id="maintScreen">
+  <div class="maint-box">
+    <div style="font-size:3em;margin-bottom:12px">🔧</div>
+    <h1>قيد الصيانة</h1>
+    <p id="maintMsg">الموقع تحت الصيانة، نعود قريباً!</p>
   </div>
 </div>
+
+<!-- ANNOUNCEMENT BANNER -->
+<div id="announceBanner"></div>
+
+<!-- PROMO BAR -->
+<div id="promoBar" onclick="copyPromo()">
+  <span id="promoInner" class="promo-inner"></span>
+</div>
+
+<!-- ADS (injected from settings) -->
+<div id="adsContainer"></div>
+
+<!-- MAIN APP -->
+<div id="app">
 <div class="wrap">
 <header>
-  <h1>&#x2615; Xbloom Recipes</h1>
-  <p class="sub">وصفات مجتمع اكس بلوم</p>
-  <button class="btn bp add-header-btn" onclick="openAddModal()">&#x2795; شارك وصفتك</button>
+  <h1>&#x2615; <span id="headerTitle">Xbloom Recipes</span></h1>
+  <p class="sub" id="headerSub">وصفات مجتمع اكس بلوم</p>
+  <div class="header-acts">
+    <button class="btn bp" id="addBtn" onclick="openAddModal()">&#x2795; شارك وصفتك</button>
+    <div id="tipJarHeaderBtn" style="display:none"></div>
+  </div>
 </header>
+
+<!-- TIP JAR -->
+<div class="tip-jar" id="tipJar"></div>
+
 <div class="ctrls">
   <div class="sbox"><input type="text" id="srch" placeholder="ابحث عن وصفة..." autocomplete="off"></div>
   <div class="fsec">
-    <div class="flbl">&#x1F321;&#xFE0F; نوع التحضير:</div>
+    <div class="flbl">&#x1F321; نوع التحضير:</div>
     <div class="ftabs" id="tempG">
-      <button class="ftab on"  onclick="setF('temp','all',this)"><span class="cnt" id="nAll">0</span> الكل</button>
-      <button class="ftab"     onclick="setF('temp','hot',this)"><span class="cnt" id="nHot">0</span> &#x1F525; وصفات حارة</button>
-      <button class="ftab"     onclick="setF('temp','cold',this)"><span class="cnt" id="nCold">0</span> &#x1F9CA; وصفات باردة</button>
-      <button class="ftab"     onclick="setF('temp','server',this)"><span class="cnt" id="nSrv">0</span> غسيل وترطيب السيرفر</button>
+      <button class="ftab on" onclick="setF('temp','all',this)"><span class="cnt" id="nAll">0</span> الكل</button>
+      <button class="ftab"    onclick="setF('temp','hot',this)"><span class="cnt" id="nHot">0</span> &#x1F525; حارة</button>
+      <button class="ftab"    onclick="setF('temp','cold',this)"><span class="cnt" id="nCold">0</span> &#x1F9CA; باردة</button>
+      <button class="ftab"    onclick="setF('temp','server',this)"><span class="cnt" id="nSrv">0</span> غسيل وترطيب</button>
     </div>
   </div>
   <div class="fsec">
     <div class="flbl">&#x2615; المحضّر:</div>
     <div class="ftabs" id="brewG">
-      <button class="ftab on"  onclick="setF('brew','all',this)"><span class="cnt" id="bAll">0</span> الكل</button>
-      <button class="ftab"     onclick="setF('brew','Omni',this)"><span class="cnt" id="bOmni">0</span> Omni</button>
-      <button class="ftab"     onclick="setF('brew','xPod',this)"><span class="cnt" id="bXPod">0</span> xPod</button>
-      <button class="ftab"     onclick="setF('brew','Other',this)"><span class="cnt" id="bOther">0</span> Other</button>
+      <button class="ftab on" onclick="setF('brew','all',this)"><span class="cnt" id="bAll">0</span> الكل</button>
+      <button class="ftab"    onclick="setF('brew','Omni',this)"><span class="cnt" id="bOmni">0</span> Omni</button>
+      <button class="ftab"    onclick="setF('brew','xPod',this)"><span class="cnt" id="bXPod">0</span> xPod</button>
+      <button class="ftab"    onclick="setF('brew','Other',this)"><span class="cnt" id="bOther">0</span> Other</button>
     </div>
   </div>
 </div>
+
 <div class="sort-wrap">
   <div class="flbl">&#x1F4CA; الترتيب:</div>
   <div class="sort-tabs">
     <button class="sort-tab on" onclick="setSort('default',this)">&#x1F4CB; الافتراضي</button>
     <button class="sort-tab"   onclick="setSort('top',this)">&#x2B50; الأعلى تقييماً</button>
-    <button class="sort-tab"   onclick="setSort('newest',this)">&#x1F195; المضافة حديثاً</button>
-    <button class="sort-tab"   onclick="setSort('popular',this)">🔥 الأكثر تحضيراً</button>
+    <button class="sort-tab"   onclick="setSort('newest',this)">&#x1F195; أحدث إضافة</button>
   </div>
 </div>
+
 <div class="ppbar">
   <label>عرض:</label>
   <select onchange="setPP(this.value)">
@@ -265,55 +365,24 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </select>
   <div class="ppinfo" id="ppinfo">جاري التحميل...</div>
 </div>
-<!-- ADS INJECTION (position controlled by admin) -->
-<div class="ads-container" id="adsTopContainer" style="display:none"></div>
-<!-- PINNED RECIPES -->
-<div class="pinned-banner" id="pinnedBanner" style="display:none">
-  <div class="pinned-label">📌 وصفات مثبتة</div>
-  <div class="grid" id="pinnedGrid"></div>
-</div>
-<div class="ads-container" id="adsMiddleContainer" style="display:none"></div>
+
 <div class="grid" id="grid"></div>
-<div class="ads-container" id="adsBottomContainer" style="display:none"></div>
 <div class="pgn" id="pgn"></div>
-<footer id="siteFooter">
-  <div class="fc" id="fcount">عدد الوصفات في المجتمع: 0</div>
-  <p id="footerCopy">&#169; 2026 Xbloom Recipes</p>
-  <p id="footerSub" style="margin-top:6px;font-size:.8em">جميع حقوق الوصفات محفوظة لمنشئيها</p>
-  <p id="footerDev" style="margin-top:5px;font-size:.75em;color:#3a3a3a">ABDULELAH ALSUFAYAN</p>
+
+<footer>
+  <div class="fc" id="fcount">عدد الوصفات: 0</div>
+  <div id="footerTipJar" style="margin-bottom:12px"></div>
+  <p id="footerText">&#169; 2026 Xbloom Recipes</p>
+  <p style="margin-top:6px;font-size:.8em" id="footerSub">جميع حقوق الوصفات محفوظة لمنشئيها</p>
+  <p style="margin-top:5px;font-size:.75em;color:#3a3a3a">ABDULELAH ALSUFAYAN</p>
 </footer>
 </div>
-<div class="toast" id="toast"></div>
-
-<!-- FAB زر عائم -->
-<button class="add-fab" onclick="openAddModal()" title="أضافة وصفة جديدة">&#x2795;</button>
-
-<!-- SHARE MODAL -->
-<div class="share-ov" id="shareOv" onclick="if(event.target===this)closeShareModal()">
-  <div class="share-box">
-    <div class="share-title">🔗 مشاركة الوصفة</div>
-    <div class="share-recipe-name" id="shareRecipeName">—</div>
-    <div class="share-link-box" id="shareLinkDisplay"></div>
-    <div class="share-actions">
-      <button class="share-btn share-btn-copy" onclick="copyShareLink()">📋 نسخ الرابط</button>
-      <button class="share-btn share-btn-native" onclick="nativeShare()">📤 مشاركة</button>
-      <a class="share-btn share-btn-wa" id="shareWaBtn" href="#" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        واتساب
-      </a>
-      <a class="share-btn share-btn-x" id="shareXBtn" href="#" target="_blank" rel="noopener">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        X (تويتر)
-      </a>
-    </div>
-    <button class="share-close-btn" onclick="closeShareModal()">✕ إغلاق</button>
-  </div>
 </div>
 
-<!-- SHARE MODAL -->
+<div class="toast" id="toast"></div>
+<button class="add-fab" id="fabBtn" onclick="openAddModal()" title="إضافة وصفة">&#x2795;</button>
 
-
-<!-- Modal: Add Recipe -->
+<!-- ADD RECIPE MODAL -->
 <div class="ov" id="addOv">
 <div class="modal">
   <div class="mh">
@@ -322,8 +391,8 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </div>
   <form class="mf" onsubmit="submitRecipe(event)">
     <div class="fr2">
-      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم g"></div>
-      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="  اسم مالك الوصفة "></div>
+      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: وصفة اثيوبي 15 جرام"></div>
+      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="اسم صاحب الوصفة"></div>
     </div>
     <div class="fr2">
       <div class="fg"><label>المحضّر *</label>
@@ -341,82 +410,97 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="tsel">
         <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; وصفة حارة</label></div>
         <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة باردة</label></div>
-        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل الفلتر </label></div>
+        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل الفلتر</label></div>
       </div>
     </div>
-    <div class="fg" id="iceField" style="display:none;animation:fi .3s ease">
+    <div class="fg" id="iceField" style="display:none">
       <label style="color:#48dbfb">&#x1F9CA; وزن الثلج في الكوب *</label>
       <div style="position:relative">
         <input class="fi" type="number" id="rIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
         <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
       </div>
-      <div style="font-size:.75em;color:var(--t2);margin-top:5px">كمية الثلج المطلوبة في هذه الوصفة</div>
     </div>
     <div class="fg">
       <label>رابط الوصفة من xBloom *</label>
       <input class="fi" type="url" id="rL" required placeholder="https://share-h5.xbloom.com/?id=...">
-      <div style="font-size:.75em;color:var(--t2);margin-top:5px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
+      <div style="font-size:.75em;color:var(--t2);margin-top:4px">افتح الوصفة في تطبيق xBloom ← اضغط مشاركة ← انسخ الرابط</div>
     </div>
-    <button type="submit" class="btn bp bbl" id="submitBtn" style="padding:14px;font-size:14px">
-      &#x1F4E4; نشر الوصفة
-    </button>
+    <button type="submit" class="btn bp bbl" id="submitBtn" style="padding:14px;font-size:14px">&#x1F4E4; نشر الوصفة</button>
+    <p style="font-size:.72em;color:var(--t2);text-align:center" id="approvalNote"></p>
   </form>
 </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, runTransaction, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-const firebaseConfig={apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",projectId:"xbloom-recipes-hub"};
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
-const recipesRef=ref(db,'recipes');
-const ratingsRef=ref(db,'ratings');
+import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, push, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const FB_CFG = {
+  apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"xbloom-recipes-hub"
+};
+const app = initializeApp(FB_CFG);
+const db  = getDatabase(app);
+
 const INIT = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf", "brewer": "Other", "dose": "24g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=ZZxY4cY1PPjQ2M3HyuQQkg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Abla | Colombia 20G", "author": "Abdulrahman alnasser", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zv1nKEbBLN%2BB309uAYN9xg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboZee 25g", "author": "AboZee", "brewer": "Omni", "dose": "15g", "ratio": "1:25", "link": "https://share-h5.xbloom.com/?id=ztElW2DfyC6D2Ft%2FEdYZ7Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "دي كاف بلاك نايت", "author": "Majed", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Zs%2BDXkRFyUkoUJVLZ8wCrw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Arriyadh Sidamo Natural", "author": "Arriyadh", "brewer": "xPod", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZrYi4IY%2BOcoI%2BQ3RBifZUw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Pepperpot Tea Hibiscus Berry Iced", "author": "", "brewer": "Omni", "dose": "5g", "ratio": "~240ml", "link": "https://share-h5.xbloom.com/?id=ZOEKEzL3WtTTfSIrfUPMyA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "ice 100g", "author": "M", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=zIuOeVvubuydUfN%2Befj1Sg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "cold150", "author": "Jazaa", "brewer": "Omni", "dose": "18g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=ZHNDm7R1vKaAVpS2f7cPqg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة 15 جرام اثيوبي", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ZHdgDqVThoshjr7eZN4QJw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "أبو راس", "author": "Ghadah", "brewer": "Other", "dose": "22g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ZDEw2sIKBGvY7OIrBbyimQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "فيصل يونس - صغير", "author": "MF", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=Z8M5K%2BUcr9pksOjL9MckxQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اناناس بلاك نايت بارد", "author": "ابو وسن", "brewer": "Other", "dose": "23g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=z2aZem4GJiagl%2F0Ai2mS8Q%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "شاي الوزة", "author": "Essa", "brewer": "Omni", "dose": "3g", "ratio": "~360ml", "link": "https://share-h5.xbloom.com/?id=YZ6maOZHWqVVSH6uHebgmQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ويلا", "author": "ABDULAZIZ", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ywtZFka1zAfA2RAqbWvsfw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Iced Coffee", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=yFRPu9hIS4y6IjuDAirNMQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "COLD BRO", "author": "XBLOOM Adel Badwilan", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=YDoSObYqp5HFjnFJHkvydQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Brew over 150 ICE", "author": "Hrs", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Ycj1mFbeWOMUWFi8f6eUAQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بارد 🧊", "author": "عائض العتيبي", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Y7kxrFLXHmkJAsj7JrrCgA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "fzz_81 - UGANDA", "author": "Fuad Al Zahrani", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=Y3XWHFSyqt1BtBVVVS7NZQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "abdulla alqarni", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Y1jcHo1jeu4jMskNWnc2xg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اوغندي ويند جديد", "author": "Emad", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=XyLGiloGRIRxDWJMlwn5UA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "Hadeel", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xXsrNAdUzELj1dCMB31L9g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Nj | Kasuya 20g", "author": "Najla", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xxCCzvg1KWUW8I7ER3ulyQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "surge ice الثلج 150", "author": "puresoul.ma", "brewer": "Other", "dose": "20g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Xu5LoRZQpNa4jpjV1MzWJQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بارد", "author": "Bader", "brewer": "Omni", "dose": "18g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=xSi8xAYQA4atCP8Asd6AuA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Ethiopia ice", "author": "Gasim Hakami", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=Xn2ODVjt5LS%2B6Q7LiY8pnA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Cold", "author": "Najla", "brewer": "Omni", "dose": "18g", "ratio": "1:9", "link": "https://share-h5.xbloom.com/?id=xl9kwADxKDKMHf%2F5Jb7LJw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "orea Classic 20g", "author": "RAED", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xiz4JJhiyIZ%2BZHaA1IZ%2Fdw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "NJ COLD | كمية الثلج ١٥٠ جرام", "author": "Abdallh Al-Sultan", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Xhef9RIOPNSVZyPCEOtonQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "SOIL GUJI", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=XgzAZWMAV5y4PjgFyhA1TA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Ethiopia Biloya", "author": "Bassam", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=xEj5EG6QjqUiOM3Z7X8dbA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "تجربه 2 بارد", "author": "Gasim Hakami", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=xe8UTT37KCuxI4y5gz%2Bt9Q%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Colombia Washed Light", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=XdNuOm5mA0kZP0JWSwSoIg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "٢٠ جرام اومني", "author": "Ali", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=X5nxWI5U7FWBhfZU961TiA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice drip recipe", "author": "Authentic", "brewer": "Other", "dose": "20g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=x3M8vrGKocxmRt1ZS97sgA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة ابو اصيل حار", "author": "Faisal", "brewer": "Omni", "dose": "18g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=WybicM2lKEYTHmzWTfN%2B%2Bg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "High Sweetness 🍯", "author": "Mohamd", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=wQmY93Qh3stVj0p3rXwDRg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "قيدب مصنع القهوة", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=wBODV6u50yVDgx0DIIAQkw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Orea 15 gram الأساس", "author": "Sultan", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=wbIItzIgVTda1YhjUFQJ6g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اناناس", "author": "أبوعبدالرحمن", "brewer": "Other", "dose": "20g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=W9gZa0eGAEvmGQBJZsNSbA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كوب ثقيل", "author": "Abdallh Al-Sultan", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=VYCp0pG9Rk%2FKcx1LLFRUHA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "faisal younis Xpods 6T", "author": "Abdulrahman alnasser", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=VsnipSCO9SPag6Fc5e2%2FkA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Filter Rinse", "author": "SHADDAD", "brewer": "Other", "dose": "10g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=vqSQON%2FLhNbHwqsa8USrsw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "60ml - 20g 1:15 ratio", "author": "Shabib", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=vqoWL%2FhpGg17USllk8KJdg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "MH🧊☕️", "author": "MH", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=VlNhaY4iek%2Fk7GKRJGndGw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Cold Recipe 150 ثلج", "author": "Abdullah alshalawi", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=vciDPAlWu7P03xCPc0UYAA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "A.Almassari / 25g", "author": "Muneera", "brewer": "Other", "dose": "25g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=V9OSolM1fdsrfEz8FHwXsw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة البارد", "author": "ADEL SPACE", "brewer": "Omni", "dose": "17g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=V9eqQyyaSfuxowGSgEJeFQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": 15, "author": "Muneera", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=UY4Y%2BSkLErm%2FifnzkgNLoA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "v60 25 g", "author": "Hussain", "brewer": "Other", "dose": "25g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=uX6NLJlh3wd3Yj5CST%2Fdbw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كوستريكي بلوم", "author": "Emad", "brewer": "xPod", "dose": "15g", "ratio": "1:12", "link": "https://share-h5.xbloom.com/?id=uTuyB8bn7uVsEHQSS2XngA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "N🧊💜", "author": "Noha", "brewer": "Omni", "dose": "18g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=urudC1Wq9v5Y%2Byjh%2FaoD1w%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "غسيل الفلتر وتسخين السيرفر فقط", "author": "Naif", "brewer": "Omni", "dose": "8g", "ratio": "1:5", "link": "https://share-h5.xbloom.com/?id=UGbuMoV9DGzaNMEyHIuL1Q%3D%3D", "temperature": "hot", "category": "server"}, {"name": "AboAseeL 20g | Ethiopia", "author": "أبوعبدالرحمن", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=UG5%2FcjagDwuq47g0mrHKLg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "غسيل الفلتر وتسخين السيرفر فقط", "author": "ABDULLAH", "brewer": "Other", "dose": "12g", "ratio": "1:5", "link": "https://share-h5.xbloom.com/?id=Ufjl2IJPb9XpYCNjyvqtyQ%3D%3D", "temperature": "hot", "category": "server"}, {"name": "بوشان20قرام", "author": "أبوعبدالرحمن", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=uBbHZvLSbDzmEaeeINV%2FQw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة 15 غرام بارد", "author": "يوسف العميري", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=UAQm6m2c6ZBH20admXIqbg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "مادهيلينق تريفالي", "author": "عائض العتيبي", "brewer": "Other", "dose": "20g", "ratio": "1:14", "link": "https://share-h5.xbloom.com/?id=uAl2AaCa4xnRWVIBu3geyw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Curve Excelso", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=u%2B1MvUtUjg9VZe4O4nIgag%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "روفيرا بارد الثلج 130 مل", "author": "Riza", "brewer": "Omni", "dose": "18g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=tsjs3M8TVnZ6DJtSti3KEg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "صواع- هويلا (حار) 2:38", "author": "Ibrahim", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=tRXq5usokk1tzU2IFE4iZw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "بارق جديد", "author": "Emad", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=TQXWjvO%2F3bCAhgN6PTiBPA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "16 - 90", "author": "Muneera", "brewer": "Omni", "dose": "16g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=TP7yhokZxklUO5aIBUrpYA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "16;", "author": "Muneera", "brewer": "Omni", "dose": "16g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=TjJpiPL2ChiOf9dVlPderA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اثيوبي لاهوائي - fzz_81", "author": "Fuad Al Zahrani", "brewer": "Other", "dose": "20g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=TgBHZ8EAVgRyGXfcalqP5A%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Competition Style", "author": "Mohammed", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=TfwI1%2FWL4ZWeo5AwnqW%2BAw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "OREA", "author": "XBLOOM Adel Badwilan", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Temmj%2FloRVzTyTC4kllPwg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Adham - Black Knight", "author": "Khalid Alzeer", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=tCrNDPCiRZ16J617YJ%2BBmg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "عالم النرجس", "author": "Anas", "brewer": "Omni", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=TbLAhkOBCwBzWUPLQZxN%2FQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "حمضية اكثر", "author": "محمد", "brewer": "Other", "dose": "20g", "ratio": "1:6", "link": "https://share-h5.xbloom.com/?id=tbGPB%2B%2BBJ%2FahPjlKdhZTTg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ICE RESIPE DRIPPER", "author": "AMR", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Tb4BSC2hFxjDLy0vt0ko6A%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "تجربة شيخ الباردة", "author": "Wssan", "brewer": "Omni", "dose": "15g", "ratio": "1:11", "link": "https://share-h5.xbloom.com/?id=TA2%2Bvsh1l2WViez8vcSRhQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Ethiopia Colombia Various", "author": "Obaid", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=t9CEXxiwTP%2BrBmAAgjz8kg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفه معتمدة 🤍", "author": "يوسف العميري", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=t8QOd3BEu12ZFrQcW9TwhQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Gadeb - ORO", "author": "Khalid Alzeer", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=szOJ4VoXSiMOuHLzjZ0qqQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "FIKRI - BUNAH 🧊", "author": "Khaled", "brewer": "Omni", "dose": "15g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=SyHQH%2Fcu5k3UzDj79%2BGNxQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفه يابانيه", "author": "٣٣", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=sxRqqKBXHzZ%2B3dI9XrWNnw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة حار ١٥", "author": "ADEL SPACE", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=swEQnkHq3CBMcaQuoN8epA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "غسيل الفلتر وتسخين السيرفر فقط", "author": "Abo A7mad", "brewer": "Other", "dose": "6g", "ratio": "1:5", "link": "https://share-h5.xbloom.com/?id=SqhDigZQvqdzDLZHX%2B55dw%3D%3D", "temperature": "hot", "category": "server"}, {"name": 16, "author": "Muneera", "brewer": "Omni", "dose": "16g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=sosC1hIlAIVOSPAOVRzYdA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "يمني حار", "author": "أبوعبدالرحمن", "brewer": "Omni", "dose": "18g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=sLEYnAQ0q8tx6rehosfQHA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "surge ice الثلج 150", "author": "puresoul.ma", "brewer": "Other", "dose": "20g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=sjyJ%2B43wG%2BHPBIjwTb4%2BPA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "ايس دريب/ ثلج 120", "author": "Muneera", "brewer": "Other", "dose": "25g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=s8WtsKcuyrJQI5PIY%2B111w%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "كوستريكي ماز", "author": "Emad", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=S4l0boQO5zorMo3dcNRjoA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "A.Almassari / 21g", "author": "soso", "brewer": "Other", "dose": "21g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=S3ELwgw4kdxR2VdMCrXLWA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "salem | Kit Kat", "author": "Turky", "brewer": "Other", "dose": "23g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=RY07DCdhTuI5c6WmNylrDQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "غسيل الفلتر وتسخين السيرفر فقط", "author": "Mohammed", "brewer": "Other", "dose": "12g", "ratio": "1:5", "link": "https://share-h5.xbloom.com/?id=rxI5iCfD40W2nGGRT2Bveg%3D%3D", "temperature": "hot", "category": "server"}, {"name": "15Gسعد", "author": "أبوعبدالرحمن", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=RseBEJ1SPqNCYtRc42A2aQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ايس درب المعيووووف", "author": "Abdullah", "brewer": "Other", "dose": "25g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=rrVVHC9fNZta1OALynKvwQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "20 -", "author": "Muneera", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Ro4gBFqRFQj7AJa8b8IIXA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "15G", "author": "Muneera", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=RO0kBSTUMPTra1FPw8C9oQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "mod2", "author": "mod", "brewer": "Other", "dose": "22g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=RnYjWJnqTVg29%2BpoVbTcBw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كولمبي مارينز ٨٨•", "author": "Emad", "brewer": "xPod", "dose": "15g", "ratio": "1:13", "link": "https://share-h5.xbloom.com/?id=rM2J0Ae7UAo%2Bj64QiIaI8Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة 15 جرام اثيوبي", "author": "أبوعبدالرحمن", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=rkxIuPLkuqxs4hp5qA5wMg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboAseeL 20g | ice coffee", "author": "AbuAljawhara", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=rK27Q5wjkZhMPZphyTU0KQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "كوستريكا", "author": "mf", "brewer": "Other", "dose": "20g", "ratio": "1:14", "link": "https://share-h5.xbloom.com/?id=rcHwLHPS%2FOj810jNZJaI3g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Gadeb - ORO", "author": "Aziz", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=RC9IGAQY%2Fd77eT13iqmelg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اكسيلسو 20", "author": "أبوعبدالرحمن", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=R8EDgdY4dnkaJYszzNthIA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "غسيل الفلتر", "author": "AMR", "brewer": "Other", "dose": "7g", "ratio": "1:5", "link": "https://share-h5.xbloom.com/?id=r%2BoRJ6zzfCIm9crPBRGl3A%3D%3D", "temperature": "hot", "category": "server"}, {"name": "ice ( test )", "author": "Faisal", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=qw8P0CQoGte%2F9EtZwADvAA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "عتارة | اليمن محمصة سلوب", "author": "Abdullah", "brewer": "Other", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=qroTtQRUKiXCrIyJoT8UzA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Kiffa Roastery", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=qR140y%2BXxyQASeS3DZXImQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "surge ice الثلج 150", "author": "Omar", "brewer": "Other", "dose": "15g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=QnD4NfBVSqio5gZZP7HqEA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "دي كاف بلاك نايت", "author": "ABDULLAH", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=QK638U0p%2BSsZ3nKptAVdPw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Arriyadh AlShumaisi", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=qJpIulp30YY0ntE4BDVYVw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia with grind|Aseel", "author": "faisal", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Qgrt5AXA6GgZAI%2BvjSVb7A%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "classic", "author": "Abdul", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=qEuveC5bkKTtpOwc8Xyepg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboAseeL 20g | Ethiopia", "author": "Abdullah", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=q9WFWqNq3qmQ3E6BfdlE4w%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "shindawa 20g.2", "author": "Turki", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Q1JUbEcEc%2Fn6f6Xfrvzmtg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Black Knight - Adham", "author": "Abdullah", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=PQ0OFVXJxVQgkhEZevTQlg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة 25", "author": "Muneera", "brewer": "Other", "dose": "25g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=pp7q1iN1FY%2FTYnkC2taRbg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "4 Pour ice", "author": "Qvsai", "brewer": "Other", "dose": "25g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=PmUeaaFFpGzTzimTVnnA%2Bg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "شمام كولومبي - حار", "author": "Turky", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=pkSB6xkhBKOCbDgTF7lGdw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Bait Hameed 25G | Yemen", "author": "Hadeel", "brewer": "Other", "dose": "25g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=p3G6OpLof7tIpptZ89h1Ew%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "High Sweetness 🍯", "author": "Mohammed Ali", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=P2Cbld7rtCLmDSFWX4sBhA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "تيانمو اولالا الصين لاهوائي", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=OXjZlsQONUc7mzpTpFjwkw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "IDMI Cost Arica Hacienda", "author": "Bassam", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=oqPw7EGBc12G1Zs0ySSaYw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Suwaa - Huila", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=oq2fF8MvpSGGcQL3TegrNA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "حصن ذروان | Dhurwan Fort", "author": "BK", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=OpDGSeJmcIiE8bWoksPhJw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "A.Almassari / 21g", "author": "A.Almassari", "brewer": "Other", "dose": "21g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=ojzjuIVwQ%2BbnbssroaBa%2BQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كولد برو", "author": "Ali", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=OIgZS%2FMQJCieDEl%2FYq3Qgw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "٢٠ جرام اومني", "author": "أبوعبدالرحمن", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=OfGxwsORs%2Fs23Y%2F3tXXZSA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "غسيل الفلتر وتسخين السيرفر فقط", "author": "ABH", "brewer": "Other", "dose": "6g", "ratio": "1:5", "link": "https://share-h5.xbloom.com/?id=oa4SpZfbZUzHIc7As9qGSQ%3D%3D", "temperature": "hot", "category": "server"}, {"name": "15g creative recipe", "author": "Khalid Alzeer", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=O6%2FCxhQAho08imQcgMACDQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "soil guji harmony", "author": "مشاري", "brewer": "Other", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=O11JHNsWS%2BbPAA%2Fwg63lsA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "abusara7 N", "author": "Abusara7", "brewer": "Other", "dose": "21g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=O%2F9r83o%2BLWqhigz2nMkeOw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Sulalat - Chelechle", "author": "Specialty Hub", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=o%2BmPCOTenSNMF4JVd0YcWA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "مذهلة محمصة OYW", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=nZwxyoka%2B08oF2YsQ7rCmw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "رونالدو | Ronaldo", "author": "BK", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=nqRsA7a6SG0u1ETyz%2B9sTw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboAseeL 20g | Ethiopia", "author": "AbuAljawhara", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=nmxMQ8KkAOBzAOXlrIzttw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اليمن حراز مصنع القهوة 20g", "author": "ABDULHMEAD", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=NkxEVNpF348Np7Xmt6t77A%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "12G", "author": "Muneera", "brewer": "Omni", "dose": "12g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=NGgyLAMLhPkojpCCKFWS6w%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "كوستاريكا مارياا مجفف", "author": "Fuad Al Zahrani", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=nAOckMAjfez7hg2gKaKmHw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة 18g، محاصيل سعودية،يمنية", "author": "Fndesign", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=MZCo%2B1i1BWok20gfIk09iw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice 150 ,🤔", "author": "Suroor", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=muoUlB7TBi0126jDex2Q8g%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "18G..", "author": "Muneera", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=ms75ZXmJd%2F1aAX22MXUc8g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "abusara7 N", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=MrDp8A6r05H%2Filcq9ULUqQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "سلفدور تشارج", "author": "Emad", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=MOzdHIzgBjXUC9PH3mDt%2Fw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Ice Drip25", "author": "ABH", "brewer": "Other", "dose": "20g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=MLQuyuC47BcmoF0TETd%2FRg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "16g..", "author": "Muneera", "brewer": "Omni", "dose": "16g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=MJvMMfjOKW2rnN9Vp9ePag%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "اثيوبي ماز", "author": "Khaled", "brewer": "xPod", "dose": "15g", "ratio": "1:14", "link": "https://share-h5.xbloom.com/?id=MiUvxFcQpofP1QuSy%2FOG%2FA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "شيلسلي سلالات ١٥ ج", "author": "يوسف العميري", "brewer": "Other", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=mIGxr%2FiFpnlnp3ZHfIm8sw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "A", "author": "Ali", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Ma%2F16weQvbNEYspvJnUP8Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "فراولة رول بارد١٥ج مصنع القهوة", "author": "ABDULHMEAD", "brewer": "Omni", "dose": "15g", "ratio": "1:11", "link": "https://share-h5.xbloom.com/?id=m5sehtkocFgl%2BDDSPpzV4g%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Soil - Guji", "author": "Specialty Hub", "brewer": "xPod", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=m5m39U5SDhRF%2FjdM3KSS9w%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "natural fermentation beans🧊", "author": "SA", "brewer": "Omni", "dose": "15g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=m58xceXg5UrJsyNVPWyW4w%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "The big barista", "author": "Omar", "brewer": "Omni", "dose": "18g", "ratio": "1:14", "link": "https://share-h5.xbloom.com/?id=M0uoZlDb%2FzGllFJIW7l1dg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "slope", "author": "Muneera", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=LYYQlew9ndISEZf8wRs8Jw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ماناناسي Oro", "author": "Ali", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=luleqEawHeVg7e7Ux16gtQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "SOIL. GUJI", "author": "soil", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=lqY24uVRMPoqTVpgsFwQAg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "BlackSip Watermelon Cold", "author": "ahmad", "brewer": "Other", "dose": "20g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=lpPQuDvmXkvJIGQzB%2B5T3w%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "غسيل", "author": "Turky", "brewer": "Other", "dose": "10g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=lpDriV6DNu6Ohf4tT1Dl6g%3D%3D", "temperature": "hot", "category": "server"}, {"name": "وصفه 15 غرام", "author": "Ghazi", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=LDyP1OcWT3hZcCX12nrUuQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "20g Colombia 180 ice", "author": "M", "brewer": "Other", "dose": "20g", "ratio": "1:9", "link": "https://share-h5.xbloom.com/?id=lDMV3jgrCYmJ%2FgsTy4gkxg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "KAMAL 9x", "author": "KAMAL ALRAWHANI", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=L0eCSa9l5EqPjPCjIYPhsQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "تجربة شيخ الباردة", "author": "Hider Ali", "brewer": "Omni", "dose": "15g", "ratio": "1:11", "link": "https://share-h5.xbloom.com/?id=KZXMjL2SZE9yixHcUBvwyw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "٤ صبات طحن سويل شيلشلي 15 ج", "author": "Abdullah", "brewer": "Other", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=kzABcLIfs1ctHatV%2F%2BiBHg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "faisal younis Xpods 6T", "author": "SHADDAD", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=KycHhRpushnbcgYMMJZ88Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice coffee", "author": "Ali", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=krOsQGpAjwfHTFmefJwwdg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "AboAseeL 20g | ice coffee", "author": "faisal", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=kqQR5FxHNFb4MdWjxcFA3w%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "M.15", "author": "Muneera", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=kOmewFPhoLTkrtXW7N6MMQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "15g - Fruit", "author": "Abdulaziz", "brewer": "Omni", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=kMQtPOJa%2FTrz7eZkIYxwRQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "22;", "author": "Muneera", "brewer": "Other", "dose": "22g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=Kj2JFoQUy1608RbhmPyTow%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "GPT - Al-Shumaisi 15g", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=kESyUeduhUKXITEVUV5cjA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "18G", "author": "Muneera", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=kdAQr03Tk1s0ecmNa16KIg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboAseeL 20g | Ethiopia", "author": "Hadeel", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=kC8lnveKhEf5FpwsQ4OF5g%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "تيانمو اولالا 15g بارد", "author": "Abdullah", "brewer": "Omni", "dose": "15g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=kBRNMiiYtKl8KCZUiwfrNw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "وصفة معتمدة 15 💛💛", "author": "يوسف العميري", "brewer": "Other", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=K3Kib2OPjfUUQU1npdCeKg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Classic Ice Drip", "author": "Abdul", "brewer": "Other", "dose": "20g", "ratio": "1:9", "link": "https://share-h5.xbloom.com/?id=K1rdIPRbzYcvqtRm4YmZdw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Seen 19g 💳 اثيوبي", "author": "khaled", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=jzeV0rmlZfrWP8A5OU14JQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ديار", "author": "Emad", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=jXAKonLop3xpfWyYnjy8og%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Black Night", "author": "Turky", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=JPuE66m4y%2FDnIeLuR%2FnDJw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "A", "author": "Waleed Alotaibi", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=JnZLkfjbHXo2uNv0ei5QKg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "15Gسعد", "author": "محمد", "brewer": "Omni", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=jg9yDcT52MJUBloUF8fwRw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "AboAseeL 20g | ice coffee", "author": "Mohammad", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=JFrvKOFkK0JeNEdL%2FwPRAw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "بلاك نايت خوخ 170 قرام ثلج", "author": "sloom", "brewer": "Other", "dose": "25g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Jesju4Jr%2F3ZKEP2OII6vlw%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "iesss", "author": "Abdulmailk", "brewer": "Omni", "dose": "18g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=JegxlZmzRaFtBkWCpfCGSQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفتي الخاصه رقم 2", "author": "Bader", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=jdQZImafA%2B5R7npRet3RjQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "الإيحاءات", "author": "abdullah aqil", "brewer": "Omni", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=JC%2BL0uxKaHadpm4yI%2BNE1Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "فيصل يونس - كبير", "author": "MF", "brewer": "Other", "dose": "22g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=jA5ZTA%2FZAXQE2Le3OTrP9Q%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفه 15 غرام", "author": "Ali", "brewer": "Omni", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=j%2BvT14%2F%2Blm4V%2FG4KFDODjA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "بارد ١٥٠ ثلج ٢٠ ج", "author": "Majed", "brewer": "Other", "dose": "20g", "ratio": "1:6", "link": "https://share-h5.xbloom.com/?id=iZk4tg1P9vfTHdiipcD%2BxQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "RICARDO . trivali , Ice 20g", "author": "عائض العتيبي", "brewer": "Other", "dose": "21g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=IwAkBhJcWbAtfjn61iOzAQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Arriyadh - AlShumaisi", "author": "Specialty Hub", "brewer": "xPod", "dose": "15g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=iQXZKyfZZWZ3qJ9%2B21K%2FVw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice drip - الثلج 100 قرام", "author": "Muneera", "brewer": "Other", "dose": "20g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=ILsCz3GN6Htr1DFtSzNCZg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "Abla Roastery 20g Ethiopia4", "author": "Hadeel", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=iKDcCuViwydHfN%2FIqtYQmA%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice Yameine", "author": "Aziz's", "brewer": "Omni", "dose": "18g", "ratio": "1:8", "link": "https://share-h5.xbloom.com/?id=ij3jO13xQqrFgA3bCI%2FBPA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "😴😴", "author": "Khalifa", "brewer": "Omni", "dose": "15g", "ratio": "1:17", "link": "https://share-h5.xbloom.com/?id=IHjPVu5J%2B01j3fzeQOVyCQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "ice drip 17g", "author": "Reem", "brewer": "Omni", "dose": "17g", "ratio": "1:9", "link": "https://share-h5.xbloom.com/?id=IAGy8o8CWc5qNNgU4gOscA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "117 ثلج", "author": "Bandar", "brewer": "Other", "dose": "18g", "ratio": "1:6", "link": "https://share-h5.xbloom.com/?id=I0sRNKzn1nKNnpz5%2BjYmNg%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "El Silvador Norah", "author": "Abdullah", "brewer": "Omni", "dose": "18g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=I%2FzKG70N%2Fedg9D2sfIopxQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "قوته سلفادور تورولا مغسول حار", "author": "Yousef Alharbi", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=HPMYy0G1q4y2cTjKm6Hplw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "Coffee of The Day", "author": "", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=HpMXbY5K4tGRV39vvAIJMw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "وصفة لاما - ثلج 100", "author": "Muneera", "brewer": "Other", "dose": "15g", "ratio": "1:7", "link": "https://share-h5.xbloom.com/?id=Hn3COMgKN9n5Ic1alSNleQ%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "kiffa", "author": "Khalid Alzeer", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=HLVun57Owy9mIGO8xKYJ0A%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "iced qayel ali - خالد", "author": "KHALED", "brewer": "Omni", "dose": "18g", "ratio": "1:10", "link": "https://share-h5.xbloom.com/?id=HIHXWqBzA45ruB7f0B%2FzBA%3D%3D", "temperature": "cold", "category": "cold"}, {"name": "30 قرام", "author": "Muneera", "brewer": "Other", "dose": "25g", "ratio": "1:18", "link": "https://share-h5.xbloom.com/?id=h2jb7hWx9N6HUsaCAVf5jQ%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "15pod", "author": "Muneera", "brewer": "xPod", "dose": "15g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=GsjfvzgF8eWPdtEjfWBjsw%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "GADEB ORO BY Noura.ja", "author": "Nourah", "brewer": "Other", "dose": "20g", "ratio": "1:15", "link": "https://share-h5.xbloom.com/?id=GkOQiqyJTmUls1v1XNDZjg%3D%3D", "temperature": "hot", "category": "hot"}, {"name": "25grams", "author": "Muneera", "brewer": "Other", "dose": "25g", "ratio": "1:16", "link": "https://share-h5.xbloom.com/?id=gJAP695CaWbNxZxkMcLQGA%3D%3D", "temperature": "hot", "category": "hot"}];
+
 const CKW=['بارد','ثلج','ice','🧊','iced','الثلج','cold','باردة','مثلج','بارده','مثلجة','مثلجه'];
 const SKW=['غسيل','ترطيب','سيرفر','غسل','server','cleaning','wash'];
-let RR=[],BREW={},RATINGS={},USER_RATINGS={},BREW_CLICKS={},AFFILIATE={};
-let SORT='default';
-let fTemp='all',fBrew='all',Q='',PAGE=1,PP=24;
+
+let RR=[],FAV=new Set(),BREW={},RATINGS={},USER_RATINGS={};
+let SETTINGS={},PROMO_CODES={},AFFILIATE={},COMMENTS={};
+let SORT='default',fTemp='all',fBrew='all',Q='',PAGE=1,PP=24;
+let USER_FP='';
+
+// ════ FINGERPRINT ════
+function getFingerprint(){
+  let fp=localStorage.getItem('xbfp');
+  if(!fp){fp=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('xbfp',fp);}
+  return fp;
+}
+USER_FP=getFingerprint();
+
 function str(v){return v==null?'':String(v);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function setEl(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function hasSKW(t){return SKW.some(k=>t.includes(k));}
 function hasCKW(t){return CKW.some(k=>t.includes(k));}
 function ensureCat(r){if(!r.category){const t=(str(r.name)+' '+str(r.author)).toLowerCase();r.category=hasSKW(t)?'server':hasCKW(t)?'cold':'hot';}return r;}
+function toast(msg,cls='tok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+cls+' show';setTimeout(()=>t.classList.remove('show'),2800);}
+function ratingKey(link){try{return btoa(unescape(encodeURIComponent(link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}catch(e){return 'k'+Math.abs([...link].reduce((a,c)=>a*31+c.charCodeAt(0)|0,0));}}
+
 function loadLocal(){
-  // fav removed
-  try{BREW=JSON.parse(localStorage.getItem('xbb')||'{}');}catch(e){BREW={};}
-  try{USER_RATINGS=JSON.parse(localStorage.getItem('xbur')||'{}');}catch(e){USER_RATINGS={};}
+  try{FAV=new Set(JSON.parse(localStorage.getItem('xbf')||'[]'));}catch{FAV=new Set();}
+  try{BREW=JSON.parse(localStorage.getItem('xbb')||'{}');}catch{BREW={};}
+  try{USER_RATINGS=JSON.parse(localStorage.getItem('xbur')||'{}');}catch{USER_RATINGS={};}
 }
 function saveLocal(){
-
-  try{localStorage.setItem('xbb',JSON.stringify(BREW))}catch(e){}
-  try{localStorage.setItem('xbur',JSON.stringify(USER_RATINGS))}catch(e){}
+  try{localStorage.setItem('xbf',JSON.stringify([...FAV]));}catch{}
+  try{localStorage.setItem('xbb',JSON.stringify(BREW));}catch{}
+  try{localStorage.setItem('xbur',JSON.stringify(USER_RATINGS));}catch{}
 }
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.className='toast tok show';setTimeout(()=>t.classList.remove('show'),2800);}
+
 function mergeData(fbList){
   const fbLinks=new Set(fbList.map(r=>r.link));
   const init=JSON.parse(JSON.stringify(INIT)).filter(r=>!fbLinks.has(r.link));
   init.forEach(ensureCat);
-  RR=fbList.concat(init);
+  RR=[...fbList,...init];
   loadLocal();updateCounts();render();
 }
+
 function updateCounts(){
   let t=RR.length,h=0,c=0,s=0,o=0,x=0,ot=0;
   RR.forEach(r=>{const cat=r.category||'hot',b=r.brewer||'';
     if(cat==='hot')h++;else if(cat==='cold')c++;else s++;
-    if(b==='Omni')o++;else if(b==='xPod')x++;else ot++;});
+    if(b==='Omni')o++;else if(b==='xPod')x++;else ot++;
+  });
   setEl('nAll',t);setEl('nHot',h);setEl('nCold',c);setEl('nSrv',s);
   setEl('bAll',t);setEl('bOmni',o);setEl('bXPod',x);setEl('bOther',ot);
   setEl('fcount','الوصفات: '+t);
 }
-window.setSort=function(s,btn){
-  SORT=s;
-  document.querySelectorAll('.sort-tab').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  PAGE=1;render();
-};
+
+window.setSort=function(s,btn){SORT=s;document.querySelectorAll('.sort-tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');PAGE=1;render();};
 window.setF=function(type,val,btn){
   if(type==='temp'){fTemp=val;document.getElementById('tempG').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));}
   else{fBrew=val;document.getElementById('brewG').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));}
@@ -424,11 +508,13 @@ window.setF=function(type,val,btn){
 };
 window.setPP=function(v){PP=parseInt(v);PAGE=1;render();};
 window.goPage=function(p){PAGE=p;render();window.scrollTo({top:0,behavior:'smooth'});};
+
 function getList(){
   let list=RR.filter(r=>{
-    if(fTemp!=='all'&&(r.category||'hot')!==fTemp)return false;
-    if(fBrew!=='all'&&(r.brewer||'')!==fBrew)return false;
-    if(Q){const t=(str(r.name)+' '+str(r.author)+' '+str(r.dose)+' '+str(r.ratio)).toLowerCase();if(!t.includes(Q))return false;}
+    if(r.hidden) return false;
+    if(fTemp!=='all'&&(r.category||'hot')!==fTemp) return false;
+    if(fBrew!=='all'&&(r.brewer||'')!==fBrew) return false;
+    if(Q){const t=(str(r.name)+' '+str(r.author)+' '+str(r.dose)+' '+str(r.ratio)).toLowerCase();if(!t.includes(Q)) return false;}
     return true;
   });
   if(SORT==='top'){
@@ -437,33 +523,36 @@ function getList(){
       const rb=RATINGS[ratingKey(b.link)]||{total:0,count:0};
       const avgA=ra.count>0?ra.total/ra.count:0;
       const avgB=rb.count>0?rb.total/rb.count:0;
-      // ترتيب: أعلى متوسط أولاً، وعند التعادل الأكثر تقييماً أولاً
-      if(avgB!==avgA)return avgB-avgA;
-      return rb.count-ra.count;
+      if(avgB!==avgA)return avgB-avgA;return rb.count-ra.count;
     });
-  } else if(SORT==='newest'){
+  }else if(SORT==='newest'){
     list.sort((a,b)=>(b.addedAt||0)-(a.addedAt||0));
-  } else if(SORT==='oldest'){
-    list.sort((a,b)=>(a.addedAt||0)-(b.addedAt||0));
-  } else if(SORT==='popular'){
+  }else{
+    // featured today first, then featured, then by addedAt
+    const todayLink=SETTINGS.featured_today;
     list.sort((a,b)=>{
-      const ka=ratingKey(a.link), kb=ratingKey(b.link);
-      return (BREW_CLICKS[kb]||0)-(BREW_CLICKS[ka]||0);
+      if(a.link===todayLink&&b.link!==todayLink)return -1;
+      if(b.link===todayLink&&a.link!==todayLink)return 1;
+      if(a.featured&&!b.featured)return -1;
+      if(!a.featured&&b.featured)return 1;
+      return (b.addedAt||0)-(a.addedAt||0);
     });
   }
   return list;
 }
+
 function render(){
   const list=getList();const grid=document.getElementById('grid');
-  if(!list.length){grid.innerHTML='<div class="empty"><h2>لا توجد نتائج</h2><p style="color:var(--t2)">جرّب تغيير الفلتر أو كلمة البحث</p></div>';document.getElementById('pgn').innerHTML='';document.getElementById('ppinfo').innerHTML='لا توجد نتائج';return;}
+  if(!list.length){grid.innerHTML='<div class="empty"><h2>لا توجد نتائج</h2><p style="color:var(--t2)">جرّب تغيير الفلتر</p></div>';document.getElementById('pgn').innerHTML='';setEl('ppinfo','لا نتائج');return;}
   const total=Math.ceil(list.length/PP);if(PAGE>total)PAGE=total;
   const s=(PAGE-1)*PP,e=Math.min(s+PP,list.length),slice=list.slice(s,e);
   document.getElementById('ppinfo').innerHTML='عرض <b>'+(s+1)+'-'+e+'</b> من <b>'+list.length+'</b>';
   grid.innerHTML=slice.map((r,i)=>cardHTML(r,i)).join('');
   renderPgn(total);
 }
+
 function cardHTML(r,i){
-  const idx=RR.indexOf(r);
+  const idx=RR.indexOf(r),isFav=FAV.has(r.link);
   const cat=r.category||'hot',bTag=r.brewer==='Omni'?'to':r.brewer==='xPod'?'tx':'tth';
   const cTag=cat==='cold'?'tc':cat==='server'?'ts':'th';
   const cLbl=cat==='cold'?'بارد 🧊':cat==='server'?'غسيل وترطيب سيرفر':'حار 🔥';
@@ -471,18 +560,42 @@ function cardHTML(r,i){
   const rd=RATINGS[rKey]||{total:0,count:0};
   const avg=rd.count>0?rd.total/rd.count:0;
   const myRating=USER_RATINGS[rKey]||0;
+  const isToday=SETTINGS.featured_today===r.link;
+  const isRatingEnabled=SETTINGS.ratings_enabled!==false;
+  const isCommentsEnabled=SETTINGS.comments_enabled!==false;
+  
+  // Stars
   let stars='';
-  for(let s=1;s<=5;s++){
-    const filled=s<=Math.round(avg);
-    stars+=`<span class="star ${filled?'son':'soff'}" data-s="${s}" data-idx="${idx}" data-key="${rKey}"
-      onmouseover="hoverStars(this,${s})"
-      onmouseout="unhoverStars(this,${idx},${rKey})"
-      onclick="rate('${rKey}',${s},${idx})">⭐</span>`;
+  if(isRatingEnabled){
+    for(let s=1;s<=5;s++){
+      const filled=s<=Math.round(avg);
+      stars+=`<span class="star ${filled?'son':'soff'}" data-s="${s}" data-idx="${idx}" data-key="${rKey}"
+        onmouseover="hoverStars(this,${s})" onmouseout="unhoverStars(this,${idx})"
+        onclick="openRateComment('${rKey}',${s},${idx})">⭐</span>`;
+    }
   }
-  return `<div class="card ani" style="animation-delay:${Math.min(i*0.04,.5)}s">
+
+  // Comments count
+  const cmtArr=Object.values(COMMENTS[rKey]||{}).filter(c=>c.approved);
+  const cmtCount=cmtArr.length;
+
+  // Affiliate
+  const affKey=r._fbKey;
+  const aff=AFFILIATE[affKey];
+  const affBtn=aff?`<a href="${esc(aff.url)}" target="_blank" rel="noopener" class="aff-btn" onclick="trackBrew('${rKey}')">🛒 ${esc(aff.title)}${aff.price?' — '+esc(aff.price):''}</a>`:'';
+
+  // Badges
+  const todayBadge=isToday?'<div class="today-badge">⭐ وصفة اليوم</div>':'';
+  const featBadge=(!isToday&&r.featured)?'<div class="feat-badge">📌 مميزة</div>':'';
+  const sponsBadge=r.sponsored?'<div class="sponsored-badge">🌟 مدفوعة</div>':'';
+  const cardClass='card ani'+(isToday?' featured-today':r.featured?' featured':'')+(r.sponsored?' sponsored':'');
+
+  return `<div class="${cardClass}" style="animation-delay:${Math.min(i*0.04,.5)}s">
+    ${todayBadge}${featBadge}${sponsBadge}
     <div class="ch"><h3 class="cn">${esc(str(r.name))}</h3>
     <div class="cicos">
-      <div class="ib share" onclick="openShareModal(${idx})" title="مشاركة الوصفة">🔗</div>
+      <div class="ib${isFav?' fav':''}" onclick="toggleFav(${idx})">${isFav?'💙':'🤍'}</div>
+      ${SETTINGS.share_enabled!==false?`<div class="ib" onclick="shareR(${idx})">🔗</div>`:''}
     </div></div>
     ${str(r.author)?`<div class="cauth">بواسطة ${esc(str(r.author))}</div>`:''}
     <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span></div>
@@ -490,67 +603,86 @@ function cardHTML(r,i){
       <div class="det"><span class="dl">الجرعة</span><span class="dv">${esc(str(r.dose))}</span></div>
       ${str(r.ratio)?`<div class="det"><span class="dl">النسبة</span><span class="dv">${esc(str(r.ratio))}</span></div>`:''}
     </div>
-    <div class="rating-wrap">
+    ${isRatingEnabled?`<div class="rating-wrap">
       <div class="cstars" id="stars-${idx}">${stars}</div>
       <div class="rinfo">
-        ${avg>0?`<span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rd.count} تقييم</span>`:'<span class="rcnt" style="font-size:.75em">كن أول من يقيّم</span>'}
+        ${avg>0?`<span class="ravg">${avg.toFixed(1)} ⭐</span><span style="color:var(--t2);font-size:.78em">${rd.count} تقييم</span>`:'<span style="color:var(--t2);font-size:.75em">كن أول من يقيّم</span>'}
         ${myRating?`<span class="rmine">قيّمتها ${myRating}⭐</span>`:''}
       </div>
-    </div>
+    </div>`:''}
     <div class="cacts">
-      <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
-      ${AFFILIATE[rKey]?`<a href="${AFFILIATE[rKey].url}" target="_blank" rel="noopener sponsored" class="btn baff bsm" onclick="trackAffClick('${rKey}')" title="${esc(String(AFFILIATE[rKey].label||'شراء'))}">
-        ${AFFILIATE[rKey].icon||'🛒'} ${esc(String(AFFILIATE[rKey].label||'شراء'))}
-      </a>`:''}
+      ${affBtn}
+      <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrew('${rKey}')">فتح الوصفة في xBloom</a>
     </div>
-    <div class="comments-section">
-      <button class="comments-toggle" onclick="toggleComments('${rKey}',this)">
-        💬 <span id="ccount-${rKey}">التعليقات</span>
-      </button>
-      <div class="comments-box" id="cbox-${rKey}">
-        ${myRating===0?'<div class="rating-required-hint">⭐ يجب التقييم أولاً قبل كتابة تعليق</div>':''}
-        <div style="margin-bottom:10px">
-          <div class="stars-select" id="cstars-${rKey}">
-            ${[1,2,3,4,5].map(n=>`<span class="star-sel ${myRating>=n?'active':''}" onclick="selectCommentStar('${rKey}',${n})" title="${n} نجوم">⭐</span>`).join('')}
-          </div>
-          <input class="comment-textarea" id="cauthor-${rKey}" placeholder="اسمك (اختياري)" style="padding:8px 12px;margin-bottom:7px;min-height:unset;resize:none;border-radius:8px;font-size:13px" ${myRating===0?'disabled':''}>
-          <textarea class="comment-textarea" id="ctxt-${rKey}" placeholder="${myRating===0?'قيّم الوصفة أولاً بالنجوم أعلاه':'اكتب تعليقك هنا...'}" ${myRating===0?'disabled':''}></textarea>
-          <button class="comment-submit" onclick="submitComment('${rKey}')" id="csub-${rKey}" ${myRating===0?'disabled':''}>
-            ✉️ نشر التعليق
-          </button>
-        </div>
-        <div class="comments-list" id="clist-${rKey}"><p style="color:var(--t2);font-size:.82em;text-align:center;padding:8px">جاري التحميل...</p></div>
+    ${isCommentsEnabled?`
+    <button class="cmt-toggle" onclick="toggleComments(${idx},this)">💬 التعليقات (${cmtCount})</button>
+    <div class="cmt-section" id="cmtsec-${idx}">
+      <div id="cmtlist-${idx}">${renderCommentsList(rKey,cmtArr)}</div>
+      <div class="cmt-form">
+        <input class="cmt-name-input" id="cmtname-${idx}" placeholder="اسمك (أو مجهول)" maxlength="50">
+        <textarea class="cmt-input" id="cmttxt-${idx}" placeholder="اكتب تعليقك (التقييم بالنجوم أعلاه مطلوب)..." maxlength="500"></textarea>
+        <button class="btn bp bbl bsm" style="margin-top:6px" onclick="submitComment(${idx},'${rKey}')">💬 إرسال التعليق</button>
       </div>
     </div>
-  </div>`;
-}
-function renderPgn(total){
-  const c=document.getElementById('pgn');if(total<=1){c.innerHTML='';return;}
-  let h=`<button class="pb" ${PAGE===1?'disabled':''} onclick="goPage(${PAGE-1})">&#x2039;</button>`;
-  if(total<=7){for(let i=1;i<=total;i++)h+=`<button class="pb${i===PAGE?' on':''}" onclick="goPage(${i})">${i}</button>`;}
-  else{
-    h+=`<button class="pb${PAGE===1?' on':''}" onclick="goPage(1)">1</button>`;
-    if(PAGE>3)h+='<span class="dots">...</span>';
-    for(let i=Math.max(2,PAGE-1);i<=Math.min(total-1,PAGE+1);i++)h+=`<button class="pb${i===PAGE?' on':''}" onclick="goPage(${i})">${i}</button>`;
-    if(PAGE<total-2)h+='<span class="dots">...</span>';
-    h+=`<button class="pb${PAGE===total?' on':''}" onclick="goPage(${total})">${total}</button>`;
-  }
-  h+=`<button class="pb" ${PAGE===total?'disabled':''} onclick="goPage(${PAGE+1})">&#x203A;</button>`;
-  c.innerHTML=h;
-}
-// ════ RATING KEY ════
-function ratingKey(link){
-  try{return btoa(unescape(encodeURIComponent(link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
-  catch(e){return 'k'+Math.abs([...link].reduce((a,c)=>a*31+c.charCodeAt(0)|0,0));}
+    `:''}</div>`;
 }
 
-// ════ HOVER STARS ════
+function renderCommentsList(rKey,cmtArr){
+  if(!cmtArr.length) return '<p style="color:var(--t2);font-size:.8em;text-align:center;padding:8px">لا توجد تعليقات بعد</p>';
+  const sorted=[...cmtArr].sort((a,b)=>{if(a.pinned&&!b.pinned)return -1;if(!a.pinned&&b.pinned)return 1;return b.ts-a.ts;});
+  return sorted.slice(0,10).map(c=>{
+    const starsHtml=c.rating?'⭐'.repeat(c.rating):'';
+    return `<div class="cmt-item${c.pinned?' pinned':''}">
+      <div class="cmt-author">${esc(c.author||'مجهول')} ${starsHtml} ${c.pinned?'📌':''}</div>
+      <div class="cmt-body">${esc(c.text||'')}</div>
+      ${c.adminReply?`<div class="admin-reply-block"><div class="admin-reply-lbl">↩️ رد المطور</div>${esc(c.adminReply)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+window.toggleComments=function(idx,btn){
+  const sec=document.getElementById('cmtsec-'+idx);
+  sec.classList.toggle('open');
+};
+
+window.submitComment=async function(idx,rKey){
+  const txt=document.getElementById('cmttxt-'+idx)?.value.trim();
+  const name=document.getElementById('cmtname-'+idx)?.value.trim()||'مجهول';
+  const rating=USER_RATINGS[rKey]||0;
+  if(!txt){toast('اكتب تعليقك أولاً','terr');return;}
+  if(!rating&&SETTINGS.ratings_enabled!==false){toast('قيّم الوصفة أولاً ⭐','terr');return;}
+  const spam=localStorage.getItem('cmtspam_'+rKey);
+  if(spam&&Date.now()-parseInt(spam)<3600000){toast('يمكنك التعليق مرة واحدة كل ساعة','terr');return;}
+  const cmt={author:name,text:txt,rating,ts:Date.now(),approved:false,fingerprint:USER_FP};
+  await push(ref(db,'comments/'+rKey),cmt);
+  localStorage.setItem('cmtspam_'+rKey,Date.now().toString());
+  document.getElementById('cmttxt-'+idx).value='';
+  toast('تم إرسال تعليقك، في انتظار المراجعة ✅');
+};
+
+// ════ RATING (opens comment prompt) ════
+window.openRateComment=function(rKey,s,idx){
+  if(USER_RATINGS[rKey]){toast('قيّمتها من قبل بـ '+USER_RATINGS[rKey]+'⭐');return;}
+  USER_RATINGS[rKey]=s; saveLocal();
+  const starsWrap=document.getElementById('stars-'+idx);
+  if(starsWrap){starsWrap.querySelectorAll('.star').forEach((star,i)=>{
+    star.classList.toggle('son',i<s);star.classList.toggle('soff',i>=s);
+    if(i===s-1){star.classList.add('rated-mine');setTimeout(()=>star.classList.remove('rated-mine'),400);}
+  });}
+  toast(s+'⭐ — الآن اكتب تعليقاً للتأكيد!','tok');
+  // Open comment section
+  const sec=document.getElementById('cmtsec-'+idx);
+  if(sec){sec.classList.add('open');sec.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  const rRef=ref(db,'ratings/'+rKey);
+  runTransaction(rRef,current=>{
+    if(current===null) return {total:s,count:1};
+    return {total:(current.total||0)+s,count:(current.count||0)+1};
+  }).catch(()=>{delete USER_RATINGS[rKey];saveLocal();});
+};
+
 window.hoverStars=function(el,s){
   const wrap=el.parentElement;
-  wrap.querySelectorAll('.star').forEach((star,i)=>{
-    if(i<s){star.classList.add('shov');star.classList.remove('soff');}
-    else{star.classList.remove('shov');}
-  });
+  wrap.querySelectorAll('.star').forEach((star,i)=>{if(i<s){star.classList.add('shov');star.classList.remove('soff');}else star.classList.remove('shov');});
 };
 window.unhoverStars=function(el,idx){
   const link=RR[idx]?.link;
@@ -565,439 +697,187 @@ window.unhoverStars=function(el,idx){
   });
 };
 
-// ════ RATE (Firebase Transaction) ════
-window.rate=function(rKey,s,idx){
-  if(USER_RATINGS[rKey]){
-    toast('قيّمتها من قبل بـ '+USER_RATINGS[rKey]+'⭐','terr');
-    return;
-  }
-  // Optimistic UI
-  USER_RATINGS[rKey]=s;
-  saveLocal();
-  // Update card immediately
-  const starsWrap=document.getElementById('stars-'+idx);
-  if(starsWrap){
-    starsWrap.querySelectorAll('.star').forEach((star,i)=>{
-      star.classList.toggle('son',i<s);
-      star.classList.toggle('soff',i>=s);
-      if(i===s-1){star.classList.add('rated-mine');setTimeout(()=>star.classList.remove('rated-mine'),400);}
-    });
-  }
-  toast(s+'⭐ شكراً على تقييمك!');
-  // Firebase transaction
-  const rRef=ref(db,'ratings/'+rKey);
-  runTransaction(rRef,current=>{
-    if(current===null) return {total:s,count:1};
-    return {total:(current.total||0)+s, count:(current.count||0)+1};
-  }).then(()=>{
-    // onValue will re-render automatically
-  }).catch(err=>{
-    // revert on fail
-    delete USER_RATINGS[rKey];
-    saveLocal();
-    toast('خطأ في الحفظ','terr');
-  });
+// ════ BREW TRACKING ════
+window.trackBrew=function(rKey){
+  try{runTransaction(ref(db,'analytics/brew/'+rKey),cur=>(cur||0)+1);}catch{}
 };
 
-// ════ SHARE MODAL ════
-window.openShareModal = function(idx) {
-  const r = RR[idx];
-  if(!r) return;
-  // Build direct link to our site with recipe param
-  const siteBase = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
-  const directLink = siteBase + '?recipe=' + encodeURIComponent(r.link || '');
-  const recipeName = r.name || 'وصفة';
-  const shareText = '☕ جرب هذه الوصفة على Xbloom Recipes: ' + recipeName;
-  
-  document.getElementById('shareRecipeName').textContent = recipeName;
-  document.getElementById('shareLinkDisplay').textContent = directLink;
-  document.getElementById('shareWaBtn').href = 'https://wa.me/?text=' + encodeURIComponent(shareText + '\n' + directLink);
-  document.getElementById('shareXBtn').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(directLink);
-  
-  // Store for copy button
-  window._currentShareLink = directLink;
-  window._currentShareText = shareText;
-  
-  document.getElementById('shareOv').classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-
-window.closeShareModal = function() {
-  document.getElementById('shareOv').classList.remove('open');
-  document.body.style.overflow = '';
-};
-
-window.copyShareLink = function() {
-  const link = window._currentShareLink || '';
-  navigator.clipboard.writeText(link)
-    .then(() => { toast('تم نسخ الرابط ✅'); closeShareModal(); })
-    .catch(() => {
-      const ta = document.createElement('textarea');
-      ta.value = link; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy');
-      document.body.removeChild(ta);
-      toast('تم نسخ الرابط ✅'); closeShareModal();
-    });
-};
-
-window.nativeShare = function() {
-  if(navigator.share) {
-    navigator.share({ title: 'وصفة Xbloom', text: window._currentShareText || '', url: window._currentShareLink || '' })
-      .then(() => closeShareModal())
-      .catch(() => {});
+function renderPgn(total){
+  const c=document.getElementById('pgn');if(total<=1){c.innerHTML='';return;}
+  let h=`<button class="pb" ${PAGE===1?'disabled':''} onclick="goPage(${PAGE-1})">&#x2039;</button>`;
+  if(total<=7){for(let i=1;i<=total;i++)h+=`<button class="pb${i===PAGE?' on':''}" onclick="goPage(${i})">${i}</button>`;}
+  else{
+    h+=`<button class="pb${PAGE===1?' on':''}" onclick="goPage(1)">1</button>`;
+    if(PAGE>3)h+='<span class="dots">...</span>';
+    for(let i=Math.max(2,PAGE-1);i<=Math.min(total-1,PAGE+1);i++)h+=`<button class="pb${i===PAGE?' on':''}" onclick="goPage(${i})">${i}</button>`;
+    if(PAGE<total-2)h+='<span class="dots">...</span>';
+    h+=`<button class="pb${PAGE===total?' on':''}" onclick="goPage(${total})">${total}</button>`;
   }
-};
-
-// Auto-open recipe if ?recipe= param present
-(function(){
-  const params = new URLSearchParams(window.location.search);
-  const target = params.get('recipe');
-  if(target) {
-    // Store for after data loads
-    window._autoOpenRecipe = decodeURIComponent(target);
-  }
-})();
-
-// ════ SITE SETTINGS LOADER ════
-const settingsRef2 = ref(db, 'siteSettings');
-const commentsRef2 = ref(db, 'comments');
-
-onValue(settingsRef2, snap => {
-  const s = snap.val() || {};
-  
-  // Announcement bar
-  const bar = document.getElementById('annoBar');
-  if(s.annoEnabled && s.annoText) {
-    document.getElementById('annoText').textContent = s.annoText;
-    bar.className = 'anno-bar show ' + (s.annoType || 'info');
-  } else {
-    bar.classList.remove('show');
-  }
-  
-  // Promo ticker
-  const ticker = document.getElementById('promoTicker');
-  const tickerInner = document.getElementById('promoTickerInner');
-  if(s.promoBarEnabled && s.promoCodes && s.promoCodes.length) {
-    const makeItem = p => {
-      const inner = `
-        <span class="promo-item-name">${esc(String(p.name||''))}</span>
-        <span class="promo-item-code">${esc(String(p.code||''))}</span>
-        ${p.desc ? `<span class="promo-item-desc">${esc(String(p.desc))}</span>` : ''}
-        ${p.link ? `<span class="promo-item-link-icon">🔗</span>` : ''}
-      `;
-      if(p.link) {
-        return `<span class="promo-item"><a href="${esc(String(p.link))}" target="_blank" rel="noopener" class="promo-item-inner">${inner}</a></span>`;
-      }
-      return `<span class="promo-item"><span class="promo-item-inner">${inner}</span></span>`;
-    };
-    const doubled = [...s.promoCodes, ...s.promoCodes];
-    tickerInner.innerHTML = doubled.map(makeItem).join('');
-    ticker.classList.add('show');
-  } else {
-    ticker.classList.remove('show');
-  }
-  
-  // Footer
-  if(s.footerCopy) document.getElementById('footerCopy').textContent = s.footerCopy;
-  if(s.footerSub) document.getElementById('footerSub').textContent = s.footerSub;
-  if(s.footerDev) document.getElementById('footerDev').textContent = s.footerDev;
-  
-  // Site title
-  if(s.siteTitle) document.title = s.siteTitle;
-  if(s.siteSubtitle) { const el=document.querySelector('.sub'); if(el) el.textContent=s.siteSubtitle; }
-  
-  // AdSense injection - all positions
-  const adsContainers = {
-    top: document.getElementById('adsTopContainer'),
-    middle: document.getElementById('adsMiddleContainer'),
-    bottom: document.getElementById('adsBottomContainer')
-  };
-  // Hide all first
-  Object.values(adsContainers).forEach(el => { if(el){ el.style.display='none'; el.innerHTML=''; } });
-  
-  if(s.adsEnabled && s.adsCode) {
-    const pos = s.adsPosition || 'top';
-    const targetEl = adsContainers[pos] || adsContainers.top;
-    if(targetEl) {
-      targetEl.style.display = 'flex';
-      targetEl.innerHTML = s.adsCode;
-      // Execute any script tags inside
-      targetEl.querySelectorAll('script').forEach(oldScript => {
-        const newScript = document.createElement('script');
-        newScript.textContent = oldScript.textContent;
-        [...oldScript.attributes].forEach(a => newScript.setAttribute(a.name, a.value));
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-      });
-    }
-  }
-  
-  // Pinned recipes
-  const pinnedBanner = document.getElementById('pinnedBanner');
-  const pinnedGrid = document.getElementById('pinnedGrid');
-  if(s.pinnedRecipes && s.pinnedRecipes.length) {
-    pinnedBanner.style.display = 'block';
-    pinnedGrid.innerHTML = s.pinnedRecipes.map((r, i) => {
-      const rKey = ratingKey(r.link || '');
-      const rd = RATINGS[rKey] || {total:0,count:0};
-      const avg = rd.count > 0 ? rd.total/rd.count : 0;
-      const cat = r.category || 'hot';
-      const cLbl = cat==='cold'?'بارد 🧊':cat==='server'?'غسيل':'حار 🔥';
-      const bTag = r.brewer==='Omni'?'to':r.brewer==='xPod'?'tx':'tth';
-      const cTag = cat==='cold'?'tc':cat==='server'?'ts':'th';
-      return `<div class="card card-pinned ani">
-        <div class="pinned-badge">📌 مثبتة</div>
-        <div class="ch"><h3 class="cn">${esc(String(r.name||''))}</h3></div>
-        ${r.author ? `<div class="cauth">بواسطة ${esc(String(r.author))}</div>` : ''}
-        <div class="ctags"><span class="tag ${bTag}">${esc(String(r.brewer||''))}</span><span class="tag ${cTag}">${cLbl}</span></div>
-        ${avg>0?`<div class="rinfo" style="justify-content:center;margin-bottom:10px"><span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rd.count} تقييم</span></div>`:''}
-        <div class="cacts">
-      <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
-      ${AFFILIATE[rKey]?`<a href="${AFFILIATE[rKey].url}" target="_blank" rel="noopener sponsored" class="btn baff bsm" onclick="trackAffClick('${rKey}')" title="${esc(String(AFFILIATE[rKey].label||'شراء'))}">
-        ${AFFILIATE[rKey].icon||'🛒'} ${esc(String(AFFILIATE[rKey].label||'شراء'))}
-      </a>`:''}
-    </div>
-      </div>`;
-    }).join('');
-  } else {
-    pinnedBanner.style.display = 'none';
-  }
-}, err => { console.warn('settings:', err); });
-
-// ════ COMMENTS SYSTEM ════
-let COMMENTS = {};
-let COMMENT_RATINGS = {}; // per-recipe selected star for comment
-
-onValue(commentsRef2, snap => {
-  COMMENTS = {};
-  snap.forEach(child => { COMMENTS[child.key] = child.val(); });
-  // Update comment counts in open boxes
-  Object.keys(COMMENTS).forEach(rKey => {
-    const cnt = document.getElementById('ccount-' + rKey);
-    if(cnt) {
-      const n = Object.keys(COMMENTS[rKey] || {}).length;
-      cnt.textContent = '💬 ' + n + ' تعليق';
-    }
-    const clist = document.getElementById('clist-' + rKey);
-    if(clist) renderCommentList(rKey, clist);
-  });
-}, err => { console.warn('comments:', err); });
-
-window.toggleComments = function(rKey, btn) {
-  const box = document.getElementById('cbox-' + rKey);
-  const isOpen = box.classList.contains('open');
-  box.classList.toggle('open', !isOpen);
-  if(!isOpen) {
-    const clist = document.getElementById('clist-' + rKey);
-    // Always fetch fresh from Firebase when opening
-    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js').then(({get, ref: fbRef}) => {
-      get(fbRef(db, 'comments/' + rKey)).then(snap => {
-        COMMENTS[rKey] = snap.val() || {};
-        if(clist) renderCommentList(rKey, clist);
-        const n = Object.keys(COMMENTS[rKey]).length;
-        const cnt = document.getElementById('ccount-' + rKey);
-        if(cnt) cnt.textContent = '💬 ' + n + ' تعليق';
-      }).catch(() => { if(clist) renderCommentList(rKey, clist); });
-    });
-  }
-};
-
-function renderCommentList(rKey, container) {
-  const items = COMMENTS[rKey] || {};
-  const arr = Object.values(items).filter(c => c && c.text);
-  arr.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-  if(!arr.length) { container.innerHTML = '<p style="color:var(--t2);font-size:.82em;text-align:center;padding:8px">لا توجد تعليقات بعد — كن الأول!</p>'; return; }
-  container.innerHTML = arr.map(c => {
-    const stars = '⭐'.repeat(Math.min(c.rating||0,5));
-    let dateStr = '';
-    if(c.createdAt) {
-      const d = new Date(c.createdAt);
-      const dateAr = d.toLocaleDateString('ar-SA', {year:'numeric',month:'short',day:'numeric'});
-      const timeAr = d.toLocaleTimeString('ar-SA', {hour:'2-digit',minute:'2-digit'});
-      dateStr = dateAr + ' — ' + timeAr;
-    }
-    return `<div class="comment-item">
-      <div class="comment-meta">
-        <span style="color:var(--t1);font-weight:700">👤 ${esc(String(c.author||'زائر'))}</span>
-        <span style="margin:0 6px;color:var(--br)">|</span>
-        <span>🕐 ${dateStr}</span>
-      </div>
-      <div class="comment-rating">${stars} <span style="font-size:.78em;color:var(--t2)">(${c.rating||0}/5)</span></div>
-      <div class="comment-text">${esc(String(c.text))}</div>
-    </div>`;
-  }).join('');
+  h+=`<button class="pb" ${PAGE===total?'disabled':''} onclick="goPage(${PAGE+1})">&#x203A;</button>`;
+  c.innerHTML=h;
 }
 
-window.selectCommentStar = function(rKey, n) {
-  COMMENT_RATINGS[rKey] = n;
-  const stars = document.querySelectorAll('#cstars-' + rKey + ' .star-sel');
-  stars.forEach((s, i) => s.classList.toggle('active', i < n));
-  const txt = document.getElementById('ctxt-' + rKey);
-  const sub = document.getElementById('csub-' + rKey);
-  const authorEl = document.getElementById('cauthor-' + rKey);
-  if(txt) { txt.disabled = false; txt.placeholder = 'اكتب تعليقك هنا...'; }
-  if(authorEl) authorEl.disabled = false;
-  if(sub) sub.disabled = false;
-  // Load comments when opening
-  const clist = document.getElementById('clist-' + rKey);
-  if(clist) renderCommentList(rKey, clist);
-};
+window.toggleFav=function(idx){const link=RR[idx].link;if(FAV.has(link)){FAV.delete(link);toast('تم الإزالة');}else{FAV.add(link);toast('أضيفت للمفضلة 💙');}saveLocal();render();};
+window.shareR=function(idx){const link=RR[idx].link;if(navigator.share)navigator.share({title:'وصفة xBloom',url:link}).catch(()=>{});else{navigator.clipboard.writeText(link);toast('تم نسخ الرابط 🔗');}};
 
-window.submitComment = function(rKey) {
-  const txt = document.getElementById('ctxt-' + rKey);
-  const sub = document.getElementById('csub-' + rKey);
-  const authorEl = document.getElementById('cauthor-' + rKey);
-  const rating = COMMENT_RATINGS[rKey] || USER_RATINGS[rKey] || 0;
-  if(!rating) { toast('يجب التقييم بالنجوم أولاً ⭐', 'terr'); return; }
-  const text = txt ? txt.value.trim() : '';
-  if(text.length < 2) { toast('اكتب تعليقاً أولاً (حرفان على الأقل)', 'terr'); return; }
-  if(sub) { sub.disabled=true; sub.textContent='⏳...'; }
-  const author = authorEl ? authorEl.value.trim() : '';
-  const comment = { text, rating, author: author || 'زائر', createdAt: Date.now() };
-  push(ref(db, 'comments/' + rKey), comment)
-    .then(() => {
-      toast('تم نشر تعليقك ✅ شكراً!');
-      if(txt) txt.value = '';
-      if(authorEl) authorEl.value = '';
-      if(sub) { sub.disabled=false; sub.textContent='✉️ نشر التعليق'; }
-      // re-render comments list immediately
-      const clist = document.getElementById('clist-' + rKey);
-      if(clist && COMMENTS[rKey]) renderCommentList(rKey, clist);
-    })
-    .catch(err => {
-      toast('خطأ: ' + err.message, 'terr');
-      if(sub) { sub.disabled=false; sub.textContent='✉️ نشر التعليق'; }
+// ════ APPLY SETTINGS ════
+function applySettings(s){
+  SETTINGS=s;
+  // Maintenance
+  if(s.maintenance?.enabled&&!sessionStorage.getItem('xba')){
+    document.getElementById('maintScreen').classList.add('show');
+    document.getElementById('app').style.display='none';
+    if(s.maintenance.message) setEl('maintMsg',s.maintenance.message);
+    return;
+  }
+  // Banner
+  if(s.banner?.enabled&&s.banner?.text){
+    const ban=document.getElementById('announceBanner');
+    ban.textContent=s.banner.text;
+    ban.className='ban-'+s.banner.type+' show';
+    ban.id='announceBanner';
+  }
+  // Submissions
+  const addBtn=document.getElementById('addBtn');
+  const fabBtn=document.getElementById('fabBtn');
+  const hidden=s.submissions_enabled===false;
+  if(addBtn) addBtn.style.display=hidden?'none':'inline-flex';
+  if(fabBtn) fabBtn.style.display=hidden?'none':'flex';
+  // Pending note
+  const note=document.getElementById('approvalNote');
+  if(note) note.textContent=s.require_approval?'⏳ وصفتك ستُراجع قبل النشر':'';
+  // Ads
+  if(s.ads_code){
+    const adsEl=document.getElementById('adsContainer');
+    if(adsEl&&!adsEl.querySelector('.ads-loaded')){
+      const d=document.createElement('div');d.className='ads-loaded';d.innerHTML=s.ads_code;adsEl.appendChild(d);
+    }
+  }
+  // Tip Jar
+  if(s.tip_jar_url){
+    const tipHtml=`<a href="${esc(s.tip_jar_url)}" target="_blank" rel="noopener">☕ ادعم المشروع</a>`;
+    const tj=document.getElementById('tipJar'); if(tj){tj.innerHTML=tipHtml;tj.classList.add('show');}
+    const ftj=document.getElementById('footerTipJar'); if(ftj) ftj.innerHTML=tipHtml;
+  }
+  // Site Title / Footer
+  if(s.site_title){document.title=s.site_title;setEl('headerTitle',s.site_title.split('|')[0]?.trim()||s.site_title);}
+  if(s.footer_text) setEl('footerText',s.footer_text);
+  // Featured today
+  if(s.featured_today) render();
+  // Dynamic brew types
+  if(s.brew_types){
+    const brewG=document.getElementById('brewG');
+    const active=Object.entries(s.brew_types).filter(([,v])=>v).map(([k])=>k);
+    const existing=['all','Omni','xPod','Other'];
+    active.filter(k=>!existing.includes(k)).forEach(k=>{
+      if(!brewG.querySelector(`[data-brew="${k}"]`)){
+        const btn=document.createElement('button');
+        btn.className='ftab';btn.dataset.brew=k;
+        btn.innerHTML=`<span class="cnt">0</span> ${k}`;
+        btn.onclick=()=>setF('brew',k,btn);
+        brewG.appendChild(btn);
+      }
     });
-};
+  }
+}
 
-// ════ TRACKING ════
-window.trackBrewClick = function(rKey){
-  if(!db||!rKey) return;
-  const r = ref(db,'brew_clicks/'+rKey);
-  import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js')
-    .then(({get,set,ref:fbr})=>{
-      get(fbr(db,'brew_clicks/'+rKey)).then(snap=>{
-        const cur=snap.val()||0;
-        set(fbr(db,'brew_clicks/'+rKey),cur+1);
-      });
-    });
+// ════ PROMO ════
+window.copyPromo=function(){
+  const el=document.getElementById('promoInner');
+  const match=el?.textContent?.match(/كود:\s*([A-Z0-9]+)/);
+  if(match){navigator.clipboard.writeText(match[1]);toast('تم نسخ الكود: '+match[1]+' 🎉');}
 };
+function showPromoBar(promos){
+  const active=Object.values(promos).filter(p=>p.active&&(!p.expiry||new Date(p.expiry)>new Date()));
+  const bar=document.getElementById('promoBar');
+  const inner=document.getElementById('promoInner');
+  if(!active.length){bar.classList.remove('show');return;}
+  const txt=active.map(p=>`🏷️ ${p.roastery?p.roastery+': ':''}${p.desc||''} | كود: ${p.code}`).join('   •   ');
+  inner.textContent=txt+'   •   '+txt;  // duplicate for seamless loop
+  bar.classList.add('show');
+}
 
-window.trackAffClick = function(rKey){
-  if(!db||!rKey) return;
-  import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js')
-    .then(({get,set,ref:fbr})=>{
-      get(fbr(db,'affiliate_clicks/'+rKey)).then(snap=>{
-        set(fbr(db,'affiliate_clicks/'+rKey),(snap.val()||0)+1);
-      });
-    });
-};
-
-// Boot
+// ════ FIREBASE LISTENERS ════
 loadLocal();
 mergeData([]);
-// Brew clicks tracking
-const brewClicksRef = ref(db,'brew_clicks');
-onValue(brewClicksRef,snap=>{ BREW_CLICKS=snap.val()||{}; },()=>{});
 
-// Affiliate links
-const affiliateRef = ref(db,'affiliate');
-onValue(affiliateRef,snap=>{ AFFILIATE=snap.val()||{}; if(Object.keys(RR).length)render(); },()=>{});
+// Settings first
+onValue(ref(db,'settings'),snap=>{
+  const s=snap.val()||{};
+  applySettings(s);
+},()=>{});
 
-onValue(recipesRef,snap=>{
+onValue(ref(db,'recipes'),snap=>{
   const fbList=[];
   snap.forEach(child=>{const r=child.val();r._fbKey=child.key;ensureCat(r);fbList.push(r);});
   mergeData(fbList);
-  // Auto-open shared recipe
-  if(window._autoOpenRecipe){
-    const target=window._autoOpenRecipe;
-    window._autoOpenRecipe=null;
-    setTimeout(()=>{
-      const match=RR.find(r=>r.link===target);
-      if(match){
-        const idx=RR.indexOf(match);
-        // Find which page it's on and go there
-        const list=getList();
-        const pos=list.findIndex(r=>r.link===target);
-        if(pos>=0){PAGE=Math.floor(pos/PP)+1;render();}
-        setTimeout(()=>{
-          const cards=document.querySelectorAll('.card');
-          if(cards[pos%PP]){
-            cards[pos%PP].scrollIntoView({behavior:'smooth',block:'center'});
-            cards[pos%PP].style.boxShadow='0 0 0 3px var(--ta)';
-            setTimeout(()=>{cards[pos%PP].style.boxShadow='';},2500);
-          }
-        },300);
-      }
-    },800);
-  }
 },err=>{console.warn(err);});
-// Ratings real-time listener
-onValue(ratingsRef,snap=>{
-  RATINGS={};
-  snap.forEach(child=>{RATINGS[child.key]=child.val();});
+
+onValue(ref(db,'ratings'),snap=>{
+  RATINGS={};snap.forEach(child=>{RATINGS[child.key]=child.val();});render();
+},()=>{});
+
+onValue(ref(db,'comments'),snap=>{
+  COMMENTS={};
+  snap.forEach(recSnap=>{
+    COMMENTS[recSnap.key]={};
+    recSnap.forEach(cmtSnap=>{COMMENTS[recSnap.key][cmtSnap.key]=cmtSnap.val();});
+  });
   render();
-},err=>{console.warn('ratings:',err);});
+},()=>{});
+
+onValue(ref(db,'promo_codes'),snap=>{
+  PROMO_CODES={};snap.forEach(child=>{PROMO_CODES[child.key]=child.val();});
+  showPromoBar(PROMO_CODES);
+},()=>{});
+
+onValue(ref(db,'affiliate'),snap=>{
+  AFFILIATE={};snap.forEach(child=>{AFFILIATE[child.key]=child.val();});
+  render();
+},()=>{});
+
+// Search
 document.getElementById('srch').addEventListener('input',e=>{Q=e.target.value.toLowerCase().trim();PAGE=1;render();});
 
-// ════ ADD RECIPE MODAL ════
-window.openAddModal  = ()=>{ document.getElementById('addOv').classList.add('open'); document.body.style.overflow='hidden'; };
-window.closeAddModal = ()=>{ document.getElementById('addOv').classList.remove('open'); document.body.style.overflow=''; };
-document.getElementById('addOv').addEventListener('click', e=>{ if(e.target===e.currentTarget) window.closeAddModal(); });
+// ════ ADD MODAL ════
+window.openAddModal=()=>{document.getElementById('addOv').classList.add('open');document.body.style.overflow='hidden';};
+window.closeAddModal=()=>{document.getElementById('addOv').classList.remove('open');document.body.style.overflow='';};
+document.getElementById('addOv').addEventListener('click',e=>{if(e.target===e.currentTarget)window.closeAddModal();});
 
-window.onTypeChange = function(radio) {
-  const iceField = document.getElementById('iceField');
-  const iceInput = document.getElementById('rIce');
-  if (radio.value === 'cold') {
-    iceField.style.display = 'block';
-    iceInput.required = true;
-  } else {
-    iceField.style.display = 'none';
-    iceInput.required = false;
-    iceInput.value = '';
-  }
+window.onTypeChange=function(radio){
+  const iceField=document.getElementById('iceField');
+  const iceInput=document.getElementById('rIce');
+  if(radio.value==='cold'){iceField.style.display='block';iceInput.required=true;}
+  else{iceField.style.display='none';iceInput.required=false;iceInput.value='';}
 };
 
-window.submitRecipe = function(e) {
+window.submitRecipe=async function(e){
   e.preventDefault();
-  const catSel = document.querySelector('input[name="rc"]:checked');
-  if(!catSel){ toast('اختر نوع التحضير ❗','terr'); return; }
-  const category = catSel.value;
-  let name = document.getElementById('rN').value.trim();
-  const iceVal = document.getElementById('rIce').value.trim();
-  // إضافة وزن الثلج لاسم الوصفة إذا كانت باردة
-  if (category === 'cold' && iceVal) {
-    name = name + ' (الثلج ' + iceVal + ' جرام)';
-  }
-  const r = {
-    name,
-    author:   document.getElementById('rA').value.trim(),
-    brewer:   document.getElementById('rBr').value,
-    dose:     document.getElementById('rD').value.trim(),
-    ratio:    document.getElementById('rR').value.trim(),
-    link:     document.getElementById('rL').value.trim(),
-    category,
-    addedAt:  Date.now()
-  };
-  if (category === 'cold' && iceVal) r.ice = iceVal;
-  const btn = document.getElementById('submitBtn');
-  btn.textContent='⏳ جاري النشر...'; btn.disabled=true;
-  push(recipesRef, r)
-    .then(()=>{
-      toast('تم نشر وصفتك بنجاح ✅ شكراً لك!');
-      window.closeAddModal();
-      document.getElementById('rN').value='';
-      document.getElementById('rA').value='';
-      document.getElementById('rBr').value='';
-      document.getElementById('rD').value='';
-      document.getElementById('rR').value='';
-      document.getElementById('rL').value='';
-      document.getElementById('rIce').value='';
-      document.getElementById('iceField').style.display='none';
-      document.getElementById('rIce').required=false;
-      document.querySelectorAll('input[name="rc"]').forEach(r=>r.checked=false);
-    })
-    .catch(err=>{ toast('خطأ في النشر: '+err.message,'terr'); })
-    .finally(()=>{ btn.textContent='📤 نشر الوصفة'; btn.disabled=false; });
+  const catSel=document.querySelector('input[name="rc"]:checked');
+  if(!catSel){toast('اختر نوع التحضير ❗','terr');return;}
+  const category=catSel.value;
+  let name=document.getElementById('rN').value.trim();
+  const iceVal=document.getElementById('rIce').value.trim();
+  if(category==='cold'&&iceVal) name+=' (الثلج '+iceVal+' جرام)';
+  const r={name,author:document.getElementById('rA').value.trim(),brewer:document.getElementById('rBr').value,
+    dose:document.getElementById('rD').value.trim(),ratio:document.getElementById('rR').value.trim(),
+    link:document.getElementById('rL').value.trim(),category,addedAt:Date.now()};
+  if(category==='cold'&&iceVal) r.ice=iceVal;
+  // Size validation
+  if(JSON.stringify(r).length>10000){toast('الوصفة كبيرة جداً! حاول تقليل النص','terr');return;}
+  const btn=document.getElementById('submitBtn');
+  btn.textContent='⏳ جاري الإرسال...';btn.disabled=true;
+  const target=SETTINGS.require_approval?'pending':'recipes';
+  try{
+    await push(ref(db,target),r);
+    const msg=SETTINGS.require_approval?'تم إرسال وصفتك للمراجعة ⏳':'تم نشر وصفتك ✅ شكراً!';
+    toast(msg);window.closeAddModal();
+    ['rN','rA','rBr','rD','rR','rL','rIce'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('iceField').style.display='none';
+    document.getElementById('rIce').required=false;
+    document.querySelectorAll('input[name="rc"]').forEach(r=>r.checked=false);
+  }catch(err){toast('خطأ: '+err.message,'terr');}
+  finally{btn.textContent='📤 نشر الوصفة';btn.disabled=false;}
 };
 </script>
 </body>
