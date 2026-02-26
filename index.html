@@ -465,7 +465,7 @@ function cardHTML(r,i){
   const idx=RR.indexOf(r);
   const cat=r.category||'hot',bTag=r.brewer==='Omni'?'to':r.brewer==='xPod'?'tx':'tth';
   const cTag=cat==='cold'?'tc':cat==='server'?'ts':'th';
-  const cLbl=cat==='cold'?'بارد 🧊':cat==='server'?غسيل الفلتر':'حار 🔥';
+const cLbl = cat === 'cold' ? 'بارد 🧊' : cat === 'server' ? 'غسيل الفلتر ⚙️' : 'حار 🔥';
   const rKey=ratingKey(r.link);
   const rd=RATINGS[rKey]||{total:0,count:0};
   const avg=rd.count>0?rd.total/rd.count:0;
