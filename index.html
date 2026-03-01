@@ -354,8 +354,8 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </div>
   <form class="mf" onsubmit="submitRecipe(event)">
     <div class="fr2">
-      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مطلوب"></div>
-      <div class="fg"><label>الإسـم</label><input class="fi" id="rA" placeholder="  مطلوب "></div>
+      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم g"></div>
+      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="  اسم مالك الوصفة "></div>
     </div>
     <div class="fr2">
       <div class="fg"><label>المحضّر *</label>
@@ -375,7 +375,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
         <input class="fi" id="rRoastery" placeholder="اكتب اسم المحمصة..." autocomplete="off" oninput="roasterySuggest()" list="roasteryDatalist">
         <datalist id="roasteryDatalist"></datalist>
       </div>
-      <div style="font-size:.75em;color:var(--ta);margin-top:5px">💡يرجى إضافة اسم المحمصة بالعربي بشكل مباشر بالطريقة التالية مثال : محمصة الرياض</div>
+      <div style="font-size:.75em;color:var(--ta);margin-top:5px">💡 إذا كانت المحمصة غير موجودة ستُضاف تلقائياً</div>
       <div id="roasterySuggestions" style="margin-top:4px"></div>
     </div>
     <div class="fg"><label>نوع التحضير *</label>
@@ -648,11 +648,18 @@ window.rate=function(rKey,s,idx){
 window.openShareModal = function(idx) {
   const r = RR[idx];
   if(!r) return;
-  // Build direct link to our site with recipe param
+  // Build link to recipe.html with Firebase key or xbloom link
   const siteBase = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
-  const directLink = siteBase + '?recipe=' + encodeURIComponent(r.link || '');
+  // Use Firebase key if available (r._key), otherwise fallback to xbloom link
+  let shareParam = '';
+  if(r._fbKey) {
+    shareParam = 'key=' + encodeURIComponent(r._fbKey);
+  } else {
+    shareParam = 'link=' + encodeURIComponent(r.link || '');
+  }
+  const directLink = siteBase + 'recipe.html?' + shareParam;
   const recipeName = r.name || 'وصفة';
-  const shareText = '☕ جرب هذه الوصفة على Xbloom Recipes: ' + recipeName;
+  const shareText = '☕ ' + recipeName + ' — وصفة قهوة مختصة على Xbloom Recipes';
   
   document.getElementById('shareRecipeName').textContent = recipeName;
   document.getElementById('shareLinkDisplay').textContent = directLink;
