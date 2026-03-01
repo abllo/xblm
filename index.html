@@ -220,11 +220,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta)!important;font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
 
 /* Sort tabs */
-.sort-wrap{margin-bottom:14px}
-.sort-tabs{display:flex;gap:7px;flex-wrap:wrap}
-.sort-tab{padding:8px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
-.sort-tab:active{transform:scale(.96)}
-.sort-tab.on{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-color:transparent}
+
 </style>
 </head>
 <body>
@@ -275,15 +271,6 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()">✕ إلغاء الفلتر</button>
   </div>
 </div>
-<div class="sort-wrap">
-  <div class="flbl">&#x1F4CA; الترتيب:</div>
-  <div class="sort-tabs">
-    <button class="sort-tab on" onclick="setSort('default',this)">&#x1F4CB; الافتراضي</button>
-    <button class="sort-tab"   onclick="setSort('top',this)">&#x2B50; الأعلى تقييماً</button>
-    <button class="sort-tab"   onclick="setSort('newest',this)">&#x1F195; المضافة حديثاً</button>
-    <button class="sort-tab"   onclick="setSort('popular',this)">🔥 الأكثر تحضيراً</button>
-  </div>
-</div>
 <div class="ppbar">
   <label>عرض:</label>
   <select onchange="setPP(this.value)">
@@ -291,6 +278,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <option value="24" selected>24</option>
     <option value="48">48</option>
     <option value="96">96</option>
+  </select>
+  <label style="margin-right:4px">فرز:</label>
+  <select id="sortSelect" onchange="setSortSelect(this.value)">
+    <option value="default">📋 الافتراضي</option>
+    <option value="top">⭐ الأعلى تقييماً</option>
+    <option value="newest">🆕 المضافة حديثاً</option>
+    <option value="popular">🔥 الأكثر تحضيراً</option>
   </select>
   <div class="ppinfo" id="ppinfo">جاري التحميل...</div>
 </div>
@@ -451,11 +445,14 @@ function updateCounts(){
   setEl('bAll',t);setEl('bOmni',o);setEl('bXPod',x);setEl('bOther',ot);
   setEl('fcount','الوصفات: '+t);
 }
-window.setSort=function(s,btn){
+window.setSort=function(s){
   SORT=s;
-  document.querySelectorAll('.sort-tab').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
+  const sel=document.getElementById('sortSelect');
+  if(sel) sel.value=s;
   PAGE=1;render();
+};
+window.setSortSelect=function(s){
+  SORT=s;PAGE=1;render();
 };
 window.setF=function(type,val,btn){
   if(type==='temp'){fTemp=val;document.getElementById('tempG').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));}

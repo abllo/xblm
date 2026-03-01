@@ -185,7 +185,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
     <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
     <button class="atb" onclick="switchTab(this,'tRoastery')">☕ إدارة المحامص</button>
-    <button class="atb" onclick="switchTab(this,'tBrew')">🔥 Brew Analytics</button>
   </div>
 
   <!-- STATS -->
@@ -491,9 +490,15 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   <!-- ═══ إدارة المحامص ═══ -->
   <div id="tRoastery" class="acard">
     <h3 style="margin-bottom:6px">☕ إدارة المحامص الرائجة</h3>
-    <p style="color:var(--t2);font-size:.83em;margin-bottom:18px;line-height:1.6">
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:12px;line-height:1.6">
       تحكم بالمحامص التي تظهر بشكل مميز في أعلى الصفحة الرئيسية. الزوار يستطيعون استعراض وصفات أي محمصة بنقرة واحدة.
     </p>
+    <div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.3);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:.8em;line-height:1.7">
+      <strong style="color:#ffaa00">⚠️ إذا ظهر خطأ PERMISSION_DENIED:</strong><br>
+      افتح <a href="https://console.firebase.google.com/project/xbloom-recipes-hub/database/xbloom-recipes-hub-default-rtdb/rules" target="_blank" style="color:#4A90E2;font-weight:700">Firebase Console → Rules</a>
+      وأضف <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px">roasteries</code> للـ rules أو اجعلها:
+      <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px">{ "rules": { ".read": true, ".write": true } }</code>
+    </div>
 
     <!-- Add/Edit Roastery Form -->
     <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:18px">
@@ -541,36 +546,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
-  <!-- ═══ BREW ANALYTICS ═══ -->
-  <div id="tBrew" class="acard">
-    <h3 style="margin-bottom:6px">🔥 Brew Analytics</h3>
-    <p style="color:var(--t2);font-size:.83em;margin-bottom:18px;line-height:1.6">
-      تتبع أكثر الوصفات تحضيراً بناءً على نقرات الزوار على "فتح الوصفة في xBloom".
-    </p>
-
-    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-      <button class="btn bp bsm" onclick="loadBrewAnalytics()">🔄 تحديث الإحصائيات</button>
-      <button class="btn bd bsm" onclick="clearBrewData()">🗑️ مسح جميع البيانات</button>
-    </div>
-
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:16px;margin-bottom:16px">
-      <h4 style="margin-bottom:14px;font-size:.88em;font-weight:700">📈 أكثر الوصفات تحضيراً</h4>
-      <div id="brewChart">
-        <p style="color:var(--t2);font-size:.85em;text-align:center;padding:24px">
-          اضغط "تحديث الإحصائيات" لعرض البيانات
-        </p>
-      </div>
-    </div>
-
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:16px">
-      <h4 style="margin-bottom:14px;font-size:.88em;font-weight:700">🛒 نقرات روابط Affiliate</h4>
-      <div id="affClicksChart">
-        <p style="color:var(--t2);font-size:.83em;text-align:center;padding:16px">
-          لا توجد بيانات بعد
-        </p>
-      </div>
-    </div>
-  </div>
 
 </div>
 </div>
@@ -748,7 +723,6 @@ window.switchTab = function(btn,id){
   btn.classList.add('on');
   document.getElementById(id).classList.add('open');
   if(id==='tRoastery') loadRoasteries();
-  if(id==='tBrew') loadBrewAnalytics();
 };
 
 // ════ TABLE ════
@@ -1336,59 +1310,6 @@ window.deleteRoastery = function(key){
 };
 
 // ════ BREW ANALYTICS ════
-window.loadBrewAnalytics = function(){
-  if(!db){ toast('Firebase غير متصل','terr'); return; }
-  const brewEl = document.getElementById('brewChart');
-  const affEl  = document.getElementById('affClicksChart');
-  brewEl.innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">⏳ جاري التحميل...</p>';
-  
-  Promise.all([
-    get(ref(db,'brew_clicks')),
-    get(ref(db,'affiliate_clicks'))
-  ]).then(([brewSnap, affSnap])=>{
-    const brewData = brewSnap.val() || {};
-    const affData  = affSnap.val()  || {};
-    
-    // Brew clicks chart
-    const brewEntries = Object.entries(brewData).sort((a,b)=>b[1]-a[1]).slice(0,15);
-    if(!brewEntries.length){ brewEl.innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">لا توجد بيانات بعد — انتظر أول نقرة من الزوار</p>'; }
-    else {
-      const max = brewEntries[0][1]||1;
-      let total = Object.values(brewData).reduce((a,b)=>a+b,0);
-      brewEl.innerHTML = `<p style="font-size:.8em;color:var(--t2);margin-bottom:14px">إجمالي النقرات: <strong style="color:var(--ta)">${total}</strong></p>` +
-        brewEntries.map(([k,v])=>{
-          const r = ALL_RECIPES.find(x=>rKey(x.link||x.name)===k)||{name:k.slice(0,20)+'…'};
-          const pct = Math.round((v/max)*100);
-          return `<div class="brew-bar-row">
-            <div class="brew-bar-label" title="${esc(str(r.name))}">${esc(str(r.name))}</div>
-            <div class="brew-bar-track">
-              <div class="brew-bar-fill" style="width:${pct}%"></div>
-              <span class="brew-bar-val">${v}</span>
-            </div>
-          </div>`;
-        }).join('');
-    }
-    
-    // Affiliate clicks
-    const affEntries = Object.entries(affData).sort((a,b)=>b[1]-a[1]);
-    if(!affEntries.length){ affEl.innerHTML='<p style="color:var(--t2);font-size:.83em">لا توجد نقرات على روابط Affiliate بعد</p>'; }
-    else {
-      const amax = affEntries[0][1]||1;
-      affEl.innerHTML = affEntries.map(([k,v])=>{
-        const r = ALL_RECIPES.find(x=>rKey(x.link||x.name)===k)||{name:k.slice(0,20)+'…'};
-        const pct = Math.round((v/amax)*100);
-        return `<div class="brew-bar-row">
-          <div class="brew-bar-label" title="${esc(str(r.name))}">${esc(str(r.name))}</div>
-          <div class="brew-bar-track">
-            <div class="brew-bar-fill" style="width:${pct}%;background:linear-gradient(135deg,#f7971e,#ffd200)"></div>
-            <span class="brew-bar-val" style="color:#1a1a1a">${v}</span>
-          </div>
-        </div>`;
-      }).join('');
-    }
-    toast('تم تحديث البيانات ✅');
-  }).catch(err=>{ brewEl.innerHTML='<p style="color:#f5576c">خطأ: '+err.message+'</p>'; });
-};
 
 window.clearBrewData = function(){
   if(!confirm('سيتم مسح كل إحصائيات النقرات. هل أنت متأكد؟')) return;
