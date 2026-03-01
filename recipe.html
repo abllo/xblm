@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>وصفة Xbloom</title>
+<!-- Open Graph for WhatsApp/Twitter preview -->
+<meta property="og:site_name" content="Xbloom Recipes">
+<meta property="og:type" content="website">
+<meta id="og-title" property="og:title" content="وصفة Xbloom">
+<meta id="og-desc" property="og:description" content="وصفة قهوة مختصة من مجتمع Xbloom Recipes">
+<meta property="og:image" content="https://xblm.ab-s.me/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 48px;direction:rtl}
+
+/* ═══ HEADER ═══ */
+.site-brand{text-align:center;margin-bottom:28px}
+.site-brand a{font-weight:900;font-size:1.1em;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.site-brand p{color:var(--t2);font-size:.78em;margin-top:4px}
+
+/* ═══ RECIPE CARD ═══ */
+.recipe-wrap{width:100%;max-width:480px}
+.recipe-card{background:var(--card);border-radius:16px;border:1px solid var(--br);padding:24px;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+.recipe-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gr)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.recipe-name{font-size:1.3em;font-weight:900;color:var(--t1);margin-bottom:6px;line-height:1.3}
+.recipe-author{color:var(--t2);font-size:.82em;margin-bottom:14px}
+.recipe-author span{color:var(--ta)}
+
+/* Tags */
+.rtags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.rtag{padding:4px 10px;border-radius:7px;font-size:.75em;font-weight:700;background:var(--up);color:var(--t2);border:1px solid var(--br)}
+.rtag-hot{background:rgba(245,87,108,.12);color:#f5576c;border-color:rgba(245,87,108,.3)}
+.rtag-cold{background:rgba(74,144,226,.12);color:#4A90E2;border-color:rgba(74,144,226,.3)}
+.rtag-server{background:rgba(255,170,0,.1);color:#ffaa00;border-color:rgba(255,170,0,.25)}
+.rtag-roastery{background:rgba(0,168,150,.1);color:var(--ta);border-color:rgba(0,168,150,.3)}
+
+/* Details grid */
+.rdets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.rdet{background:var(--up);border-radius:10px;padding:12px 14px;border:1px solid var(--br)}
+.rdet-label{font-size:.72em;color:var(--t2);margin-bottom:3px;font-weight:700}
+.rdet-value{font-size:.95em;font-weight:800;color:var(--t1)}
+
+/* Rating */
+.rrating{display:flex;align-items:center;gap:8px;margin-bottom:18px;padding:10px 14px;background:var(--up);border-radius:10px;border:1px solid var(--br)}
+.rrating-stars{font-size:1.1em;letter-spacing:2px}
+.rrating-num{font-size:.82em;color:var(--t2)}
+.rrating-num b{color:var(--t1)}
+
+/* CTA Button */
+.btn-open-recipe{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:11px;background:var(--gr);color:#fff;font-family:'Cairo',sans-serif;font-size:.95em;font-weight:800;border:none;cursor:pointer;text-decoration:none;transition:.2s;margin-bottom:10px}
+.btn-open-recipe:hover{opacity:.88;transform:translateY(-1px)}
+.btn-open-recipe svg{flex-shrink:0}
+
+.btn-copy{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;border-radius:11px;background:transparent;color:var(--t2);font-family:'Cairo',sans-serif;font-size:.84em;font-weight:700;border:1px solid var(--br);cursor:pointer;transition:.2s}
+.btn-copy:hover{border-color:var(--ta);color:var(--ta)}
+.btn-copy.copied{border-color:var(--ta);color:var(--ta);background:rgba(0,168,150,.07)}
+
+/* ═══ DIVIDER ═══ */
+.divider{width:100%;max-width:480px;display:flex;align-items:center;gap:10px;margin:22px 0}
+.divider-line{flex:1;height:1px;background:var(--br)}
+.divider-text{font-size:.75em;color:var(--t2);white-space:nowrap}
+
+/* ═══ SITE CTA ═══ */
+.site-cta{width:100%;max-width:480px;background:var(--card);border:1px solid var(--br);border-radius:16px;padding:22px 24px;text-align:center;position:relative;overflow:hidden;animation:fadeUp .5s .1s ease both}
+.site-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
+.site-cta-icon{font-size:1.8em;margin-bottom:8px}
+.site-cta-title{font-size:1em;font-weight:800;color:var(--t1);margin-bottom:6px}
+.site-cta-sub{font-size:.82em;color:var(--t2);line-height:1.7;margin-bottom:16px}
+.btn-visit{display:inline-flex;align-items:center;gap:6px;padding:11px 24px;border-radius:10px;background:var(--gr);color:#fff;font-family:'Cairo',sans-serif;font-size:.88em;font-weight:800;text-decoration:none;transition:.2s}
+.btn-visit:hover{opacity:.88;transform:translateY(-1px)}
+
+/* ═══ LOADING / ERROR ═══ */
+.state-box{width:100%;max-width:480px;text-align:center;padding:40px 20px;color:var(--t2)}
+.state-box .s-icon{font-size:2.5em;margin-bottom:12px}
+.state-box p{font-size:.9em;line-height:1.8}
+.spinner{width:36px;height:36px;border:3px solid var(--br);border-top-color:var(--ta);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="site-brand">
+  <a href="index.html">☕ Xbloom Recipes</a>
+  <p>وصفات قهوة مختصة من المجتمع</p>
+</div>
+
+<!-- Loading state -->
+<div id="stateLoading" class="state-box">
+  <div class="spinner"></div>
+  <p>جاري تحميل الوصفة...</p>
+</div>
+
+<!-- Error state -->
+<div id="stateError" class="state-box" style="display:none">
+  <div class="s-icon">😕</div>
+  <p>تعذّر تحميل الوصفة<br>ربما الرابط غير صحيح أو انتهت صلاحيته</p>
+  <br>
+  <a href="index.html" class="btn-visit" style="margin-top:4px">← تصفح كل الوصفات</a>
+</div>
+
+<!-- Recipe card (hidden until loaded) -->
+<div id="recipeWrap" class="recipe-wrap" style="display:none">
+
+  <div class="recipe-card">
+    <div class="recipe-name" id="rName">—</div>
+    <div class="recipe-author">بواسطة: <span id="rAuthor">—</span></div>
+    <div class="rtags" id="rTags"></div>
+    <div class="rdets" id="rDets"></div>
+    <div class="rrating" id="rRating" style="display:none">
+      <div class="rrating-stars" id="rStars"></div>
+      <div class="rrating-num" id="rRatingNum"></div>
+    </div>
+    <a id="btnOpen" href="#" target="_blank" class="btn-open-recipe">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      فتح الوصفة في تطبيق Xbloom
+    </a>
+    <button class="btn-copy" id="btnCopy" onclick="copyLink()">🔗 نسخ رابط المشاركة</button>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-text">اكتشف المزيد</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="site-cta">
+    <div class="site-cta-icon">☕</div>
+    <div class="site-cta-title">للمزيد من الوصفات — زيارة موقع وصفات Xbloom</div>
+    <div class="site-cta-sub">مئات الوصفات من مجتمع Xbloom، مرتبة وقابلة للتصفح والمشاركة</div>
+    <a href="index.html" class="btn-visit">تصفح كل الوصفات ←</a>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "xbloom-recipes-hub"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ── helpers ──
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const params = new URLSearchParams(location.search);
+const recipeKey = params.get('key');   // Firebase key
+const recipeLink = params.get('link'); // xbloom share link (fallback)
+
+function showState(id){
+  ['stateLoading','stateError','recipeWrap'].forEach(s=>{
+    document.getElementById(s).style.display = s===id ? (id==='recipeWrap'?'block':'flex') : 'none';
+  });
+  if(id==='recipeWrap') document.getElementById('recipeWrap').style.display='block';
+}
+
+function renderRecipe(r){
+  // Title & author
+  document.getElementById('rName').textContent    = r.name || 'وصفة';
+  document.getElementById('rAuthor').textContent  = r.author || 'غير محدد';
+
+  // Update page title
+  document.title = (r.name||'وصفة') + ' | Xbloom Recipes';
+  document.getElementById('og-title').content = (r.name||'وصفة') + ' — Xbloom Recipes';
+  document.getElementById('og-desc').content  = 'وصفة ' + (r.name||'') + (r.author?' بواسطة '+r.author:'') + '. جرامات: '+(r.dose||'')+'، نسبة: '+(r.ratio||'');
+
+  // Tags
+  const catMap = {hot:'حار 🔥',cold:'بارد 🧊',server:'غسيل السيرفر 🧹'};
+  const catCls  = {hot:'rtag-hot',cold:'rtag-cold',server:'rtag-server'};
+  let tagsHtml = '';
+  if(r.brewer)   tagsHtml += `<span class="rtag">${esc(r.brewer)}</span>`;
+  if(r.category) tagsHtml += `<span class="rtag ${catCls[r.category]||''}">${catMap[r.category]||r.category}</span>`;
+  if(r.roastery) tagsHtml += `<span class="rtag rtag-roastery">☕ ${esc(r.roastery)}</span>`;
+  document.getElementById('rTags').innerHTML = tagsHtml;
+
+  // Details
+  const dets = [
+    r.dose  && {l:'الجرعة', v:r.dose},
+    r.ratio && {l:'النسبة', v:r.ratio},
+  ].filter(Boolean);
+  document.getElementById('rDets').innerHTML = dets.map(d=>
+    `<div class="rdet"><div class="rdet-label">${d.l}</div><div class="rdet-value">${esc(String(d.v))}</div></div>`
+  ).join('');
+
+  // Open in app button
+  const appLink = r.link || '';
+  document.getElementById('btnOpen').href = appLink || '#';
+  if(!appLink) document.getElementById('btnOpen').style.display='none';
+
+  showState('recipeWrap');
+}
+
+function loadFromFirebase(key){
+  const rRef = ref(db, 'recipes/' + key);
+  onValue(rRef, snap=>{
+    const val = snap.val();
+    if(val) renderRecipe(val);
+    else    showState('stateError');
+  }, ()=> showState('stateError'), {onlyOnce:true});
+}
+
+function loadFromAllRecipes(targetLink){
+  // Search all recipes for matching link
+  onValue(ref(db,'recipes'), snap=>{
+    let found = null;
+    snap.forEach(child=>{
+      const v = child.val();
+      if(v && v.link && v.link === targetLink){ found=v; }
+    });
+    if(found) renderRecipe(found);
+    else      showState('stateError');
+  }, ()=> showState('stateError'), {onlyOnce:true});
+}
+
+// ── Load ──
+if(recipeKey){
+  loadFromFirebase(recipeKey);
+} else if(recipeLink){
+  loadFromAllRecipes(decodeURIComponent(recipeLink));
+} else {
+  showState('stateError');
+}
+
+// ── Copy link ──
+window.copyLink = function(){
+  navigator.clipboard.writeText(location.href).then(()=>{
+    const btn = document.getElementById('btnCopy');
+    btn.textContent = '✅ تم النسخ!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='🔗 نسخ رابط المشاركة'; btn.classList.remove('copied'); }, 2000);
+  });
+};
+</script>
+</body>
+</html>
