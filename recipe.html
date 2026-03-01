@@ -161,9 +161,10 @@ const db  = getDatabase(app);
 // ── helpers ──
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const params = new URLSearchParams(location.search);
-const recipeKey  = params.get('key');   // Firebase key
-const recipeLink = params.get('link');  // xbloom share link (fallback)
-const recipeData = params.get('data');  // encoded full recipe object (for non-Firebase recipes)
+const recipeKey    = params.get('key');     // Firebase recipes key
+const recipeShared = params.get('shared');  // shared_recipes key (short URL)
+const recipeLink   = params.get('link');    // xbloom link fallback
+const recipeData   = params.get('data');    // encoded data fallback
 
 function showState(id){
   ['stateLoading','stateError','recipeWrap'].forEach(s=>{
@@ -230,17 +231,25 @@ function loadFromAllRecipes(targetLink){
   }, ()=> showState('stateError'), {onlyOnce:true});
 }
 
+function loadFromShared(key){
+  const rRef = ref(db, 'shared_recipes/' + key);
+  onValue(rRef, snap=>{
+    const val = snap.val();
+    if(val) renderRecipe(val);
+    else    showState('stateError');
+  }, ()=> showState('stateError'), {onlyOnce:true});
+}
+
 // ── Load ──
-if(recipeData){
-  // All recipe data is encoded directly in URL — no Firebase needed
+if(recipeShared){
+  loadFromShared(recipeShared);
+} else if(recipeKey){
+  loadFromFirebase(recipeKey);
+} else if(recipeData){
   try{
     const r = JSON.parse(decodeURIComponent(recipeData));
     renderRecipe(r);
-  } catch(e){
-    showState('stateError');
-  }
-} else if(recipeKey){
-  loadFromFirebase(recipeKey);
+  } catch(e){ showState('stateError'); }
 } else if(recipeLink){
   loadFromAllRecipes(decodeURIComponent(recipeLink));
 } else {

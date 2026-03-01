@@ -645,43 +645,51 @@ window.rate=function(rKey,s,idx){
 };
 
 // ════ SHARE MODAL ════
-window.openShareModal = function(idx) {
+window.openShareModal = async function(idx) {
   const r = RR[idx];
   if(!r) return;
   const siteBase = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
-  let shareParam = '';
-  if(r._fbKey) {
-    // Recipe is in Firebase — use key
-    shareParam = 'key=' + encodeURIComponent(r._fbKey);
-  } else {
-    // Recipe not in Firebase — encode all data directly in URL
-    const data = {
-      name: r.name||'',
-      author: r.author||'',
-      brewer: r.brewer||'',
-      dose: r.dose||'',
-      ratio: r.ratio||'',
-      category: r.category||'hot',
-      roastery: r.roastery||'',
-      link: r.link||''
-    };
-    shareParam = 'data=' + encodeURIComponent(JSON.stringify(data));
-  }
-  const directLink = siteBase + 'recipe.html?' + shareParam;
   const recipeName = r.name || 'وصفة';
   const shareText = '☕ ' + recipeName + ' — وصفة قهوة مختصة على Xbloom Recipes';
-  
+
+  // Show modal immediately with loading state
   document.getElementById('shareRecipeName').textContent = recipeName;
+  document.getElementById('shareLinkDisplay').textContent = 'جاري إنشاء الرابط...';
+  document.getElementById('shareWaBtn').href = '#';
+  document.getElementById('shareXBtn').href = '#';
+  window._currentShareLink = '';
+  window._currentShareText = shareText;
+  document.getElementById('shareOv').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  let directLink = '';
+  if(r._fbKey) {
+    // Already in Firebase — use key directly
+    directLink = siteBase + 'recipe.html?key=' + encodeURIComponent(r._fbKey);
+  } else {
+    // Not in Firebase — push a shared copy to 'shared_recipes' with 30-day expiry
+    try {
+      const data = {
+        name: r.name||'', author: r.author||'', brewer: r.brewer||'',
+        dose: r.dose||'', ratio: r.ratio||'', category: r.category||'hot',
+        roastery: r.roastery||'', link: r.link||'',
+        _shared: true, _sharedAt: Date.now()
+      };
+      const newRef = push(ref(db, 'shared_recipes'));
+      await set(newRef, data);
+      directLink = siteBase + 'recipe.html?shared=' + encodeURIComponent(newRef.key);
+    } catch(e) {
+      // Fallback to encoded URL if Firebase fails
+      const data = {n:r.name||'',a:r.author||'',b:r.brewer||'',d:r.dose||'',rt:r.ratio||'',c:r.category||'hot',ro:r.roastery||'',l:r.link||''};
+      directLink = siteBase + 'recipe.html?data=' + encodeURIComponent(JSON.stringify(data));
+    }
+  }
+  
+  // Update modal with final link
   document.getElementById('shareLinkDisplay').textContent = directLink;
   document.getElementById('shareWaBtn').href = 'https://wa.me/?text=' + encodeURIComponent(shareText + '\n' + directLink);
   document.getElementById('shareXBtn').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(directLink);
-  
-  // Store for copy button
   window._currentShareLink = directLink;
-  window._currentShareText = shareText;
-  
-  document.getElementById('shareOv').classList.add('open');
-  document.body.style.overflow = 'hidden';
 };
 
 window.closeShareModal = function() {
