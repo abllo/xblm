@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المحمصة | Xbloom Recipes</title>
+<meta id="og-title" property="og:title" content="المحمصة">
+<meta id="og-desc" property="og:description" content="وصفات من هذه المحمصة">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;direction:rtl}
+
+/* ── NAV ── */
+.topbar{background:rgba(10,10,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:100;padding:0 20px}
+.topbar-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+.topbar-logo{font-weight:900;font-size:1em;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;text-decoration:none}
+.topbar-back{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;background:var(--card);border:1px solid var(--br);color:var(--t2);font-size:.82em;font-weight:700;text-decoration:none;transition:.2s;white-space:nowrap}
+.topbar-back:hover{border-color:var(--ta);color:var(--ta)}
+
+/* ── HERO ── */
+.hero{position:relative;overflow:hidden;padding:48px 20px 40px;margin:20px;border-radius:20px;background:var(--card);border:1px solid var(--br);text-align:center}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gr)}
+.hero-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;border-radius:50%;filter:blur(60px);opacity:.15;pointer-events:none}
+.hero-img{width:80px;height:80px;border-radius:16px;object-fit:cover;margin-bottom:16px;border:2px solid var(--br)}
+.hero-placeholder{width:80px;height:80px;border-radius:16px;background:var(--up);border:2px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:2em;margin:0 auto 16px}
+.hero-name{font-size:clamp(1.8em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;line-height:1.2}
+.hero-stats{display:flex;justify-content:center;gap:24px;margin-top:20px;flex-wrap:wrap}
+.hstat{text-align:center}
+.hstat-num{font-size:1.3em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hstat-lbl{font-size:.72em;color:var(--t2);margin-top:2px}
+.hstat-sep{width:1px;background:var(--br);align-self:stretch;margin:4px 0}
+
+/* ── CONTAINER ── */
+.container{max-width:900px;margin:0 auto;padding:0 20px 60px}
+
+/* ── SORT BAR ── */
+.sort-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--card);border-radius:10px;border:1px solid var(--br);margin:16px 0;flex-wrap:wrap}
+.sort-bar label{font-size:.8em;color:var(--t2)}
+.sort-bar select{padding:5px 10px;border-radius:7px;background:var(--up);color:var(--t1);border:1px solid var(--br);font-family:inherit;font-size:.82em}
+.recipe-count{font-size:.82em;color:var(--t2)}
+.recipe-count b{color:var(--t1)}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}}
+
+/* ── CARD ── */
+.card{background:var(--card);border-radius:12px;padding:18px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden;cursor:default}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);transform:scaleX(0);transition:.3s;transform-origin:right}
+.card:hover::before{transform:scaleX(1)}
+.card:hover{border-color:rgba(0,168,150,.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.card.ani{animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.cn{font-size:.97em;font-weight:800;color:var(--t1);line-height:1.3;flex:1}
+.cauth{color:var(--t2);font-size:.78em;margin-bottom:10px}
+.ctags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.tag{padding:3px 9px;border-radius:6px;font-size:.72em;font-weight:700}
+.tag-hot{background:rgba(245,87,108,.12);color:#f5576c;border:1px solid rgba(245,87,108,.25)}
+.tag-cold{background:rgba(74,144,226,.12);color:#4A90E2;border:1px solid rgba(74,144,226,.25)}
+.tag-server{background:rgba(255,170,0,.1);color:#ffaa00;border:1px solid rgba(255,170,0,.2)}
+.tag-brewer{background:var(--up);color:var(--t2);border:1px solid var(--br)}
+.cdets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.det{background:var(--up);border-radius:8px;padding:9px 12px;border:1px solid var(--br)}
+.dl{display:block;font-size:.68em;color:var(--t2);margin-bottom:2px}
+.dv{font-size:.92em;font-weight:800;color:var(--t1)}
+.rating-row{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.stars{font-size:.85em}
+.ravg{font-size:.82em;font-weight:700;color:var(--t1)}
+.rcnt{font-size:.75em;color:var(--t2)}
+.cacts{margin-top:4px}
+.btn-open{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;border-radius:9px;background:var(--gr);color:#fff;font-family:'Cairo',sans-serif;font-size:.82em;font-weight:800;border:none;text-decoration:none;transition:.2s;cursor:pointer}
+.btn-open:hover{opacity:.88}
+.share-ico{width:30px;height:30px;border-radius:7px;background:var(--up);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:.2s;flex-shrink:0}
+.share-ico:hover{border-color:var(--ta)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:60px 20px;color:var(--t2)}
+.empty .e-icon{font-size:3em;margin-bottom:12px}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:60px 20px}
+.spinner{width:36px;height:36px;border:3px solid var(--br);border-top-color:var(--ta);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── FILTER TABS ── */
+.ftabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.ftab{padding:7px 14px;border-radius:8px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:.8em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.ftab.on{background:var(--gr);color:#fff;border-color:transparent}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="topbar-logo">☕ Xbloom Recipes</a>
+    <a href="index.html" class="topbar-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      الرئيسية
+    </a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero" id="heroSection" style="display:none">
+    <div class="hero-glow" id="heroGlow"></div>
+    <div id="heroImgWrap"></div>
+    <h1 class="hero-name" id="heroName">—</h1>
+    <p id="heroDesc" style="color:var(--t2);font-size:.88em;max-width:420px;margin:0 auto;line-height:1.8"></p>
+    <div class="hero-stats" id="heroStats">
+      <div class="hstat">
+        <div class="hstat-num" id="hstatRecipes">0</div>
+        <div class="hstat-lbl">وصفة</div>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <div class="hstat-num" id="hstatHot">0</div>
+        <div class="hstat-lbl">حار 🔥</div>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <div class="hstat-num" id="hstatCold">0</div>
+        <div class="hstat-lbl">بارد 🧊</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingState" class="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--t2);font-size:.88em">جاري التحميل...</p>
+  </div>
+
+  <!-- Filter + Sort -->
+  <div id="controlsWrap" style="display:none">
+    <div class="ftabs" id="catTabs">
+      <button class="ftab on" data-cat="all" onclick="setFilter('all',this)">الكل</button>
+      <button class="ftab" data-cat="hot" onclick="setFilter('hot',this)">حار 🔥</button>
+      <button class="ftab" data-cat="cold" onclick="setFilter('cold',this)">بارد 🧊</button>
+    </div>
+    <div class="sort-bar">
+      <div class="recipe-count"><b id="showingCount">0</b> وصفة</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label>فرز:</label>
+        <select onchange="setSort(this.value)">
+          <option value="default">الافتراضي</option>
+          <option value="top">الأعلى تقييماً</option>
+          <option value="new">الأحدث</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid" id="recipesGrid"></div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "xbloom-recipes-hub"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const str = v => (v===null||v===undefined)?'':String(v);
+
+// Get roastery name from URL
+const params = new URLSearchParams(location.search);
+const roasteryName = params.get('name') ? decodeURIComponent(params.get('name')) : null;
+
+if(!roasteryName){ location.href = 'index.html'; }
+
+document.title = roasteryName + ' | Xbloom Recipes';
+
+let ALL_RECIPES = [];
+let RATINGS = {};
+let ROASTERY_INFO = null;
+let currentFilter = 'all';
+let currentSort = 'default';
+
+// ── Load roastery info ──
+onValue(ref(db,'roasteries'), snap=>{
+  snap.forEach(child=>{
+    const v = child.val();
+    if(v && v.name && v.name.toLowerCase() === roasteryName.toLowerCase()){
+      ROASTERY_INFO = v;
+    }
+  });
+  renderHero();
+},{onlyOnce:true});
+
+// ── Load recipes ──
+onValue(ref(db,'recipes'), snap=>{
+  ALL_RECIPES = [];
+  snap.forEach(child=>{
+    const r = child.val();
+    if(r && r.roastery && r.roastery.toLowerCase() === roasteryName.toLowerCase()){
+      r._fbKey = child.key;
+      ALL_RECIPES.push(r);
+    }
+  });
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('controlsWrap').style.display = ALL_RECIPES.length ? 'block' : 'none';
+  renderGrid();
+},{onlyOnce:true});
+
+// ── Load ratings ──
+onValue(ref(db,'ratings'), snap=>{
+  RATINGS = snap.val() || {};
+  renderGrid();
+},{onlyOnce:true});
+
+// ── Render hero ──
+function renderHero(){
+  const section = document.getElementById('heroSection');
+  section.style.display = 'block';
+
+  document.getElementById('heroName').textContent = roasteryName;
+
+  // Image or placeholder
+  const wrap = document.getElementById('heroImgWrap');
+  if(ROASTERY_INFO && ROASTERY_INFO.image){
+    wrap.innerHTML = `<img class="hero-img" src="${esc(ROASTERY_INFO.image)}" alt="${esc(roasteryName)}">`;
+  } else {
+    wrap.innerHTML = `<div class="hero-placeholder">☕</div>`;
+  }
+
+  // Glow color
+  if(ROASTERY_INFO && ROASTERY_INFO.color){
+    const glow = document.getElementById('heroGlow');
+    glow.style.background = ROASTERY_INFO.color;
+  }
+
+  // Meta
+  document.getElementById('og-title').content = roasteryName + ' | Xbloom Recipes';
+
+  updateStats();
+}
+
+function updateStats(){
+  const hot  = ALL_RECIPES.filter(r=>(r.category||'hot')==='hot').length;
+  const cold = ALL_RECIPES.filter(r=>r.category==='cold').length;
+  document.getElementById('hstatRecipes').textContent = ALL_RECIPES.length;
+  document.getElementById('hstatHot').textContent     = hot;
+  document.getElementById('hstatCold').textContent    = cold;
+}
+
+// ── Get avg rating ──
+function getAvg(key){
+  const rd = RATINGS[key];
+  if(!rd) return {avg:0, count:0};
+  const vals = Object.values(rd).filter(v=>typeof v==='number');
+  return {avg: vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0, count: vals.length};
+}
+
+// ── Render grid ──
+window.setFilter = function(cat, el){
+  currentFilter = cat;
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderGrid();
+};
+
+window.setSort = function(val){ currentSort = val; renderGrid(); };
+
+function renderGrid(){
+  let list = ALL_RECIPES.slice();
+  if(currentFilter !== 'all') list = list.filter(r=>(r.category||'hot')===currentFilter);
+  
+  if(currentSort === 'top'){
+    list.sort((a,b)=>{
+      const ra = getAvg(a._fbKey||'').avg;
+      const rb = getAvg(b._fbKey||'').avg;
+      return rb - ra;
+    });
+  }
+
+  document.getElementById('showingCount').textContent = list.length;
+  updateStats();
+
+  if(!list.length){
+    document.getElementById('recipesGrid').innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <div class="e-icon">☕</div>
+        <p>لا توجد وصفات في هذه الفئة</p>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('recipesGrid').innerHTML = list.map((r,i)=>{
+    const rKey = r._fbKey || r.link || str(r.name);
+    const {avg, count} = getAvg(rKey);
+    const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل 🧹'};
+    const catCls = {hot:'tag-hot', cold:'tag-cold', server:'tag-server'};
+    const cat = r.category || 'hot';
+    const stars = avg > 0 ? '⭐'.repeat(Math.round(avg)) : '';
+
+    return `<div class="card ani" style="animation-delay:${Math.min(i*0.04,.4)}s">
+      <div class="ch">
+        <h3 class="cn">${esc(str(r.name))}</h3>
+        <div class="share-ico" onclick="shareCard('${esc(rKey)}','${esc(str(r.name))}')" title="مشاركة">🔗</div>
+      </div>
+      ${r.author ? `<div class="cauth">بواسطة ${esc(str(r.author))}</div>` : ''}
+      <div class="ctags">
+        <span class="tag ${catCls[cat]||'tag-hot'}">${catMap[cat]||cat}</span>
+        ${r.brewer ? `<span class="tag tag-brewer">${esc(str(r.brewer))}</span>` : ''}
+      </div>
+      <div class="cdets">
+        ${r.dose  ? `<div class="det"><span class="dl">الجرعة</span><span class="dv">${esc(str(r.dose))}</span></div>` : ''}
+        ${r.ratio ? `<div class="det"><span class="dl">النسبة</span><span class="dv">${esc(str(r.ratio))}</span></div>` : ''}
+      </div>
+      ${avg > 0 ? `<div class="rating-row"><span class="stars">${stars}</span><span class="ravg">${avg.toFixed(1)}</span><span class="rcnt">(${count})</span></div>` : ''}
+      <div class="cacts">
+        ${r.link ? `<a href="${esc(r.link)}" target="_blank" class="btn-open">فتح في xBloom ↗</a>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.shareCard = function(key, name){
+  const base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
+  const url = key.startsWith('-') 
+    ? base + 'recipe.html?key=' + encodeURIComponent(key)
+    : base + 'recipe.html?data=' + encodeURIComponent(JSON.stringify({name, roastery: roasteryName}));
+  navigator.clipboard.writeText(url).then(()=>{
+    const t = document.createElement('div');
+    t.textContent = '✅ تم نسخ الرابط';
+    Object.assign(t.style,{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:'#1a1a1a',border:'1px solid #00A896',color:'#fff',padding:'10px 20px',borderRadius:'10px',fontSize:'.85em',fontWeight:'700',zIndex:'9999',fontFamily:'Cairo,sans-serif'});
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),2000);
+  });
+};
+
+// ── If no Firebase recipes, check INIT data in URL ──
+setTimeout(()=>{
+  if(document.getElementById('loadingState').style.display !== 'none'){
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('heroSection').style.display = 'block';
+    document.getElementById('heroName').textContent = roasteryName;
+    document.getElementById('heroImgWrap').innerHTML = '<div class="hero-placeholder">☕</div>';
+  }
+},5000);
+</script>
+</body>
+</html>
