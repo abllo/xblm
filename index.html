@@ -468,12 +468,13 @@ function hasSKW(t){return SKW.some(k=>t.includes(k));}
 function hasCKW(t){return CKW.some(k=>t.includes(k));}
 function ensureCat(r){if(!r.category){const t=(str(r.name)+' '+str(r.author)).toLowerCase();r.category=hasSKW(t)?'server':hasCKW(t)?'cold':'hot';}return r;}
 function loadLocal(){
-  // fav removed
   try{BREW=JSON.parse(localStorage.getItem('xbb')||'{}');}catch(e){BREW={};}
   try{USER_RATINGS=JSON.parse(localStorage.getItem('xbur')||'{}');}catch(e){USER_RATINGS={};}
+  try{FAVS=JSON.parse(localStorage.getItem('xbfav')||'{}');}catch(e){FAVS={};}
+  updateFavBar();
 }
 function saveLocal(){
-
+  try{localStorage.setItem('xbfav',JSON.stringify(FAVS))}catch(e){}
   try{localStorage.setItem('xbb',JSON.stringify(BREW))}catch(e){}
   try{localStorage.setItem('xbur',JSON.stringify(USER_RATINGS))}catch(e){}
 }
@@ -617,18 +618,25 @@ window.toggleFav = function(key, el){
   if(FAVS[key]){ delete FAVS[key]; }
   else { FAVS[key] = Date.now(); }
   saveLocal();
-  // Update icon
-  const isFav = !!FAVS[key];
-  el.classList.toggle('on', isFav);
-  el.querySelector('svg path').setAttribute('fill', isFav ? '#e05a6b' : 'none');
-  el.querySelector('svg path').setAttribute('stroke', isFav ? '#e05a6b' : 'currentColor');
+  updateFavIcon(el, !!FAVS[key]);
   updateFavBar();
-  // Save to Firebase too
+  // Sync to Firebase
   try{
     const uid = getOrCreateUID();
-    set(ref(db,'user_favs/'+uid+'/'+key), isFav ? Date.now() : null);
+    set(ref(db,'user_favs/'+uid+'/'+key), FAVS[key] ? Date.now() : null);
   }catch(e){}
 };
+
+function updateFavIcon(el, isFav){
+  if(!el) return;
+  el.classList.toggle('on', isFav);
+  el.style.color = isFav ? '#e05a6b' : '';
+  const path = el.querySelector('svg path');
+  if(path){
+    path.setAttribute('fill', isFav ? '#e05a6b' : 'none');
+    path.setAttribute('stroke', isFav ? '#e05a6b' : 'currentColor');
+  }
+}
 
 window.toggleFavFilter = function(){
   SHOW_FAVS = !SHOW_FAVS;
@@ -716,6 +724,13 @@ function render(){
   document.getElementById('ppinfo').innerHTML='عرض <b>'+(s+1)+'-'+e+'</b> من <b>'+list.length+'</b>';
   grid.innerHTML=slice.map((r,i)=>cardHTML(r,i)).join('');
   renderPgn(total);
+  // Restore fav icon states after render
+  setTimeout(()=>{
+    Object.keys(FAVS).forEach(key=>{
+      const el = document.getElementById('fav-'+key);
+      if(el) updateFavIcon(el, true);
+    });
+  }, 0);
 }
 function cardHTML(r,i){
   const idx=RR.indexOf(r);
@@ -737,8 +752,8 @@ function cardHTML(r,i){
   return `<div class="card ani" style="animation-delay:${Math.min(i*0.04,.5)}s">
     <div class="ch"><h3 class="cn">${esc(str(r.name))}</h3>
     <div class="cicos">
-      <div class="ib fav ${FAVS[rKey]?\'on\':\'\'}" onclick="toggleFav(\'${rKey}\',this)" title="المفضلة">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="${FAVS[rKey]?\'#e05a6b\':\'none\'}" stroke="${FAVS[rKey]?\'#e05a6b\':\'currentColor\'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      <div class="ib fav" id="fav-${rKey}" onclick="toggleFav('${rKey}',this)" title="المفضلة" style="color:var(--t2)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
       </div>
       <div class="ib share" onclick="openShareModal(${idx})" title="مشاركة الوصفة">🔗</div>
       <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
@@ -758,7 +773,6 @@ function cardHTML(r,i){
     </div>
     <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
-
     </div>
     <div class="comments-section">
       <button class="comments-toggle" onclick="toggleComments('${rKey}',this)">
