@@ -184,7 +184,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد</button>
     <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
     <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
-    <button class="atb" onclick="switchTab(this,'tAff')">🛒 Affiliate</button>
+    <button class="atb" onclick="switchTab(this,'tRoastery')">☕ إدارة المحامص</button>
     <button class="atb" onclick="switchTab(this,'tBrew')">🔥 Brew Analytics</button>
   </div>
 
@@ -488,58 +488,56 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
-  <!-- ═══ AFFILIATE MANAGER ═══ -->
-  <div id="tAff" class="acard">
-    <h3 style="margin-bottom:6px">🛒 Affiliate Manager</h3>
+  <!-- ═══ إدارة المحامص ═══ -->
+  <div id="tRoastery" class="acard">
+    <h3 style="margin-bottom:6px">☕ إدارة المحامص الرائجة</h3>
     <p style="color:var(--t2);font-size:.83em;margin-bottom:18px;line-height:1.6">
-      أضف رابط شراء لأي وصفة — سيظهر كزر مميز بجانب "فتح الوصفة".<br>
-      يدعم Amazon، محلات البن المحلية، وأي رابط آخر.
+      تحكم بالمحامص التي تظهر بشكل مميز في أعلى الصفحة الرئيسية. الزوار يستطيعون استعراض وصفات أي محمصة بنقرة واحدة.
     </p>
 
-    <div class="fr2" style="gap:10px;margin-bottom:12px">
-      <div class="fg">
-        <label>🔍 ابحث عن وصفة لإضافة رابط لها</label>
-        <input class="form-input" id="affSearch" placeholder="اكتب اسم الوصفة..." oninput="searchAffRecipe()">
-        <div id="affSearchResults" style="margin-top:6px"></div>
+    <!-- Add/Edit Roastery Form -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:18px">
+      <h4 style="margin-bottom:14px;font-size:.9em;font-weight:700">➕ إضافة / تعديل محمصة</h4>
+      <input type="hidden" id="editRoasteryKey">
+      <div class="fr2" style="gap:10px;margin-bottom:10px">
+        <div class="fg">
+          <label>اسم المحمصة *</label>
+          <input class="form-input" id="rName" placeholder="مثال: محمصة كيفا">
+        </div>
+        <div class="fg">
+          <label>ترتيب العرض</label>
+          <input class="form-input" type="number" id="rOrder" placeholder="1, 2, 3..." value="1" min="1">
+        </div>
       </div>
-      <div class="fg">
-        <label>الوصفة المختارة</label>
-        <div id="affSelectedName" style="background:var(--bg);border:1px solid var(--br);border-radius:9px;padding:11px 14px;font-size:.85em;color:var(--ta);min-height:44px;display:flex;align-items:center">لم يتم الاختيار بعد</div>
-        <input type="hidden" id="affSelectedKey">
+      <div class="fg" style="margin-bottom:12px">
+        <label>رابط الشعار / الصورة (URL)</label>
+        <input class="form-input" id="rImageUrl" placeholder="https://example.com/logo.png" oninput="previewRoasteryImg()">
+        <div style="margin-top:6px;font-size:.76em;color:var(--t2)">✅ أو ارفع صورة من جهازك:</div>
+        <input type="file" id="rImageFile" accept="image/*" onchange="handleRoasteryImgFile(this)" style="margin-top:5px;font-size:.8em;color:var(--t2)">
+        <div id="rImgPreview" style="margin-top:8px;display:none">
+          <img id="rImgPreviewImg" src="" alt="" style="width:60px;height:60px;border-radius:10px;object-fit:cover;border:1px solid var(--br)">
+        </div>
       </div>
-    </div>
-
-    <div class="fr2" style="gap:10px;margin-bottom:12px">
-      <div class="fg">
-        <label>رابط الشراء</label>
-        <input class="form-input" id="affUrl" placeholder="https://amazon.sa/...">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <label style="font-size:.84em;color:var(--t2);font-weight:700">📌 تثبيت (يظهر في الصفحة):</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="rPinned" checked style="width:18px;height:18px;accent-color:var(--ta)">
+          <span style="font-size:.84em">مثبتة</span>
+        </label>
       </div>
-      <div class="fg">
-        <label>نص الزر (ما يظهر للزائر)</label>
-        <input class="form-input" id="affLabel" placeholder="شراء من Amazon" maxlength="30" oninput="updateAffPreview()">
-      </div>
-    </div>
-
-    <div class="fg" style="margin-bottom:14px">
-      <label>أيقونة الزر</label>
-      <div style="display:flex;gap:7px;flex-wrap:wrap" id="affIconPicker">
-        <button class="aff-icon-btn on" data-icon="🛒" onclick="pickAffIcon(this)">🛒</button>
-        <button class="aff-icon-btn" data-icon="☕" onclick="pickAffIcon(this)">☕</button>
-        <button class="aff-icon-btn" data-icon="📦" onclick="pickAffIcon(this)">📦</button>
-        <button class="aff-icon-btn" data-icon="🏷️" onclick="pickAffIcon(this)">🏷️</button>
-        <button class="aff-icon-btn" data-icon="🔗" onclick="pickAffIcon(this)">🔗</button>
-      </div>
-      <div style="margin-top:10px">
-        <span style="font-size:.8em;color:var(--t2);margin-left:8px">معاينة:</span>
-        <span id="affBtnPreview" style="background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a1a;font-weight:700;padding:7px 16px;border-radius:9px;font-size:.85em;display:inline-block;margin-top:6px">🛒 شراء</span>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button class="btn bp bsm" onclick="saveRoastery()">💾 حفظ المحمصة</button>
+        <button class="btn bgray bsm" onclick="clearRoasteryForm()">🔄 إلغاء / جديد</button>
       </div>
     </div>
 
-    <button class="btn bp bbl" onclick="saveAffLink()" style="margin-bottom:24px">💾 حفظ رابط الـ Affiliate</button>
-
-    <div style="border-top:1px solid var(--br);padding-top:16px">
-      <h4 style="margin-bottom:12px;color:var(--t2);font-size:.88em;font-weight:700">📋 الروابط المضافة حالياً</h4>
-      <div id="affList"><p style="color:var(--t2);font-size:.85em">لا توجد روابط مضافة بعد</p></div>
+    <!-- Roasteries List -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h4 style="font-size:.88em;font-weight:700">📋 قائمة المحامص</h4>
+        <span style="font-size:.78em;color:var(--t2)">المحامص المُضافة من قِبل الأدمن والزوار</span>
+      </div>
+      <div id="roasteryList"><p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">جاري التحميل...</p></div>
     </div>
   </div>
 
@@ -647,6 +645,7 @@ window.doLogin = function() {
     sessionStorage.setItem('xba','1');
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminPanel').style.display='block';
+    loadRoasteries();
     initFirebase();
   } else {
     document.getElementById('lerr').textContent = 'بيانات الدخول غير صحيحة ❌';
@@ -748,6 +747,8 @@ window.switchTab = function(btn,id){
   document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
   btn.classList.add('on');
   document.getElementById(id).classList.add('open');
+  if(id==='tRoastery') loadRoasteries();
+  if(id==='tBrew') loadBrewAnalytics();
 };
 
 // ════ TABLE ════
@@ -1194,94 +1195,145 @@ window.copyPassCode = function(){
     });
 };
 
-// ════ AFFILIATE MANAGER ════
-let AFF_SEARCH_RES = [];
+// ════ إدارة المحامص ════
+let FB_ROASTERIES = {};
 
-window.searchAffRecipe = function(){
-  const q = document.getElementById('affSearch').value.toLowerCase().trim();
-  const res = document.getElementById('affSearchResults');
-  if(q.length < 2){ res.innerHTML=''; AFF_SEARCH_RES=[]; return; }
-  AFF_SEARCH_RES = ALL_RECIPES.filter(r=>str(r.name).toLowerCase().includes(q)||str(r.author).toLowerCase().includes(q)).slice(0,4);
-  if(!AFF_SEARCH_RES.length){ res.innerHTML='<p style="font-size:.8em;color:var(--t2)">لا نتائج</p>'; return; }
-  res.innerHTML = AFF_SEARCH_RES.map((r,i)=>`
-    <div onclick="selectAffRecipe(${i})" style="padding:8px 12px;background:var(--bg);border:1px solid var(--br);border-radius:8px;cursor:pointer;margin-bottom:5px;font-size:.83em;transition:.15s" onmouseover="this.style.borderColor='var(--ta)'" onmouseout="this.style.borderColor='var(--br)'">
-      <strong>${esc(str(r.name))}</strong> <span style="color:var(--t2)">• ${esc(str(r.author))}</span>
-    </div>`).join('');
-};
-
-window.selectAffRecipe = function(i){
-  const r = AFF_SEARCH_RES[i];
-  if(!r) return;
-  const key = rKey(r.link||r.name);
-  document.getElementById('affSelectedKey').value = key;
-  document.getElementById('affSelectedName').textContent = r.name + ' — ' + r.author;
-  document.getElementById('affSearchResults').innerHTML = '';
-  document.getElementById('affSearch').value = '';
-  // Pre-fill if existing
-  const ex = FB_AFFILIATE[key];
-  if(ex){
-    document.getElementById('affUrl').value = ex.url || '';
-    document.getElementById('affLabel').value = ex.label || '';
-    SELECTED_AFF_ICON = ex.icon || '🛒';
-    document.querySelectorAll('.aff-icon-btn').forEach(b=>b.classList.toggle('on',b.dataset.icon===SELECTED_AFF_ICON));
-    updateAffPreview();
-  }
-};
-
-window.pickAffIcon = function(btn){
-  document.querySelectorAll('.aff-icon-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  SELECTED_AFF_ICON = btn.dataset.icon;
-  updateAffPreview();
-};
-
-function updateAffPreview(){
-  const lbl = document.getElementById('affLabel').value || 'شراء';
-  document.getElementById('affBtnPreview').innerHTML =
-    `<span style="background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a1a;font-weight:700;padding:8px 16px;border-radius:9px;font-size:.85em;display:inline-block">${SELECTED_AFF_ICON} ${esc(lbl)}</span>`;
+function loadRoasteries(){
+  if(!db) return;
+  const rRef = ref(db,'roasteries');
+  onValue(rRef, snap=>{
+    FB_ROASTERIES = {};
+    snap.forEach(child=>{ FB_ROASTERIES[child.key]=child.val(); });
+    renderRoasteryList();
+  },()=>{});
 }
-document.addEventListener('input', e => { if(e.target.id==='affLabel') updateAffPreview(); });
 
-window.saveAffLink = function(){
-  const key = document.getElementById('affSelectedKey').value;
-  const url = document.getElementById('affUrl').value.trim();
-  const label = document.getElementById('affLabel').value.trim();
-  if(!key){ toast('اختر وصفة أولاً','terr'); return; }
-  if(!url){ toast('أدخل رابط الشراء','terr'); return; }
-  if(!label){ toast('أدخل نص الزر','terr'); return; }
-  const data = { url, label, icon: SELECTED_AFF_ICON, createdAt: Date.now() };
-  set(ref(db,'affiliate/'+key), data)
-    .then(()=>{ toast('تم حفظ رابط الـ Affiliate ✅'); document.getElementById('affSelectedKey').value=''; document.getElementById('affSelectedName').textContent='لم يتم الاختيار'; document.getElementById('affUrl').value=''; document.getElementById('affLabel').value=''; })
-    .catch(err=>toast('خطأ: '+err.message,'terr'));
-};
-
-function renderAffList(){
-  const el = document.getElementById('affList');
+function renderRoasteryList(){
+  const el = document.getElementById('roasteryList');
   if(!el) return;
-  const entries = Object.entries(FB_AFFILIATE);
-  if(!entries.length){ el.innerHTML='<p style="color:var(--t2);font-size:.85em">لا توجد روابط مضافة</p>'; return; }
-  // Get recipe names
-  el.innerHTML = entries.map(([k,v])=>{
-    const r = ALL_RECIPES.find(x=>rKey(x.link||x.name)===k)||{name:k};
-    return `<div class="aff-item">
-      <span style="font-size:1.4em">${v.icon||'🛒'}</span>
-      <div style="flex:1;min-width:0">
-        <div class="aff-item-name">${esc(str(r.name))}</div>
-        <div class="aff-item-url">${esc(v.url||'')}</div>
-        <div style="font-size:.75em;margin-top:2px"><span style="background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a1a;padding:2px 8px;border-radius:5px;font-weight:700">${v.icon} ${esc(v.label||'')}</span></div>
+  const entries = Object.entries(FB_ROASTERIES);
+  if(!entries.length){ el.innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">لا توجد محامص بعد</p>'; return; }
+  
+  // Sort: pinned first, then by order
+  entries.sort((a,b)=>{
+    const pa=a[1].pinned?1:0, pb=b[1].pinned?1:0;
+    if(pb!==pa) return pb-pa;
+    return (a[1].order||99)-(b[1].order||99);
+  });
+  
+  el.innerHTML = entries.map(([key,v])=>{
+    const isPinned = v.pinned;
+    const img = v.image ? `<img src="${v.image}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;border:1px solid var(--br);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:8px;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:1.2em;flex-shrink:0">☕</div>`;
+    
+    return `<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border:1px solid ${isPinned?'var(--ta)':'var(--br)'};border-radius:10px;margin-bottom:8px;flex-wrap:wrap">
+      ${img}
+      <div style="flex:1;min-width:120px">
+        <div style="font-weight:700;font-size:.9em">${v.name||key}</div>
+        <div style="font-size:.75em;color:var(--t2);margin-top:2px">
+          ${isPinned?'<span style="color:var(--ta)">📌 مثبتة</span>':'<span>غير مثبتة</span>'}
+          ${v.order?' · ترتيب: '+v.order:''}
+          ${v.createdAt?' · '+new Date(v.createdAt).toLocaleDateString('ar-SA'):''}
+        </div>
       </div>
-      <button class="btn bd bsm" onclick="deleteAffLink('${k}')">🗑️</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn bp bsm" onclick="editRoastery('${key}')">✏️ تعديل</button>
+        <button class="btn bsm" style="background:${isPinned?'rgba(245,87,108,.15)':'rgba(0,168,150,.15)'};border:1px solid ${isPinned?'rgba(245,87,108,.4)':'rgba(0,168,150,.4)'};color:${isPinned?'#f5576c':'var(--ta)'}" onclick="toggleRoasteryPin('${key}',${isPinned})">
+          ${isPinned?'🔕 إلغاء التثبيت':'📌 تثبيت'}
+        </button>
+        <button class="btn bd bsm" onclick="deleteRoastery('${key}')">🗑️</button>
+      </div>
     </div>`;
   }).join('');
 }
 
-window.deleteAffLink = function(key){
-  if(!confirm('حذف هذا الرابط؟')) return;
-  set(ref(db,'affiliate/'+key),null).then(()=>toast('تم الحذف ✅'));
+window.editRoastery = function(key){
+  const v = FB_ROASTERIES[key];
+  if(!v) return;
+  document.getElementById('editRoasteryKey').value = key;
+  document.getElementById('rName').value = v.name||'';
+  document.getElementById('rOrder').value = v.order||1;
+  document.getElementById('rImageUrl').value = v.image||'';
+  document.getElementById('rPinned').checked = !!v.pinned;
+  if(v.image){
+    document.getElementById('rImgPreview').style.display='block';
+    document.getElementById('rImgPreviewImg').src = v.image;
+  }
+  switchTab(document.querySelector('[onclick*="tRoastery"]'), 'tRoastery');
+  document.getElementById('rName').focus();
+  toast('تم تحميل بيانات المحمصة للتعديل');
 };
 
-// helper: same key function as index.html
-function rKey(link){ try{ return btoa(unescape(encodeURIComponent(link||''))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'').slice(0,40); }catch(e){return link||'';} }
+window.clearRoasteryForm = function(){
+  document.getElementById('editRoasteryKey').value='';
+  document.getElementById('rName').value='';
+  document.getElementById('rOrder').value='1';
+  document.getElementById('rImageUrl').value='';
+  document.getElementById('rPinned').checked=true;
+  document.getElementById('rImgPreview').style.display='none';
+  document.getElementById('rImgPreviewImg').src='';
+};
+
+window.previewRoasteryImg = function(){
+  const url = document.getElementById('rImageUrl').value.trim();
+  const prev = document.getElementById('rImgPreview');
+  const img = document.getElementById('rImgPreviewImg');
+  if(url){ prev.style.display='block'; img.src=url; }
+  else{ prev.style.display='none'; }
+};
+
+window.handleRoasteryImgFile = function(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const b64 = e.target.result;
+    document.getElementById('rImageUrl').value = b64;
+    document.getElementById('rImgPreview').style.display='block';
+    document.getElementById('rImgPreviewImg').src = b64;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.saveRoastery = function(){
+  const name = document.getElementById('rName').value.trim();
+  if(!name){ toast('أدخل اسم المحمصة ❗','terr'); return; }
+  const pinned = document.getElementById('rPinned').checked;
+  const order = parseInt(document.getElementById('rOrder').value)||1;
+  const image = document.getElementById('rImageUrl').value.trim();
+  const existingKey = document.getElementById('editRoasteryKey').value;
+  
+  // Check duplicate name (excluding current)
+  const dup = Object.entries(FB_ROASTERIES).find(([k,v])=>
+    v.name&&v.name.toLowerCase()===name.toLowerCase()&&k!==existingKey
+  );
+  if(dup){ toast('محمصة بهذا الاسم موجودة بالفعل ❗','terr'); return; }
+  
+  const key = existingKey || name.toLowerCase().replace(/[\s]+/g,'_').replace(/[^a-z0-9_؀-ۿ]/g,'').substring(0,30) || ('r'+Date.now());
+  const data = { name, pinned, order, createdAt: FB_ROASTERIES[key]?.createdAt||Date.now() };
+  if(image) data.image = image;
+  
+  set(ref(db,'roasteries/'+key), data)
+    .then(()=>{
+      toast(existingKey ? 'تم تحديث المحمصة ✅' : 'تمت إضافة المحمصة ✅');
+      clearRoasteryForm();
+    })
+    .catch(err=>toast('خطأ: '+err.message,'terr'));
+};
+
+window.toggleRoasteryPin = function(key, isPinned){
+  set(ref(db,'roasteries/'+key+'/pinned'), !isPinned)
+    .then(()=>toast(!isPinned?'تم تثبيت المحمصة 📌':'تم إلغاء التثبيت'))
+    .catch(err=>toast('خطأ','terr'));
+};
+
+window.deleteRoastery = function(key){
+  const name = FB_ROASTERIES[key]?.name||key;
+  showConfirm('حذف المحمصة', `هل تريد حذف "${name}"؟ لن تُحذف الوصفات المرتبطة بها.`, ()=>{
+    remove(ref(db,'roasteries/'+key))
+      .then(()=>toast('تم الحذف ✅'))
+      .catch(err=>toast('خطأ','terr'));
+  });
+};
 
 // ════ BREW ANALYTICS ════
 window.loadBrewAnalytics = function(){
