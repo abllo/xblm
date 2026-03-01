@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5237747574783843"
@@ -412,11 +413,15 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <div class="fg">
       <label>☕ اسم المحمصة (اختياري)</label>
       <div style="position:relative">
-        <input class="fi" id="rRoastery" placeholder="اكتب اسم المحمصة..." autocomplete="off" oninput="roasterySuggest()" list="roasteryDatalist">
-        <datalist id="roasteryDatalist"></datalist>
+        <input class="fi" id="rRoastery" placeholder="اكتب اسم المحمصة..." autocomplete="off"
+          oninput="roasteryInput()" onfocus="roasteryShowDropdown()" onblur="setTimeout(roasteryHideDropdown,200)">
+        <div id="roasteryDropdown" style="
+          display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;
+          background:var(--card);border:1px solid var(--br);border-radius:10px;
+          z-index:200;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+        </div>
       </div>
-      <div style="font-size:.75em;color:var(--ta);margin-top:5px">💡 إذا كانت المحمصة غير موجودة ستُضاف تلقائياً</div>
-      <div id="roasterySuggestions" style="margin-top:4px"></div>
+      <div style="font-size:.75em;color:var(--ta);margin-top:5px">💡 إذا لم تجد المحمصة اختر "إضافة محمصة جديدة"</div>
     </div>
     <div class="fg"><label>نوع التحضير *</label>
       <div class="tsel">
@@ -1294,18 +1299,79 @@ window.clearRoasteryFilter = function(){
 
 // Roastery suggestions in add modal
 let _roasteryNames=[];
-window.roasterySuggest=function(){
-  // Build datalist from known roasteries
-  const input=document.getElementById('rRoastery');
-  const dl=document.getElementById('roasteryDatalist');
-  if(!_roasteryNames.length){
-    // Get all unique roastery names from RR + Firebase roasteries
-    const fromRec=new Set(RR.map(r=>r.roastery).filter(Boolean));
-    const fromFB=new Set(Object.values(ROASTERIES).map(v=>v.name).filter(Boolean));
-    _roasteryNames=[...new Set([...fromRec,...fromFB])].sort();
-    dl.innerHTML=_roasteryNames.map(n=>`<option value="${esc(n)}">`).join('');
+function getroasteryNames(){
+  const fromRec=new Set(RR.map(r=>r.roastery).filter(Boolean));
+  const fromFB=new Set(Object.values(ROASTERIES).map(v=>v.name).filter(Boolean));
+  return [...new Set([...fromRec,...fromFB])].sort();
+}
+
+function buildRoasteryDropdown(filter){
+  const dd = document.getElementById('roasteryDropdown');
+  if(!dd) return;
+  const names = getroasteryNames();
+  const q = (filter||'').trim().toLowerCase();
+  const filtered = q ? names.filter(n=>n.toLowerCase().includes(q)) : names;
+
+  const itemStyle = 'padding:10px 14px;cursor:pointer;font-size:.88em;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:8px;transition:background .15s;font-family:Cairo,sans-serif;color:var(--t1)';
+  const newStyle  = 'padding:10px 14px;cursor:pointer;font-size:.88em;display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ta);font-family:Cairo,sans-serif;background:rgba(0,168,150,.06);border-radius:0 0 10px 10px';
+
+  let html = '';
+  // "Add new" always first
+  html += `<div style="${newStyle}" onmousedown="roasterySelectNew()" onmouseover="this.style.background='rgba(0,168,150,.12)'" onmouseout="this.style.background='rgba(0,168,150,.06)'">
+    <span style="font-size:1.1em">✦</span> إضافة محمصة جديدة
+  </div>`;
+
+  filtered.forEach(name=>{
+    html += `<div style="${itemStyle}" onmousedown="roasterySelectItem('${esc(name)}')" onmouseover="this.style.background='var(--up)'" onmouseout="this.style.background='transparent'">
+      <span>☕</span> ${esc(name)}
+    </div>`;
+  });
+
+  if(!filtered.length && q){
+    html += `<div style="padding:10px 14px;font-size:.82em;color:var(--t2);font-family:Cairo,sans-serif">لا توجد نتائج — اختر "إضافة محمصة جديدة" لإضافتها</div>`;
+  }
+  dd.innerHTML = html;
+}
+
+window.roasteryShowDropdown = function(){
+  const dd = document.getElementById('roasteryDropdown');
+  const input = document.getElementById('rRoastery');
+  if(!dd) return;
+  buildRoasteryDropdown(input.value);
+  dd.style.display = 'block';
+};
+
+window.roasteryHideDropdown = function(){
+  const dd = document.getElementById('roasteryDropdown');
+  if(dd) dd.style.display = 'none';
+};
+
+window.roasteryInput = function(){
+  const dd = document.getElementById('roasteryDropdown');
+  const input = document.getElementById('rRoastery');
+  if(dd && dd.style.display !== 'none'){
+    buildRoasteryDropdown(input.value);
   }
 };
+
+window.roasterySelectItem = function(name){
+  document.getElementById('rRoastery').value = name;
+  roasteryHideDropdown();
+};
+
+window.roasterySelectNew = function(){
+  const input = document.getElementById('rRoastery');
+  const current = input.value.trim();
+  // Keep whatever they typed, or clear to let them type new name
+  if(!current){ input.focus(); }
+  roasteryHideDropdown();
+  input.focus();
+  // Show hint
+  const hint = document.querySelector('[for="rRoastery"] ~ div, #rRoastery ~ div');
+};
+
+// Legacy alias
+window.roasterySuggest=function(){};
 
 // Save new roastery name to Firebase if not exists (user-submitted)
 function saveNewRoastery(name){
