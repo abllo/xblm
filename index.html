@@ -648,14 +648,24 @@ window.rate=function(rKey,s,idx){
 window.openShareModal = function(idx) {
   const r = RR[idx];
   if(!r) return;
-  // Build link to recipe.html with Firebase key or xbloom link
   const siteBase = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
-  // Use Firebase key if available (r._key), otherwise fallback to xbloom link
   let shareParam = '';
   if(r._fbKey) {
+    // Recipe is in Firebase — use key
     shareParam = 'key=' + encodeURIComponent(r._fbKey);
   } else {
-    shareParam = 'link=' + encodeURIComponent(r.link || '');
+    // Recipe not in Firebase — encode all data directly in URL
+    const data = {
+      name: r.name||'',
+      author: r.author||'',
+      brewer: r.brewer||'',
+      dose: r.dose||'',
+      ratio: r.ratio||'',
+      category: r.category||'hot',
+      roastery: r.roastery||'',
+      link: r.link||''
+    };
+    shareParam = 'data=' + encodeURIComponent(JSON.stringify(data));
   }
   const directLink = siteBase + 'recipe.html?' + shareParam;
   const recipeName = r.name || 'وصفة';
@@ -819,7 +829,13 @@ let COMMENT_RATINGS = {}; // per-recipe selected star for comment
 
 onValue(commentsRef2, snap => {
   COMMENTS = {};
-  snap.forEach(child => { COMMENTS[child.key] = child.val(); });
+  let totalComments = 0;
+  snap.forEach(child => {
+    COMMENTS[child.key] = child.val();
+    if(child.val()) totalComments += Object.keys(child.val()).length;
+  });
+  const hC = document.getElementById('hstatComments');
+  if(hC) hC.textContent = totalComments > 0 ? '+'+totalComments : '0';
   // Update comment counts in open boxes
   Object.keys(COMMENTS).forEach(rKey => {
     const cnt = document.getElementById('ccount-' + rKey);
@@ -980,7 +996,14 @@ onValue(recipesRef,snap=>{
 // Ratings real-time listener
 onValue(ratingsRef,snap=>{
   RATINGS={};
-  snap.forEach(child=>{RATINGS[child.key]=child.val();});
+  let totalRatings=0;
+  snap.forEach(child=>{
+    RATINGS[child.key]=child.val();
+    const v=child.val();
+    if(v) totalRatings+=Object.keys(v).length;
+  });
+  const hRt=document.getElementById('hstatRatings');
+  if(hRt) hRt.textContent = totalRatings>0 ? '+'+totalRatings : '0';
   render();
 },err=>{console.warn('ratings:',err);});
 // ════ ROASTERY FUNCTIONS ════
