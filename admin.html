@@ -493,12 +493,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <p style="color:var(--t2);font-size:.83em;margin-bottom:12px;line-height:1.6">
       تحكم بالمحامص التي تظهر بشكل مميز في أعلى الصفحة الرئيسية. الزوار يستطيعون استعراض وصفات أي محمصة بنقرة واحدة.
     </p>
-    <div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.3);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:.8em;line-height:1.7">
-      <strong style="color:#ffaa00">⚠️ إذا ظهر خطأ PERMISSION_DENIED:</strong><br>
-      افتح <a href="https://console.firebase.google.com/project/xbloom-recipes-hub/database/xbloom-recipes-hub-default-rtdb/rules" target="_blank" style="color:#4A90E2;font-weight:700">Firebase Console → Rules</a>
-      وأضف <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px">roasteries</code> للـ rules أو اجعلها:
-      <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px">{ "rules": { ".read": true, ".write": true } }</code>
-    </div>
+
 
     <!-- Add/Edit Roastery Form -->
     <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:18px">
@@ -523,12 +518,22 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <img id="rImgPreviewImg" src="" alt="" style="width:60px;height:60px;border-radius:10px;object-fit:cover;border:1px solid var(--br)">
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <label style="font-size:.84em;color:var(--t2);font-weight:700">📌 تثبيت (يظهر في الصفحة):</label>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" id="rPinned" checked style="width:18px;height:18px;accent-color:var(--ta)">
-          <span style="font-size:.84em">مثبتة</span>
-        </label>
+      <div class="fr2" style="gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:.84em;color:var(--t2);font-weight:700">📌 تثبيت:</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="rPinned" checked style="width:18px;height:18px;accent-color:var(--ta)">
+            <span style="font-size:.84em">مثبتة</span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:.84em;color:var(--t2);font-weight:700">🎨 لون البطاقة:</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="color" id="rColor" value="#1a3a2a" style="width:40px;height:34px;border-radius:7px;border:1px solid var(--br);cursor:pointer;background:none;padding:2px" oninput="updateColorPreview()">
+            <input type="text" id="rColorHex" placeholder="#1a3a2a" style="width:80px;padding:6px 9px;border-radius:7px;border:1px solid var(--br);background:var(--bg);color:var(--t1);font-size:.83em;font-family:monospace" oninput="syncColorPicker()">
+            <div id="colorPreviewBox" style="width:34px;height:34px;border-radius:7px;background:#1a3a2a;border:1px solid var(--br)"></div>
+          </div>
+        </div>
       </div>
       <div style="display:flex;gap:9px;flex-wrap:wrap">
         <button class="btn bp bsm" onclick="saveRoastery()">💾 حفظ المحمصة</button>
@@ -1228,6 +1233,10 @@ window.editRoastery = function(key){
   document.getElementById('rOrder').value = v.order||1;
   document.getElementById('rImageUrl').value = v.image||'';
   document.getElementById('rPinned').checked = !!v.pinned;
+  const col = v.color||'#1a3a2a';
+  document.getElementById('rColor').value = col;
+  document.getElementById('rColorHex').value = col;
+  document.getElementById('colorPreviewBox').style.background = col;
   if(v.image){
     document.getElementById('rImgPreview').style.display='block';
     document.getElementById('rImgPreviewImg').src = v.image;
@@ -1268,6 +1277,20 @@ window.handleRoasteryImgFile = function(input){
   reader.readAsDataURL(file);
 };
 
+
+window.updateColorPreview = function(){
+  const col = document.getElementById('rColor').value;
+  document.getElementById('rColorHex').value = col;
+  document.getElementById('colorPreviewBox').style.background = col;
+};
+window.syncColorPicker = function(){
+  const hex = document.getElementById('rColorHex').value.trim();
+  if(/^#[0-9a-fA-F]{6}$/.test(hex)){
+    document.getElementById('rColor').value = hex;
+    document.getElementById('colorPreviewBox').style.background = hex;
+  }
+};
+
 window.saveRoastery = function(){
   const name = document.getElementById('rName').value.trim();
   if(!name){ toast('أدخل اسم المحمصة ❗','terr'); return; }
@@ -1283,7 +1306,8 @@ window.saveRoastery = function(){
   if(dup){ toast('محمصة بهذا الاسم موجودة بالفعل ❗','terr'); return; }
   
   const key = existingKey || name.toLowerCase().replace(/[\s]+/g,'_').replace(/[^a-z0-9_؀-ۿ]/g,'').substring(0,30) || ('r'+Date.now());
-  const data = { name, pinned, order, createdAt: FB_ROASTERIES[key]?.createdAt||Date.now() };
+  const color = document.getElementById('rColorHex').value.trim() || document.getElementById('rColor').value || '#1a3a2a';
+  const data = { name, pinned, order, color, createdAt: FB_ROASTERIES[key]?.createdAt||Date.now() };
   if(image) data.image = image;
   
   set(ref(db,'roasteries/'+key), data)

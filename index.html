@@ -200,19 +200,19 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
 /* ═══ ROASTERIES SECTION ═══ */
-.roasteries-section{margin-bottom:20px}
-.roasteries-label{font-size:.82em;color:var(--t2);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.roasteries-grid{display:flex;gap:10px;flex-wrap:wrap}
-.roastery-card{background:linear-gradient(135deg,var(--card),var(--up));border:1px solid var(--br);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:120px;position:relative;overflow:hidden}
-.roastery-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gr);transform:scaleX(0);transition:.3s}
-.roastery-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,168,150,.2);border-color:var(--ta)}
-.roastery-card:hover::before{transform:scaleX(1)}
-.roastery-card.active-filter{border-color:var(--ta);background:linear-gradient(135deg,rgba(0,168,150,.15),rgba(74,144,226,.1))}
-.roastery-card.active-filter::before{transform:scaleX(1)}
-.roastery-img{width:40px;height:40px;border-radius:10px;object-fit:cover;border:1px solid var(--br);flex-shrink:0;background:var(--up)}
-.roastery-img-placeholder{width:40px;height:40px;border-radius:10px;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:1.2em;flex-shrink:0}
-.roastery-name{font-size:.85em;font-weight:700;color:var(--t1);line-height:1.2}
-.roastery-count{font-size:.72em;color:var(--ta);margin-top:2px}
+.roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 20px;position:relative;overflow:hidden}
+.roasteries-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
+.roasteries-label{font-size:.8em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase}
+.roasteries-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.roastery-card{border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.25s;min-width:140px;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.roastery-card::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:.25s}
+.roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.roastery-card:hover::after{background:rgba(255,255,255,.07)}
+.roastery-card.active-filter{border-color:rgba(255,255,255,.5)!important;box-shadow:0 0 0 3px rgba(255,255,255,.15),0 8px 24px rgba(0,0,0,.3)!important}
+.roastery-img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.2);flex-shrink:0}
+.roastery-img-placeholder{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0}
+.roastery-name{font-size:.88em;font-weight:800;color:#fff;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.roastery-count{font-size:.72em;color:rgba(255,255,255,.75);margin-top:3px}
 .roastery-clear{padding:10px 14px;border-radius:10px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.8em;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap;display:none;align-items:center;gap:5px}
 .roastery-clear.show{display:flex}
 
@@ -238,7 +238,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </div>
 <div class="wrap">
 <header>
-  <h1>&#x2615; Xbloom Recipes</h1>
+  <h1><svg viewBox="0 0 36 36" width="36" height="36" style="vertical-align:middle;margin-left:8px;filter:drop-shadow(0 0 6px rgba(0,168,150,.6))" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 14h20v2a10 10 0 01-10 10A10 10 0 016 16v-2z" fill="#00a896"/><path d="M26 16h2a4 4 0 010 8h-2" stroke="#00a896" stroke-width="2" stroke-linecap="round"/><path d="M10 11c0-2 3-2 3-4M15 11c0-2 3-2 3-4M20 11c0-2 3-2 3-4" stroke="#00a896" stroke-width="1.8" stroke-linecap="round"/><rect x="6" y="25" width="20" height="2.5" rx="1.25" fill="#00a896"/></svg> Xbloom Recipes</h1>
   <p class="sub">وصفات مجتمع اكس بلوم</p>
   <button class="btn bp add-header-btn" onclick="openAddModal()">&#x2795; شارك وصفتك</button>
 </header>
@@ -265,10 +265,10 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </div>
 <!-- ROASTERIES SECTION -->
 <div class="roasteries-section" id="roasteriesSection" style="display:none">
-  <div class="roasteries-label">☕ المحامص الرائجة:</div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-    <div class="roasteries-grid" id="roasteriesGrid"></div>
-    <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()">✕ إلغاء الفلتر</button>
+  <div class="roasteries-label">☕ المحامص الرائجة</div>
+  <div class="roasteries-grid" id="roasteriesGrid"></div>
+  <div style="text-align:center;margin-top:12px">
+    <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
   </div>
 </div>
 <div class="ppbar">
@@ -981,9 +981,10 @@ function renderRoasteriesSection(){
     const name=v.name||k;
     const cnt=counts[name.toLowerCase()]||0;
     const isActive=activeRoastery&&activeRoastery.toLowerCase()===name.toLowerCase();
+    const color = v.color || '#1a2a3a';
     const imgHtml = v.image ? '<img class="roastery-img" src="'+esc(v.image)+'" alt="'+esc(name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' : '';
     const phStyle = v.image ? ' style="display:none"' : '';
-    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" onclick="filterByRoastery(null,\''+esc(name)+'\')">'+
+    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" style="background:'+color+'" onclick="filterByRoastery(null,\''+esc(name)+'\')">'+
       imgHtml+
       '<div class="roastery-img-placeholder"'+phStyle+'>☕</div>'+
       '<div>'+
@@ -1001,7 +1002,7 @@ window.filterByRoastery = function(e, name){
   }
   activeRoastery=name;PAGE=1;
   const btn=document.getElementById('clearRoasteryBtn');
-  if(btn)btn.classList.add('show');
+  if(btn)btn.style.display='inline-flex';
   // Update active state on cards
   document.querySelectorAll('.roastery-card').forEach(c=>{
     c.classList.toggle('active-filter',c.querySelector('.roastery-name')?.textContent===name);
@@ -1012,7 +1013,7 @@ window.filterByRoastery = function(e, name){
 window.clearRoasteryFilter = function(){
   activeRoastery=null;PAGE=1;
   const btn=document.getElementById('clearRoasteryBtn');
-  if(btn)btn.classList.remove('show');
+  if(btn)btn.style.display='none';
   document.querySelectorAll('.roastery-card').forEach(c=>c.classList.remove('active-filter'));
   render();
 };
