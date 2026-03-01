@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Xbloom Recipes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;direction:rtl}
+a{color:var(--ta);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ═══ NAV ═══ */
+.topbar{background:rgba(10,10,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:100;padding:0 20px}
+.topbar-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px;flex-wrap:wrap}
+.topbar-logo{font-weight:900;font-size:1.1em;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.topbar-nav{display:flex;gap:4px;flex-wrap:wrap}
+.topbar-nav a{padding:6px 12px;border-radius:8px;font-size:.82em;font-weight:700;color:var(--t2);transition:.2s;white-space:nowrap}
+.topbar-nav a:hover,.topbar-nav a.on{background:var(--card);color:var(--t1);text-decoration:none}
+.topbar-nav a.on{border:1px solid var(--br)}
+.topbar-home{padding:7px 14px;border-radius:9px;background:var(--gr);color:#fff;font-size:.82em;font-weight:700;white-space:nowrap;transition:.2s}
+.topbar-home:hover{opacity:.85;text-decoration:none}
+
+/* ═══ LAYOUT ═══ */
+.container{max-width:780px;margin:0 auto;padding:32px 20px 60px}
+
+/* ═══ PAGE HEADER ═══ */
+.page-header{text-align:center;padding:40px 20px 32px;position:relative}
+.page-header::after{content:'';display:block;width:60px;height:3px;background:var(--gr);border-radius:3px;margin:16px auto 0}
+.page-icon{font-size:2.5em;margin-bottom:12px;display:block}
+.page-title{font-size:clamp(1.6em,4vw,2.2em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3}
+.page-subtitle{color:var(--t2);font-size:.9em;margin-top:8px;line-height:1.6}
+
+/* ═══ CONTENT CARDS ═══ */
+.section-card{background:var(--card);border-radius:16px;border:1px solid var(--br);padding:28px 28px;margin-bottom:18px;position:relative;overflow:hidden}
+.section-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--gr)}
+.section-title{font-size:1em;font-weight:800;color:var(--ta);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';display:inline-block;width:4px;height:18px;background:var(--gr);border-radius:2px}
+.section-body{color:var(--t2);font-size:.9em;line-height:1.9}
+.section-body p{margin-bottom:12px}
+.section-body p:last-child{margin-bottom:0}
+.section-body ul{padding-right:20px;margin:8px 0 12px}
+.section-body ul li{margin-bottom:7px;position:relative}
+.section-body strong{color:var(--t1);font-weight:700}
+.section-body a{color:var(--ta)}
+
+/* ═══ HIGHLIGHT BOX ═══ */
+.highlight-box{background:rgba(0,168,150,.08);border:1px solid rgba(0,168,150,.25);border-radius:12px;padding:16px 18px;margin:14px 0;font-size:.88em;color:var(--t1);line-height:1.8}
+.highlight-box .hi-icon{font-size:1.2em;margin-left:6px}
+
+/* ═══ CONTACT ITEMS ═══ */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:8px}
+.contact-item{background:var(--up);border:1px solid var(--br);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px;transition:.25s;cursor:default}
+.contact-item:hover{border-color:var(--ta);transform:translateY(-2px)}
+.contact-icon{width:44px;height:44px;border-radius:10px;background:rgba(0,168,150,.15);display:flex;align-items:center;justify-content:center;font-size:1.3em;flex-shrink:0}
+.contact-label{font-size:.75em;color:var(--t2);margin-bottom:3px;font-weight:700}
+.contact-value{font-size:.88em;font-weight:700;color:var(--t1);word-break:break-all}
+.contact-value a{color:var(--t1)}
+
+/* ═══ ABOUT STATS ═══ */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.stat-box{background:var(--up);border:1px solid var(--br);border-radius:12px;padding:16px;text-align:center}
+.stat-num{font-size:1.6em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:.75em;color:var(--t2);margin-top:3px}
+
+/* ═══ LAST UPDATE ═══ */
+.last-update{text-align:center;color:var(--t2);font-size:.78em;margin-top:28px;padding-top:20px;border-top:1px solid var(--br)}
+
+/* ═══ TABS ═══ */
+.page-tabs{display:none}
+.page-tab{display:none}
+.page-tab.on{display:block}
+
+/* ═══ MOBILE ═══ */
+@media(max-width:500px){
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .section-card{padding:20px 16px}
+  .topbar-inner{height:auto;padding:10px 0;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<nav class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-logo">☕ Xbloom Recipes</span>
+    <div class="topbar-nav">
+      <a href="#" onclick="showPage('about',this)" class="on">من نحن</a>
+      <a href="#" onclick="showPage('contact',this)">اتصل بنا</a>
+      <a href="#" onclick="showPage('privacy',this)">سياسة الخصوصية</a>
+    </div>
+    <a href="index.html" class="topbar-home">← الوصفات</a>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════
+     صفحة: من نحن
+════════════════════════════════ -->
+<div id="page-about" class="page-tab on">
+<div class="container">
+  <div class="page-header">
+    <span class="page-icon">☕</span>
+    <h1 class="page-title">من نحن</h1>
+    <p class="page-subtitle">قصة Xbloom Recipes ورحلة القهوة</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-num">+200</div>
+      <div class="stat-lbl">وصفة متاحة</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">2025</div>
+      <div class="stat-lbl">تاريخ الإطلاق</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">مجاني</div>
+      <div class="stat-lbl">للجميع دائماً</div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">الفكرة والبداية</div>
+    <div class="section-body">
+      <p>
+        Xbloom Recipes موقع شخصي أنشأته <strong>عبدالإله</strong> بدافع الشغف بالقهوة المختصة وأجهزة Xbloom.
+        الفكرة جاءت من مجتمع نشط على تيليجرام يتشارك فيه المهتمون بالقهوة وصفاتهم الشخصية يومياً.
+      </p>
+      <p>
+        لاحظت أن هذا الكم من الوصفات القيّمة مبعثر في المحادثات ويصعب الوصول إليه — فقررت تحويله لمرجع تفاعلي منظّم يستفيد منه كل من يملك جهاز Xbloom.
+      </p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">ما يقدمه الموقع</div>
+    <div class="section-body">
+      <ul>
+        <li>تصفح وصفات قهوة مختصة بأجهزة Xbloom (Omni، xPod، وغيرها)</li>
+        <li>فلترة حسب النوع (حار / بارد) وجهاز التحضير والمحمصة</li>
+        <li>نظام تقييم وتعليقات من مجتمع المستخدمين</li>
+        <li>إمكانية مشاركة وصفتك مباشرة من الموقع</li>
+        <li>استعراض الوصفة في تطبيق Xbloom بنقرة واحدة</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">الوصفات ومصادرها</div>
+    <div class="section-body">
+      <p>
+        الوصفات المتاحة مصدرها مجتمع تيليجرام المهتم بأجهزة Xbloom، حيث أضافها أصحابها بأنفسهم ونسبت لهم. تم جمعها وتنظيمها بإذن ضمني من طبيعة المجتمع المفتوح، وإتاحتها هنا لتسهيل الوصول إليها.
+      </p>
+      <div class="highlight-box">
+        <span class="hi-icon">ℹ️</span>
+        إذا كنت صاحب وصفة وتريد تعديلها أو حذفها، تواصل معنا عبر البريد الإلكتروني وسنتعامل مع طلبك فوراً.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">المستقبل والتطوير</div>
+    <div class="section-body">
+      <p>
+        الموقع في تطوير مستمر. من المخطط مستقبلاً: تصنيفات أوسع للمحامص، ملفات شخصية للمستخدمين، وربما شراكات مع محامص مختارة لعرض وصفاتها بشكل مميز.
+      </p>
+      <p>
+        الهدف دائماً: مرجع بسيط ونظيف يخدم محبي القهوة المختصة في المنطقة.
+      </p>
+    </div>
+  </div>
+
+  <div class="last-update">آخر تحديث: مارس 2026</div>
+</div>
+</div>
+
+
+<!-- ════════════════════════════════
+     صفحة: اتصل بنا
+════════════════════════════════ -->
+<div id="page-contact" class="page-tab">
+<div class="container">
+  <div class="page-header">
+    <span class="page-icon">✉️</span>
+    <h1 class="page-title">اتصل بنا</h1>
+    <p class="page-subtitle">نرد على جميع الاستفسارات خلال 48 ساعة</p>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">وسائل التواصل</div>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="contact-icon">📧</div>
+        <div>
+          <div class="contact-label">البريد الإلكتروني</div>
+          <div class="contact-value"><a href="mailto:info@ab-s.me">info@ab-s.me</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🌐</div>
+        <div>
+          <div class="contact-label">الموقع</div>
+          <div class="contact-value">xblm.ab-s.me</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">متى تتواصل معنا؟</div>
+    <div class="section-body">
+      <ul>
+        <li><strong>حذف أو تعديل وصفة</strong> — إذا كنت صاحب وصفة وتريد تحديثها أو إزالتها</li>
+        <li><strong>الإبلاغ عن محتوى</strong> — وصفة مكررة أو معلومات خاطئة</li>
+        <li><strong>اقتراحات التطوير</strong> — أفكار لتحسين تجربة الموقع</li>
+        <li><strong>الشراكات والتعاون</strong> — إذا كنت تمثل محمصة أو جهة مهتمة بالتعاون</li>
+        <li><strong>أي استفسار آخر</strong> — نسعد بالتواصل</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">ملاحظة مهمة</div>
+    <div class="section-body">
+      <div class="highlight-box">
+        <span class="hi-icon">⏱️</span>
+        هذا موقع شخصي يُدار بشكل فردي، لذلك قد يتأخر الرد أحياناً. نضمن الرد على جميع الرسائل المتعلقة بطلبات حذف البيانات خلال <strong>72 ساعة</strong> كحد أقصى.
+      </div>
+    </div>
+  </div>
+
+  <div class="last-update">آخر تحديث: مارس 2026</div>
+</div>
+</div>
+
+
+<!-- ════════════════════════════════
+     صفحة: سياسة الخصوصية
+════════════════════════════════ -->
+<div id="page-privacy" class="page-tab">
+<div class="container">
+  <div class="page-header">
+    <span class="page-icon">🔒</span>
+    <h1 class="page-title">سياسة الخصوصية</h1>
+    <p class="page-subtitle">آخر تحديث: مارس 2026</p>
+  </div>
+
+  <div class="highlight-box" style="margin-bottom:18px;font-size:.85em">
+    <span class="hi-icon">📋</span>
+    هذه السياسة تشرح كيف يتعامل موقع <strong>Xbloom Recipes</strong> مع بياناتك. نلتزم بالشفافية الكاملة.
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">من نحن</div>
+    <div class="section-body">
+      <p>موقع Xbloom Recipes موقع شخصي يملكه ويديره <strong>عبدالإله</strong>، متاح على العنوان <strong>xblm.ab-s.me</strong>، وللتواصل: <a href="mailto:info@ab-s.me">info@ab-s.me</a></p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">البيانات التي نجمعها</div>
+    <div class="section-body">
+      <p>الموقع لا يطلب تسجيل حساب ولا يجمع بيانات شخصية مباشرة، باستثناء ما يقوم المستخدم بإدخاله طوعاً:</p>
+      <ul>
+        <li><strong>الوصفات المنشورة:</strong> الاسم الذي تدخله (يمكن أن يكون أي اسم أو لقب)، تفاصيل الوصفة، وجهاز التحضير</li>
+        <li><strong>التعليقات:</strong> نص التعليق والاسم المُدخل</li>
+        <li><strong>التقييمات:</strong> رقم التقييم فقط دون أي ربط بهوية</li>
+      </ul>
+      <p>لا نجمع: عناوين البريد الإلكتروني، أرقام الهواتف، بيانات الموقع الجغرافي، أو أي معلومات تعريفية أخرى.</p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">كيف نستخدم البيانات</div>
+    <div class="section-body">
+      <ul>
+        <li>عرض الوصفات والتعليقات للزوار</li>
+        <li>تحسين تجربة الموقع واكتشاف الأخطاء التقنية</li>
+        <li>إحصاءات عامة عن عدد التفاعلات (مجمّعة وغير مرتبطة بأفراد)</li>
+      </ul>
+      <p>لا نستخدم البيانات لأغراض تسويقية أو نبيعها لأي طرف ثالث.</p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">التخزين والأمان</div>
+    <div class="section-body">
+      <p>
+        يُخزَّن محتوى الموقع على خوادم <strong>Firebase (Google)</strong> في أوروبا. تخضع هذه الخدمة لسياسة خصوصية Google وتلتزم بمعايير أمان عالية.
+      </p>
+      <p>
+        الموقع مستضاف على <strong>GitHub Pages</strong> مع اتصال آمن HTTPS. لا يملك المشغل وصولاً مباشراً لعناوين IP الزوار.
+      </p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">ملفات تعريف الارتباط (Cookies)</div>
+    <div class="section-body">
+      <p>
+        الموقع لا يستخدم ملفات تعريف ارتباط خاصة به. قد تستخدم خدمات الطرف الثالث المُدمجة (مثل Firebase) ملفاتها الخاصة وفق سياساتها.
+      </p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">الإعلانات والشراكات</div>
+    <div class="section-body">
+      <p>
+        الموقع حالياً خالٍ من الإعلانات. <strong>في المستقبل</strong> قد يتضمن الموقع إعلانات أو شراكات تجارية مع محامص أو علامات تجارية مختارة. في هذه الحالة:
+      </p>
+      <ul>
+        <li>سيتم الإفصاح بوضوح عن أي محتوى مدفوع أو مموّل</li>
+        <li>ستُحدَّث هذه السياسة قبل تفعيل أي إعلانات</li>
+        <li>لن تُستخدم بياناتك الحالية لأغراض إعلانية مستهدفة</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">الوصفات المنقولة من تيليجرام</div>
+    <div class="section-body">
+      <p>
+        بعض الوصفات نُقلت من مجتمع تيليجرام مفتوح حيث نشرها أصحابها بأسمائهم المستعارة. نُبيّن اسم صاحب الوصفة كما أُدرج في المصدر الأصلي.
+      </p>
+      <div class="highlight-box">
+        <span class="hi-icon">✋</span>
+        <strong>حق الحذف:</strong> إذا كنت صاحب وصفة ولا ترغب في ظهورها على الموقع، تواصل معنا على <a href="mailto:info@ab-s.me">info@ab-s.me</a> وسنحذفها خلال 72 ساعة.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">حقوقك</div>
+    <div class="section-body">
+      <p>لك الحق في أي وقت في:</p>
+      <ul>
+        <li><strong>الاطلاع</strong> على أي بيانات أدخلتها</li>
+        <li><strong>تصحيح</strong> معلومات خاطئة</li>
+        <li><strong>حذف</strong> أي محتوى نشرته (تعليق أو وصفة)</li>
+        <li><strong>الاعتراض</strong> على طريقة استخدام بياناتك</li>
+      </ul>
+      <p>لممارسة هذه الحقوق تواصل مع: <a href="mailto:info@ab-s.me">info@ab-s.me</a></p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">تغييرات على السياسة</div>
+    <div class="section-body">
+      <p>
+        قد تُحدَّث هذه السياسة مع تطور الموقع. ستظهر التغييرات الجوهرية في أعلى هذه الصفحة مع تاريخ التحديث. الاستمرار في استخدام الموقع بعد التحديث يعني موافقتك على السياسة الجديدة.
+      </p>
+    </div>
+  </div>
+
+  <div class="last-update">صدرت هذه السياسة بتاريخ مارس 2026 · للاستفسار: <a href="mailto:info@ab-s.me">info@ab-s.me</a></div>
+</div>
+</div>
+
+
+<script>
+function showPage(id, el){
+  document.querySelectorAll('.page-tab').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.topbar-nav a').forEach(a=>a.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  if(el){ el.classList.add('on'); }
+  window.scrollTo({top:0,behavior:'smooth'});
+  return false;
+}
+
+// Open correct tab from URL hash
+const hash = location.hash.replace('#','');
+if(hash==='contact'||hash==='privacy'){
+  showPage(hash, document.querySelector('[onclick*="\''+hash+'\'"]'));
+}
+</script>
+</body>
+</html>
