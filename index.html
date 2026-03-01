@@ -984,17 +984,16 @@ function renderRoasteriesSection(){
     const name=v.name||k;
     const cnt=counts[name.toLowerCase()]||0;
     const isActive=activeRoastery&&activeRoastery.toLowerCase()===name.toLowerCase();
-    const imgHtml = v.image
-      ? `<img class="roastery-img" src="${esc(v.image)}" alt="${esc(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      : '';
-    const placeholder = `<div class="roastery-img-placeholder" ${v.image?'style="display:none"':'}>☕</div>`;
-    return `<div class="roastery-card${isActive?' active-filter':''}" onclick="filterByRoastery(null,'${esc(name)}')">
-      ${imgHtml}<div class="roastery-img-placeholder" ${v.image?'style="display:none"':'}>☕</div>
-      <div>
-        <div class="roastery-name">${esc(name)}</div>
-        <div class="roastery-count">${cnt} وصفة</div>
-      </div>
-    </div>`;
+    const imgHtml = v.image ? '<img class="roastery-img" src="'+esc(v.image)+'" alt="'+esc(name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' : '';
+    const phStyle = v.image ? ' style="display:none"' : '';
+    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" onclick="filterByRoastery(null,\''+esc(name)+'\')">'+
+      imgHtml+
+      '<div class="roastery-img-placeholder"'+phStyle+'>☕</div>'+
+      '<div>'+
+        '<div class="roastery-name">'+esc(name)+'</div>'+
+        '<div class="roastery-count">'+cnt+' وصفة</div>'+
+      '</div>'+
+    '</div>';
   }).join('');
 }
 
