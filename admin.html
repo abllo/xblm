@@ -562,7 +562,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <p id="confirmMsg"></p>
     <div class="cmod-acts">
       <button class="btn bd" id="confirmOk">تأكيد</button>
-      <button class="btn bgray" onclick="document.getElementById('confirmOv').classList.remove('open')">إلغاء</button>
+      <button class="btn bgray" onclick="document.getElementById('confirmOv').style.display='none'">إلغاء</button>
     </div>
   </div>
 </div>
@@ -1322,6 +1322,20 @@ window.toggleRoasteryPin = function(key, isPinned){
   set(ref(db,'roasteries/'+key+'/pinned'), !isPinned)
     .then(()=>toast(!isPinned?'تم تثبيت المحمصة 📌':'تم إلغاء التثبيت'))
     .catch(err=>toast('خطأ','terr'));
+};
+
+
+window.showConfirm = function(title, msg, onOk){
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('confirmOv').style.display = 'flex';
+  const okBtn = document.getElementById('confirmOk');
+  const newOk = okBtn.cloneNode(true);
+  okBtn.parentNode.replaceChild(newOk, okBtn);
+  newOk.onclick = function(){
+    document.getElementById('confirmOv').style.display = 'none';
+    onOk();
+  };
 };
 
 window.deleteRoastery = function(key){

@@ -34,7 +34,7 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .ftab:active{transform:scale(.96)}
 .ftab.on{background:var(--gr);color:#fff;border-color:transparent}
 .cnt{display:inline-block;margin-right:4px;padding:1px 6px;background:rgba(255,255,255,.2);border-radius:7px;font-size:11px}
-.ppbar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border-radius:10px;border:1px solid var(--br);margin-bottom:16px;flex-wrap:wrap}
+.ppbar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border-radius:10px;border:1px solid var(--br);margin-bottom:16px;flex-wrap:wrap;justify-content:space-between}
 .ppbar label{font-size:.82em;color:var(--t2)}
 .ppbar select{padding:6px 10px;border-radius:7px;background:var(--up);color:var(--t1);border:1px solid var(--br);font-family:inherit;font-size:13px}
 .ppinfo{font-size:.82em;color:var(--t2);flex:1;text-align:center}
@@ -272,21 +272,25 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </div>
 </div>
 <div class="ppbar">
-  <label>عرض:</label>
-  <select onchange="setPP(this.value)">
-    <option value="12">12</option>
-    <option value="24" selected>24</option>
-    <option value="48">48</option>
-    <option value="96">96</option>
-  </select>
-  <label style="margin-right:4px">فرز:</label>
-  <select id="sortSelect" onchange="setSortSelect(this.value)">
-    <option value="default">📋 الافتراضي</option>
-    <option value="top">⭐ الأعلى تقييماً</option>
-    <option value="newest">🆕 المضافة حديثاً</option>
-    <option value="popular">🔥 الأكثر تحضيراً</option>
-  </select>
+  <div style="display:flex;align-items:center;gap:8px">
+    <label>فرز:</label>
+    <select id="sortSelect" onchange="setSortSelect(this.value)">
+      <option value="default">📋 الافتراضي</option>
+      <option value="top">⭐ الأعلى تقييماً</option>
+      <option value="newest">🆕 المضافة حديثاً</option>
+      <option value="popular">🔥 الأكثر تحضيراً</option>
+    </select>
+  </div>
   <div class="ppinfo" id="ppinfo">جاري التحميل...</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <label>عرض:</label>
+    <select onchange="setPP(this.value)">
+      <option value="12">12</option>
+      <option value="24" selected>24</option>
+      <option value="48">48</option>
+      <option value="96">96</option>
+    </select>
+  </div>
 </div>
 <!-- ADS INJECTION (position controlled by admin) -->
 <div class="ads-container" id="adsTopContainer" style="display:none"></div>
