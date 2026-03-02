@@ -89,9 +89,9 @@ a:hover{text-decoration:underline}
   <div class="topbar-inner">
     <span class="topbar-logo">☕ Xbloom Recipes</span>
     <div class="topbar-nav">
-      <a href="#" onclick="showPage('about',this)" class="on">من نحن</a>
-      <a href="#" onclick="showPage('contact',this)">اتصل بنا</a>
-      <a href="#" onclick="showPage('privacy',this)">سياسة الخصوصية</a>
+      <a href="#about" onclick="showPage('about',this);return false" class="on" id="nav-about">من نحن</a>
+      <a href="#contact" onclick="showPage('contact',this);return false" id="nav-contact">اتصل بنا</a>
+      <a href="#privacy" onclick="showPage('privacy',this);return false" id="nav-privacy">سياسة الخصوصية</a>
     </div>
     <a href="index.html" class="topbar-home">← الوصفات</a>
   </div>
@@ -120,7 +120,7 @@ a:hover{text-decoration:underline}
     </div>
     <div class="stat-box">
       <div class="stat-num">مجاني</div>
-      <div class="stat-lbl"</div>
+      <div class="stat-lbl">للجميع دائماً</div>
     </div>
   </div>
 
@@ -128,7 +128,8 @@ a:hover{text-decoration:underline}
     <div class="section-title">الفكرة والبداية</div>
     <div class="section-body">
       <p>
-        Xbloom Recipes موقع شخصي أنشئ بدافع الشغف بالقهوة المختصة وأجهزة Xbloom.
+        Xbloom Recipes موقع شخصي أنشأته <strong>عبدالإله</strong> بدافع الشغف بالقهوة المختصة وأجهزة Xbloom.
+        الفكرة جاءت من مجتمع نشط على تيليجرام يتشارك فيه المهتمون بالقهوة وصفاتهم الشخصية يومياً.
       </p>
       <p>
         لاحظت أن هذا الكم من الوصفات القيّمة مبعثر في المحادثات ويصعب الوصول إليه — فقررت تحويله لمرجع تفاعلي منظّم يستفيد منه كل من يملك جهاز Xbloom.
@@ -228,7 +229,7 @@ a:hover{text-decoration:underline}
     <div class="section-body">
       <div class="highlight-box">
         <span class="hi-icon">⏱️</span>
-        هذا موقع شخصي يُدار بشكل فردي، و نضمن الرد على / أو النظر في جميع الرسائل الواردة أو المتعلقة بطلبات حذف البيانات خلال <strong>72 ساعة</strong> كحد أقصى.
+        هذا موقع شخصي يُدار بشكل فردي، لذلك قد يتأخر الرد أحياناً. نضمن الرد على جميع الرسائل المتعلقة بطلبات حذف البيانات خلال <strong>72 ساعة</strong> كحد أقصى.
       </div>
     </div>
   </div>
@@ -257,7 +258,7 @@ a:hover{text-decoration:underline}
   <div class="section-card">
     <div class="section-title">من نحن</div>
     <div class="section-body">
-      <p>موقع Xbloom Recipes موقع شخصي  ، متاح على العنوان <strong>xblm.ab-s.me</strong>، وللتواصل: <a href="mailto:info@ab-s.me">info@ab-s.me</a></p>
+      <p>موقع Xbloom Recipes موقع شخصي يملكه ويديره <strong>عبدالإله</strong>، متاح على العنوان <strong>xblm.ab-s.me</strong>، وللتواصل: <a href="mailto:info@ab-s.me">info@ab-s.me</a></p>
     </div>
   </div>
 
@@ -366,17 +367,17 @@ a:hover{text-decoration:underline}
 function showPage(id, el){
   document.querySelectorAll('.page-tab').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.topbar-nav a').forEach(a=>a.classList.remove('on'));
-  document.getElementById('page-'+id).classList.add('on');
-  if(el){ el.classList.add('on'); }
+  const page = document.getElementById('page-'+id);
+  if(page) page.classList.add('on');
+  const navEl = el || document.getElementById('nav-'+id);
+  if(navEl) navEl.classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
   return false;
 }
-
-// Open correct tab from URL hash
-const hash = location.hash.replace('#','');
-if(hash==='contact'||hash==='privacy'){
-  showPage(hash, document.querySelector('[onclick*="\''+hash+'\'"]'));
-}
+window.addEventListener('DOMContentLoaded',function(){
+  const hash = location.hash.replace('#','');
+  if(hash==='contact'||hash==='privacy') showPage(hash);
+});
 </script>
 </body>
 </html>

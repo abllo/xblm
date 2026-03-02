@@ -233,6 +233,13 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <div class="topt"><input type="radio" name="rc" id="rSrv" value="server"><label for="rSrv">⚙️ غسيل وترطيب سيرفر</label></div>
         </div>
       </div>
+      <div class="fg"><label>☕ المحمصة</label>
+        <div style="position:relative">
+          <input class="form-input" id="rRoastery" placeholder="اسم المحمصة (اختياري)" autocomplete="off"
+            oninput="adminRoasteryInput()" onfocus="adminRoasteryShow()" onblur="setTimeout(adminRoasteryHide,200)">
+          <div id="adminRoasteryDd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;z-index:300;max-height:180px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+        </div>
+      </div>
       <div class="fg"><label>رابط الوصفة *</label><input type="url" class="form-input" id="rL" required placeholder="https://share-h5.xbloom.com/?id=..."></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
         <button type="submit" class="btn bp" style="flex:1;justify-content:center" id="saveBtn">💾 حفظ</button>
@@ -751,7 +758,7 @@ window.renderTable = function() {
     const srcBadge=r._src==='fb'?'<span class="badge-fb">☁️ Firebase</span>':'<span class="badge-init">📁 INIT</span>';
     const actions=r._src==='fb'?`<button class="btn bsm bw" onclick="editRec('${r._fbKey}')">✏️</button>
       <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(str(r.name))}')">🗑️</button>`
-      :'<span style="font-size:.75em;color:var(--t2)">للقراءة فقط</span>';
+      :`<button class="btn bsm" style="background:rgba(0,168,150,.12);border:1px solid rgba(0,168,150,.3);color:#00a896;font-size:.75em" onclick="promoteInitRecipe(${i},'${esc(str(r.name))}')">⬆️ تحرير</button>`;
     return `<tr><td>${i+1}</td><td><a href="${esc(str(r.link))}" target="_blank">${esc(str(r.name))}</a></td>
       <td>${esc(str(r.author))}</td><td>${esc(str(r.brewer))}</td><td>${catLbl}</td><td>${srcBadge}</td>
       <td><div class="tblacts">${actions}</div></td></tr>`;
@@ -778,6 +785,7 @@ window.editRec = function(fbKey){
   document.getElementById('rD').value=str(r.dose);
   document.getElementById('rR').value=str(r.ratio);
   document.getElementById('rL').value=str(r.link);
+  document.getElementById('rRoastery').value=str(r.roastery||'');
   const cat=r.category||'hot';
   document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked=true;
   document.getElementById('addFormTitle').textContent='✏️ تعديل الوصفة';
@@ -795,7 +803,8 @@ window.saveRec = function(e){
   const r={name:document.getElementById('rN').value.trim(),author:document.getElementById('rA').value.trim(),
     brewer:document.getElementById('rBr').value,dose:document.getElementById('rD').value.trim(),
     ratio:document.getElementById('rR').value.trim(),link:document.getElementById('rL').value.trim(),
-    category:catSel.value};
+    category:catSel.value,
+    roastery:document.getElementById('rRoastery').value.trim()||null};
   const btn=document.getElementById('saveBtn');
   btn.textContent='⏳...'; btn.disabled=true;
   const op=editingKey ? set(ref(db,'recipes/'+editingKey),r) : push(recipesRef,r);
@@ -820,24 +829,92 @@ window.confirmDel = function(fbKey,name){
 function renderRatings(){
   const container=document.getElementById('ratingsList');
   const keys=Object.keys(FB_RATINGS);
-  if(!keys.length){ container.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تقييمات بعد</p>'; return; }
-  const sorted=keys.map(k=>({key:k,...FB_RATINGS[k]})).sort((a,b)=>{
-    const avgA=a.count>0?a.total/a.count:0, avgB=b.count>0?b.total/b.count:0;
-    return avgB-avgA;
+  if(!keys.length){
+    container.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تقييمات بعد</p>';
+    return;
+  }
+
+  // Build list of all individual user ratings
+  let allRatings = [];
+  keys.forEach(recipeKey => {
+    const usersObj = FB_RATINGS[recipeKey];
+    if(!usersObj || typeof usersObj !== 'object') return;
+    // Structure is ratings/{recipeKey}/{userId} = number
+    Object.entries(usersObj).forEach(([userId, val]) => {
+      if(typeof val === 'number'){
+        allRatings.push({ recipeKey, userId, val });
+      }
+    });
   });
-  container.innerHTML=sorted.map((rd,i)=>{
-    const avg=rd.count>0?(rd.total/rd.count).toFixed(1):0;
-    const stars='⭐'.repeat(Math.round(Number(avg)));
-    const recipe=ALL_RECIPES.find(r=>{try{return btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===rd.key;}catch(e){return false;}});
-    const name=recipe?str(recipe.name):'وصفة غير معروفة';
-    return `<div class="rcard">
-      <div class="rcard-name">${i+1}. ${esc(name)}</div>
-      <div><div class="rcard-stars">${stars} <strong>${avg}</strong>/5</div>
-      <div class="rcard-info">${rd.count} مقيّم • مجموع النجوم: ${rd.total}</div></div>
-      <button class="btn bsm bd" onclick="resetOneRating('${rd.key}','${esc(name)}')">🗑️ تصفير</button>
+
+  // Group by recipe for display
+  const byRecipe = {};
+  allRatings.forEach(({recipeKey, userId, val}) => {
+    if(!byRecipe[recipeKey]) byRecipe[recipeKey] = [];
+    byRecipe[recipeKey].push({userId, val});
+  });
+
+  const esc2 = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  container.innerHTML = Object.entries(byRecipe).map(([recipeKey, ratings]) => {
+    const recipe = ALL_RECIPES.find(r => {
+      try{ return (r._fbKey===recipeKey) || btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===recipeKey; }
+      catch(e){ return false; }
+    });
+    const name = recipe ? str(recipe.name) : 'وصفة غير معروفة';
+    const avg = ratings.reduce((s,r)=>s+r.val,0)/ratings.length;
+    const stars = '⭐'.repeat(Math.round(avg));
+
+    const userRows = ratings.map(({userId, val}) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:7px;background:var(--bg);margin-bottom:4px;flex-wrap:wrap">
+        <span style="font-size:.75em;color:var(--t2);font-family:monospace;word-break:break-all">${esc2(userId)}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:.85em;font-weight:700">${'⭐'.repeat(val)} (${val}/5)</span>
+          <div style="display:flex;gap:3px">
+            ${[1,2,3,4,5].map(n=>`<button onclick="setUserRating('${esc2(recipeKey)}','${esc2(userId)}',${n})" style="width:22px;height:22px;border-radius:4px;border:1px solid var(--br);background:${val===n?'var(--ta)':'var(--up)'};color:${val===n?'#fff':'var(--t2)'};font-size:.7em;cursor:pointer">${n}</button>`).join('')}
+            <button onclick="deleteUserRating('${esc2(recipeKey)}','${esc2(userId)}')" style="width:22px;height:22px;border-radius:4px;border:1px solid rgba(224,90,107,.3);background:rgba(224,90,107,.1);color:#e05a6b;font-size:.7em;cursor:pointer">✕</button>
+          </div>
+        </div>
+      </div>`).join('');
+
+    return `<div class="rcard" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div>
+          <div class="rcard-name">${esc2(name)}</div>
+          <div class="rcard-info">${stars} ${avg.toFixed(1)}/5 • ${ratings.length} مقيّم</div>
+        </div>
+        <button class="btn bsm bd" onclick="resetOneRatingNew('${esc2(recipeKey)}','${esc2(name)}')">🗑️ تصفير الكل</button>
+      </div>
+      <div>${userRows}</div>
     </div>`;
   }).join('');
+
 }
+
+
+window.setUserRating = async function(recipeKey, userId, val){
+  try{
+    await set(ref(db,'ratings/'+recipeKey+'/'+userId), val);
+    toast('✅ تم تعديل التقييم', 'tok');
+  }catch(e){ toast('خطأ: '+e.message,'terr'); }
+};
+
+window.deleteUserRating = async function(recipeKey, userId){
+  try{
+    await set(ref(db,'ratings/'+recipeKey+'/'+userId), null);
+    toast('✅ تم حذف التقييم', 'tok');
+  }catch(e){ toast('خطأ: '+e.message,'terr'); }
+};
+
+window.resetOneRatingNew = function(recipeKey, name){
+  document.getElementById('confirmMsg').textContent = 'سيتم حذف جميع تقييمات "'+name+'". متأكد؟';
+  const ov = document.getElementById('confirmOv'); ov.classList.add('open');
+  document.getElementById('confirmOk').onclick = ()=>{
+    set(ref(db,'ratings/'+recipeKey), null)
+      .then(()=>{ toast('تم تصفير تقييمات '+name+' ✅','tok'); ov.classList.remove('open'); })
+      .catch(e=>{ toast('خطأ: '+e.message,'terr'); ov.classList.remove('open'); });
+  };
+};
 
 window.resetAllRatings = function(){
   document.getElementById('confirmMsg').textContent='سيتم حذف جميع التقييمات. هذا لا يمكن التراجع عنه.';
