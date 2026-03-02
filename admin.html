@@ -237,7 +237,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <div style="position:relative">
           <input class="form-input" id="rRoastery" placeholder="اسم المحمصة (اختياري)" autocomplete="off"
             oninput="adminRoasteryInput()" onfocus="adminRoasteryShow()" onblur="setTimeout(adminRoasteryHide,200)">
-          <div id="adminRoasteryDd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;z-index:300;max-height:180px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+          <div id="adminRoasteryDd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;background:var(--card);border:1px solid var(--br);border-radius:10px;z-index:500;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
         </div>
       </div>
       <div class="fg"><label>رابط الوصفة *</label><input type="url" class="form-input" id="rL" required placeholder="https://share-h5.xbloom.com/?id=..."></div>
@@ -827,93 +827,185 @@ window.confirmDel = function(fbKey,name){
 
 // ════ RATINGS ════
 function renderRatings(){
-  const container=document.getElementById('ratingsList');
-  const keys=Object.keys(FB_RATINGS);
+  const container = document.getElementById('ratingsList');
+  const keys = Object.keys(FB_RATINGS);
   if(!keys.length){
-    container.innerHTML='<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تقييمات بعد</p>';
+    container.innerHTML = '<p style="color:var(--t2);text-align:center;padding:20px">لا توجد تقييمات بعد</p>';
     return;
   }
 
-  // Build list of all individual user ratings
-  let allRatings = [];
-  keys.forEach(recipeKey => {
-    const usersObj = FB_RATINGS[recipeKey];
-    if(!usersObj || typeof usersObj !== 'object') return;
-    // Structure is ratings/{recipeKey}/{userId} = number
-    Object.entries(usersObj).forEach(([userId, val]) => {
-      if(typeof val === 'number'){
-        allRatings.push({ recipeKey, userId, val });
-      }
-    });
-  });
+  const sorted = keys.map(k => ({
+    key: k,
+    total: Number(FB_RATINGS[k].total||0),
+    count: Number(FB_RATINGS[k].count||0)
+  })).filter(r => r.count > 0)
+    .sort((a,b) => (b.total/b.count) - (a.total/a.count));
 
-  // Group by recipe for display
-  const byRecipe = {};
-  allRatings.forEach(({recipeKey, userId, val}) => {
-    if(!byRecipe[recipeKey]) byRecipe[recipeKey] = [];
-    byRecipe[recipeKey].push({userId, val});
-  });
-
-  const esc2 = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
-  container.innerHTML = Object.entries(byRecipe).map(([recipeKey, ratings]) => {
+  container.innerHTML = sorted.map((rd, i) => {
+    const avg = (rd.total / rd.count).toFixed(1);
+    const avgNum = parseFloat(avg);
+    const stars = '⭐'.repeat(Math.round(avgNum));
     const recipe = ALL_RECIPES.find(r => {
-      try{ return (r._fbKey===recipeKey) || btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===recipeKey; }
+      try{ return (r._fbKey===rd.key) || btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===rd.key; }
       catch(e){ return false; }
     });
     const name = recipe ? str(recipe.name) : 'وصفة غير معروفة';
-    const avg = ratings.reduce((s,r)=>s+r.val,0)/ratings.length;
-    const stars = '⭐'.repeat(Math.round(avg));
 
-    const userRows = ratings.map(({userId, val}) => `
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:7px;background:var(--bg);margin-bottom:4px;flex-wrap:wrap">
-        <span style="font-size:.75em;color:var(--t2);font-family:monospace;word-break:break-all">${esc2(userId)}</span>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:.85em;font-weight:700">${'⭐'.repeat(val)} (${val}/5)</span>
-          <div style="display:flex;gap:3px">
-            ${[1,2,3,4,5].map(n=>`<button onclick="setUserRating('${esc2(recipeKey)}','${esc2(userId)}',${n})" style="width:22px;height:22px;border-radius:4px;border:1px solid var(--br);background:${val===n?'var(--ta)':'var(--up)'};color:${val===n?'#fff':'var(--t2)'};font-size:.7em;cursor:pointer">${n}</button>`).join('')}
-            <button onclick="deleteUserRating('${esc2(recipeKey)}','${esc2(userId)}')" style="width:22px;height:22px;border-radius:4px;border:1px solid rgba(224,90,107,.3);background:rgba(224,90,107,.1);color:#e05a6b;font-size:.7em;cursor:pointer">✕</button>
+    // Star adjustment buttons
+    const adjButtons = [1,2,3,4,5].map(n =>
+      `<button onclick="adjustRating('${rd.key}','${esc(name)}',${n})"
+        style="width:28px;height:28px;border-radius:5px;border:1px solid var(--br);
+        background:var(--up);color:var(--t2);font-size:.75em;cursor:pointer;
+        font-family:Cairo,sans-serif;transition:.15s"
+        onmouseover="this.style.background='var(--ta)';this.style.color='#fff'"
+        onmouseout="this.style.background='var(--up)';this.style.color='var(--t2)'"
+        title="أضف تقييم ${n} نجوم">${n}⭐</button>`
+    ).join('');
+
+    return `<div class="rcard">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="rcard-name">${i+1}. ${esc(name)}</div>
+          <div class="rcard-stars">${stars} <strong>${avg}</strong>/5</div>
+          <div class="rcard-info">${rd.count} مقيّم • المجموع: ${rd.total}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+          <button class="btn bsm bd" onclick="resetOneRatingFull('${rd.key}','${esc(name)}')">🗑️ تصفير</button>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end">
+            <span style="font-size:.72em;color:var(--t2);align-self:center;margin-left:4px">إضافة تقييم:</span>
+            ${adjButtons}
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="editRatingDirect('${rd.key}','${esc(name)}',${rd.total},${rd.count})"
+              style="padding:4px 10px;border-radius:6px;background:rgba(74,144,226,.1);border:1px solid rgba(74,144,226,.3);color:#4A90E2;font-size:.75em;cursor:pointer;font-family:Cairo,sans-serif">
+              ✏️ تعديل مباشر
+            </button>
           </div>
         </div>
-      </div>`).join('');
-
-    return `<div class="rcard" style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
-        <div>
-          <div class="rcard-name">${esc2(name)}</div>
-          <div class="rcard-info">${stars} ${avg.toFixed(1)}/5 • ${ratings.length} مقيّم</div>
-        </div>
-        <button class="btn bsm bd" onclick="resetOneRatingNew('${esc2(recipeKey)}','${esc2(name)}')">🗑️ تصفير الكل</button>
       </div>
-      <div>${userRows}</div>
     </div>`;
   }).join('');
-
 }
 
 
-window.setUserRating = async function(recipeKey, userId, val){
+window.adjustRating = async function(key, name, stars){
+  if(!confirm('إضافة تقييم '+stars+' نجوم لـ "'+name+'"؟')) return;
   try{
-    await set(ref(db,'ratings/'+recipeKey+'/'+userId), val);
-    toast('✅ تم تعديل التقييم', 'tok');
+    const {runTransaction, ref: fref} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    await runTransaction(ref(db,'ratings/'+key), current => {
+      if(!current) return {total: stars, count: 1};
+      return {total: (current.total||0)+stars, count: (current.count||0)+1};
+    });
+    toast('✅ تمت إضافة التقييم','tok');
   }catch(e){ toast('خطأ: '+e.message,'terr'); }
 };
 
-window.deleteUserRating = async function(recipeKey, userId){
-  try{
-    await set(ref(db,'ratings/'+recipeKey+'/'+userId), null);
-    toast('✅ تم حذف التقييم', 'tok');
-  }catch(e){ toast('خطأ: '+e.message,'terr'); }
+window.editRatingDirect = function(key, name, curTotal, curCount){
+  const newTotal = prompt('المجموع الحالي: '+curTotal+'\nأدخل المجموع الجديد:', curTotal);
+  if(newTotal===null) return;
+  const newCount = prompt('عدد المقيّمين الحالي: '+curCount+'\nأدخل العدد الجديد:', curCount);
+  if(newCount===null) return;
+  const t=parseInt(newTotal), c=parseInt(newCount);
+  if(isNaN(t)||isNaN(c)||c<0||t<0){ toast('أرقام غير صحيحة','terr'); return; }
+  set(ref(db,'ratings/'+key), c===0 ? null : {total:t, count:c})
+    .then(()=> toast('✅ تم التعديل','tok'))
+    .catch(e=> toast('خطأ: '+e.message,'terr'));
 };
 
-window.resetOneRatingNew = function(recipeKey, name){
+window.resetOneRatingFull = function(key, name){
   document.getElementById('confirmMsg').textContent = 'سيتم حذف جميع تقييمات "'+name+'". متأكد؟';
   const ov = document.getElementById('confirmOv'); ov.classList.add('open');
   document.getElementById('confirmOk').onclick = ()=>{
-    set(ref(db,'ratings/'+recipeKey), null)
-      .then(()=>{ toast('تم تصفير تقييمات '+name+' ✅','tok'); ov.classList.remove('open'); })
+    set(ref(db,'ratings/'+key), null)
+      .then(()=>{ toast('✅ تم التصفير','tok'); ov.classList.remove('open'); })
       .catch(e=>{ toast('خطأ: '+e.message,'terr'); ov.classList.remove('open'); });
   };
+};
+
+
+// ════ ADMIN ROASTERY DROPDOWN (for recipe add/edit forms) ════
+// Uses FB_ROASTERIES directly — all roasteries regardless of pinned status
+
+function getAdminRoasteryNames(){
+  // All roasteries added in admin, regardless of pinned/visible status
+  return Object.values(FB_ROASTERIES)
+    .filter(v => v && v.name)
+    .sort((a,b) => (a.order||99)-(b.order||99))
+    .map(v => v.name);
+}
+
+function buildAdminRoasteryDd(filter){
+  const dd = document.getElementById('adminRoasteryDd');
+  if(!dd) return;
+  const names = getAdminRoasteryNames();
+  const q = (filter||'').trim().toLowerCase();
+  const filtered = q ? names.filter(n => n.toLowerCase().includes(q)) : names;
+
+  const itemStyle = `padding:10px 14px;cursor:pointer;font-size:.88em;border-bottom:1px solid var(--br);
+    font-family:Cairo,sans-serif;color:var(--t1);transition:background .15s;display:flex;align-items:center;gap:8px`;
+  const newStyle = `padding:10px 14px;cursor:pointer;font-size:.88em;font-weight:700;color:var(--ta);
+    font-family:Cairo,sans-serif;background:rgba(0,168,150,.06);display:flex;align-items:center;gap:8px;
+    border-radius:0 0 8px 8px;border-top:1px solid var(--br)`;
+
+  let html = '';
+
+  // Add new option always first
+  html += `<div style="${newStyle.replace(/\n/g,' ')}" 
+    onmousedown="adminRoasterySelectNew()"
+    onmouseover="this.style.background='rgba(0,168,150,.14)'"
+    onmouseout="this.style.background='rgba(0,168,150,.06)'">
+    <span>✦</span> إضافة محمصة جديدة
+  </div>`;
+
+  filtered.forEach(name => {
+    html += `<div style="${itemStyle.replace(/\n/g,' ')}"
+      onmousedown="adminRoasteryPick('${name.replace(/'/g,"\\'")}') "
+      onmouseover="this.style.background='var(--up)'"
+      onmouseout="this.style.background='transparent'">
+      <span>☕</span> ${esc(name)}
+    </div>`;
+  });
+
+  if(!filtered.length && q){
+    html += `<div style="padding:9px 14px;font-size:.8em;color:var(--t2);font-family:Cairo,sans-serif">
+      لا توجد نتائج — اختر "إضافة محمصة جديدة"
+    </div>`;
+  }
+
+  dd.innerHTML = html;
+}
+
+window.adminRoasteryShow = function(){
+  const dd  = document.getElementById('adminRoasteryDd');
+  const inp = document.getElementById('rRoastery');
+  if(!dd) return;
+  buildAdminRoasteryDd(inp ? inp.value : '');
+  dd.style.display = 'block';
+};
+
+window.adminRoasteryHide = function(){
+  const dd = document.getElementById('adminRoasteryDd');
+  if(dd) dd.style.display = 'none';
+};
+
+window.adminRoasteryInput = function(){
+  const dd  = document.getElementById('adminRoasteryDd');
+  const inp = document.getElementById('rRoastery');
+  if(dd && dd.style.display !== 'none'){
+    buildAdminRoasteryDd(inp ? inp.value : '');
+  }
+};
+
+window.adminRoasteryPick = function(name){
+  const inp = document.getElementById('rRoastery');
+  if(inp){ inp.value = name; }
+  adminRoasteryHide();
+};
+
+window.adminRoasterySelectNew = function(){
+  const inp = document.getElementById('rRoastery');
+  adminRoasteryHide();
+  if(inp){ inp.focus(); inp.select(); }
 };
 
 window.resetAllRatings = function(){
@@ -1286,7 +1378,7 @@ function renderRoasteryList(){
       <div style="flex:1;min-width:120px">
         <div style="font-weight:700;font-size:.9em">${v.name||key}</div>
         <div style="font-size:.75em;color:var(--t2);margin-top:2px">
-          ${isPinned?'<span style="color:var(--ta)">📌 مثبتة</span>':'<span>غير مثبتة</span>'}
+          ${isPinned?'<span style="color:var(--ta)">👁️ يظهر في الرئيسية</span>':'<span style="color:var(--t2)">🙈 مخفي من الرئيسية</span>'}
           ${v.order?' · ترتيب: '+v.order:''}
           ${v.createdAt?' · '+new Date(v.createdAt).toLocaleDateString('ar-SA'):''}
         </div>
@@ -1294,7 +1386,7 @@ function renderRoasteryList(){
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn bp bsm" onclick="editRoastery('${key}')">✏️ تعديل</button>
         <button class="btn bsm" style="background:${isPinned?'rgba(245,87,108,.15)':'rgba(0,168,150,.15)'};border:1px solid ${isPinned?'rgba(245,87,108,.4)':'rgba(0,168,150,.4)'};color:${isPinned?'#f5576c':'var(--ta)'}" onclick="toggleRoasteryPin('${key}',${isPinned})">
-          ${isPinned?'🔕 إلغاء التثبيت':'📌 تثبيت'}
+          ${isPinned?'🔕 إخفاء من الرئيسية':'📌 إظهار في الرئيسية'}
         </button>
         <button class="btn bd bsm" onclick="deleteRoastery('${key}')">🗑️</button>
       </div>

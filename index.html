@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5237747574783843"
@@ -1300,9 +1299,14 @@ window.clearRoasteryFilter = function(){
 // Roastery suggestions in add modal
 let _roasteryNames=[];
 function getroasteryNames(){
-  const fromRec=new Set(RR.map(r=>r.roastery).filter(Boolean));
-  const fromFB=new Set(Object.values(ROASTERIES).map(v=>v.name).filter(Boolean));
-  return [...new Set([...fromRec,...fromFB])].sort();
+  // All roasteries added in admin — regardless of pinned/visible status
+  const fromAdmin = Object.values(ROASTERIES)
+    .filter(v => v && v.name)
+    .sort((a,b) => (a.order||99)-(b.order||99))
+    .map(v => v.name);
+  if(fromAdmin.length) return fromAdmin;
+  // Fallback: roasteries found in recipes
+  return [...new Set(RR.map(r=>r.roastery).filter(Boolean))].sort();
 }
 
 function buildRoasteryDropdown(filter){
