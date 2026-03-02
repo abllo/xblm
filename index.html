@@ -85,6 +85,8 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 /* ═══ Rating System ═══ */
 .rating-wrap{margin-bottom:12px}
 .cstars{display:flex;gap:3px;justify-content:center;margin-bottom:6px}
+.rated-mine-dot{position:relative}
+.rated-mine-dot::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--ta)}
 .star{font-size:22px;cursor:pointer;transition:transform .12s,filter .12s;line-height:1;display:inline-block}
 .star:hover{transform:scale(1.25)}
 .son{filter:none;opacity:1}
@@ -212,9 +214,19 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .roastery-img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.2);flex-shrink:0}
 .roastery-img-placeholder{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0}
 .roastery-name{font-size:.88em;font-weight:800;color:inherit;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.3)}
-.roastery-count{font-size:.72em;color:rgba(255,255,255,.75);margin-top:3px}
+.roastery-count{font-size:.72em;color:inherit;opacity:.8;margin-top:3px;font-weight:700}
 .roastery-clear{padding:10px 14px;border-radius:10px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.8em;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap;display:none;align-items:center;gap:5px}
 .roastery-clear.show{display:flex}
+
+/* ═══ BANNERS ═══ */
+.site-banner{width:100%;display:none;overflow:hidden;line-height:0}
+.site-banner.show{display:block}
+.site-banner img{width:100%;height:auto;display:block;object-fit:cover}
+.site-banner-top{margin-bottom:0}
+.site-banner-bottom{margin-top:0}
+@media(max-width:600px){
+  .site-banner img{min-height:80px;object-fit:contain;object-position:center}
+}
 
 /* ═══ ROASTERY TAG on card ═══ */
 .tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta);font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
@@ -245,6 +257,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </style>
 </head>
 <body>
+<!-- TOP BANNER -->
+<div class="site-banner site-banner-top" id="siteBannerTop">
+  <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
+    <img id="siteBannerTopImg" src="" alt="بنر إعلاني">
+  </a>
+</div>
+
 <!-- ANNOUNCEMENT BAR -->
 <div class="anno-bar" id="annoBar">
   <span id="annoText"></span>
@@ -331,6 +350,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="grid" id="grid"></div>
 <div class="ads-container" id="adsBottomContainer" style="display:none"></div>
 <div class="pgn" id="pgn"></div>
+<!-- BOTTOM BANNER -->
+<div class="site-banner site-banner-bottom" id="siteBannerBottom">
+  <a id="siteBannerBottomLink" href="#" target="_blank" style="display:block;line-height:0">
+    <img id="siteBannerBottomImg" src="" alt="بنر إعلاني">
+  </a>
+</div>
+
 <footer id="siteFooter">
   <div class="fc" id="fcount">عدد الوصفات في المجتمع: 0</div>
   <div class="footer-links">
@@ -700,10 +726,10 @@ function getList(){
   });
   if(SORT==='top'){
     list.sort((a,b)=>{
-      const ra=RATINGS[ratingKey(a.link)]||{total:0,count:0};
-      const rb=RATINGS[ratingKey(b.link)]||{total:0,count:0};
-      const avgA=ra.count>0?ra.total/ra.count:0;
-      const avgB=rb.count>0?rb.total/rb.count:0;
+      const ra=getRatingStats(ratingKey(a.link));
+      const rb=getRatingStats(ratingKey(b.link));
+      const avgA=ra.avg;
+      const avgB=rb.avg;
       // ترتيب: أعلى متوسط أولاً، وعند التعادل الأكثر تقييماً أولاً
       if(avgB!==avgA)return avgB-avgA;
       return rb.count-ra.count;
@@ -720,6 +746,25 @@ function getList(){
   }
   return list;
 }
+
+// ═══ Update all comment count badges after render ═══
+function updateCommentBadges(){
+  Object.keys(COMMENTS).forEach(rKey => {
+    const n = Object.keys(COMMENTS[rKey] || {}).length;
+    if(n === 0) return;
+    const ccount = document.getElementById('ccount-' + rKey);
+    const ctoggle = document.getElementById('ctoggle-' + rKey);
+    if(ccount){
+      ccount.innerHTML = '💬 ' + n + ' تعليق';
+    }
+    if(ctoggle && n > 0){
+      // Add badge dot to show there are comments
+      ctoggle.style.background = 'rgba(0,168,150,.18)';
+      ctoggle.style.borderColor = 'rgba(0,168,150,.5)';
+    }
+  });
+}
+
 function render(){
   const list=getList();const grid=document.getElementById('grid');
   if(!list.length){grid.innerHTML='<div class="empty"><h2>لا توجد نتائج</h2><p style="color:var(--t2)">جرّب تغيير الفلتر أو كلمة البحث</p></div>';document.getElementById('pgn').innerHTML='';document.getElementById('ppinfo').innerHTML='لا توجد نتائج';return;}
@@ -728,12 +773,13 @@ function render(){
   document.getElementById('ppinfo').innerHTML='عرض <b>'+(s+1)+'-'+e+'</b> من <b>'+list.length+'</b>';
   grid.innerHTML=slice.map((r,i)=>cardHTML(r,i)).join('');
   renderPgn(total);
-  // Restore fav icon states after render
+  // Restore fav icon states and comment badges after render
   setTimeout(()=>{
     Object.keys(FAVS).forEach(key=>{
       const el = document.getElementById('fav-'+key);
       if(el) updateFavIcon(el, true);
     });
+    updateCommentBadges();
   }, 0);
 }
 
@@ -773,13 +819,15 @@ function cardHTML(r,i){
   const cTag=cat==='cold'?'tc':cat==='server'?'ts':'th';
   const cLbl=cat==='cold'?'بارد 🧊':cat==='server'?'غسيل وترطيب سيرفر':'حار 🔥';
   const rKey=ratingKey(r.link);
-  const rd=RATINGS[rKey]||{total:0,count:0};
-  const avg=rd.count>0?rd.total/rd.count:0;
-  const myRating=USER_RATINGS[rKey]||0;
+  const {avg, count:rdCount} = getRatingStats(rKey);
+  const myRating=getMyRating(rKey);
   let stars='';
   for(let s=1;s<=5;s++){
-    const filled=s<=Math.round(avg);
-    stars+=`<span class="star ${filled?'son':'soff'}" data-s="${s}" data-idx="${idx}" data-key="${rKey}"
+    const isAvg = s<=Math.round(avg);
+    const isMine = myRating && s===myRating;
+    const mineClass = isMine ? ' rated-mine-dot' : '';
+    stars+=`<span class="star ${isAvg?'son':'soff'}${mineClass}" data-s="${s}" data-idx="${idx}" data-key="${rKey}"
+      title="${myRating===s?'انقر لإلغاء تقييمك':'تقييم '+s+' نجوم'}"
       onmouseover="hoverStars(this,${s})"
       onmouseout="unhoverStars(this,${idx},${rKey})"
       onclick="rate('${rKey}',${s},${idx})">⭐</span>`;
@@ -802,16 +850,16 @@ function cardHTML(r,i){
     <div class="rating-wrap">
       <div class="cstars" id="stars-${idx}">${stars}</div>
       <div class="rinfo">
-        ${avg>0?`<span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rd.count} تقييم</span>`:'<span class="rcnt" style="font-size:.75em">كن أول من يقيّم</span>'}
-        ${myRating?`<span class="rmine">قيّمتها ${myRating}⭐</span>`:''}
+        ${avg>0?`<span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rdCount} تقييم</span>`:'<span class="rcnt" style="font-size:.75em">كن أول من يقيّم</span>'}
+        ${myRating?`<span class="rmine" style="cursor:pointer" title="انقر أي نجمة للتعديل — انقر نفس نجمتك لإلغاء تقييمك">تقييمك: ${myRating}⭐ ✏️</span>`:'<span style="font-size:.72em;color:var(--t2)">اضغط ⭐ لتقييم</span>'}
       </div>
     </div>
     <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
     </div>
     <div class="comments-section">
-      <button class="comments-toggle" onclick="toggleComments('${rKey}',this)">
-        💬 <span id="ccount-${rKey}">التعليقات</span>
+      <button class="comments-toggle" onclick="toggleComments('${rKey}',this)" id="ctoggle-${rKey}">
+        <span id="ccount-${rKey}">💬 التعليقات</span>
       </button>
       <div class="comments-box" id="cbox-${rKey}">
         ${myRating===0?'<div class="rating-required-hint">⭐ يجب التقييم أولاً قبل كتابة تعليق</div>':''}
@@ -871,38 +919,63 @@ window.unhoverStars=function(el,idx){
   });
 };
 
-// ════ RATE (Firebase Transaction) ════
+
+// ════ RATINGS HELPERS ════
+function getRatingStats(rKey){
+  const rd = RATINGS[rKey];
+  if(!rd) return {avg:0, count:0};
+  if(rd._legacy) return {avg: rd.count>0 ? rd.total/rd.count : 0, count: rd.count};
+  const entries = Object.values(rd).filter(v => typeof v==='number');
+  if(!entries.length) return {avg:0, count:0};
+  const total = entries.reduce((a,b)=>a+b,0);
+  return {avg: total/entries.length, count: entries.length};
+}
+function getMyRating(rKey){
+  const uid = getOrCreateUID();
+  const rd = RATINGS[rKey];
+  if(!rd || rd._legacy) return USER_RATINGS[rKey]||0;
+  return rd[uid] || USER_RATINGS[rKey] || 0;
+}
+
+// ════ RATE — per-user, editable anytime ════
 window.rate=function(rKey,s,idx){
-  if(USER_RATINGS[rKey]){
-    toast('قيّمتها من قبل بـ '+USER_RATINGS[rKey]+'⭐','terr');
+  const uid = getOrCreateUID();
+  const prev = getMyRating(rKey);
+
+  // Same star clicked = remove rating
+  if(prev === s){
+    USER_RATINGS[rKey] = 0;
+    saveLocal();
+    set(ref(db,'ratings/'+rKey+'/'+uid), null)
+      .then(()=> toast('تم حذف تقييمك ✅'))
+      .catch(()=> toast('خطأ في الحذف','terr'));
     return;
   }
-  // Optimistic UI
-  USER_RATINGS[rKey]=s;
+
+  // Set/update rating
+  USER_RATINGS[rKey] = s;
   saveLocal();
-  // Update card immediately
-  const starsWrap=document.getElementById('stars-'+idx);
+
+  // Optimistic UI update
+  const starsWrap = document.getElementById('stars-'+idx);
   if(starsWrap){
     starsWrap.querySelectorAll('.star').forEach((star,i)=>{
-      star.classList.toggle('son',i<s);
-      star.classList.toggle('soff',i>=s);
-      if(i===s-1){star.classList.add('rated-mine');setTimeout(()=>star.classList.remove('rated-mine'),400);}
+      star.classList.toggle('son', i<s);
+      star.classList.toggle('soff', i>=s);
+      if(i===s-1){ star.classList.add('rated-mine'); setTimeout(()=>star.classList.remove('rated-mine'),400); }
     });
   }
-  toast(s+'⭐ شكراً على تقييمك!');
-  // Firebase transaction
-  const rRef=ref(db,'ratings/'+rKey);
-  runTransaction(rRef,current=>{
-    if(current===null) return {total:s,count:1};
-    return {total:(current.total||0)+s, count:(current.count||0)+1};
-  }).then(()=>{
-    // onValue will re-render automatically
-  }).catch(err=>{
-    // revert on fail
-    delete USER_RATINGS[rKey];
-    saveLocal();
-    toast('خطأ في الحفظ','terr');
-  });
+
+  const msg = prev>0 ? 'تم تعديل تقييمك إلى '+s+'⭐' : s+'⭐ شكراً على تقييمك!';
+  toast(msg);
+
+  // Save to Firebase — just set uid:stars (no transaction needed)
+  set(ref(db,'ratings/'+rKey+'/'+uid), s)
+    .catch(err=>{
+      USER_RATINGS[rKey] = prev;
+      saveLocal();
+      toast('خطأ في الحفظ','terr');
+    });
 };
 
 // ════ SHARE MODAL ════
@@ -1005,6 +1078,26 @@ onValue(settingsRef2, snap => {
     bar.classList.remove('show');
   }
   
+  // ═══ BANNERS ═══
+  function applyBanner(slotId, imgId, linkId, cfg){
+    const slot = document.getElementById(slotId);
+    const img  = document.getElementById(imgId);
+    const lnk  = document.getElementById(linkId);
+    if(!slot) return;
+    if(cfg && cfg.enabled && cfg.url){
+      img.src = cfg.url;
+      img.alt = cfg.alt || 'بنر إعلاني';
+      lnk.href = cfg.link || '#';
+      lnk.style.cursor = cfg.link ? 'pointer' : 'default';
+      if(!cfg.link) lnk.onclick = e => e.preventDefault();
+      slot.classList.add('show');
+    } else {
+      slot.classList.remove('show');
+    }
+  }
+  applyBanner('siteBannerTop',    'siteBannerTopImg',    'siteBannerTopLink',    s.bannerTop);
+  applyBanner('siteBannerBottom', 'siteBannerBottomImg', 'siteBannerBottomLink', s.bannerBottom);
+
   // Promo ticker
   const ticker = document.getElementById('promoTicker');
   const tickerInner = document.getElementById('promoTickerInner');
@@ -1080,7 +1173,7 @@ onValue(settingsRef2, snap => {
         <div class="ch"><h3 class="cn">${esc(String(r.name||''))}</h3></div>
         ${r.author ? `<div class="cauth">بواسطة ${esc(String(r.author))}</div>` : ''}
         <div class="ctags"><span class="tag ${bTag}">${esc(String(r.brewer||''))}</span><span class="tag ${cTag}">${cLbl}</span></div>
-        ${avg>0?`<div class="rinfo" style="justify-content:center;margin-bottom:10px"><span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rd.count} تقييم</span></div>`:''}
+        ${avg>0?`<div class="rinfo" style="justify-content:center;margin-bottom:10px"><span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rdCount} تقييم</span></div>`:''}
         <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
 
@@ -1110,11 +1203,12 @@ onValue(commentsRef2, snap => {
     const cnt = document.getElementById('ccount-' + rKey);
     if(cnt) {
       const n = Object.keys(COMMENTS[rKey] || {}).length;
-      cnt.textContent = '💬 ' + n + ' تعليق';
+      cnt.textContent = n > 0 ? '💬 ' + n + ' تعليق' : '💬 التعليقات';
     }
     const clist = document.getElementById('clist-' + rKey);
     if(clist) renderCommentList(rKey, clist);
   });
+  updateCommentBadges();
 }, err => { console.warn('comments:', err); });
 
 window.toggleComments = function(rKey, btn) {
@@ -1267,9 +1361,17 @@ onValue(ratingsRef,snap=>{
   RATINGS={};
   let totalRatings=0;
   snap.forEach(child=>{
-    RATINGS[child.key]=child.val();
-    const v=child.val();
-    if(v) totalRatings+=Object.keys(v).length;
+    const raw = child.val();
+    // Support BOTH old {total,count} and new {uid:stars} structures
+    if(raw && typeof raw==='object' && ('total' in raw || 'count' in raw)){
+      // Old structure — keep as-is for display, flag it
+      RATINGS[child.key] = {_legacy: true, total: raw.total||0, count: raw.count||0};
+      totalRatings += raw.count||0;
+    } else if(raw && typeof raw==='object'){
+      // New structure: {uid: stars}
+      RATINGS[child.key] = raw;
+      totalRatings += Object.keys(raw).length;
+    }
   });
   const hRt=document.getElementById('hstatRatings');
   if(hRt) hRt.textContent = totalRatings>0 ? '+'+totalRatings : '0';

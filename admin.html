@@ -378,6 +378,59 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <input class="form-input" id="siteSubtitle" placeholder="وصفات مجتمع اكس بلوم">
     </div>
     <div class="section-divider"></div>
+    <h4 style="margin-bottom:14px;color:var(--t2);display:flex;align-items:center;gap:8px">
+      🖼️ البنرات الإعلانية
+      <span style="font-size:.72em;font-weight:400;color:var(--t2);background:rgba(0,168,150,.1);padding:2px 8px;border-radius:6px">صورة حرة بحجم مناسب للجوال والكمبيوتر</span>
+    </h4>
+    <p style="font-size:.78em;color:var(--t2);margin-bottom:14px">الحجم المقترح: <b>1200×300px</b> للهيدر — <b>1200×200px</b> للفوتر — العرض: مفتوح (يتكيف تلقائياً)</p>
+
+    <!-- TOP BANNER -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.9em">📌 بنر الهيدر (أعلى الصفحة)</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="bannerTopEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
+          <span style="font-size:.82em">تفعيل وإظهار</span>
+        </label>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع من الجهاز</button>
+        <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
+        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
+      </div>
+      <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:8px">
+      <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
+      <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
+      <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
+      </div>
+    </div>
+
+    <!-- BOTTOM BANNER -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.9em">📌 بنر الفوتر (أسفل الصفحة)</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="bannerBottomEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
+          <span style="font-size:.82em">تفعيل وإظهار</span>
+        </label>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع من الجهاز</button>
+        <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
+        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
+      </div>
+      <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:8px">
+      <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
+      <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
+      <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
     <h4 style="margin-bottom:12px;color:var(--t2)">نصوص الـ Footer</h4>
     <div class="fg">
       <label>نص حقوق النشر</label>
@@ -1196,6 +1249,36 @@ function renderPromoList(list){
 }
 
 // ════ SITE SETTINGS ════
+
+// ════ BANNER HELPERS ════
+window.previewBanner = function(urlInputId, previewId){
+  const url = document.getElementById(urlInputId).value.trim();
+  const pv  = document.getElementById(previewId);
+  if(!pv) return;
+  if(url){
+    pv.querySelector('img').src = url;
+    pv.style.display = 'block';
+  } else {
+    pv.style.display = 'none';
+  }
+};
+
+window.handleBannerUpload = function(input, urlInputId, previewId){
+  const file = input.files[0];
+  if(!file) return;
+  // Check size — warn if over 500KB
+  if(file.size > 500*1024){
+    toast('⚠️ الصورة كبيرة ('+Math.round(file.size/1024)+'KB) — يُفضل أقل من 500KB لسرعة التحميل','terr');
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById(urlInputId).value = e.target.result;
+    previewBanner(urlInputId, previewId);
+    toast('✅ تم تحميل الصورة — اضغط "حفظ جميع الإعدادات" لحفظها','tok');
+  };
+  reader.readAsDataURL(file);
+};
+
 window.saveSiteSettings = function(){
   if(!db){ toast('Firebase غير متصل!','terr'); return; }
   const s={
@@ -1206,7 +1289,19 @@ window.saveSiteSettings = function(){
     footerDev: document.getElementById('footerDev').value.trim(),
     annoText: document.getElementById('annoText').value.trim(),
     annoType: document.getElementById('annoType').value,
-    annoEnabled: document.getElementById('annoEnabled').checked
+    annoEnabled: document.getElementById('annoEnabled').checked,
+    bannerTop: {
+      enabled: document.getElementById('bannerTopEnabled').checked,
+      url: document.getElementById('bannerTopUrl').value.trim(),
+      link: document.getElementById('bannerTopLink').value.trim(),
+      alt: document.getElementById('bannerTopAlt').value.trim()
+    },
+    bannerBottom: {
+      enabled: document.getElementById('bannerBottomEnabled').checked,
+      url: document.getElementById('bannerBottomUrl').value.trim(),
+      link: document.getElementById('bannerBottomLink').value.trim(),
+      alt: document.getElementById('bannerBottomAlt').value.trim()
+    }
   };
   set(ref(db,'siteSettings'),{...s}).then(()=>toast('تم حفظ إعدادات الموقع ✅ ستظهر للزوار فوراً')).catch(err=>toast('خطأ: '+err.message,'terr'));
 };
