@@ -469,9 +469,21 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="ov" id="addOv">
 <div class="modal">
   <div class="mh">
-    <h3>&#x2615; اضافة وصفة جديدة</h3>
+    <h3 id="modalStepTitle">☕ اضافة وصفة جديدة</h3>
     <button class="mx" onclick="closeAddModal()">&#xD7;</button>
   </div>
+
+  <!-- Step indicator -->
+  <div class="step-indicator" id="stepIndicator">
+    <div class="step-dot active" id="sdot1">1</div>
+    <div class="step-line" id="sline1"></div>
+    <div class="step-dot" id="sdot2">2</div>
+    <div class="step-line" id="sline2"></div>
+    <div class="step-dot" id="sdot3">✓</div>
+  </div>
+
+  <!-- STEP 1: Form -->
+  <div class="modal-step active" id="mstep1">
   <form class="mf" onsubmit="goToConfirm(event)">
     <div class="fr2">
       <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم g"></div>
@@ -523,17 +535,21 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div style="font-size:.75em;color:var(--t2);margin-top:5px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
     </div>
     <button type="submit" class="btn bp bbl" style="padding:14px;font-size:14px">
-      التالي ← مراجعة الوصفة
+      📮 نشر الوصفة
     </button>
   </form>
   </div><!-- /mstep1 -->
 
   <!-- STEP 2: Confirm -->
   <div class="modal-step" id="mstep2">
+    <div style="text-align:center;padding:10px 0 18px">
+      <div style="font-size:2.5em;margin-bottom:10px">📋</div>
+      <div style="font-weight:800;font-size:1em;margin-bottom:8px">مراجعة الوصفة قبل النشر</div>
+    </div>
     <div class="confirm-box" id="confirmPreview"></div>
-    <div style="display:flex;gap:10px;margin-top:4px">
-      <button class="btn bgray" style="flex:1;justify-content:center" onclick="goBackToForm()">← تعديل</button>
-      <button class="btn bp" style="flex:1;justify-content:center" id="submitBtn" onclick="doSubmitRecipe()">📮 نشر الوصفة</button>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn bgray" style="flex:1;justify-content:center;padding:11px" onclick="goBackToForm()">← تعديل</button>
+      <button class="btn bp" style="flex:1;justify-content:center;padding:11px" id="submitBtn" onclick="doSubmitRecipe()">✅ تأكيد النشر</button>
     </div>
   </div><!-- /mstep2 -->
 
@@ -1037,7 +1053,7 @@ function setModalStep(n){
     const line = document.getElementById('sline'+i);
     if(line) line.classList.toggle('done', n > i);
   });
-  const titles={1:'☕ اضافة وصفة جديدة', 2:'✅ مراجعة الوصفة', 3:'🎉 تمّ!'};
+  const titles={1:'☕ اضافة وصفة جديدة', 2:'📋 مراجعة قبل النشر', 3:'🎉 تمّت الإضافة!'};
   document.getElementById('modalStepTitle').textContent = titles[n]||'';
 }
 
