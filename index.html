@@ -211,7 +211,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .roastery-card.active-filter{border-color:rgba(255,255,255,.5)!important;box-shadow:0 0 0 3px rgba(255,255,255,.15),0 8px 24px rgba(0,0,0,.3)!important}
 .roastery-img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.2);flex-shrink:0}
 .roastery-img-placeholder{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0}
-.roastery-name{font-size:.88em;font-weight:800;color:#fff;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.roastery-name{font-size:.88em;font-weight:800;color:inherit;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.3)}
 .roastery-count{font-size:.72em;color:rgba(255,255,255,.75);margin-top:3px}
 .roastery-clear{padding:10px 14px;border-radius:10px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.8em;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap;display:none;align-items:center;gap:5px}
 .roastery-clear.show{display:flex}
@@ -738,6 +738,20 @@ function render(){
 }
 
 // ═══ Roastery tag helper — builds colored tag HTML ═══
+
+// ═══ Smart contrast color — returns #000 or #fff based on luminance ═══
+function contrastColor(hex){
+  if(!hex || !hex.startsWith('#')) return '#ffffff';
+  const h = hex.replace('#','');
+  const full = h.length===3 ? h.split('').map(x=>x+x).join('') : h;
+  const r=parseInt(full.substr(0,2),16)/255;
+  const g=parseInt(full.substr(2,2),16)/255;
+  const b=parseInt(full.substr(4,2),16)/255;
+  const toLinear = c => c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4);
+  const L = 0.2126*toLinear(r) + 0.7152*toLinear(g) + 0.0722*toLinear(b);
+  return L > 0.35 ? '#111111' : '#ffffff';
+}
+
 function roasteryTag(name){
   if(!name) return '';
   const rName = String(name);
@@ -745,7 +759,8 @@ function roasteryTag(name){
   const rColor = rInfo && rInfo.color ? rInfo.color : null;
   let style;
   if(rColor){
-    style = 'background:'+rColor+'22;border:1px solid '+rColor+'66;color:'+rColor;
+    const textColor = contrastColor(rColor);
+    style = 'background:'+rColor+';border:1px solid '+rColor+'99;color:'+textColor+';font-weight:700';
   } else {
     style = 'background:linear-gradient(135deg,rgba(0,168,150,.2),rgba(74,144,226,.2));border:1px solid rgba(0,168,150,.4);color:var(--ta)';
   }
@@ -1277,7 +1292,7 @@ function renderRoasteriesSection(){
     const color = v.color || '#1a2a3a';
     const imgHtml = v.image ? '<img class="roastery-img" src="'+esc(v.image)+'" alt="'+esc(name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' : '';
     const phStyle = v.image ? ' style="display:none"' : '';
-    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" style="background:'+color+'" onclick="filterByRoastery(null,\''+esc(name)+'\')">'+
+    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" style="background:'+color+';color:'+contrastColor(color)+'" onclick="filterByRoastery(null,\''+esc(name)+'\')">'+
       '<a href="roastery.html?name='+encodeURIComponent(name)+'" onclick="event.stopPropagation()" style="position:absolute;top:8px;left:8px;font-size:.68em;color:rgba(255,255,255,.6);background:rgba(0,0,0,.3);padding:2px 8px;border-radius:5px;text-decoration:none" title="صفحة المحمصة">↗ عرض</a>'+
       imgHtml+
       '<div class="roastery-img-placeholder"'+phStyle+'>☕</div>'+
