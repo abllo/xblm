@@ -217,7 +217,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .roastery-clear.show{display:flex}
 
 /* ═══ ROASTERY TAG on card ═══ */
-.tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta)!important;font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
+.tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta);font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
 
 /* Sort tabs */
 
@@ -763,7 +763,16 @@ function cardHTML(r,i){
       <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
     </div></div>
     ${str(r.author)?`<div class="cauth">بواسطة ${esc(str(r.author))}</div>`:''}
-    <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${r.roastery?`<span class='tag tag-roastery' onclick='filterByRoastery(event,"${esc(String(r.roastery))}")'>☕ ${esc(String(r.roastery))}</span>`:''}</div>
+    <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${(()=>{
+      if(!r.roastery) return '';
+      const rName = String(r.roastery);
+      const rInfo = Object.values(ROASTERIES).find(v=>v&&v.name&&v.name.toLowerCase()===rName.toLowerCase());
+      const rColor = rInfo && rInfo.color ? rInfo.color : null;
+      const bgStyle = rColor
+        ? \`background:\${rColor}22;border:1px solid \${rColor}66;color:\${rColor}\`
+        : "background:linear-gradient(135deg,rgba(0,168,150,.2),rgba(74,144,226,.2));border:1px solid rgba(0,168,150,.4);color:var(--ta)";
+      return \`<span class='tag tag-roastery' style='\${bgStyle}' onclick='filterByRoastery(event,"\${esc(rName)}")'>\${rInfo&&rInfo.image?'':'☕'} \${esc(rName)}</span>\`;
+    })()}</div>
     <div class="cdets">
       <div class="det"><span class="dl">الجرعة</span><span class="dv">${esc(str(r.dose))}</span></div>
       ${str(r.ratio)?`<div class="det"><span class="dl">النسبة</span><span class="dv">${esc(str(r.ratio))}</span></div>`:''}

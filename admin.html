@@ -842,45 +842,39 @@ function renderRatings(){
     .sort((a,b) => (b.total/b.count) - (a.total/a.count));
 
   container.innerHTML = sorted.map((rd, i) => {
-    const avg = (rd.total / rd.count).toFixed(1);
-    const avgNum = parseFloat(avg);
-    const stars = '⭐'.repeat(Math.round(avgNum));
+    const avg = (rd.total / rd.count);
+    const avgRound = Math.round(avg);
     const recipe = ALL_RECIPES.find(r => {
       try{ return (r._fbKey===rd.key) || btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===rd.key; }
       catch(e){ return false; }
     });
     const name = recipe ? str(recipe.name) : 'وصفة غير معروفة';
 
-    // Star adjustment buttons
-    const adjButtons = [1,2,3,4,5].map(n =>
-      `<button onclick="adjustRating('${rd.key}','${esc(name)}',${n})"
-        style="width:28px;height:28px;border-radius:5px;border:1px solid var(--br);
-        background:var(--up);color:var(--t2);font-size:.75em;cursor:pointer;
-        font-family:Cairo,sans-serif;transition:.15s"
-        onmouseover="this.style.background='var(--ta)';this.style.color='#fff'"
-        onmouseout="this.style.background='var(--up)';this.style.color='var(--t2)'"
-        title="أضف تقييم ${n} نجوم">${n}⭐</button>`
-    ).join('');
+    // 5 star buttons — current avg highlighted
+    const starBtns = [1,2,3,4,5].map(n => {
+      const isActive = n <= avgRound;
+      return `<button
+        onclick="setRecipeRating('${rd.key}','${esc(name)}',${n})"
+        title="ضبط التقييم على ${n} نجوم"
+        style="font-size:1.3em;background:none;border:none;cursor:pointer;
+               opacity:${isActive?'1':'0.3'};transition:.15s;padding:2px"
+        onmouseover="highlightStars(this,${n})"
+        onmouseout="resetStars('${rd.key}',${avgRound})">⭐</button>`;
+    }).join('');
 
-    return `<div class="rcard">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+    return `<div class="rcard" id="rcard-${rd.key}">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <div>
           <div class="rcard-name">${i+1}. ${esc(name)}</div>
-          <div class="rcard-stars">${stars} <strong>${avg}</strong>/5</div>
-          <div class="rcard-info">${rd.count} مقيّم • المجموع: ${rd.total}</div>
+          <div class="rcard-info" style="margin-top:4px">${rd.count} مقيّم • متوسط: <b>${avg.toFixed(1)}</b>/5 • مجموع النجوم: ${rd.total}</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-          <button class="btn bsm bd" onclick="resetOneRatingFull('${rd.key}','${esc(name)}')">🗑️ تصفير</button>
-          <div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end">
-            <span style="font-size:.72em;color:var(--t2);align-self:center;margin-left:4px">إضافة تقييم:</span>
-            ${adjButtons}
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button onclick="editRatingDirect('${rd.key}','${esc(name)}',${rd.total},${rd.count})"
-              style="padding:4px 10px;border-radius:6px;background:rgba(74,144,226,.1);border:1px solid rgba(74,144,226,.3);color:#4A90E2;font-size:.75em;cursor:pointer;font-family:Cairo,sans-serif">
-              ✏️ تعديل مباشر
-            </button>
-          </div>
+        <button class="btn bsm bd" onclick="resetOneRatingFull('${rd.key}','${esc(name)}')">🗑️ تصفير</button>
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-size:.78em;color:var(--t2);margin-bottom:6px">ضبط متوسط التقييم (يُعدّل المجموع تلقائياً):</div>
+        <div id="stars-${rd.key}" style="display:flex;gap:2px;align-items:center">
+          ${starBtns}
+          <span style="font-size:.82em;color:var(--t2);margin-right:8px" id="starlbl-${rd.key}">${avg.toFixed(1)}/5</span>
         </div>
       </div>
     </div>`;
@@ -888,29 +882,32 @@ function renderRatings(){
 }
 
 
-window.adjustRating = async function(key, name, stars){
-  if(!confirm('إضافة تقييم '+stars+' نجوم لـ "'+name+'"؟')) return;
-  try{
-    const {runTransaction, ref: fref} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
-    await runTransaction(ref(db,'ratings/'+key), current => {
-      if(!current) return {total: stars, count: 1};
-      return {total: (current.total||0)+stars, count: (current.count||0)+1};
-    });
-    toast('✅ تمت إضافة التقييم','tok');
-  }catch(e){ toast('خطأ: '+e.message,'terr'); }
-};
-
-window.editRatingDirect = function(key, name, curTotal, curCount){
-  const newTotal = prompt('المجموع الحالي: '+curTotal+'\nأدخل المجموع الجديد:', curTotal);
-  if(newTotal===null) return;
-  const newCount = prompt('عدد المقيّمين الحالي: '+curCount+'\nأدخل العدد الجديد:', curCount);
-  if(newCount===null) return;
-  const t=parseInt(newTotal), c=parseInt(newCount);
-  if(isNaN(t)||isNaN(c)||c<0||t<0){ toast('أرقام غير صحيحة','terr'); return; }
-  set(ref(db,'ratings/'+key), c===0 ? null : {total:t, count:c})
-    .then(()=> toast('✅ تم التعديل','tok'))
+window.setRecipeRating = function(key, name, stars){
+  // Sets the rating to exactly `stars` by adjusting total while keeping count
+  // New avg = stars → new total = stars * count
+  const rd = FB_RATINGS[key];
+  if(!rd || !rd.count){ toast('لا يوجد مقيّمون لهذه الوصفة','terr'); return; }
+  const newTotal = stars * rd.count;
+  set(ref(db,'ratings/'+key), {total: newTotal, count: rd.count})
+    .then(()=>{
+      toast('✅ تم ضبط التقييم على '+stars+' نجوم','tok');
+    })
     .catch(e=> toast('خطأ: '+e.message,'terr'));
 };
+
+window.highlightStars = function(btn, n){
+  const row = btn.parentElement;
+  const btns = row.querySelectorAll('button');
+  btns.forEach((b,i) => b.style.opacity = i < n ? '1' : '0.25');
+};
+
+window.resetStars = function(key, avgRound){
+  const row = document.getElementById('stars-'+key);
+  if(!row) return;
+  const btns = row.querySelectorAll('button');
+  btns.forEach((b,i) => b.style.opacity = i < avgRound ? '1' : '0.3');
+};
+
 
 window.resetOneRatingFull = function(key, name){
   document.getElementById('confirmMsg').textContent = 'سيتم حذف جميع تقييمات "'+name+'". متأكد؟';
