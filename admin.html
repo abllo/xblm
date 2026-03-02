@@ -530,7 +530,11 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <label style="font-size:.84em;color:var(--t2);font-weight:700">📌 تثبيت:</label>
           <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
             <input type="checkbox" id="rPinned" checked style="width:18px;height:18px;accent-color:var(--ta)">
-            <span style="font-size:.84em">مثبتة</span>
+            <span style="font-size:.84em">إظهار في الرئيسية</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin-top:6px" title="يمنع الزوار من اختيار هذه المحمصة عند إضافة وصفة جديدة">
+            <input type="checkbox" id="rHiddenFromVisitors" style="width:18px;height:18px;accent-color:#e05a6b">
+            <span style="font-size:.84em;color:var(--t2)">🚫 إخفاء عن الزوار في القائمة</span>
           </label>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
@@ -1376,6 +1380,7 @@ function renderRoasteryList(){
         <div style="font-weight:700;font-size:.9em">${v.name||key}</div>
         <div style="font-size:.75em;color:var(--t2);margin-top:2px">
           ${isPinned?'<span style="color:var(--ta)">👁️ يظهر في الرئيسية</span>':'<span style="color:var(--t2)">🙈 مخفي من الرئيسية</span>'}
+          ${v.hiddenFromVisitors?' · <span style="color:#e05a6b">🚫 مخفية عن الزوار</span>':' · <span style="color:var(--t2)">✅ ظاهرة للزوار</span>'}
           ${v.order?' · ترتيب: '+v.order:''}
           ${v.createdAt?' · '+new Date(v.createdAt).toLocaleDateString('ar-SA'):''}
         </div>
@@ -1399,6 +1404,7 @@ window.editRoastery = function(key){
   document.getElementById('rOrder').value = v.order||1;
   document.getElementById('rImageUrl').value = v.image||'';
   document.getElementById('rPinned').checked = !!v.pinned;
+  document.getElementById('rHiddenFromVisitors').checked = !!v.hiddenFromVisitors;
   const col = v.color||'#1a3a2a';
   document.getElementById('rColor').value = col;
   document.getElementById('rColorHex').value = col;
@@ -1473,7 +1479,8 @@ window.saveRoastery = function(){
   
   const key = existingKey || name.toLowerCase().replace(/[\s]+/g,'_').replace(/[^a-z0-9_؀-ۿ]/g,'').substring(0,30) || ('r'+Date.now());
   const color = document.getElementById('rColorHex').value.trim() || document.getElementById('rColor').value || '#1a3a2a';
-  const data = { name, pinned, order, color, createdAt: FB_ROASTERIES[key]?.createdAt||Date.now() };
+  const hiddenFromVisitors = document.getElementById('rHiddenFromVisitors').checked;
+  const data = { name, pinned, order, color, hiddenFromVisitors, createdAt: FB_ROASTERIES[key]?.createdAt||Date.now() };
   if(image) data.image = image;
   
   set(ref(db,'roasteries/'+key), data)

@@ -1315,9 +1315,9 @@ window.clearRoasteryFilter = function(){
 // Roastery suggestions in add modal
 let _roasteryNames=[];
 function getroasteryNames(){
-  // All roasteries added in admin — regardless of pinned/visible status
+  // Roasteries visible to visitors — exclude hiddenFromVisitors
   const fromAdmin = Object.values(ROASTERIES)
-    .filter(v => v && v.name)
+    .filter(v => v && v.name && !v.hiddenFromVisitors)
     .sort((a,b) => (a.order||99)-(b.order||99))
     .map(v => v.name);
   if(fromAdmin.length) return fromAdmin;
