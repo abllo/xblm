@@ -12,10 +12,182 @@
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh;overflow-x:hidden}
 .wrap{max-width:1400px;margin:0 auto}
-header{text-align:center;padding:24px 15px;margin-bottom:20px;background:rgba(43,43,43,.9);border-radius:16px;border:1px solid var(--br);position:relative}
+
+/* ═══════════════════════════════════════════
+   HEADER — WORLD-CLASS REDESIGN
+═══════════════════════════════════════════ */
+
+/* Particle canvas */
+#hdrCanvas{position:absolute;inset:0;width:100%;height:100%;border-radius:20px;opacity:.55;pointer-events:none}
+
+header{
+  position:relative;
+  text-align:center;
+  padding:0;
+  margin-bottom:24px;
+  border-radius:20px;
+  overflow:hidden;
+  border:1px solid rgba(0,168,150,.18);
+  background:linear-gradient(160deg,#0d1f1e 0%,#0a0a0a 55%,#0d1a2e 100%);
+  box-shadow:0 0 0 1px rgba(0,168,150,.08),0 24px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* Glowing top line */
+header::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,168,150,.6) 30%,rgba(74,144,226,.6) 70%,transparent 100%);
+  z-index:2;
+}
+
+/* Inner content wrapper */
+.hdr-inner{
+  position:relative;
+  z-index:3;
+  padding:36px 24px 28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+}
+
+/* Logo mark */
+.hdr-logo{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:6px;
+}
+
+.hdr-logo-icon{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,rgba(0,168,150,.25),rgba(74,144,226,.15));
+  border:1px solid rgba(0,168,150,.35);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(0,168,150,.2),inset 0 1px 0 rgba(255,255,255,.08);
+  flex-shrink:0;
+  animation:iconPulse 4s ease-in-out infinite;
+}
+@keyframes iconPulse{
+  0%,100%{box-shadow:0 0 20px rgba(0,168,150,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+  50%{box-shadow:0 0 35px rgba(0,168,150,.4),0 0 60px rgba(0,168,150,.12),inset 0 1px 0 rgba(255,255,255,.1)}
+}
+
+/* Title */
+.hdr-title{
+  font-size:clamp(1.6em,4vw,2.4em);
+  font-weight:900;
+  letter-spacing:-0.5px;
+  line-height:1;
+  background:linear-gradient(120deg,#e8f8f7 0%,#00c4ae 40%,#7db8f0 80%,#e8f8f7 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{
+  0%{background-position:0% center}
+  100%{background-position:200% center}
+}
+
+/* Subtitle */
+.sub{
+  color:rgba(160,160,160,.8);
+  font-size:.82em;
+  letter-spacing:.5px;
+  margin-top:4px;
+  font-weight:400;
+}
+
+/* Stats row */
+.hdr-stats{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:18px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.hdr-stat{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;
+  padding:5px 12px;
+  font-size:.75em;
+  color:var(--t2);
+  transition:all .3s;
+  cursor:default;
+}
+.hdr-stat:hover{
+  background:rgba(0,168,150,.1);
+  border-color:rgba(0,168,150,.3);
+  color:#fff;
+}
+.hdr-stat-val{
+  font-weight:800;
+  color:#fff;
+  font-size:1.05em;
+  font-variant-numeric:tabular-nums;
+}
+.hdr-stat-sep{
+  width:1px;height:14px;
+  background:rgba(255,255,255,.1);
+  margin:0 2px;
+}
+
+/* CTA Button */
+.add-header-btn{
+  margin-top:20px !important;
+  padding:12px 28px !important;
+  font-size:.9em !important;
+  font-weight:700 !important;
+  border-radius:50px !important;
+  background:linear-gradient(135deg,#00a896,#007a6e) !important;
+  border:none !important;
+  box-shadow:0 4px 20px rgba(0,168,150,.35),0 0 0 1px rgba(0,168,150,.2) !important;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
+  position:relative;
+  overflow:hidden;
+}
+.add-header-btn::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  opacity:0;transition:.3s;
+}
+.add-header-btn:hover{
+  transform:translateY(-2px) scale(1.04) !important;
+  box-shadow:0 8px 30px rgba(0,168,150,.5),0 0 0 1px rgba(0,168,150,.3) !important;
+}
+.add-header-btn:hover::after{opacity:1}
+.add-header-btn:active{transform:scale(.97) !important}
+
+/* Entrance animation */
+.hdr-logo{animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both}
+.hdr-title{animation:fadeUp .7s .1s cubic-bezier(.22,1,.36,1) both}
+.sub{animation:fadeUp .7s .18s cubic-bezier(.22,1,.36,1) both}
+.hdr-stats{animation:fadeUp .7s .26s cubic-bezier(.22,1,.36,1) both}
+.add-header-btn{animation:fadeUp .7s .34s cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:600px){
+  .hdr-inner{padding:28px 16px 22px}
+  .hdr-logo-icon{width:40px;height:40px}
+  .hdr-stats{gap:4px}
+  .hdr-stat{padding:4px 9px;font-size:.7em}
+}
+
 header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
 h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
-.sub{color:var(--t2);font-size:.9em}
+/* sub merged into header redesign */
 .btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
 .btn:active{transform:scale(.95)}
 .bp{background:var(--gr);color:#fff}
@@ -160,7 +332,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .add-fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
 .add-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,168,150,.7)}
 .add-fab:active{transform:scale(.94)}
-.add-header-btn{margin-top:14px}
+/* add-header-btn merged into header redesign */
 .badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
 .spinning{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -296,6 +468,182 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 #shareCanvas{border-radius:12px;max-width:100%;border:1px solid var(--br);margin-bottom:16px}
 .share-img-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
+
+/* ══════════════════════════════════════════════
+   ROASTERY MODAL — IMMERSIVE POPUP
+══════════════════════════════════════════════ */
+#roasteryModalOv{
+  position:fixed;inset:0;z-index:3000;
+  display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,0);
+  backdrop-filter:blur(0px);
+  transition:background .35s, backdrop-filter .35s;
+}
+#roasteryModalOv.open{
+  display:flex;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(8px);
+}
+#roasteryModal{
+  width:100%;max-width:780px;
+  max-height:92vh;
+  border-radius:24px 24px 0 0;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .42s cubic-bezier(.22,1,.36,1);
+  position:relative;
+}
+#roasteryModalOv.open #roasteryModal{transform:translateY(0)}
+
+/* Drag handle */
+.rm-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:rgba(255,255,255,.2);
+  margin:10px auto 0;flex-shrink:0;
+}
+
+/* Header — dynamically colored */
+.rm-hero{
+  position:relative;overflow:hidden;
+  padding:28px 24px 22px;
+  flex-shrink:0;
+}
+.rm-hero-bg{
+  position:absolute;inset:0;
+  opacity:.12;
+  background-image:radial-gradient(ellipse 80% 60% at 50% -10%, currentColor 0%, transparent 70%);
+}
+.rm-hero-noise{
+  position:absolute;inset:0;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.rm-hero-glow{
+  position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+  width:400px;height:250px;border-radius:50%;
+  filter:blur(70px);opacity:.35;pointer-events:none;
+}
+.rm-hero-content{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+.rm-logo{
+  width:64px;height:64px;border-radius:16px;
+  object-fit:cover;border:2px solid rgba(255,255,255,.15);
+  flex-shrink:0;box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.rm-logo-ph{
+  width:64px;height:64px;border-radius:16px;
+  border:2px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8em;flex-shrink:0;
+  background:rgba(255,255,255,.08);
+}
+.rm-name{
+  font-size:clamp(1.3em,5vw,1.9em);font-weight:900;
+  color:#fff;line-height:1.15;
+  text-shadow:0 2px 12px rgba(0,0,0,.4);
+}
+.rm-meta{font-size:.8em;color:rgba(255,255,255,.65);margin-top:3px}
+.rm-close{
+  position:absolute;top:14px;left:14px;z-index:2;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;color:rgba(255,255,255,.7);
+  transition:.2s;line-height:1;
+}
+.rm-close:hover{background:rgba(0,0,0,.6);color:#fff}
+
+/* Stats strip */
+.rm-stats{
+  display:flex;align-items:stretch;
+  flex-shrink:0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.rm-stat{
+  flex:1;text-align:center;padding:12px 8px;
+  position:relative;
+}
+.rm-stat+.rm-stat::before{
+  content:'';position:absolute;right:0;top:20%;height:60%;
+  width:1px;background:rgba(255,255,255,.08);
+}
+.rm-stat-val{font-size:1.25em;font-weight:900;color:#fff}
+.rm-stat-lbl{font-size:.65em;color:rgba(255,255,255,.5);margin-top:2px}
+
+/* Filter tabs */
+.rm-tabs{
+  display:flex;gap:6px;padding:14px 16px 0;flex-shrink:0;flex-wrap:wrap;
+}
+.rm-tab{
+  padding:6px 16px;border-radius:20px;font-size:.78em;font-weight:700;
+  cursor:pointer;border:1.5px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);
+  transition:.2s;font-family:'Cairo',sans-serif;
+}
+.rm-tab.on{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+
+/* Scrollable recipe list */
+.rm-body{
+  overflow-y:auto;padding:14px 16px 24px;
+  flex:1;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;
+}
+.rm-body::-webkit-scrollbar{width:4px}
+.rm-body::-webkit-scrollbar-thumb{border-radius:2px;background:rgba(255,255,255,.12)}
+
+/* Recipe cards inside modal */
+.rm-card{
+  border-radius:14px;padding:14px 16px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.25);
+  margin-bottom:10px;
+  transition:.25s;
+  position:relative;overflow:hidden;
+}
+.rm-card::before{
+  content:'';position:absolute;top:0;right:0;left:0;height:2px;
+  background:rgba(255,255,255,.0);
+  transition:.25s;
+}
+.rm-card:hover{background:rgba(255,255,255,.06);transform:translateX(-3px)}
+.rm-card:hover::before{background:rgba(255,255,255,.2)}
+.rm-card:last-child{margin-bottom:0}
+.rm-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+.rm-card-name{font-size:.92em;font-weight:800;color:#fff;line-height:1.3;flex:1}
+.rm-card-author{font-size:.73em;color:rgba(255,255,255,.45);margin-bottom:8px}
+.rm-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.rm-tag{padding:2px 8px;border-radius:5px;font-size:.68em;font-weight:700}
+.rm-tag-hot{background:rgba(245,87,108,.18);color:#f87183;border:1px solid rgba(245,87,108,.3)}
+.rm-tag-cold{background:rgba(74,144,226,.18);color:#74b0f0;border:1px solid rgba(74,144,226,.3)}
+.rm-tag-server{background:rgba(255,170,0,.15);color:#ffc040;border:1px solid rgba(255,170,0,.25)}
+.rm-tag-brewer{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1)}
+.rm-card-dets{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.rm-det{
+  background:rgba(255,255,255,.07);border-radius:8px;
+  padding:6px 10px;border:1px solid rgba(255,255,255,.07);
+}
+.rm-det-l{display:block;font-size:.62em;color:rgba(255,255,255,.4);margin-bottom:1px}
+.rm-det-v{font-size:.82em;font-weight:800;color:#fff}
+.rm-card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rm-rating{font-size:.78em;color:rgba(255,255,255,.55)}
+.rm-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:7px 14px;border-radius:8px;
+  font-size:.74em;font-weight:800;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+  color:#fff;text-decoration:none;
+  transition:.2s;white-space:nowrap;cursor:pointer;
+  font-family:'Cairo',sans-serif;
+}
+.rm-btn:hover{background:rgba(255,255,255,.22)}
+
+/* Empty state */
+.rm-empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.35);font-size:.88em}
+
+@media(max-width:600px){
+  #roasteryModal{border-radius:18px 18px 0 0}
+  .rm-hero{padding:22px 16px 18px}
+  .rm-body{padding:10px 12px 20px}
+}
 </style>
 </head>
 <body>
@@ -314,9 +662,32 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </div>
 <div class="wrap">
 <header>
-  <h1><svg viewBox="0 0 36 36" width="36" height="36" style="vertical-align:middle;margin-left:8px;filter:drop-shadow(0 0 6px rgba(0,168,150,.6))" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 14h20v2a10 10 0 01-10 10A10 10 0 016 16v-2z" fill="#00a896"/><path d="M26 16h2a4 4 0 010 8h-2" stroke="#00a896" stroke-width="2" stroke-linecap="round"/><path d="M10 11c0-2 3-2 3-4M15 11c0-2 3-2 3-4M20 11c0-2 3-2 3-4" stroke="#00a896" stroke-width="1.8" stroke-linecap="round"/><rect x="6" y="25" width="20" height="2.5" rx="1.25" fill="#00a896"/></svg> Xbloom Recipes</h1>
-  <p class="sub">وصفات مجتمع اكس بلوم</p>
-  <button class="btn bp add-header-btn" onclick="openAddModal()">&#x2795; شارك وصفتك</button>
+  <!-- Particle canvas -->
+  <canvas id="hdrCanvas"></canvas>
+
+  <div class="hdr-inner">
+    <!-- Logo row -->
+    <div class="hdr-logo">
+      <div class="hdr-logo-icon">
+        <svg viewBox="0 0 36 36" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 14h20v2a10 10 0 01-10 10A10 10 0 016 16v-2z" fill="#00a896"/>
+          <path d="M26 16h2a4 4 0 010 8h-2" stroke="#00a896" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10 11c0-2 3-2 3-4M15 11c0-2 3-2 3-4M20 11c0-2 3-2 3-4" stroke="#00c4ae" stroke-width="1.8" stroke-linecap="round"/>
+          <rect x="6" y="25" width="20" height="2.5" rx="1.25" fill="#00a896"/>
+        </svg>
+      </div>
+      <h1 class="hdr-title">Xbloom Recipes</h1>
+    </div>
+
+    <p class="sub">وصفات مجتمع اكس بلوم العربي</p>
+
+
+
+    <!-- CTA -->
+    <button class="btn add-header-btn" onclick="openAddModal()">
+      ✦ شارك وصفتك مع المجتمع
+    </button>
+  </div>
 </header>
 
 <!-- ═══ TOP BANNER — فوق خانة البحث مباشرة ═══ -->
@@ -407,7 +778,6 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </div>
 
 <footer id="siteFooter">
-  <div class="fc" id="fcount">عدد الوصفات في المجتمع: 0</div>
   <div class="footer-links">
     <a href="about-us.html">من نحن</a>
     <a href="about-us.html#contact">اتصل بنا</a>
@@ -554,7 +924,8 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="success-icon">🎉</div>
       <div class="success-title">تمّت الإضافة بنجاح!</div>
       <div class="success-msg">
-        شكراً لك على مشاركة وصفتك  ☕<br>
+        شكراً لك على مشاركة وصفتك مع مجتمع اكس بلوم ☕<br>
+        وصفتك في طريقها للظهور في الموقع بعد مراجعتها من قِبل الإدارة.
       </div>
       <div class="success-contact">
         💬 للاستفسارات والتواصل:<br>
@@ -928,13 +1299,7 @@ function cardHTML(r,i){
   }
   return `<div class="card ani" style="animation-delay:${Math.min(i*0.04,.5)}s">
     <div class="ch"><h3 class="cn">${esc(str(r.name))}</h3>
-    <div class="cicos">
-      <div class="ib fav" id="fav-${rKey}" onclick="toggleFav('${rKey}',this)" title="المفضلة" style="color:var(--t2)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-      </div>
-      <div class="ib share" onclick="openShareModal(${idx})" title="مشاركة الوصفة">🔗</div>
-      <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
-    </div></div>
+    <div class="cicos"></div></div>
     ${str(r.author)?`<div class="cauth">بواسطة ${esc(str(r.author))}</div>`:''}
     <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${r.roastery ? roasteryTag(r.roastery) : ''}</div>
     <div class="cdets">
@@ -1579,17 +1944,19 @@ function renderRoasteriesSection(){
   if(!entries.length||!section){if(section)section.style.display='none';return;}
   section.style.display='block';
   // Count recipes per roastery
+  // Normalize roastery name for comparison (trim + collapse spaces + lowercase)
+  const normR = s => String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
   const counts={};
-  RR.forEach(r=>{ if(r.roastery){const k=r.roastery.toLowerCase();counts[k]=(counts[k]||0)+1;} });
+  RR.forEach(r=>{ if(r.roastery){ const k=normR(r.roastery); counts[k]=(counts[k]||0)+1; } });
   grid.innerHTML = entries.sort((a,b)=>(b[1].order||0)-(a[1].order||0)).map(([k,v])=>{
     const name=v.name||k;
-    const cnt=counts[name.toLowerCase()]||0;
+    const cnt=counts[normR(name)]||0;
     const isActive=activeRoastery&&activeRoastery.toLowerCase()===name.toLowerCase();
     const color = v.color || '#1a2a3a';
     const imgHtml = v.image ? '<img class="roastery-img" src="'+esc(v.image)+'" alt="'+esc(name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' : '';
     const phStyle = v.image ? ' style="display:none"' : '';
-    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" style="background:'+color+';color:'+contrastColor(color)+'" onclick="filterByRoastery(null,\''+esc(name)+'\')">'+
-      '<a href="roastery.html?name='+encodeURIComponent(name)+'" onclick="event.stopPropagation()" style="position:absolute;top:8px;left:8px;font-size:.68em;color:rgba(255,255,255,.6);background:rgba(0,0,0,.3);padding:2px 8px;border-radius:5px;text-decoration:none" title="صفحة المحمصة">↗ عرض</a>'+
+    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" style="background:'+color+';color:'+contrastColor(color)+'" onclick="openRoasteryModal(\''+esc(name)+'\')">'+
+
       imgHtml+
       '<div class="roastery-img-placeholder"'+phStyle+'>☕</div>'+
       '<div>'+
@@ -1787,6 +2154,1280 @@ window.submitRecipe = function(e) {
     .catch(err=>{ toast('خطأ في النشر: '+err.message,'terr'); })
     .finally(()=>{ btn.textContent='📤 نشر الوصفة'; btn.disabled=false; });
 };
+
+
+// ════════════════════════════════════════════════
+// ROASTERY MODAL
+// ════════════════════════════════════════════════
+let _rmFilter = 'all';
+let _rmColor  = '#1a2a3a';
+let _rmName   = '';
+
+window.openRoasteryModal = function(name) {
+  const info = Object.values(ROASTERIES || {}).find(v => v && v.name === name) || {};
+  const color = info.color || '#1a2a3a';
+  _rmColor = color;
+  _rmName  = name;
+  _rmFilter = 'all';
+
+  const modal = document.getElementById('roasteryModal');
+  const ov    = document.getElementById('roasteryModalOv');
+
+  // ── Theme colors ──
+  const cc = contrastColor(color);
+  const isDark = cc === '#ffffff';
+  const bg1 = isDark
+    ? `color-mix(in srgb, ${color} 30%, #0a0a0a)`
+    : `color-mix(in srgb, ${color} 20%, #1a1a0a)`;
+  const bg2 = isDark
+    ? `color-mix(in srgb, ${color} 12%, #0a0a0a)`
+    : `color-mix(in srgb, ${color} 8%, #1a1a0a)`;
+
+  // Apply to modal backgrounds
+  document.getElementById('rmHero').style.background = bg1;
+  document.getElementById('rmStats').style.background = bg2;
+  document.getElementById('rmTabs').style.background  = bg2;
+  document.getElementById('rmBody').style.background  = bg2;
+  modal.style.background = bg2;
+
+  // Glow
+  const glow = document.getElementById('rmGlow');
+  glow.style.background = color;
+
+  // Active tab color
+  document.querySelectorAll('.rm-tab.on').forEach(t => {
+    t.style.background    = color + '33';
+    t.style.borderColor   = color + '66';
+    t.style.color         = '#fff';
+  });
+
+  // ── Logo / Placeholder ──
+  const lw = document.getElementById('rmLogoWrap');
+  if(info.image){
+    lw.innerHTML = `<img class="rm-logo" src="${info.image}" alt="${name}" onerror="this.outerHTML='<div class=\'rm-logo-ph\'>☕</div>'">`;
+  } else {
+    lw.innerHTML = `<div class="rm-logo-ph" style="background:${color}22;border-color:${color}44">☕</div>`;
+  }
+
+  // ── Name ──
+  document.getElementById('rmName').textContent = name;
+
+  // ── Open ──
+  document.body.style.overflow = 'hidden';
+  ov.style.display = 'flex';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { ov.classList.add('open'); });
+  });
+
+  // ── Render ──
+  rmRender();
+};
+
+window.closeRoasteryModal = function() {
+  const ov = document.getElementById('roasteryModalOv');
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { ov.style.display = 'none'; }, 420);
+};
+
+window.rmSetFilter = function(cat, el) {
+  _rmFilter = cat;
+  document.querySelectorAll('.rm-tab').forEach(t => {
+    t.classList.remove('on');
+    t.style.background  = '';
+    t.style.borderColor = '';
+    t.style.color       = '';
+  });
+  el.classList.add('on');
+  el.style.background  = _rmColor + '33';
+  el.style.borderColor = _rmColor + '66';
+  el.style.color       = '#fff';
+  rmRender();
+};
+
+function rmRender() {
+  const name = _rmName;
+  const normR = s => String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
+  let list = RR.filter(r => normR(r.roastery||'') === normR(name));
+
+  if(_rmFilter !== 'all') list = list.filter(r => (r.category||'hot') === _rmFilter);
+
+  // Stats (always from full list)
+  const full = RR.filter(r => normR(r.roastery||'') === normR(name));
+  const hot  = full.filter(r=>(r.category||'hot')==='hot').length;
+  const cold = full.filter(r=>r.category==='cold').length;
+  document.getElementById('rmStatTotal').textContent = full.length;
+  document.getElementById('rmStatHot').textContent   = hot;
+  document.getElementById('rmStatCold').textContent  = cold;
+
+  // Avg rating across all roastery recipes
+  let ratingSum=0, ratingCnt=0;
+  full.forEach(r=>{
+    const rk = ratingKey(r.link||r.name||'');
+    const {avg,count} = getRatingStats(rk);
+    if(avg>0){ ratingSum+=avg*count; ratingCnt+=count; }
+  });
+  document.getElementById('rmStatRating').textContent = ratingCnt>0
+    ? (ratingSum/ratingCnt).toFixed(1)+'⭐' : '—';
+
+  // Meta line
+  document.getElementById('rmMeta').textContent = full.length + ' وصفة في المجتمع';
+
+  const body = document.getElementById('rmBody');
+  if(!list.length){
+    body.innerHTML = '<div class="rm-empty">☕ لا توجد وصفات في هذه الفئة</div>';
+    return;
+  }
+
+  const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل 🧹'};
+  const tagCls = {hot:'rm-tag-hot', cold:'rm-tag-cold', server:'rm-tag-server'};
+
+  body.innerHTML = list.map((r,i) => {
+    const rk  = ratingKey(r.link||r.name||'');
+    const {avg,count} = getRatingStats(rk);
+    const cat = r.category||'hot';
+    const starsStr = avg>0 ? '⭐'.repeat(Math.min(5,Math.round(avg)))+' '+avg.toFixed(1)+' ('+count+')' : '';
+
+    return `<div class="rm-card" style="animation:fadeUp .3s ${Math.min(i*.05,.4)}s both">
+      <div class="rm-card-top">
+        <div class="rm-card-name">${esc(String(r.name||''))}</div>
+      </div>
+      ${r.author ? `<div class="rm-card-author">بواسطة ${esc(String(r.author))}</div>` : ''}
+      <div class="rm-card-tags">
+        <span class="rm-tag ${tagCls[cat]||'rm-tag-hot'}">${catMap[cat]||cat}</span>
+        ${r.brewer ? `<span class="rm-tag rm-tag-brewer">${esc(String(r.brewer))}</span>` : ''}
+      </div>
+      <div class="rm-card-dets">
+        ${r.dose  ? `<div class="rm-det"><span class="rm-det-l">الجرعة</span><span class="rm-det-v">${esc(String(r.dose))}</span></div>` : ''}
+        ${r.ratio ? `<div class="rm-det"><span class="rm-det-l">النسبة</span><span class="rm-det-v">${esc(String(r.ratio))}</span></div>` : ''}
+      </div>
+      <div class="rm-card-foot">
+        <div class="rm-rating">${starsStr}</div>
+        ${r.link ? `<a href="${esc(r.link)}" target="_blank" class="rm-btn" style="background:${_rmColor}22;border-color:${_rmColor}55">فتح في xBloom ↗</a>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Keyboard close
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') window.closeRoasteryModal && closeRoasteryModal();
+});
+
+// ════ HEADER PARTICLE CANVAS ════
+(function initHeaderCanvas(){
+  const canvas = document.getElementById('hdrCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], raf;
+
+  function resize(){
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width  = rect.width  * (devicePixelRatio||1);
+    canvas.height = rect.height * (devicePixelRatio||1);
+    canvas.style.width  = rect.width  + 'px';
+    canvas.style.height = rect.height + 'px';
+    W = rect.width; H = rect.height;
+  }
+
+  function mkParticle(){
+    return {
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.5+.4,
+      vx: (Math.random()-.5)*.3,
+      vy: (Math.random()-.5)*.25,
+      a: Math.random()*.5+.1,
+      c: Math.random()<.65 ? '0,168,150' : '74,144,226'
+    };
+  }
+
+  function init(){
+    resize();
+    particles = Array.from({length:60}, mkParticle);
+  }
+
+  function draw(){
+    if(!ctx) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const dpr = devicePixelRatio||1;
+    ctx.save(); ctx.scale(dpr, dpr);
+
+    // Connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<100){
+          ctx.beginPath();
+          ctx.strokeStyle='rgba(0,168,150,'+(0.15*(1-d/100))+')';
+          ctx.lineWidth=.5;
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Dots
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+p.c+','+p.a+')';
+      ctx.fill();
+    });
+
+    ctx.restore();
+    raf = requestAnimationFrame(draw);
+  }
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden) cancelAnimationFrame(raf);
+    else draw();
+  });
+  window.addEventListener('resize', ()=>{ resize(); });
+
+  // Wait for layout
+  setTimeout(()=>{ init(); draw(); }, 100);
+})();
+
 </script>
+
+<!-- ══════════════════════════════════════════
+     ROASTERY MODAL
+══════════════════════════════════════════ -->
+<div id="roasteryModalOv" onclick="if(event.target===this)closeRoasteryModal()">
+  <div id="roasteryModal">
+
+    <!-- Drag handle -->
+    <div class="rm-handle"></div>
+
+    <!-- Hero -->
+    <div class="rm-hero" id="rmHero">
+      <div class="rm-hero-bg"></div>
+      <div class="rm-hero-noise"></div>
+      <div class="rm-hero-glow" id="rmGlow"></div>
+      <button class="rm-close" onclick="closeRoasteryModal()">✕</button>
+      <div class="rm-hero-content">
+        <div id="rmLogoWrap"></div>
+        <div>
+          <div class="rm-name" id="rmName">—</div>
+          <div class="rm-meta" id="rmMeta"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="rm-stats" id="rmStats">
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatTotal">0</div><div class="rm-stat-lbl">وصفة</div></div>
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatHot">0</div><div class="rm-stat-lbl">🔥 حارة</div></div>
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatCold">0</div><div class="rm-stat-lbl">🧊 باردة</div></div>
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatRating">—</div><div class="rm-stat-lbl">⭐ متوسط</div></div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="rm-tabs" id="rmTabs">
+      <button class="rm-tab on" data-cat="all" onclick="rmSetFilter('all',this)">الكل</button>
+      <button class="rm-tab" data-cat="hot" onclick="rmSetFilter('hot',this)">🔥 حارة</button>
+      <button class="rm-tab" data-cat="cold" onclick="rmSetFilter('cold',this)">🧊 باردة</button>
+    </div>
+
+    <!-- Recipes body -->
+    <div class="rm-body" id="rmBody"></div>
+
+  </div>
+</div>
+
+</body>
+</htmlipt async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5237747574783843"
+     crossorigin="anonymous"></script>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xbloom Recipes | وصفات اكس بلوم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh;overflow-x:hidden}
+.wrap{max-width:1400px;margin:0 auto}
+
+/* ═══════════════════════════════════════════
+   HEADER — WORLD-CLASS REDESIGN
+═══════════════════════════════════════════ */
+
+/* Particle canvas */
+#hdrCanvas{position:absolute;inset:0;width:100%;height:100%;border-radius:20px;opacity:.55;pointer-events:none}
+
+header{
+  position:relative;
+  text-align:center;
+  padding:0;
+  margin-bottom:24px;
+  border-radius:20px;
+  overflow:hidden;
+  border:1px solid rgba(0,168,150,.18);
+  background:linear-gradient(160deg,#0d1f1e 0%,#0a0a0a 55%,#0d1a2e 100%);
+  box-shadow:0 0 0 1px rgba(0,168,150,.08),0 24px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* Glowing top line */
+header::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,168,150,.6) 30%,rgba(74,144,226,.6) 70%,transparent 100%);
+  z-index:2;
+}
+
+/* Inner content wrapper */
+.hdr-inner{
+  position:relative;
+  z-index:3;
+  padding:36px 24px 28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+}
+
+/* Logo mark */
+.hdr-logo{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:6px;
+}
+
+.hdr-logo-icon{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,rgba(0,168,150,.25),rgba(74,144,226,.15));
+  border:1px solid rgba(0,168,150,.35);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(0,168,150,.2),inset 0 1px 0 rgba(255,255,255,.08);
+  flex-shrink:0;
+  animation:iconPulse 4s ease-in-out infinite;
+}
+@keyframes iconPulse{
+  0%,100%{box-shadow:0 0 20px rgba(0,168,150,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+  50%{box-shadow:0 0 35px rgba(0,168,150,.4),0 0 60px rgba(0,168,150,.12),inset 0 1px 0 rgba(255,255,255,.1)}
+}
+
+/* Title */
+.hdr-title{
+  font-size:clamp(1.6em,4vw,2.4em);
+  font-weight:900;
+  letter-spacing:-0.5px;
+  line-height:1;
+  background:linear-gradient(120deg,#e8f8f7 0%,#00c4ae 40%,#7db8f0 80%,#e8f8f7 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{
+  0%{background-position:0% center}
+  100%{background-position:200% center}
+}
+
+/* Subtitle */
+.sub{
+  color:rgba(160,160,160,.8);
+  font-size:.82em;
+  letter-spacing:.5px;
+  margin-top:4px;
+  font-weight:400;
+}
+
+/* Stats row */
+.hdr-stats{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:18px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.hdr-stat{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;
+  padding:5px 12px;
+  font-size:.75em;
+  color:var(--t2);
+  transition:all .3s;
+  cursor:default;
+}
+.hdr-stat:hover{
+  background:rgba(0,168,150,.1);
+  border-color:rgba(0,168,150,.3);
+  color:#fff;
+}
+.hdr-stat-val{
+  font-weight:800;
+  color:#fff;
+  font-size:1.05em;
+  font-variant-numeric:tabular-nums;
+}
+.hdr-stat-sep{
+  width:1px;height:14px;
+  background:rgba(255,255,255,.1);
+  margin:0 2px;
+}
+
+/* CTA Button */
+.add-header-btn{
+  margin-top:20px !important;
+  padding:12px 28px !important;
+  font-size:.9em !important;
+  font-weight:700 !important;
+  border-radius:50px !important;
+  background:linear-gradient(135deg,#00a896,#007a6e) !important;
+  border:none !important;
+  box-shadow:0 4px 20px rgba(0,168,150,.35),0 0 0 1px rgba(0,168,150,.2) !important;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
+  position:relative;
+  overflow:hidden;
+}
+.add-header-btn::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  opacity:0;transition:.3s;
+}
+.add-header-btn:hover{
+  transform:translateY(-2px) scale(1.04) !important;
+  box-shadow:0 8px 30px rgba(0,168,150,.5),0 0 0 1px rgba(0,168,150,.3) !important;
+}
+.add-header-btn:hover::after{opacity:1}
+.add-header-btn:active{transform:scale(.97) !important}
+
+/* Entrance animation */
+.hdr-logo{animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both}
+.hdr-title{animation:fadeUp .7s .1s cubic-bezier(.22,1,.36,1) both}
+.sub{animation:fadeUp .7s .18s cubic-bezier(.22,1,.36,1) both}
+.hdr-stats{animation:fadeUp .7s .26s cubic-bezier(.22,1,.36,1) both}
+.add-header-btn{animation:fadeUp .7s .34s cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:600px){
+  .hdr-inner{padding:28px 16px 22px}
+  .hdr-logo-icon{width:40px;height:40px}
+  .hdr-stats{gap:4px}
+  .hdr-stat{padding:4px 9px;font-size:.7em}
+}
+
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
+h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+/* sub merged into header redesign */
+.btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:active{transform:scale(.95)}
+.bp{background:var(--gr);color:#fff}
+.bs{background:transparent;border:2px solid var(--br);color:var(--t2)}
+.bsm{padding:7px 13px;font-size:12px}
+.bbl{width:100%;justify-content:center}
+.ctrls{margin-bottom:16px}
+.sbox{position:relative;margin-bottom:13px}
+.sbox input{width:100%;padding:13px 48px 13px 14px;font-size:15px;border:2px solid var(--br);border-radius:10px;background:var(--card);color:var(--t1);font-family:inherit}
+.sbox input:focus{outline:none;border-color:var(--ta)}
+.sbox::after{content:"\1F50D";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px}
+.fsec{margin-bottom:12px}
+.flbl{font-size:.82em;color:var(--t2);margin-bottom:7px;font-weight:700}
+.ftabs{display:flex;gap:7px;flex-wrap:wrap}
+.ftab{padding:9px 14px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.ftab:active{transform:scale(.96)}
+.ftab.on{background:var(--gr);color:#fff;border-color:transparent}
+.cnt{display:inline-block;margin-right:4px;padding:1px 6px;background:rgba(255,255,255,.2);border-radius:7px;font-size:11px}
+.ppbar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border-radius:10px;border:1px solid var(--br);margin-bottom:16px;flex-wrap:wrap;justify-content:space-between}
+.ppbar label{font-size:.82em;color:var(--t2)}
+.ppbar select{padding:6px 10px;border-radius:7px;background:var(--up);color:var(--t1);border:1px solid var(--br);font-family:inherit;font-size:13px}
+.ppinfo{font-size:.82em;color:var(--t2);flex:1;text-align:center}
+.ppinfo b{color:var(--t1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
+.card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);transform:scaleX(0);transition:.3s}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,168,150,.2)}
+.card:hover::before{transform:scaleX(1)}
+.ch{display:flex;justify-content:space-between;margin-bottom:9px;gap:8px}
+.cn{font-size:1.05em;font-weight:700;line-height:1.3;flex:1}
+.cicos{display:flex;gap:5px}
+.ib{width:34px;height:34px;border-radius:8px;background:var(--up);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s}
+.ib:active{transform:scale(.88)}
+.ib.share:hover{background:var(--gr);border-color:transparent}
+/* Share Modal */
+.share-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1500;display:none;align-items:flex-end;justify-content:center;padding:0}
+.share-ov.open{display:flex}
+@media(min-width:600px){.share-ov{align-items:center}}
+.share-box{background:#1e1e1e;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:24px 20px 32px;border:1px solid var(--br);border-bottom:none;animation:slideUp .3s ease}
+@media(min-width:600px){.share-box{border-radius:16px;border:1px solid var(--br)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.share-title{font-size:1em;font-weight:700;margin-bottom:4px;text-align:center}
+.share-recipe-name{font-size:.82em;color:var(--ta);text-align:center;margin-bottom:18px;padding:6px 14px;background:rgba(0,168,150,.08);border-radius:20px}
+.share-link-box{background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:11px 14px;font-size:.78em;color:var(--t2);word-break:break-all;margin-bottom:14px;font-family:monospace;line-height:1.5}
+.share-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.share-btn{padding:12px 10px;border-radius:11px;border:none;font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
+.share-btn:active{transform:scale(.96)}
+.share-btn-copy{background:var(--gr);color:#fff}
+.share-btn-native{background:var(--up);border:1px solid var(--br);color:var(--t1)}
+.share-btn-wa{background:#25D366;color:#fff}
+.share-btn-x{background:#000;color:#fff;border:1px solid #333}
+.share-close-btn{width:100%;padding:11px;border-radius:10px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.85em;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+.share-close-btn:hover{background:rgba(245,87,108,.15);border-color:rgba(245,87,108,.3);color:#f5576c}
+.cauth{color:var(--ta);font-size:.88em;margin-bottom:10px}
+.ctags{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
+.tag{padding:4px 9px;border-radius:10px;font-size:.78em;font-weight:700;color:#fff}
+.to{background:linear-gradient(135deg,#667eea,#764ba2)}
+.tx{background:linear-gradient(135deg,#f093fb,#f5576c)}
+.tth{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24)}
+.tc{background:linear-gradient(135deg,#48dbfb,#0abde3)}
+.ts{background:linear-gradient(135deg,#667eea,#764ba2)}
+.cdets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
+.det{background:var(--up);padding:7px;border-radius:7px;text-align:center}
+.dl{font-size:.73em;color:var(--t2);display:block;margin-bottom:2px}
+.dv{font-size:.95em;font-weight:700}
+/* ═══ Rating System ═══ */
+.rating-wrap{margin-bottom:12px}
+.cstars{display:flex;gap:3px;justify-content:center;margin-bottom:6px}
+.rated-mine-dot{position:relative}
+.rated-mine-dot::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--ta)}
+.star{font-size:22px;cursor:pointer;transition:transform .12s,filter .12s;line-height:1;display:inline-block}
+.star:hover{transform:scale(1.25)}
+.son{filter:none;opacity:1}
+.soff{filter:grayscale(1);opacity:.3}
+.shov{filter:none!important;opacity:1!important;transform:scale(1.2)}
+.star.rated-mine{animation:starPop .35s ease}
+@keyframes starPop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
+.rinfo{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.78em;color:var(--t2)}
+.ravg{font-weight:700;color:#ffd700;font-size:.88em}
+.rcnt{color:var(--t2)}
+.rmine{font-size:.72em;color:var(--ta);background:rgba(0,168,150,.12);padding:2px 8px;border-radius:10px}
+.rloading{opacity:.5;pointer-events:none}
+.cacts{display:flex;flex-direction:column;gap:7px}
+.pgn{display:flex;justify-content:center;align-items:center;gap:7px;margin:16px 0 40px;flex-wrap:wrap}
+.pb{min-width:38px;height:38px;padding:0 11px;border-radius:8px;background:var(--card);border:1px solid var(--br);color:var(--t2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.pb:disabled{opacity:.4;cursor:not-allowed}
+.pb.on{background:var(--gr);color:#fff;border-color:transparent}
+.pb:hover:not(.on):not(:disabled){background:var(--up)}
+.dots{color:var(--t2);padding:0 5px}
+.empty{grid-column:1/-1;text-align:center;padding:55px 20px}
+.empty h2{font-size:1.7em;color:var(--t1);margin-bottom:8px}
+footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:var(--t2);font-size:.88em}.footer-links{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}.footer-links a{color:var(--t2);font-size:.82em;padding:5px 12px;border-radius:7px;border:1px solid var(--br);transition:.2s}.footer-links a:hover{color:var(--ta);border-color:var(--ta);background:rgba(0,168,150,.06);text-decoration:none}.footer-links{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}.footer-links a{color:var(--t2);font-size:.82em;padding:5px 12px;border-radius:7px;border:1px solid var(--br);transition:.2s}.footer-links a:hover{color:var(--ta);border-color:var(--ta);background:rgba(0,168,150,.06);text-decoration:none}
+.fc{display:inline-block;padding:9px 22px;background:var(--gr);border-radius:18px;font-weight:700;color:#fff;margin-bottom:13px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);padding:12px 18px;border-radius:10px;border:1px solid var(--br);z-index:2000;opacity:0;transition:.3s;max-width:88%;font-size:13px;text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tok{border-color:#43e97b}
+.terr{border-color:#f5576c}
+/* Add Recipe Modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:none;align-items:center;justify-content:center;padding:12px;overflow-y:auto}
+.ov.open{display:flex}
+
+/* ═══ ADD MODAL STEPS ═══ */
+.modal-step{display:none}
+.modal-step.active{display:block}
+.step-indicator{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:18px}
+.step-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78em;font-weight:700;background:var(--up);color:var(--t2);border:2px solid var(--br);transition:.3s;flex-shrink:0}
+.step-dot.done{background:var(--ta);color:#fff;border-color:var(--ta)}
+.step-dot.active{background:var(--ta);color:#fff;border-color:var(--ta);box-shadow:0 0 0 4px rgba(0,168,150,.2)}
+.step-line{height:2px;width:50px;background:var(--br);transition:.3s;flex-shrink:0}
+.step-line.done{background:var(--ta)}
+.confirm-box{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.confirm-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--br);font-size:.86em;gap:10px}
+.confirm-row:last-child{border-bottom:none}
+.confirm-label{color:var(--t2);flex-shrink:0}
+.confirm-value{font-weight:700;text-align:left;word-break:break-all}
+.success-card{text-align:center;padding:24px 16px}
+.success-icon{font-size:3.5em;margin-bottom:12px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-size:1.2em;font-weight:800;margin-bottom:8px;color:var(--ta)}
+.success-msg{font-size:.88em;color:var(--t2);line-height:1.7;margin-bottom:18px}
+.success-contact{font-size:.8em;background:rgba(0,168,150,.08);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;color:var(--t2)}
+.success-contact a{color:var(--ta);text-decoration:none;font-weight:700}
+.success-contact a:hover{text-decoration:underline}
+
+.modal{background:var(--card);border-radius:16px;border:1px solid var(--br);width:100%;max-width:520px;position:relative;max-height:94vh;overflow-y:auto;animation:fi .3s ease}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--br);position:sticky;top:0;background:var(--card);z-index:2}
+.mh h3{font-size:1.05em;font-weight:700}
+.mx{background:none;border:none;color:var(--t2);font-size:1.8em;cursor:pointer;padding:0 4px;line-height:1}
+.mf{padding:18px 20px;display:flex;flex-direction:column;gap:13px}
+.fg label{font-size:.82em;color:var(--t2);display:block;margin-bottom:5px;font-weight:700}
+.fi{width:100%;padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit}
+.fi:focus{outline:none;border-color:var(--ta)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tsel{display:flex;flex-direction:column;gap:7px}
+.topt{padding:11px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em;transition:.2s}
+.topt:has(input:checked){border-color:var(--ta);background:rgba(0,168,150,.08)}
+.topt.hot{border-color:rgba(255,107,107,.4)}
+.topt.cold{border-color:rgba(72,219,251,.4)}
+.topt.srv{border-color:rgba(102,126,234,.4)}
+.topt input[type=radio]{accent-color:var(--ta);width:16px;height:16px}
+.add-fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
+.add-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,168,150,.7)}
+.add-fab:active{transform:scale(.94)}
+/* add-header-btn merged into header redesign */
+.badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
+.spinning{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ═══ ANNOUNCEMENT BAR ═══ */
+.anno-bar{padding:10px 16px;text-align:center;font-size:.88em;font-weight:700;position:relative;z-index:200;display:none}
+.anno-bar.show{display:block}
+.anno-bar.info{background:linear-gradient(135deg,#4A90E2,#357abd);color:#fff}
+.anno-bar.success{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000}
+.anno-bar.warning{background:linear-gradient(135deg,#ffd89b,#ff9a56);color:#000}
+.anno-bar.promo{background:linear-gradient(135deg,#f093fb,#f5576c,#00A896);color:#fff}
+.anno-close{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:inherit;font-size:1.2em;cursor:pointer;opacity:.7}
+.anno-close:hover{opacity:1}
+/* ═══ PROMO TICKER ═══ */
+.promo-ticker{background:linear-gradient(135deg,#1a1a2e,#16213e);border-top:1px solid rgba(0,168,150,.3);border-bottom:1px solid rgba(0,168,150,.3);padding:0;overflow:hidden;display:none;position:relative}
+.promo-ticker.show{display:block}
+.promo-ticker-label{position:absolute;right:0;top:0;bottom:0;background:var(--gr);padding:0 16px;display:flex;align-items:center;font-size:.75em;font-weight:900;color:#fff;z-index:2;white-space:nowrap;letter-spacing:.5px}
+.promo-ticker-label::after{content:'';position:absolute;left:-12px;top:0;bottom:0;width:0;height:0;border-top:50px solid transparent;border-bottom:0px solid transparent;border-right:13px solid transparent;border-left:0px;display:none}
+.promo-ticker-track{padding:0 16px 0 0;overflow:hidden;margin-right:90px}
+.promo-ticker-inner{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;align-items:stretch}
+.promo-ticker-inner:hover{animation-play-state:paused}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.promo-item{display:flex;align-items:center;gap:0;white-space:nowrap;font-size:.82em;padding:10px 0;border-left:1px solid rgba(255,255,255,.07);margin-left:0}
+.promo-item-inner{display:flex;align-items:center;gap:8px;padding:0 20px}
+.promo-item-name{color:var(--t2);font-size:.85em}
+.promo-item-code{font-family:monospace;font-weight:900;color:#fff;background:rgba(0,168,150,.25);border:1px solid rgba(0,168,150,.5);padding:3px 10px;border-radius:5px;letter-spacing:2px;font-size:.9em}
+.promo-item-desc{color:var(--t2);font-size:.8em}
+.promo-item a{color:#fff;text-decoration:none}
+.promo-item a:hover .promo-item-code{background:rgba(0,168,150,.5)}
+.promo-item-link-icon{color:var(--ta);font-size:.8em}
+/* ═══ ADS INJECTION ═══ */
+.ads-container{margin:14px 0;text-align:center;min-height:90px;background:rgba(255,255,255,.02);border:1px dashed var(--br);border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.78em}
+.ads-container:empty{display:none}
+/* ═══ PINNED RECIPES ═══ */
+.pinned-banner{margin-bottom:16px}
+.pinned-label{font-size:.82em;color:#ffd700;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.card-pinned{border:2px solid rgba(255,215,0,.4)!important;background:linear-gradient(135deg,rgba(255,215,0,.05),rgba(255,165,0,.03))!important}
+.card-pinned::before{background:linear-gradient(135deg,#ffd700,#ff9a56)!important}
+.pinned-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;font-size:.72em;font-weight:700;background:linear-gradient(135deg,#ffd700,#ff9a56);color:#000;margin-bottom:8px}
+/* ═══ COMMENTS ═══ */
+.comments-section{margin-top:14px;border-top:2px solid rgba(0,168,150,.25);padding-top:12px;background:linear-gradient(135deg,rgba(0,168,150,.04),transparent);border-radius:0 0 10px 10px;margin-left:-17px;margin-right:-17px;padding-left:17px;padding-right:17px;padding-bottom:4px}
+.comments-toggle{font-size:.84em;color:var(--ta);cursor:pointer;background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);font-family:inherit;font-weight:700;padding:7px 12px;border-radius:8px;display:flex;align-items:center;gap:5px;width:100%;justify-content:center;transition:.2s}
+.comments-toggle:hover{background:rgba(0,168,150,.2)}
+.comments-box{margin-top:10px;display:none}
+.comments-box.open{display:block}
+.rating-required-hint{font-size:.75em;color:var(--t2);margin-bottom:8px;padding:6px 10px;background:rgba(0,168,150,.08);border-radius:7px;border:1px solid rgba(0,168,150,.2)}
+.stars-select{display:flex;gap:4px;margin-bottom:10px;justify-content:center}
+.star-sel{font-size:26px;cursor:pointer;transition:.15s;line-height:1;filter:grayscale(1);opacity:.4}
+.star-sel.active{filter:none;opacity:1;transform:scale(1.15)}
+.star-sel:hover{filter:none;opacity:1}
+.comment-textarea,.comment-author-input{width:100%;padding:10px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:13px;font-family:inherit;margin-bottom:7px}
+.comment-textarea{resize:vertical;min-height:70px}
+.comment-textarea:focus,.comment-author-input:focus{outline:none;border-color:var(--ta)}
+.comment-textarea:disabled,.comment-author-input:disabled{opacity:.4;cursor:not-allowed}
+.comment-submit{padding:8px 16px;background:var(--gr);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.comment-submit:disabled{opacity:.5;cursor:not-allowed}
+.comments-list{margin-top:10px;display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto}
+.comment-item{background:var(--up);border-radius:8px;padding:10px 12px;border:1px solid var(--br)}
+.comment-meta{font-size:.72em;color:var(--t2);margin-bottom:4px}
+.comment-rating{color:#ffd700;font-size:.82em}
+.comment-text{font-size:.85em;line-height:1.5;margin-top:4px}
+
+@media(min-width:768px){body{padding:20px}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}.card{padding:22px}}
+@keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.ani{animation:fi .35s ease forwards}
+/* ═══ ROASTERIES SECTION ═══ */
+.roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 20px;position:relative;overflow:hidden}
+.roasteries-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
+.roasteries-label{font-size:.8em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase}
+.roasteries-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.roastery-card{border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.25s;min-width:140px;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.roastery-card::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:.25s}
+.roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.roastery-card:hover::after{background:rgba(255,255,255,.07)}
+.roastery-card.active-filter{border-color:rgba(255,255,255,.5)!important;box-shadow:0 0 0 3px rgba(255,255,255,.15),0 8px 24px rgba(0,0,0,.3)!important}
+.roastery-img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.2);flex-shrink:0}
+.roastery-img-placeholder{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0}
+.roastery-name{font-size:.88em;font-weight:800;color:inherit;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.roastery-count{font-size:.72em;color:inherit;opacity:.8;margin-top:3px;font-weight:700}
+.roastery-clear{padding:10px 14px;border-radius:10px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.8em;cursor:pointer;font-family:inherit;font-weight:700;white-space:nowrap;display:none;align-items:center;gap:5px}
+.roastery-clear.show{display:flex}
+
+/* ═══ BANNERS ═══ */
+.site-banner{
+  display:none;
+  width:100%;
+  border-radius:14px;
+  overflow:hidden;
+  line-height:0;
+  background:#111;
+  box-shadow:0 4px 24px rgba(0,0,0,.3);
+}
+.site-banner.show{display:block}
+.site-banner a{display:block;line-height:0}
+.site-banner img{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+  image-rendering:auto;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+.site-banner-top{margin-bottom:16px}
+.site-banner-bottom{margin-top:16px}
+@media(max-width:700px){
+  .site-banner{border-radius:10px}
+  .site-banner img{min-height:60px}
+}
+/* ═══ ROASTERY TAG on card ═══ */
+.tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta);font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
+
+/* Sort tabs */
+
+
+/* ═══ FAVORITES ═══ */
+.ib.fav{color:var(--t2)}
+.ib.fav.on{color:#e05a6b;background:rgba(224,90,107,.12);border-color:rgba(224,90,107,.3)}
+.ib.fav.on svg path{fill:#e05a6b}
+.fav-bar{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:9px 14px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.fav-bar.show{display:flex}
+.fav-bar-left{display:flex;align-items:center;gap:8px;font-size:.84em;color:var(--t2)}
+.fav-bar-left b{color:var(--t1)}
+.fav-toggle{padding:6px 14px;border-radius:8px;background:rgba(224,90,107,.12);border:1px solid rgba(224,90,107,.3);color:#e05a6b;font-size:.8em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.fav-toggle:hover{background:rgba(224,90,107,.2)}
+.fav-toggle.active{background:rgba(224,90,107,.2)}
+
+/* ═══ SHARE AS IMAGE ═══ */
+.share-img-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
+.share-img-ov.open{display:flex}
+.share-img-box{background:var(--card);border-radius:16px;border:1px solid var(--br);padding:24px;max-width:480px;width:100%;text-align:center}
+.share-img-title{font-size:1em;font-weight:800;margin-bottom:16px}
+#shareCanvas{border-radius:12px;max-width:100%;border:1px solid var(--br);margin-bottom:16px}
+.share-img-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+
+/* ══════════════════════════════════════════════
+   ROASTERY MODAL — IMMERSIVE POPUP
+══════════════════════════════════════════════ */
+#roasteryModalOv{
+  position:fixed;inset:0;z-index:3000;
+  display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,0);
+  backdrop-filter:blur(0px);
+  transition:background .35s, backdrop-filter .35s;
+}
+#roasteryModalOv.open{
+  display:flex;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(8px);
+}
+#roasteryModal{
+  width:100%;max-width:780px;
+  max-height:92vh;
+  border-radius:24px 24px 0 0;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .42s cubic-bezier(.22,1,.36,1);
+  position:relative;
+}
+#roasteryModalOv.open #roasteryModal{transform:translateY(0)}
+
+/* Drag handle */
+.rm-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:rgba(255,255,255,.2);
+  margin:10px auto 0;flex-shrink:0;
+}
+
+/* Header — dynamically colored */
+.rm-hero{
+  position:relative;overflow:hidden;
+  padding:28px 24px 22px;
+  flex-shrink:0;
+}
+.rm-hero-bg{
+  position:absolute;inset:0;
+  opacity:.12;
+  background-image:radial-gradient(ellipse 80% 60% at 50% -10%, currentColor 0%, transparent 70%);
+}
+.rm-hero-noise{
+  position:absolute;inset:0;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.rm-hero-glow{
+  position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+  width:400px;height:250px;border-radius:50%;
+  filter:blur(70px);opacity:.35;pointer-events:none;
+}
+.rm-hero-content{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+.rm-logo{
+  width:64px;height:64px;border-radius:16px;
+  object-fit:cover;border:2px solid rgba(255,255,255,.15);
+  flex-shrink:0;box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.rm-logo-ph{
+  width:64px;height:64px;border-radius:16px;
+  border:2px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8em;flex-shrink:0;
+  background:rgba(255,255,255,.08);
+}
+.rm-name{
+  font-size:clamp(1.3em,5vw,1.9em);font-weight:900;
+  color:#fff;line-height:1.15;
+  text-shadow:0 2px 12px rgba(0,0,0,.4);
+}
+.rm-meta{font-size:.8em;color:rgba(255,255,255,.65);margin-top:3px}
+.rm-close{
+  position:absolute;top:14px;left:14px;z-index:2;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;color:rgba(255,255,255,.7);
+  transition:.2s;line-height:1;
+}
+.rm-close:hover{background:rgba(0,0,0,.6);color:#fff}
+
+/* Stats strip */
+.rm-stats{
+  display:flex;align-items:stretch;
+  flex-shrink:0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.rm-stat{
+  flex:1;text-align:center;padding:12px 8px;
+  position:relative;
+}
+.rm-stat+.rm-stat::before{
+  content:'';position:absolute;right:0;top:20%;height:60%;
+  width:1px;background:rgba(255,255,255,.08);
+}
+.rm-stat-val{font-size:1.25em;font-weight:900;color:#fff}
+.rm-stat-lbl{font-size:.65em;color:rgba(255,255,255,.5);margin-top:2px}
+
+/* Filter tabs */
+.rm-tabs{
+  display:flex;gap:6px;padding:14px 16px 0;flex-shrink:0;flex-wrap:wrap;
+}
+.rm-tab{
+  padding:6px 16px;border-radius:20px;font-size:.78em;font-weight:700;
+  cursor:pointer;border:1.5px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);
+  transition:.2s;font-family:'Cairo',sans-serif;
+}
+.rm-tab.on{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+
+/* Scrollable recipe list */
+.rm-body{
+  overflow-y:auto;padding:14px 16px 24px;
+  flex:1;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;
+}
+.rm-body::-webkit-scrollbar{width:4px}
+.rm-body::-webkit-scrollbar-thumb{border-radius:2px;background:rgba(255,255,255,.12)}
+
+/* Recipe cards inside modal */
+.rm-card{
+  border-radius:14px;padding:14px 16px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.25);
+  margin-bottom:10px;
+  transition:.25s;
+  position:relative;overflow:hidden;
+}
+.rm-card::before{
+  content:'';position:absolute;top:0;right:0;left:0;height:2px;
+  background:rgba(255,255,255,.0);
+  transition:.25s;
+}
+.rm-card:hover{background:rgba(255,255,255,.06);transform:translateX(-3px)}
+.rm-card:hover::before{background:rgba(255,255,255,.2)}
+.rm-card:last-child{margin-bottom:0}
+.rm-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+.rm-card-name{font-size:.92em;font-weight:800;color:#fff;line-height:1.3;flex:1}
+.rm-card-author{font-size:.73em;color:rgba(255,255,255,.45);margin-bottom:8px}
+.rm-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.rm-tag{padding:2px 8px;border-radius:5px;font-size:.68em;font-weight:700}
+.rm-tag-hot{background:rgba(245,87,108,.18);color:#f87183;border:1px solid rgba(245,87,108,.3)}
+.rm-tag-cold{background:rgba(74,144,226,.18);color:#74b0f0;border:1px solid rgba(74,144,226,.3)}
+.rm-tag-server{background:rgba(255,170,0,.15);color:#ffc040;border:1px solid rgba(255,170,0,.25)}
+.rm-tag-brewer{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1)}
+.rm-card-dets{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.rm-det{
+  background:rgba(255,255,255,.07);border-radius:8px;
+  padding:6px 10px;border:1px solid rgba(255,255,255,.07);
+}
+.rm-det-l{display:block;font-size:.62em;color:rgba(255,255,255,.4);margin-bottom:1px}
+.rm-det-v{font-size:.82em;font-weight:800;color:#fff}
+.rm-card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rm-rating{font-size:.78em;color:rgba(255,255,255,.55)}
+.rm-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:7px 14px;border-radius:8px;
+  font-size:.74em;font-weight:800;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+  color:#fff;text-decoration:none;
+  transition:.2s;white-space:nowrap;cursor:pointer;
+  font-family:'Cairo',sans-serif;
+}
+.rm-btn:hover{background:rgba(255,255,255,.22)}
+
+/* Empty state */
+.rm-empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.35);font-size:.88em}
+
+@media(max-width:600px){
+  #roasteryModal{border-radius:18px 18px 0 0}
+  .rm-hero{padding:22px 16px 18px}
+  .rm-body{padding:10px 12px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="anno-bar" id="annoBar">
+  <span id="annoText"></span>
+  <button class="anno-close" onclick="this.parentElement.classList.remove('show')" title="إغلاق">✕</button>
+</div>
+<!-- PROMO TICKER -->
+<div class="promo-ticker" id="promoTicker">
+  <div class="promo-ticker-label">🎫 عروض</div>
+  <div class="promo-ticker-track">
+    <div class="promo-ticker-inner" id="promoTickerInner"></div>
+  </div>
+</div>
+<div class="wrap">
+<header>
+  <!-- Particle canvas -->
+  <canvas id="hdrCanvas"></canvas>
+
+  <div class="hdr-inner">
+    <!-- Logo row -->
+    <div class="hdr-logo">
+      <div class="hdr-logo-icon">
+        <svg viewBox="0 0 36 36" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 14h20v2a10 10 0 01-10 10A10 10 0 016 16v-2z" fill="#00a896"/>
+          <path d="M26 16h2a4 4 0 010 8h-2" stroke="#00a896" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10 11c0-2 3-2 3-4M15 11c0-2 3-2 3-4M20 11c0-2 3-2 3-4" stroke="#00c4ae" stroke-width="1.8" stroke-linecap="round"/>
+          <rect x="6" y="25" width="20" height="2.5" rx="1.25" fill="#00a896"/>
+        </svg>
+      </div>
+      <h1 class="hdr-title">Xbloom Recipes</h1>
+    </div>
+
+    <p class="sub">وصفات مجتمع اكس بلوم العربي</p>
+
+
+
+    <!-- CTA -->
+    <button class="btn add-header-btn" onclick="openAddModal()">
+      ✦ شارك وصفتك مع المجتمع
+    </button>
+  </div>
+</header>
+
+<!-- ═══ TOP BANNER — فوق خانة البحث مباشرة ═══ -->
+<div class="site-banner site-banner-top" id="siteBannerTop">
+  <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
+    <img id="siteBannerTopImg" src="" alt="بنر إعلاني">
+  </a>
+</div>
+
+<div class="ctrls">
+  <div class="sbox"><input type="text" id="srch" placeholder="ابحث عن وصفة..." autocomplete="off"></div>
+  <div class="fsec">
+    <div class="flbl">&#x1F321;&#xFE0F; نوع التحضير:</div>
+    <div class="ftabs" id="tempG">
+      <button class="ftab on"  onclick="setF('temp','all',this)"><span class="cnt" id="nAll">0</span> الكل</button>
+      <button class="ftab"     onclick="setF('temp','hot',this)"><span class="cnt" id="nHot">0</span> &#x1F525; وصفات حارة</button>
+      <button class="ftab"     onclick="setF('temp','cold',this)"><span class="cnt" id="nCold">0</span> &#x1F9CA; وصفات باردة</button>
+      <button class="ftab"     onclick="setF('temp','server',this)"><span class="cnt" id="nSrv">0</span> غسيل وترطيب السيرفر</button>
+    </div>
+  </div>
+  <div class="fsec">
+    <div class="flbl">&#x2615; المحضّر:</div>
+    <div class="ftabs" id="brewG">
+      <button class="ftab on"  onclick="setF('brew','all',this)"><span class="cnt" id="bAll">0</span> الكل</button>
+      <button class="ftab"     onclick="setF('brew','Omni',this)"><span class="cnt" id="bOmni">0</span> Omni</button>
+      <button class="ftab"     onclick="setF('brew','xPod',this)"><span class="cnt" id="bXPod">0</span> xPod</button>
+      <button class="ftab"     onclick="setF('brew','Other',this)"><span class="cnt" id="bOther">0</span> Other</button>
+    </div>
+  </div>
+</div>
+<!-- ROASTERIES SECTION -->
+<div class="roasteries-section" id="roasteriesSection" style="display:none">
+  <div class="roasteries-label">☕ المحامص الرائجة</div>
+  <div class="roasteries-grid" id="roasteriesGrid"></div>
+  <div style="text-align:center;margin-top:12px">
+    <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
+  </div>
+</div>
+<div class="fav-bar" id="favBar">
+  <div class="fav-bar-left">❤️ <b id="favCount">0</b> وصفة في المفضلة</div>
+  <div style="display:flex;gap:8px">
+    <button class="fav-toggle" id="favFilterBtn" onclick="toggleFavFilter()">عرض المفضلة فقط</button>
+    <button class="fav-toggle" onclick="clearAllFavs()" style="background:rgba(255,100,100,.08);border-color:rgba(255,100,100,.25);color:#ff6464">مسح الكل</button>
+  </div>
+</div>
+
+<div class="ppbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <label>فرز:</label>
+    <select id="sortSelect" onchange="setSortSelect(this.value)">
+      <option value="default">📋 الافتراضي</option>
+      <option value="top">⭐ الأعلى تقييماً</option>
+      <option value="newest">🆕 المضافة حديثاً</option>
+      <option value="popular">🔥 الأكثر تحضيراً</option>
+    </select>
+  </div>
+  <div class="ppinfo" id="ppinfo">جاري التحميل...</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <label>عرض:</label>
+    <select onchange="setPP(this.value)">
+      <option value="12">12</option>
+      <option value="24" selected>24</option>
+      <option value="48">48</option>
+      <option value="96">96</option>
+    </select>
+  </div>
+</div>
+
+<!-- ADS INJECTION (position controlled by admin) -->
+<div class="ads-container" id="adsTopContainer" style="display:none"></div>
+<!-- PINNED RECIPES -->
+<div class="pinned-banner" id="pinnedBanner" style="display:none">
+  <div class="pinned-label">📌 وصفات مثبتة</div>
+  <div class="grid" id="pinnedGrid"></div>
+</div>
+<div class="ads-container" id="adsMiddleContainer" style="display:none"></div>
+<div class="grid" id="grid"></div>
+<div class="ads-container" id="adsBottomContainer" style="display:none"></div>
+<div class="pgn" id="pgn"></div>
+
+
+
+<!-- ═══ BOTTOM BANNER — فوق الفوتر مباشرة ═══ -->
+<div class="site-banner site-banner-bottom" id="siteBannerBottom">
+  <a id="siteBannerBottomLink" href="#" target="_blank" style="display:block;line-height:0">
+    <img id="siteBannerBottomImg" src="" alt="بنر إعلاني">
+  </a>
+</div>
+
+<footer id="siteFooter">
+  <div class="footer-links">
+    <a href="about-us.html">من نحن</a>
+    <a href="about-us.html#contact">اتصل بنا</a>
+    <a href="about-us.html#privacy">سياسة الخصوصية</a>
+  </div>
+  <p id="footerCopy">&#169; 2026 Xbloom Recipes</p>
+  <p id="footerSub" style="margin-top:6px;font-size:.8em">جميع حقوق الوصفات محفوظة لمنشئيها</p>
+  <p id="footerDev" style="margin-top:5px;font-size:.75em;color:#3a3a3a">ABDULELAH ALSUFAYAN</p>
+</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- SHARE AS IMAGE MODAL -->
+<div class="share-img-ov" id="shareImgOv">
+  <div class="share-img-box">
+    <div class="share-img-title">🖼️ مشاركة كصورة</div>
+    <canvas id="shareCanvas" width="600" height="360"></canvas>
+    <div class="share-img-acts">
+      <button class="btn bp" onclick="downloadShareImage()">⬇️ تحميل</button>
+      <button class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="document.getElementById('shareImgOv').classList.remove('open')">✕ إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB زر عائم -->
+<button class="add-fab" onclick="openAddModal()" title="أضافة وصفة جديدة">&#x2795;</button>
+
+<!-- SHARE MODAL -->
+<div class="share-ov" id="shareOv" onclick="if(event.target===this)closeShareModal()">
+  <div class="share-box">
+    <div class="share-title">🔗 مشاركة الوصفة</div>
+    <div class="share-recipe-name" id="shareRecipeName">—</div>
+    <div class="share-link-box" id="shareLinkDisplay"></div>
+    <div class="share-actions">
+      <button class="share-btn share-btn-copy" onclick="copyShareLink()">📋 نسخ الرابط</button>
+      <button class="share-btn share-btn-native" onclick="nativeShare()">📤 مشاركة</button>
+      <a class="share-btn share-btn-wa" id="shareWaBtn" href="#" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        واتساب
+      </a>
+      <a class="share-btn share-btn-x" id="shareXBtn" href="#" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X (تويتر)
+      </a>
+    </div>
+    <button class="share-close-btn" onclick="closeShareModal()">✕ إغلاق</button>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+
+
+<!-- Modal: Add Recipe -->
+<div class="ov" id="addOv">
+<div class="modal">
+  <div class="mh">
+    <h3 id="modalStepTitle">☕ اضافة وصفة جديدة</h3>
+    <button class="mx" onclick="closeAddModal()">&#xD7;</button>
+  </div>
+
+  <!-- Step indicator -->
+  <div class="step-indicator" id="stepIndicator">
+    <div class="step-dot active" id="sdot1">1</div>
+    <div class="step-line" id="sline1"></div>
+    <div class="step-dot" id="sdot2">2</div>
+    <div class="step-line" id="sline2"></div>
+    <div class="step-dot" id="sdot3">✓</div>
+  </div>
+
+  <!-- STEP 1: Form -->
+  <div class="modal-step active" id="mstep1">
+  <form class="mf" onsubmit="goToConfirm(event)">
+    <div class="fr2">
+      <div class="fg"><label>اسم الوصفة *</label><input class="fi" id="rN" required placeholder="مثال: محمصة مجتمع اكس بلوم g"></div>
+      <div class="fg"><label>اسمك</label><input class="fi" id="rA" placeholder="  اسم مالك الوصفة "></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label>المحضّر *</label>
+        <select class="fi" id="rBr" required>
+          <option value="">اختر</option>
+          <option value="Omni">Omni</option>
+          <option value="xPod">xPod</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>الجرعة *</label><input class="fi" id="rD" required placeholder="15g"></div>
+    </div>
+    <div class="fg"><label>النسبة *</label><input class="fi" id="rR" required placeholder="1:16 - 225ML"></div>
+    <div class="fg">
+      <label>☕ اسم المحمصة (اختياري)</label>
+      <div style="position:relative">
+        <input class="fi" id="rRoastery" placeholder="اكتب اسم المحمصة..." autocomplete="off"
+          oninput="roasteryInput()" onfocus="roasteryShowDropdown()" onblur="setTimeout(roasteryHideDropdown,200)">
+        <div id="roasteryDropdown" style="
+          display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;
+          background:var(--card);border:1px solid var(--br);border-radius:10px;
+          z-index:200;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+        </div>
+      </div>
+      <div style="font-size:.75em;color:var(--ta);margin-top:5px">💡 إذا لم تجد المحمصة اختر "إضافة محمصة جديدة"</div>
+    </div>
+    <div class="fg"><label>نوع التحضير *</label>
+      <div class="tsel">
+        <div class="topt hot"><input type="radio" name="rc" id="rHot" value="hot" required onchange="onTypeChange(this)"><label for="rHot">&#x1F525; وصفة حارة</label></div>
+        <div class="topt cold"><input type="radio" name="rc" id="rCold" value="cold" onchange="onTypeChange(this)"><label for="rCold">&#x1F9CA; وصفة باردة</label></div>
+        <div class="topt srv"><input type="radio" name="rc" id="rSrv" value="server" onchange="onTypeChange(this)"><label for="rSrv">&#x2699;&#xFE0F; غسيل الفلتر </label></div>
+      </div>
+    </div>
+    <div class="fg" id="iceField" style="display:none;animation:fi .3s ease">
+      <label style="color:#48dbfb">&#x1F9CA; وزن الثلج في الكوب *</label>
+      <div style="position:relative">
+        <input class="fi" type="number" id="rIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
+      </div>
+      <div style="font-size:.75em;color:var(--t2);margin-top:5px">كمية الثلج المطلوبة في هذه الوصفة</div>
+    </div>
+    <div class="fg">
+      <label>رابط الوصفة من xBloom *</label>
+      <input class="fi" type="url" id="rL" required placeholder="https://share-h5.xbloom.com/?id=...">
+      <div style="font-size:.75em;color:var(--t2);margin-top:5px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
+    </div>
+    <button type="submit" class="btn bp bbl" style="padding:14px;font-size:14px">
+      📮 نشر الوصفة
+    </button>
+  </form>
+  </div><!-- /mstep1 -->
+
+  <!-- STEP 2: Confirm -->
+  <div class="modal-step" id="mstep2">
+    <div style="text-align:center;padding:10px 0 18px">
+      <div style="font-size:2.5em;margin-bottom:10px">📋</div>
+      <div style="font-weight:800;font-size:1em;margin-bottom:8px">مراجعة الوصفة قبل النشر</div>
+    </div>
+    <div class="confirm-box" id="confirmPreview"></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn bgray" style="flex:1;justify-content:center;padding:11px" onclick="goBackToForm()">← تعديل</button>
+      <button class="btn bp" style="flex:1;justify-content:center;padding:11px" id="submitBtn" onclick="doSubmitRecipe()">✅ تأكيد النشر</button>
+    </div>
+  </div><!-- /mstep2 -->
+
+  <!-- STEP 3: Success -->
+  <div class="modal-step" id="mstep3">
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">تمّت الإضافة بنجاح!</div>
+      <div class="success-msg">
+        شكراً لك على مشاركة وصفتك مع مجتمع اكس بلوم ☕<br>
+        وصفتك في طريقها للظهور في الموقع بعد مراجعتها من قِبل الإدارة.
+      </div>
+      <div class="success-contact">
+        💬 للاستفسارات والتواصل:<br>
+        <a href="mailto:info@ab-s.me">info@ab-s.me</a>
+      </div>
+      <button class="btn bp" style="margin-top:18px;justify-content:center;width:100%;padding:12px" onclick="closeAddModal()">
+        إغلاق ✕
+      </button>
+    </div>
+  </div><!-- /mstep3 -->
+
+</div>
+</div>
+
+
+
+<!-- ══════════════════════════════════════════
+     ROASTERY MODAL
+══════════════════════════════════════════ -->
+<div id="roasteryModalOv" onclick="if(event.target===this)closeRoasteryModal()">
+  <div id="roasteryModal">
+
+    <!-- Drag handle -->
+    <div class="rm-handle"></div>
+
+    <!-- Hero -->
+    <div class="rm-hero" id="rmHero">
+      <div class="rm-hero-bg"></div>
+      <div class="rm-hero-noise"></div>
+      <div class="rm-hero-glow" id="rmGlow"></div>
+      <button class="rm-close" onclick="closeRoasteryModal()">✕</button>
+      <div class="rm-hero-content">
+        <div id="rmLogoWrap"></div>
+        <div>
+          <div class="rm-name" id="rmName">—</div>
+          <div class="rm-meta" id="rmMeta"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="rm-stats" id="rmStats">
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatTotal">0</div><div class="rm-stat-lbl">وصفة</div></div>
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatHot">0</div><div class="rm-stat-lbl">🔥 حارة</div></div>
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatCold">0</div><div class="rm-stat-lbl">🧊 باردة</div></div>
+      <div class="rm-stat"><div class="rm-stat-val" id="rmStatRating">—</div><div class="rm-stat-lbl">⭐ متوسط</div></div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="rm-tabs" id="rmTabs">
+      <button class="rm-tab on" data-cat="all" onclick="rmSetFilter('all',this)">الكل</button>
+      <button class="rm-tab" data-cat="hot" onclick="rmSetFilter('hot',this)">🔥 حارة</button>
+      <button class="rm-tab" data-cat="cold" onclick="rmSetFilter('cold',this)">🧊 باردة</button>
+    </div>
+
+    <!-- Recipes body -->
+    <div class="rm-body" id="rmBody"></div>
+
+  </div>
+</div>
+
 </body>
 </html>

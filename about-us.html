@@ -105,8 +105,8 @@ a:hover{text-decoration:underline}
 <div class="container">
   <div class="page-header">
     <span class="page-icon">☕</span>
-    <h1 class="page-title">من نحن</h1>
-    <p class="page-subtitle">قصة Xbloom Recipes ورحلة القهوة</p>
+    <h1 class="page-title" id="dyn-about_title">من نحن</h1>
+    <p class="page-subtitle" id="dyn-about_subtitle">قصة Xbloom Recipes ورحلة القهوة</p>
   </div>
 
   <div class="stats-row">
@@ -127,6 +127,7 @@ a:hover{text-decoration:underline}
   <div class="section-card">
     <div class="section-title">الفكرة والبداية</div>
     <div class="section-body">
+      <div id="dyn-about_body">
       <p>
         Xbloom Recipes موقع شخصي أنشأته <strong>عبدالإله</strong> بدافع الشغف بالقهوة المختصة وأجهزة Xbloom.
         الفكرة جاءت من مجتمع نشط على تيليجرام يتشارك فيه المهتمون بالقهوة وصفاتهم الشخصية يومياً.
@@ -187,8 +188,8 @@ a:hover{text-decoration:underline}
 <div class="container">
   <div class="page-header">
     <span class="page-icon">✉️</span>
-    <h1 class="page-title">اتصل بنا</h1>
-    <p class="page-subtitle">نرد على جميع الاستفسارات خلال 48 ساعة</p>
+    <h1 class="page-title" id="dyn-contact_title">اتصل بنا</h1>
+    <p class="page-subtitle" id="dyn-contact_subtitle">نرد على جميع الاستفسارات خلال 48 ساعة</p>
   </div>
 
   <div class="section-card">
@@ -198,7 +199,7 @@ a:hover{text-decoration:underline}
         <div class="contact-icon">📧</div>
         <div>
           <div class="contact-label">البريد الإلكتروني</div>
-          <div class="contact-value"><a href="mailto:info@ab-s.me">info@ab-s.me</a></div>
+          <div class="contact-value" id="dyn-contact_email"><a href="mailto:info@ab-s.me">info@ab-s.me</a></div>
         </div>
       </div>
       <div class="contact-item">
@@ -246,8 +247,8 @@ a:hover{text-decoration:underline}
 <div class="container">
   <div class="page-header">
     <span class="page-icon">🔒</span>
-    <h1 class="page-title">سياسة الخصوصية</h1>
-    <p class="page-subtitle">آخر تحديث: مارس 2026</p>
+    <h1 class="page-title" id="dyn-privacy_title">سياسة الخصوصية</h1>
+    <p class="page-subtitle" id="dyn-privacy_subtitle">آخر تحديث: مارس 2026</p>
   </div>
 
   <div class="highlight-box" style="margin-bottom:18px;font-size:.85em">
@@ -363,8 +364,60 @@ a:hover{text-decoration:underline}
 </div>
 
 
-<script>
-function showPage(id, el){
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "xbloom-recipes-hub"
+};
+const db = getDatabase(initializeApp(firebaseConfig));
+
+// Load pages content from Firebase
+onValue(ref(db,'pagesContent'), snap => {
+  const d = snap.val() || {};
+
+  // ── ABOUT ──
+  if(d.about_hidden){
+    const nav = document.getElementById('nav-about');
+    if(nav) nav.style.display='none';
+  }
+  setDyn('about_title',    d.about_title);
+  setDyn('about_subtitle', d.about_subtitle);
+  setDyn('about_body',     d.about_body, true);
+
+  // ── CONTACT ──
+  if(d.contact_hidden){
+    const nav = document.getElementById('nav-contact');
+    if(nav) nav.style.display='none';
+  }
+  setDyn('contact_title',    d.contact_title);
+  setDyn('contact_subtitle', d.contact_subtitle);
+  setDyn('contact_email',    d.contact_email);
+  setDyn('contact_body',     d.contact_body, true);
+
+  // ── PRIVACY ──
+  if(d.privacy_hidden){
+    const nav = document.getElementById('nav-privacy');
+    if(nav) nav.style.display='none';
+  }
+  setDyn('privacy_title',    d.privacy_title);
+  setDyn('privacy_subtitle', d.privacy_subtitle);
+  setDyn('privacy_body',     d.privacy_body, true);
+
+}, {onlyOnce: true});
+
+function setDyn(id, val, isHtml){
+  if(!val) return;
+  const el = document.getElementById('dyn-'+id);
+  if(!el) return;
+  if(isHtml) el.innerHTML = val;
+  else el.textContent = val;
+}
+
+window.showPage = function(id, el){
   document.querySelectorAll('.page-tab').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.topbar-nav a').forEach(a=>a.classList.remove('on'));
   const page = document.getElementById('page-'+id);
@@ -373,7 +426,8 @@ function showPage(id, el){
   if(navEl) navEl.classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
   return false;
-}
+};
+
 window.addEventListener('DOMContentLoaded',function(){
   const hash = location.hash.replace('#','');
   if(hash==='contact'||hash==='privacy') showPage(hash);

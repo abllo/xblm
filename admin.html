@@ -478,6 +478,74 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <option value="promo">🎫 عرض (تدرج)</option>
       </select>
     </div>
+
+    <div class="section-divider"></div>
+
+    <!-- PAGES MANAGEMENT -->
+    <h4 style="margin-bottom:14px;color:var(--t2);display:flex;align-items:center;gap:8px">
+      📄 إدارة صفحات الموقع
+      <span style="font-size:.72em;font-weight:400;color:var(--t2);background:rgba(0,168,150,.1);padding:2px 8px;border-radius:6px">من نحن · اتصل بنا · سياسة الخصوصية</span>
+    </h4>
+
+    <!-- Tabs selector -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap" id="pgTabBtns">
+      <button type="button" onclick="showPgTab('about',this)" class="pg-tab-btn on" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:rgba(0,168,150,.15);border:1.5px solid rgba(0,168,150,.4);color:var(--ta)">☕ من نحن</button>
+      <button type="button" onclick="showPgTab('contact',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">✉️ اتصل بنا</button>
+      <button type="button" onclick="showPgTab('privacy',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">🔒 سياسة الخصوصية</button>
+    </div>
+
+    <!-- ABOUT TAB -->
+    <div id="pg-about" class="pg-tab-content" style="display:block">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.88em">☕ صفحة «من نحن»</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="pg_about_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
+          <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
+        </label>
+      </div>
+      <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_about_title" placeholder="من نحن"></div>
+      <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_about_subtitle" placeholder="قصة Xbloom Recipes ورحلة القهوة"></div>
+      <div class="fg">
+        <label>المحتوى النصي (HTML مسموح)</label>
+        <textarea class="form-input" id="pg_about_body" rows="5" placeholder="اكتب محتوى صفحة من نحن هنا..." style="resize:vertical;font-size:.84em;line-height:1.6"></textarea>
+      </div>
+    </div>
+
+    <!-- CONTACT TAB -->
+    <div id="pg-contact" class="pg-tab-content" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.88em">✉️ صفحة «اتصل بنا»</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="pg_contact_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
+          <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
+        </label>
+      </div>
+      <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_contact_title" placeholder="اتصل بنا"></div>
+      <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_contact_subtitle" placeholder="نرد على جميع الاستفسارات خلال 48 ساعة"></div>
+      <div class="fg"><label>📧 البريد الإلكتروني المعروض</label><input class="form-input" id="pg_contact_email" placeholder="info@ab-s.me"></div>
+      <div class="fg">
+        <label>محتوى إضافي (HTML مسموح)</label>
+        <textarea class="form-input" id="pg_contact_body" rows="4" placeholder="نص إضافي يظهر في صفحة التواصل..." style="resize:vertical;font-size:.84em;line-height:1.6"></textarea>
+      </div>
+    </div>
+
+    <!-- PRIVACY TAB -->
+    <div id="pg-privacy" class="pg-tab-content" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.88em">🔒 صفحة «سياسة الخصوصية»</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="pg_privacy_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
+          <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
+        </label>
+      </div>
+      <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_privacy_title" placeholder="سياسة الخصوصية"></div>
+      <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_privacy_subtitle" placeholder="آخر تحديث: مارس 2026"></div>
+      <div class="fg">
+        <label>نص السياسة الكامل (HTML مسموح)</label>
+        <textarea class="form-input" id="pg_privacy_body" rows="8" placeholder="اكتب سياسة الخصوصية هنا..." style="resize:vertical;font-size:.84em;line-height:1.6"></textarea>
+      </div>
+    </div>
+
     <button class="btn bp bbl" onclick="saveSiteSettings()" style="margin-top:6px">💾 حفظ جميع الإعدادات</button>
   </div>
 
@@ -920,6 +988,27 @@ function renderRatings(){
       try{ return (r._fbKey===rd.key) || btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===rd.key; }
       catch(e){ return false; }
     });
+
+  // Load pages content
+  onValue(ref(db,'pagesContent'), snap => {
+    const p = snap.val() || {};
+    const setVal = (id, val) => { const el=document.getElementById(id); if(el&&val!==undefined) el.value=val||''; };
+    const setCk  = (id, val) => { const el=document.getElementById(id); if(el) el.checked=!!val; };
+    setVal('pg_about_title',      p.about_title);
+    setVal('pg_about_subtitle',   p.about_subtitle);
+    setVal('pg_about_body',       p.about_body);
+    setCk ('pg_about_hidden',     p.about_hidden);
+    setVal('pg_contact_title',    p.contact_title);
+    setVal('pg_contact_subtitle', p.contact_subtitle);
+    setVal('pg_contact_email',    p.contact_email);
+    setVal('pg_contact_body',     p.contact_body);
+    setCk ('pg_contact_hidden',   p.contact_hidden);
+    setVal('pg_privacy_title',    p.privacy_title);
+    setVal('pg_privacy_subtitle', p.privacy_subtitle);
+    setVal('pg_privacy_body',     p.privacy_body);
+    setCk ('pg_privacy_hidden',   p.privacy_hidden);
+  }, {onlyOnce:true});
+
     const name = recipe ? str(recipe.name) : 'وصفة غير معروفة';
 
     // 5 star buttons — current avg highlighted
@@ -1265,6 +1354,26 @@ function renderPromoList(list){
 
 // ════ SITE SETTINGS ════
 
+
+// ════ PAGES TAB SWITCHER ════
+window.showPgTab = function(tab, el){
+  document.querySelectorAll('.pg-tab-content').forEach(d=>d.style.display='none');
+  document.querySelectorAll('.pg-tab-btn').forEach(b=>{
+    b.classList.remove('on');
+    b.style.background='var(--up)';
+    b.style.borderColor='var(--br)';
+    b.style.color='var(--t2)';
+  });
+  const pane = document.getElementById('pg-'+tab);
+  if(pane) pane.style.display='block';
+  if(el){
+    el.classList.add('on');
+    el.style.background='rgba(0,168,150,.15)';
+    el.style.borderColor='rgba(0,168,150,.4)';
+    el.style.color='var(--ta)';
+  }
+};
+
 // ════ BANNER HELPERS ════
 window.previewBanner = function(urlInputId, previewId){
   const url = document.getElementById(urlInputId).value.trim();
@@ -1318,7 +1427,26 @@ window.saveSiteSettings = function(){
       alt: document.getElementById('bannerBottomAlt').value.trim()
     }
   };
-  set(ref(db,'siteSettings'),{...s}).then(()=>toast('تم حفظ إعدادات الموقع ✅ ستظهر للزوار فوراً')).catch(err=>toast('خطأ: '+err.message,'terr'));
+  // Pages content — save separately
+  const pages = {
+    about_title:      document.getElementById('pg_about_title').value.trim(),
+    about_subtitle:   document.getElementById('pg_about_subtitle').value.trim(),
+    about_body:       document.getElementById('pg_about_body').value.trim(),
+    about_hidden:     document.getElementById('pg_about_hidden').checked,
+    contact_title:    document.getElementById('pg_contact_title').value.trim(),
+    contact_subtitle: document.getElementById('pg_contact_subtitle').value.trim(),
+    contact_email:    document.getElementById('pg_contact_email').value.trim(),
+    contact_body:     document.getElementById('pg_contact_body').value.trim(),
+    contact_hidden:   document.getElementById('pg_contact_hidden').checked,
+    privacy_title:    document.getElementById('pg_privacy_title').value.trim(),
+    privacy_subtitle: document.getElementById('pg_privacy_subtitle').value.trim(),
+    privacy_body:     document.getElementById('pg_privacy_body').value.trim(),
+    privacy_hidden:   document.getElementById('pg_privacy_hidden').checked,
+  };
+  Promise.all([
+    set(ref(db,'siteSettings'),{...s}),
+    set(ref(db,'pagesContent'), pages)
+  ]).then(()=>toast('تم حفظ جميع الإعدادات ✅ ستظهر للزوار فوراً')).catch(err=>toast('خطأ: '+err.message,'terr'));
 };
 
 window.saveAnnoSetting = function(){
