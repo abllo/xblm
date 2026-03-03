@@ -980,6 +980,7 @@ function mergeData(fbList){
   init.forEach(ensureCat);
   RR=fbList.concat(init);
   loadLocal();updateCounts();render();
+  renderRoasteriesSection();
 }
 function updateCounts(){
   let t=RR.length,h=0,c=0,s=0,o=0,x=0,ot=0;
