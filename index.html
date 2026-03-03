@@ -146,9 +146,10 @@ header::before{
   font-size:.9em !important;
   font-weight:700 !important;
   border-radius:50px !important;
-  background:linear-gradient(135deg,#00a896,#007a6e) !important;
-  border:none !important;
-  box-shadow:0 4px 20px rgba(0,168,150,.35),0 0 0 1px rgba(0,168,150,.2) !important;
+  background:rgba(255,255,255,0.12) !important;
+  border:2px solid rgba(255,255,255,0.35) !important;
+  color:#fff !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.2) !important;
   transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
   position:relative;
   overflow:hidden;
@@ -159,10 +160,7 @@ header::before{
   background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
   opacity:0;transition:.3s;
 }
-.add-header-btn:hover{
-  transform:translateY(-2px) scale(1.04) !important;
-  box-shadow:0 8px 30px rgba(0,168,150,.5),0 0 0 1px rgba(0,168,150,.3) !important;
-}
+.add-header-btn:hover{background:rgba(255,255,255,0.22) !important;border-color:rgba(255,255,255,0.6) !important;transform:translateY(-2px) scale(1.04) !important;box-shadow:0 8px 28px rgba(0,0,0,.3) !important}
 .add-header-btn:hover::after{opacity:1}
 .add-header-btn:active{transform:scale(.97) !important}
 
@@ -684,7 +682,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
     <!-- CTA -->
     <button class="btn add-header-btn" onclick="openAddModal()">
-      ✦ شارك وصفتك مع المجتمع
+      ✦ نشر وصفة جديدة
     </button>
   </div>
 </header>
@@ -898,9 +896,12 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <input class="fi" type="url" id="rL" required placeholder="https://share-h5.xbloom.com/?id=...">
       <div style="font-size:.75em;color:var(--t2);margin-top:5px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
     </div>
-    <button type="submit" class="btn bp bbl" style="padding:14px;font-size:14px">
-      📮 نشر الوصفة
-    </button>
+    <div style="display:flex;gap:10px">
+      <button type="button" class="btn bgray" style="flex:0 0 auto;padding:14px 20px;font-size:13px" onclick="closeAddModal()">✕ إلغاء</button>
+      <button type="submit" class="btn bp bbl" style="flex:1;padding:14px;font-size:14px">
+        📮 نشر الوصفة
+      </button>
+    </div>
   </form>
   </div><!-- /mstep1 -->
 
