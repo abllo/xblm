@@ -678,13 +678,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <h1 class="hdr-title">Xbloom Recipes</h1>
     </div>
 
-    <p class="sub"وصفات إكسبلوم</p>
+    <p class="sub">وصفات مجتمع اكس بلوم العربي</p>
 
 
 
     <!-- CTA -->
     <button class="btn add-header-btn" onclick="openAddModal()">
-      ✦اضافة وصفة جديدة
+      ✦ شارك وصفتك مع المجتمع
     </button>
   </div>
 </header>
@@ -1299,7 +1299,13 @@ function cardHTML(r,i){
   }
   return `<div class="card ani" style="animation-delay:${Math.min(i*0.04,.5)}s">
     <div class="ch"><h3 class="cn">${esc(str(r.name))}</h3>
-    <div class="cicos"></div></div>
+    <div class="cicos">
+      <div class="ib fav" id="fav-${rKey}" onclick="toggleFav('${rKey}',this)" title="المفضلة" style="color:var(--t2)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </div>
+      <div class="ib share" onclick="openShareModal(${idx})" title="مشاركة الوصفة">🔗</div>
+      <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
+    </div></div>
     ${str(r.author)?`<div class="cauth">بواسطة ${esc(str(r.author))}</div>`:''}
     <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${r.roastery ? roasteryTag(r.roastery) : ''}</div>
     <div class="cdets">
