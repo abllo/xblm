@@ -851,6 +851,26 @@ function initFirebase() {
     renderPinnedList(s.pinnedRecipes||[]);
     renderPromoList(s.promoCodes||[]);
   }, ()=>{});
+
+  // Load pages content
+  onValue(ref(db,'pagesContent'), snap => {
+    const p = snap.val() || {};
+    const setVal = (id, val) => { const el=document.getElementById(id); if(el&&val!==undefined) el.value=val||''; };
+    const setCk  = (id, val) => { const el=document.getElementById(id); if(el) el.checked=!!val; };
+    setVal('pg_about_title',      p.about_title);
+    setVal('pg_about_subtitle',   p.about_subtitle);
+    setVal('pg_about_body',       p.about_body);
+    setCk ('pg_about_hidden',     p.about_hidden);
+    setVal('pg_contact_title',    p.contact_title);
+    setVal('pg_contact_subtitle', p.contact_subtitle);
+    setVal('pg_contact_email',    p.contact_email);
+    setVal('pg_contact_body',     p.contact_body);
+    setCk ('pg_contact_hidden',   p.contact_hidden);
+    setVal('pg_privacy_title',    p.privacy_title);
+    setVal('pg_privacy_subtitle', p.privacy_subtitle);
+    setVal('pg_privacy_body',     p.privacy_body);
+    setCk ('pg_privacy_hidden',   p.privacy_hidden);
+  }, {onlyOnce:true});
 }
 
 function updateStats() {
@@ -989,25 +1009,6 @@ function renderRatings(){
       catch(e){ return false; }
     });
 
-  // Load pages content
-  onValue(ref(db,'pagesContent'), snap => {
-    const p = snap.val() || {};
-    const setVal = (id, val) => { const el=document.getElementById(id); if(el&&val!==undefined) el.value=val||''; };
-    const setCk  = (id, val) => { const el=document.getElementById(id); if(el) el.checked=!!val; };
-    setVal('pg_about_title',      p.about_title);
-    setVal('pg_about_subtitle',   p.about_subtitle);
-    setVal('pg_about_body',       p.about_body);
-    setCk ('pg_about_hidden',     p.about_hidden);
-    setVal('pg_contact_title',    p.contact_title);
-    setVal('pg_contact_subtitle', p.contact_subtitle);
-    setVal('pg_contact_email',    p.contact_email);
-    setVal('pg_contact_body',     p.contact_body);
-    setCk ('pg_contact_hidden',   p.contact_hidden);
-    setVal('pg_privacy_title',    p.privacy_title);
-    setVal('pg_privacy_subtitle', p.privacy_subtitle);
-    setVal('pg_privacy_body',     p.privacy_body);
-    setCk ('pg_privacy_hidden',   p.privacy_hidden);
-  }, {onlyOnce:true});
 
     const name = recipe ? str(recipe.name) : 'وصفة غير معروفة';
 
