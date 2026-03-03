@@ -312,11 +312,11 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .success-contact a{color:var(--ta);text-decoration:none;font-weight:700}
 .success-contact a:hover{text-decoration:underline}
 
-.modal{background:var(--card);border-radius:16px;border:1px solid var(--br);width:100%;max-width:520px;position:relative;max-height:94vh;overflow-y:auto;animation:fi .3s ease}
-.mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--br);position:sticky;top:0;background:var(--card);z-index:2}
+.modal{background:var(--card);border-radius:16px;border:1px solid var(--br);width:100%;max-width:520px;position:relative;max-height:94vh;overflow-y:auto;animation:fi .3s ease;display:flex;flex-direction:column}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--br);position:sticky;top:0;background:var(--card);z-index:10;flex-shrink:0}
 .mh h3{font-size:1.05em;font-weight:700}
-.mx{background:none;border:none;color:var(--t2);font-size:1.8em;cursor:pointer;padding:0 4px;line-height:1}
-.mf{padding:18px 20px;display:flex;flex-direction:column;gap:13px}
+.mx{background:none;border:none;color:var(--t2);font-size:1.8em;cursor:pointer;padding:0 4px;line-height:1;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center}
+.mf{padding:18px 20px;display:flex;flex-direction:column;gap:13px;overflow-y:auto;flex:1}
 .fg label{font-size:.82em;color:var(--t2);display:block;margin-bottom:5px;font-weight:700}
 .fi{width:100%;padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit}
 .fi:focus{outline:none;border-color:var(--ta)}
@@ -397,11 +397,11 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
 /* ═══ ROASTERIES SECTION ═══ */
-.roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 20px;position:relative;overflow:hidden}
+.roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 20px 14px;position:relative;overflow:hidden}
 .roasteries-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
 .roasteries-label{font-size:.8em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase}
-.roasteries-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.roastery-card{border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.25s;min-width:140px;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.roasteries-grid{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}.roasteries-grid::-webkit-scrollbar{display:none}
+.roastery-card{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:130px;max-width:160px;flex-shrink:0;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25);scroll-snap-align:start}
 .roastery-card::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:.25s}
 .roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
 .roastery-card:hover::after{background:rgba(255,255,255,.07)}
@@ -778,9 +778,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <footer id="siteFooter">
   <div class="footer-links">
-    <a href="about-us.html">من نحن</a>
-    <a href="about-us.html#contact">اتصل بنا</a>
-    <a href="about-us.html#privacy">سياسة الخصوصية</a>
+    <a href="about-us.html" id="footer-nav-about" style="display:none">من نحن</a>
+    <a href="about-us.html#contact" id="footer-nav-contact" style="display:none">اتصل بنا</a>
+    <a href="about-us.html#privacy" id="footer-nav-privacy" style="display:none">سياسة الخصوصية</a>
   </div>
   <p id="footerCopy">&#169; 2026 Xbloom Recipes</p>
   <p id="footerSub" style="margin-top:6px;font-size:.8em">جميع حقوق الوصفات محفوظة لمنشئيها</p>
@@ -1942,6 +1942,18 @@ onValue(ratingsRef,snap=>{
   if(hRt) hRt.textContent = totalRatings>0 ? '+'+totalRatings : '0';
   render();
 },err=>{console.warn('ratings:',err);});
+// ════ PAGES CONTENT — footer nav visibility ════
+onValue(ref(db,'pagesContent'), snap => {
+  const d = snap.val() || {};
+  const show = (id, visible) => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = visible ? '' : 'none';
+  };
+  show('footer-nav-about',   !d.about_hidden);
+  show('footer-nav-contact', !d.contact_hidden);
+  show('footer-nav-privacy', !d.privacy_hidden);
+}, {onlyOnce: true});
+
 // ════ ROASTERY FUNCTIONS ════
 function renderRoasteriesSection(){
   const entries = Object.entries(ROASTERIES).filter(([k,v])=>v&&v.pinned);
