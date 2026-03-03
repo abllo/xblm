@@ -934,6 +934,32 @@ window.resetForm = function(){
   document.getElementById('saveBtn').textContent='💾 حفظ';
 };
 
+window.promoteInitRecipe = function(idx, name){
+  // Find the INIT recipe by index in ALL_RECIPES filtered to init
+  const initList = ALL_RECIPES.filter(r => r._src === 'init');
+  const r = initList[idx];
+  if(!r){ toast('تعذّر إيجاد الوصفة','terr'); return; }
+  // Fill the add/edit form with this recipe's data
+  editingKey = null; // new record
+  document.getElementById('rFbKey').value = '';
+  document.getElementById('rN').value = str(r.name);
+  document.getElementById('rA').value = str(r.author);
+  document.getElementById('rBr').value = str(r.brewer);
+  document.getElementById('rD').value = str(r.dose);
+  document.getElementById('rR').value = str(r.ratio);
+  document.getElementById('rL').value = str(r.link);
+  document.getElementById('rRoastery').value = str(r.roastery||'');
+  const cat = r.category || 'hot';
+  document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked = true;
+  document.getElementById('addFormTitle').textContent = '✏️ تعديل وصفة INIT — ستُحفظ في Firebase';
+  document.getElementById('saveBtn').textContent = '💾 حفظ في Firebase';
+  // Switch to add/edit tab
+  document.querySelectorAll('.atb').forEach((b,i) => b.classList.toggle('on', i===1));
+  document.querySelectorAll('.acard').forEach((c,i) => c.classList.toggle('open', i===1));
+  window.scrollTo({top:0, behavior:'smooth'});
+  toast('✏️ عدّل البيانات ثم احفظ — ستُنشأ نسخة في Firebase');
+};
+
 window.editRec = function(fbKey){
   const r=FB_RECIPES.find(x=>x._fbKey===fbKey);
   if(!r) return;
