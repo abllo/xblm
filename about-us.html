@@ -89,9 +89,9 @@ a:hover{text-decoration:underline}
   <div class="topbar-inner">
     <span class="topbar-logo">☕ Xbloom Recipes</span>
     <div class="topbar-nav">
-      <a href="#about" onclick="showPage('about',this);return false" class="on" id="nav-about">من نحن</a>
-      <a href="#contact" onclick="showPage('contact',this);return false" id="nav-contact">اتصل بنا</a>
-      <a href="#privacy" onclick="showPage('privacy',this);return false" id="nav-privacy">سياسة الخصوصية</a>
+      <a href="#about" onclick="showPage('about',this);return false" class="on" id="nav-about" style="display:none">من نحن</a>
+      <a href="#contact" onclick="showPage('contact',this);return false" id="nav-contact" style="display:none">اتصل بنا</a>
+      <a href="#privacy" onclick="showPage('privacy',this);return false" id="nav-privacy" style="display:none">سياسة الخصوصية</a>
     </div>
     <a href="index.html" class="topbar-home">← الوصفات</a>
   </div>
@@ -380,29 +380,23 @@ onValue(ref(db,'pagesContent'), snap => {
   const d = snap.val() || {};
 
   // ── ABOUT ──
-  if(d.about_hidden){
-    const nav = document.getElementById('nav-about');
-    if(nav) nav.style.display='none';
-  }
+  const navAbout = document.getElementById('nav-about');
+  if(navAbout) navAbout.style.display = d.about_hidden ? 'none' : '';
   setDyn('about_title',    d.about_title);
   setDyn('about_subtitle', d.about_subtitle);
   setDyn('about_body',     d.about_body, true);
 
   // ── CONTACT ──
-  if(d.contact_hidden){
-    const nav = document.getElementById('nav-contact');
-    if(nav) nav.style.display='none';
-  }
+  const navContact = document.getElementById('nav-contact');
+  if(navContact) navContact.style.display = d.contact_hidden ? 'none' : '';
   setDyn('contact_title',    d.contact_title);
   setDyn('contact_subtitle', d.contact_subtitle);
   setDyn('contact_email',    d.contact_email);
   setDyn('contact_body',     d.contact_body, true);
 
   // ── PRIVACY ──
-  if(d.privacy_hidden){
-    const nav = document.getElementById('nav-privacy');
-    if(nav) nav.style.display='none';
-  }
+  const navPrivacy = document.getElementById('nav-privacy');
+  if(navPrivacy) navPrivacy.style.display = d.privacy_hidden ? 'none' : '';
   setDyn('privacy_title',    d.privacy_title);
   setDyn('privacy_subtitle', d.privacy_subtitle);
   setDyn('privacy_body',     d.privacy_body, true);
