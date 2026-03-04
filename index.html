@@ -407,10 +407,16 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 @keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .ani{animation:fi .35s ease forwards}
 /* ═══ ROASTERIES SECTION ═══ */
-.roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 20px 14px;position:relative;overflow:hidden}
+.roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 0 14px;position:relative;overflow:hidden}
 .roasteries-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
-.roasteries-label{font-size:.8em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase}
-.roasteries-grid{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}.roasteries-grid::-webkit-scrollbar{display:none}
+.roasteries-label{font-size:.8em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase;padding:0 20px}
+/* scroll wrapper with fade edges */
+.roasteries-scroll-wrap{position:relative;overflow:hidden}
+.roasteries-scroll-wrap::before,.roasteries-scroll-wrap::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
+.roasteries-scroll-wrap::before{right:0;background:linear-gradient(to left,var(--card),transparent)}
+.roasteries-scroll-wrap::after{left:0;background:linear-gradient(to right,var(--card),transparent)}
+/* inner track — will be scrolled by JS */
+.roasteries-grid{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding:4px 20px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;user-select:none}.roasteries-grid::-webkit-scrollbar{display:none}.roasteries-grid.grabbing{cursor:grabbing}
 .roastery-card{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:130px;max-width:160px;flex-shrink:0;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25);scroll-snap-align:start}
 .roastery-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.15),rgba(0,0,0,.05));transition:.25s;pointer-events:none}
 .roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -730,8 +736,10 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <!-- ROASTERIES SECTION -->
 <div class="roasteries-section" id="roasteriesSection" style="display:none">
   <div class="roasteries-label">☕ المحامص الرائجة</div>
-  <div class="roasteries-grid" id="roasteriesGrid"></div>
-  <div style="text-align:center;margin-top:12px">
+  <div class="roasteries-scroll-wrap">
+    <div class="roasteries-grid" id="roasteriesGrid"></div>
+  </div>
+  <div style="text-align:center;margin-top:10px;padding:0 20px">
     <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
   </div>
 </div>
@@ -941,7 +949,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       </div>
       <div class="success-contact">
         💬 للاستفسارات والتواصل:<br>
-        <a href="mailto:info@ab-s.me">info@ab-s.me</a>
+        <a href="/cdn-cgi/l/email-protection#eb82858d84ab8a89c698c5868e"><span class="__cf_email__" data-cfemail="1970777f7659787b346a37747c">[email&#160;protected]</span></a>
       </div>
       <button class="btn bp" style="margin-top:18px;justify-content:center;width:100%;padding:12px" onclick="closeAddModal()">
         إغلاق ✕
@@ -952,7 +960,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 </div>
 </div>
 
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, runTransaction, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",projectId:"xbloom-recipes-hub"};
@@ -1967,27 +1975,57 @@ onValue(ref(db,'pagesContent'), snap => {
   show('footer-nav-privacy', !d.privacy_hidden);
 }, {onlyOnce: true});
 
+// ════ ROASTERY KEYWORD MATCHING ════
+// Maps roastery names -> keywords to detect INIT recipes that belong to them
+const ROASTERY_KEYWORDS = {
+  'بلاك نايت':      ['black knight','black night','adham','بلاك نايت','blacknight'],
+  'محمصة عبلة':     ['abla','عبلة'],
+  'محمصة صواع':     ['suwaa','صواع'],
+  'محمصة الرياض':   ['arriyadh','الرياض','alshumaisi','shumaisi'],
+  'محمصة SOIL':     ['soil','سويل'],
+  'محمصة سلوب':     ['slope','سلوب'],
+  'محمصة كيفا':     ['kiffa','كيفا'],
+  'محمصة خطوة جمل': ['خطوة جمل'],
+};
+
+function matchRoastery(recipe) {
+  // If already has roastery field — use it
+  if(recipe.roastery && recipe.roastery.trim()) return recipe.roastery.trim();
+  // Otherwise try keyword matching on name
+  const nameL = String(recipe.name||'').toLowerCase();
+  for(const [rname, kws] of Object.entries(ROASTERY_KEYWORDS)){
+    for(const kw of kws){
+      if(nameL.includes(kw.toLowerCase())) return rname;
+    }
+  }
+  return null;
+}
+
 // ════ ROASTERY FUNCTIONS ════
+let _roasteryAutoScroll = null;
+
 function renderRoasteriesSection(){
-  const entries = Object.entries(ROASTERIES).filter(([k,v])=>v&&v.pinned);
+  const entries = Object.entries(ROASTERIES).filter(([k,v])=>v&&v.pinned&&!v.hiddenFromVisitors);
   const section = document.getElementById('roasteriesSection');
-  const grid = document.getElementById('roasteriesGrid');
+  const grid    = document.getElementById('roasteriesGrid');
   if(!entries.length||!section){if(section)section.style.display='none';return;}
   section.style.display='block';
-  // Count recipes per roastery
-  // Normalize roastery name for comparison (trim + collapse spaces + lowercase)
+
   const normR = s => String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
   const counts={};
-  RR.forEach(r=>{ if(r.roastery){ const k=normR(r.roastery); counts[k]=(counts[k]||0)+1; } });
+  RR.forEach(r=>{
+    const rname = matchRoastery(r);
+    if(rname){ const k=normR(rname); counts[k]=(counts[k]||0)+1; }
+  });
+
   grid.innerHTML = entries.sort((a,b)=>(b[1].order||0)-(a[1].order||0)).map(([k,v])=>{
     const name=v.name||k;
     const cnt=counts[normR(name)]||0;
     const isActive=activeRoastery&&activeRoastery.toLowerCase()===name.toLowerCase();
     const color = v.color || '#1a2a3a';
-    const imgHtml = v.image ? '<img class="roastery-img" src="'+esc(v.image)+'" alt="'+esc(name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' : '';
-    const phStyle = v.image ? ' style="display:none"' : '';
-    return '<div class="roastery-card'+(isActive?' active-filter':'')+'" style="background:'+color+';color:'+contrastColor(color)+'" onclick="openRoasteryModal(\''+esc(name)+'\')">'+
-
+    const imgHtml = v.image ? '<img class=\"roastery-img\" src=\"'+esc(v.image)+'\" alt=\"'+esc(name)+'\" onerror=\"this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'\">' : '';
+    const phStyle = v.image ? ' style=\"display:none\"' : '';
+    return '<div class=\"roastery-card'+(isActive?' active-filter':'')+'\" style=\"background:'+color+';color:'+contrastColor(color)+'\" onclick=\"openRoasteryModal(\''+esc(name)+'\')\">'+
       imgHtml+
       '<div class="roastery-img-placeholder"'+phStyle+'>☕</div>'+
       '<div>'+
@@ -1996,8 +2034,46 @@ function renderRoasteriesSection(){
       '</div>'+
     '</div>';
   }).join('');
+
+  // ── Auto-scroll + drag ──
+  initRoasteryScroll(grid);
 }
 
+function initRoasteryScroll(grid){
+  if(_roasteryAutoScroll){ clearInterval(_roasteryAutoScroll); _roasteryAutoScroll=null; }
+  let paused=false, pauseTimer=null, direction=-1;
+  const SPEED=0.5;
+
+  // Give DOM time to render cards before measuring
+  setTimeout(()=>{
+    _roasteryAutoScroll = setInterval(()=>{
+      if(paused) return;
+      const max = grid.scrollWidth - grid.clientWidth;
+      if(max<=2) return;
+      grid.scrollLeft += direction * SPEED;
+      if(grid.scrollLeft<=0){ direction=1; }
+      else if(grid.scrollLeft>=max-1){ direction=-1; }
+    }, 16);
+  }, 400);
+
+  const pause = (ms=2500)=>{ paused=true; clearTimeout(pauseTimer); pauseTimer=setTimeout(()=>{paused=false;},ms); };
+
+  // Mouse drag
+  let drag=false, sx=0, ss=0;
+  grid.addEventListener('mousedown',e=>{ drag=true; sx=e.pageX; ss=grid.scrollLeft; grid.classList.add('grabbing'); pause(3500); });
+  document.addEventListener('mousemove',e=>{ if(!drag)return; e.preventDefault(); grid.scrollLeft=ss-(e.pageX-sx); });
+  document.addEventListener('mouseup',()=>{ drag=false; grid.classList.remove('grabbing'); });
+
+  // Touch
+  let tx=0,ts=0;
+  grid.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; ts=grid.scrollLeft; pause(3500); },{passive:true});
+  grid.addEventListener('touchmove',e=>{ grid.scrollLeft=ts-(e.touches[0].clientX-tx); },{passive:true});
+
+  // Wheel horizontal
+  grid.addEventListener('wheel',e=>{
+    if(Math.abs(e.deltaX)>0||e.shiftKey){ e.preventDefault(); grid.scrollLeft+=e.deltaX||e.deltaY; pause(2000); }
+  },{passive:false});
+}
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
   if(activeRoastery&&activeRoastery.toLowerCase()===name.toLowerCase()){
@@ -2279,12 +2355,12 @@ window.rmSetFilter = function(cat, el) {
 function rmRender() {
   const name = _rmName;
   const normR = s => String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
-  let list = RR.filter(r => normR(r.roastery||'') === normR(name));
+  let list = RR.filter(r => normR(matchRoastery(r)||'') === normR(name));
 
   if(_rmFilter !== 'all') list = list.filter(r => (r.category||'hot') === _rmFilter);
 
   // Stats (always from full list)
-  const full = RR.filter(r => normR(r.roastery||'') === normR(name));
+  const full = RR.filter(r => normR(matchRoastery(r)||'') === normR(name));
   const hot  = full.filter(r=>(r.category||'hot')==='hot').length;
   const cold = full.filter(r=>r.category==='cold').length;
   document.getElementById('rmStatTotal').textContent = full.length;
@@ -2476,8 +2552,9 @@ document.addEventListener('keydown', e=>{
 <script>
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("/sw.js")
-      .then(r=>console.log("SW:",r.scope)).catch(e=>console.log("SW err:",e));
+    navigator.serviceWorker.register("sw.js")
+      .then(r=>console.log("SW registered",r.scope))
+      .catch(e=>console.warn("SW failed",e));
   });
 }
 </script>
