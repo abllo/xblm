@@ -1328,7 +1328,7 @@ function cardHTML(r,i){
       <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
     </div></div>
     ${str(r.author)?`<div class="cauth">بواسطة ${esc(str(r.author))}</div>`:''}
-    <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${r.roastery ? roasteryTag(r.roastery) : ''}</div>
+    <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${(()=>{ const _rm=matchRoastery(r); return _rm ? roasteryTag(_rm) : ''; })()}</div>
     <div class="cdets">
       <div class="det"><span class="dl">الجرعة</span><span class="dv">${esc(str(r.dose))}</span></div>
       ${str(r.ratio)?`<div class="det"><span class="dl">النسبة</span><span class="dv">${esc(str(r.ratio))}</span></div>`:''}
@@ -1989,13 +1989,20 @@ const ROASTERY_KEYWORDS = {
 };
 
 function matchRoastery(recipe) {
-  // If already has roastery field — use it
+  // 1. If already has roastery field from Firebase — use it directly
   if(recipe.roastery && recipe.roastery.trim()) return recipe.roastery.trim();
-  // Otherwise try keyword matching on name
+  // 2. Keyword match on recipe name
   const nameL = String(recipe.name||'').toLowerCase();
-  for(const [rname, kws] of Object.entries(ROASTERY_KEYWORDS)){
+  for(const [shortName, kws] of Object.entries(ROASTERY_KEYWORDS)){
     for(const kw of kws){
-      if(nameL.includes(kw.toLowerCase())) return rname;
+      if(nameL.includes(kw.toLowerCase())){
+        // Find the ACTUAL Firebase roastery name that contains this shortName
+        // e.g. shortName="بلاك نايت" → Firebase name="محمصة بلاك نايت"
+        const fbMatch = Object.values(ROASTERIES||{}).find(v =>
+          v && v.name && v.name.toLowerCase().includes(shortName.toLowerCase())
+        );
+        return fbMatch ? fbMatch.name : shortName;
+      }
     }
   }
   return null;
@@ -2040,36 +2047,45 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
+  // Kill any previous loop
   if(_roasteryAutoScroll){ clearInterval(_roasteryAutoScroll); _roasteryAutoScroll=null; }
-  let paused=false, pauseTimer=null, direction=-1;
-  const SPEED=0.5;
 
-  // Give DOM time to render cards before measuring
+  let paused=false, pauseTimer=null;
+  const SPEED=0.7; // px per frame
+  let dir=1; // 1=forward, -1=backward
+
+  function tick(){
+    if(paused) return;
+    const max = grid.scrollWidth - grid.clientWidth;
+    if(max < 10) return; // not enough to scroll
+    grid.scrollLeft += dir * SPEED;
+    if(grid.scrollLeft <= 0){ dir=1; grid.scrollLeft=0; }
+    else if(grid.scrollLeft >= max){ dir=-1; grid.scrollLeft=max; }
+  }
+
+  // Wait for cards to render fully
   setTimeout(()=>{
-    _roasteryAutoScroll = setInterval(()=>{
-      if(paused) return;
-      const max = grid.scrollWidth - grid.clientWidth;
-      if(max<=2) return;
-      grid.scrollLeft += direction * SPEED;
-      if(grid.scrollLeft<=0){ direction=1; }
-      else if(grid.scrollLeft>=max-1){ direction=-1; }
-    }, 16);
-  }, 400);
+    _roasteryAutoScroll = setInterval(tick, 16);
+  }, 600);
 
-  const pause = (ms=2500)=>{ paused=true; clearTimeout(pauseTimer); pauseTimer=setTimeout(()=>{paused=false;},ms); };
+  const pause=(ms=2800)=>{
+    paused=true;
+    clearTimeout(pauseTimer);
+    pauseTimer=setTimeout(()=>{ paused=false; }, ms);
+  };
 
   // Mouse drag
   let drag=false, sx=0, ss=0;
-  grid.addEventListener('mousedown',e=>{ drag=true; sx=e.pageX; ss=grid.scrollLeft; grid.classList.add('grabbing'); pause(3500); });
-  document.addEventListener('mousemove',e=>{ if(!drag)return; e.preventDefault(); grid.scrollLeft=ss-(e.pageX-sx); });
+  grid.addEventListener('mousedown',e=>{ drag=true; sx=e.pageX; ss=grid.scrollLeft; grid.classList.add('grabbing'); pause(4000); e.preventDefault(); });
+  document.addEventListener('mousemove',e=>{ if(!drag) return; grid.scrollLeft=ss-(e.pageX-sx); });
   document.addEventListener('mouseup',()=>{ drag=false; grid.classList.remove('grabbing'); });
 
   // Touch
-  let tx=0,ts=0;
-  grid.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; ts=grid.scrollLeft; pause(3500); },{passive:true});
+  let tx=0, ts=0;
+  grid.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; ts=grid.scrollLeft; pause(4000); },{passive:true});
   grid.addEventListener('touchmove',e=>{ grid.scrollLeft=ts-(e.touches[0].clientX-tx); },{passive:true});
 
-  // Wheel horizontal
+  // Wheel
   grid.addEventListener('wheel',e=>{
     if(Math.abs(e.deltaX)>0||e.shiftKey){ e.preventDefault(); grid.scrollLeft+=e.deltaX||e.deltaY; pause(2000); }
   },{passive:false});
