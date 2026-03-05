@@ -947,8 +947,13 @@ window.editRec = function(fbKey){
   const addBtn = document.querySelector('.atb[onclick*="tAdd"]');
   if(addBtn) addBtn.classList.add('on');
   document.getElementById('tAdd').classList.add('open');
-  // Load roasteries for dropdown if not already loaded
-  if(!Object.keys(FB_ROASTERIES).length) loadRoasteries();
+  // Pre-load roasteries for dropdown
+  if(!Object.keys(FB_ROASTERIES).length && db){
+    get(ref(db,'roasteries')).then(snap=>{
+      FB_ROASTERIES={};
+      snap.forEach(child=>{ FB_ROASTERIES[child.key]=child.val(); });
+    }).catch(()=>{});
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 };
 
@@ -1135,6 +1140,15 @@ window.adminRoasteryShow = function(){
   const dd  = document.getElementById('adminRoasteryDd');
   const inp = document.getElementById('rRoastery');
   if(!dd) return;
+  if(!Object.keys(FB_ROASTERIES).length && db){
+    get(ref(db,'roasteries')).then(snap=>{
+      FB_ROASTERIES={};
+      snap.forEach(child=>{ FB_ROASTERIES[child.key]=child.val(); });
+      buildAdminRoasteryDd(inp ? inp.value : '');
+      dd.style.display = 'block';
+    }).catch(()=>{ buildAdminRoasteryDd(''); dd.style.display='block'; });
+    return;
+  }
   buildAdminRoasteryDd(inp ? inp.value : '');
   dd.style.display = 'block';
 };
