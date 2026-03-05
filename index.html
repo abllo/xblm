@@ -1975,13 +1975,21 @@ onValue(ref(db,'pagesContent'), snap => {
 
 // ════ ROASTERY KEYWORD MATCHING ════
 const ROASTERY_KEYWORDS = [
-  { keys: ['black knight','black night','بلاك نايت','blacknight'], arabic: 'بلاك نايت' },
-  { keys: ['abla roastery','abla |','| abla','عبلة'], arabic: 'عبلة' },
-  { keys: ['suwaa','صواع- ','suwaa -'], arabic: 'صواع' },
+  // بلاك نايت — confirmed: adham is their barista, black knight/night variants
+  { keys: ['black knight','black night','بلاك نايت','blacknight','adham - black','black - adham','adham🧊'], arabic: 'بلاك نايت' },
+  // عبلة — confirmed: Abla prefix in recipe names
+  { keys: ['abla roastery','abla |','| abla','abla '], arabic: 'عبلة' },
+  // صواع — confirmed: suwaa/صواع in recipe name
+  { keys: ['suwaa','صواع'], arabic: 'صواع' },
+  // الرياض — confirmed: arriyadh/alshumaisi/al-shumaisi in recipe names
   { keys: ['arriyadh','alshumaisi','al-shumaisi'], arabic: 'الرياض' },
-  { keys: ['soil guji','soil -','soil.','soil ','سويل'], arabic: 'soil' },
-  { keys: ['محمصة سلوب','slope'], arabic: 'سلوب' },
+  // SOIL — confirmed: soil in recipe name (but NOT "مصنع القهوة soil" or similar)
+  { keys: ['soil guji','soil -','soil.','soil ','سويل شيلشلي','سويل'], arabic: 'soil' },
+  // سلوب — confirmed: slope/محمصة سلوب in name
+  { keys: ['محمصة سلوب','سلوب'], arabic: 'سلوب' },
+  // كيفا — confirmed: kiffa in name
   { keys: ['kiffa roastery','kiffa'], arabic: 'كيفا' },
+  // خطوة جمل
   { keys: ['خطوة جمل'], arabic: 'خطوة جمل' },
 ];
 
@@ -2041,77 +2049,85 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
-  if(_roasteryAutoScroll){ clearInterval(_roasteryAutoScroll); _roasteryAutoScroll=null; }
+  // Stop any previous animation
+  if(_roasteryAutoScroll){ cancelAnimationFrame(_roasteryAutoScroll); _roasteryAutoScroll=null; }
 
-  // Clone cards for infinite loop effect
   setTimeout(function(){
     var origCards = Array.from(grid.children);
-    if(origCards.length === 0) return;
+    if(!origCards.length) return;
     var halfW = grid.scrollWidth;
-    if(halfW < 10) return;
+    if(halfW < 20) return;
 
-    // Clone all cards and append at end
-    origCards.forEach(function(card){
-      grid.appendChild(card.cloneNode(true));
-    });
-
-    // Start at beginning
+    // Duplicate cards for seamless infinite loop
+    origCards.forEach(function(c){ grid.appendChild(c.cloneNode(true)); });
     grid.scrollLeft = 0;
 
     var paused = false, pauseTimer = null;
-    var SPEED = 0.6; // px per frame — comfortable reading speed
+    var SPEED = 0.5; // px per frame ~30px/sec at 60fps — comfortable reading pace
 
-    function tick(){
-      if(paused) return;
-      grid.scrollLeft += SPEED;
-      // When we've scrolled through the first set, jump back seamlessly
-      if(grid.scrollLeft >= halfW){
-        grid.scrollLeft = grid.scrollLeft - halfW;
+    function animate(){
+      if(!paused){
+        grid.scrollLeft += SPEED;
+        if(grid.scrollLeft >= halfW){
+          grid.scrollLeft -= halfW; // seamless jump back
+        }
       }
+      _roasteryAutoScroll = requestAnimationFrame(animate);
     }
-
-    _roasteryAutoScroll = setInterval(tick, 16);
+    _roasteryAutoScroll = requestAnimationFrame(animate);
 
     function pause(ms){
       paused = true;
       clearTimeout(pauseTimer);
-      pauseTimer = setTimeout(function(){ paused = false; }, ms || 3000);
+      if(ms) pauseTimer = setTimeout(function(){ paused = false; }, ms);
     }
+    function resume(){ paused = false; clearTimeout(pauseTimer); }
 
-    // Pause on hover
-    grid.addEventListener('mouseenter', function(){ pause(99999); });
-    grid.addEventListener('mouseleave', function(){ paused = false; clearTimeout(pauseTimer); });
+    // Pause on hover — resume on leave
+    grid.addEventListener('mouseenter', function(){ pause(); });
+    grid.addEventListener('mouseleave', function(){ resume(); });
 
     // Mouse drag
     var drag = false, sx = 0, ss = 0;
     grid.addEventListener('mousedown', function(e){
       drag = true; sx = e.pageX; ss = grid.scrollLeft;
-      grid.classList.add('grabbing'); pause(4000); e.preventDefault();
+      grid.classList.add('grabbing'); pause(); e.preventDefault();
     });
     document.addEventListener('mousemove', function(e){
-      if(!drag) return; grid.scrollLeft = ss - (e.pageX - sx);
+      if(!drag) return;
+      grid.scrollLeft = ss - (e.pageX - sx);
+      // Keep in loop range
+      if(grid.scrollLeft < 0) grid.scrollLeft += halfW;
+      if(grid.scrollLeft >= halfW * 2) grid.scrollLeft -= halfW;
     });
     document.addEventListener('mouseup', function(){
+      if(!drag) return;
       drag = false; grid.classList.remove('grabbing');
+      pause(2500); // short pause after drag then resume
     });
 
     // Touch
     var tx = 0, ts = 0;
     grid.addEventListener('touchstart', function(e){
-      tx = e.touches[0].clientX; ts = grid.scrollLeft; pause(4000);
+      tx = e.touches[0].clientX; ts = grid.scrollLeft; pause();
     }, {passive:true});
     grid.addEventListener('touchmove', function(e){
       grid.scrollLeft = ts - (e.touches[0].clientX - tx);
+    }, {passive:true});
+    grid.addEventListener('touchend', function(){
+      pause(2500);
     }, {passive:true});
 
     // Wheel
     grid.addEventListener('wheel', function(e){
       if(Math.abs(e.deltaX) > 0 || e.shiftKey){
-        e.preventDefault(); grid.scrollLeft += e.deltaX || e.deltaY; pause(2000);
+        e.preventDefault();
+        grid.scrollLeft += e.deltaX || e.deltaY;
+        pause(2000);
       }
     }, {passive:false});
 
-  }, 1000);
+  }, 800);
 }
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
