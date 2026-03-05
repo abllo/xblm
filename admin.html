@@ -710,6 +710,40 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<script>
+const _CU = 'YWJkdWxlbGFo';
+const _CP = 'NDkwMjM4';
+function _dc(s){ try{ return atob(s); }catch(e){ return ''; } }
+</script>
+<script>
+// ════ AUTH ════
+window.doLogin = function() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value.trim();
+  if(!u || !p) { document.getElementById('lerr').textContent = 'يرجى إدخال البيانات ❗'; return; }
+  if(u === _dc(_CU) && p === _dc(_CP)) {
+    sessionStorage.setItem('xba','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    loadRoasteries();
+    initFirebase();
+  } else {
+    document.getElementById('lerr').textContent = 'بيانات الدخول غير صحيحة ❌';
+  }
+};
+window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload(); };
+
+['lu','lp'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') window.doLogin(); });
+});
+
+if(sessionStorage.getItem('xba')==='1'){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminPanel').style.display='block';
+  initFirebase();
+}
+
+</script>
 <script type="module">
 
 
@@ -718,11 +752,7 @@ import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.g
 
 // ════ CREDENTIALS (obfuscated) ════
 // user: abdulelah | pass: 490238
-const _CU = 'YWJkdWxlbGFo';
-const _CP = 'NDkwMjM4';
-function _dc(s){ try{ return atob(s); }catch(e){ return ''; } }
 
-async function sha256(msg) { return msg; } // fallback (unused)
 
 const FB_CFG = {
   apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
@@ -759,32 +789,6 @@ function setFbStatus(state, msg) {
   document.getElementById('fbAlert').classList.toggle('show', state==='err');
 }
 
-// ════ AUTH ════
-window.doLogin = function() {
-  const u = document.getElementById('lu').value.trim();
-  const p = document.getElementById('lp').value.trim();
-  if(!u || !p) { document.getElementById('lerr').textContent = 'يرجى إدخال البيانات ❗'; return; }
-  if(u === _dc(_CU) && p === _dc(_CP)) {
-    sessionStorage.setItem('xba','1');
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminPanel').style.display='block';
-    loadRoasteries();
-    initFirebase();
-  } else {
-    document.getElementById('lerr').textContent = 'بيانات الدخول غير صحيحة ❌';
-  }
-};
-window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload(); };
-
-['lu','lp'].forEach(id=>{
-  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') window.doLogin(); });
-});
-
-if(sessionStorage.getItem('xba')==='1'){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('adminPanel').style.display='block';
-  initFirebase();
-}
 
 // ════ FIREBASE ════
 function initFirebase() {
