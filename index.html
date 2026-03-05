@@ -222,6 +222,11 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .ppinfo b{color:var(--t1)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
 .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden}
+.card[data-ci="0"]{background:#1a1a1a;border-color:#2a2a2a}
+.card[data-ci="1"]{background:#1a1f1e;border-color:#243330}
+.card[data-ci="2"]{background:#1a1a22;border-color:#292935}
+.card[data-ci="3"]{background:#1f1a1a;border-color:#332525}
+.card[data-ci="4"]{background:#1a1e22;border-color:#252e38}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);transform:scaleX(0);transition:.3s}
 .card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,168,150,.2)}
 .card:hover::before{transform:scaleX(1)}
@@ -1316,7 +1321,7 @@ function cardHTML(r,i){
       onmouseout="unhoverStars(this,${idx},${rKey})"
       onclick="rate('${rKey}',${s},${idx})">⭐</span>`;
   }
-  return `<div class="card ani" style="animation-delay:${Math.min(i*0.04,.5)}s">
+  return `<div class="card ani" data-ci="${i%5}" style="animation-delay:${Math.min(i*0.04,.5)}s">
     <div class="ch"><h3 class="cn">${esc(str(r.name))}</h3>
     <div class="cicos">
       <div class="ib fav" id="fav-${rKey}" onclick="toggleFav('${rKey}',this)" title="المفضلة" style="color:var(--t2)">
@@ -2041,42 +2046,56 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
-  if(_roasteryAutoScroll){clearInterval(_roasteryAutoScroll);_roasteryAutoScroll=null;}
-  let paused=false,pauseTimer=null,dir=1;
-  const SPEED=0.6;
+  // Cancel any previous RAF loop
+  if(_roasteryAutoScroll){cancelAnimationFrame(_roasteryAutoScroll);_roasteryAutoScroll=null;}
 
-  setTimeout(()=>{
-    _roasteryAutoScroll=setInterval(()=>{
-      if(paused)return;
-      const max=grid.scrollWidth-grid.clientWidth;
-      if(max<10)return;
-      grid.scrollLeft+=dir*SPEED;
-      if(grid.scrollLeft<=0){dir=1;grid.scrollLeft=0;}
-      else if(grid.scrollLeft>=max){dir=-1;grid.scrollLeft=max;}
-    },16);
-  },800);
+  let paused = false;
+  let hovering = false;
+  let pauseTimer = null;
+  let dir = 1;
+  let lastTime = null;
+  const SPEED = 40; // px per second
 
-  const pause=(ms=2800)=>{paused=true;clearTimeout(pauseTimer);pauseTimer=setTimeout(()=>{paused=false;},ms);};
+  function step(ts){
+    _roasteryAutoScroll = requestAnimationFrame(step);
+    if(paused || hovering){ lastTime=null; return; }
+    if(lastTime===null){ lastTime=ts; return; }
+    const dt = Math.min(ts-lastTime, 50); // cap delta to avoid jump after tab switch
+    lastTime = ts;
+    const max = grid.scrollWidth - grid.clientWidth;
+    if(max < 10) return;
+    grid.scrollLeft += dir * SPEED * dt / 1000;
+    if(grid.scrollLeft <= 0)     { dir=1;  grid.scrollLeft=0; }
+    else if(grid.scrollLeft >= max){ dir=-1; grid.scrollLeft=max; }
+  }
 
-  // Hover pause — stop while mouse is over grid
-  grid.addEventListener('mouseenter',()=>{paused=true;clearTimeout(pauseTimer);});
-  grid.addEventListener('mouseleave',()=>{paused=false;});
+  // Start after a short delay so the grid is fully laid out
+  setTimeout(()=>{ _roasteryAutoScroll = requestAnimationFrame(step); }, 800);
+
+  const pause = (ms=2800) => {
+    paused=true; clearTimeout(pauseTimer);
+    pauseTimer = setTimeout(()=>{ paused=false; }, ms);
+  };
+
+  // Hover — instant pause, instant resume
+  grid.addEventListener('mouseenter', ()=>{ hovering=true; lastTime=null; });
+  grid.addEventListener('mouseleave', ()=>{ hovering=false; });
 
   // Mouse drag
-  let drag=false,sx=0,ss=0;
-  grid.addEventListener('mousedown',e=>{drag=true;sx=e.pageX;ss=grid.scrollLeft;grid.classList.add('grabbing');pause(4000);e.preventDefault();});
-  document.addEventListener('mousemove',e=>{if(!drag)return;grid.scrollLeft=ss-(e.pageX-sx);});
-  document.addEventListener('mouseup',()=>{drag=false;grid.classList.remove('grabbing');});
+  let drag=false, sx=0, ss=0;
+  grid.addEventListener('mousedown', e=>{ drag=true; sx=e.pageX; ss=grid.scrollLeft; grid.classList.add('grabbing'); pause(4000); e.preventDefault(); });
+  document.addEventListener('mousemove', e=>{ if(!drag)return; grid.scrollLeft=ss-(e.pageX-sx); });
+  document.addEventListener('mouseup',  ()=>{ drag=false; grid.classList.remove('grabbing'); });
 
   // Touch
-  let tx=0,ts=0;
-  grid.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ts=grid.scrollLeft;pause(4000);},{passive:true});
-  grid.addEventListener('touchmove',e=>{grid.scrollLeft=ts-(e.touches[0].clientX-tx);},{passive:true});
+  let tx=0, ts2=0;
+  grid.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; ts2=grid.scrollLeft; pause(4000); }, {passive:true});
+  grid.addEventListener('touchmove',  e=>{ grid.scrollLeft=ts2-(e.touches[0].clientX-tx); }, {passive:true});
 
   // Wheel
-  grid.addEventListener('wheel',e=>{
-    if(Math.abs(e.deltaX)>0||e.shiftKey){e.preventDefault();grid.scrollLeft+=e.deltaX||e.deltaY;pause(2000);}
-  },{passive:false});
+  grid.addEventListener('wheel', e=>{
+    if(Math.abs(e.deltaX)>0||e.shiftKey){ e.preventDefault(); grid.scrollLeft+=e.deltaX||e.deltaY; pause(2000); }
+  }, {passive:false});
 }
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
