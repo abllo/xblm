@@ -66,7 +66,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .tbl a:hover{text-decoration:underline}
 .tblacts{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
 .badge-fb{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff}
-.badge-init{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:var(--up);color:var(--t2);border:1px solid var(--br)}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .fg label{font-size:.82em;color:var(--t2);font-weight:700}
 .form-input{padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit;width:100%;transition:.2s}
@@ -193,7 +192,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div class="sg">
       <div class="sc"><div class="sv" id="sTotal">—</div><div class="sl">📋 الكل</div></div>
       <div class="sc fb-sc"><div class="sv" id="sFB">—</div><div class="sl">☁️ Firebase</div></div>
-      
       <div class="sc"><div class="sv" id="sH">—</div><div class="sl">🔥 حارة</div></div>
       <div class="sc"><div class="sv" id="sC">—</div><div class="sl">🧊 باردة</div></div>
       <div class="sc"><div class="sv" id="sS">—</div><div class="sl">⚙️ سيرفر</div></div>
@@ -261,7 +259,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <select class="form-input" style="width:130px" id="aSrc" onchange="renderTable()">
         <option value="all">كل المصادر</option>
         <option value="fb">☁️ Firebase فقط</option>
-        
       </select>
     </div>
     <div id="tableCount" style="font-size:.82em;color:var(--t2);margin-bottom:10px"></div>
@@ -716,7 +713,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 <div class="toast" id="toast"></div>
 <script type="module">
 
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -812,9 +808,8 @@ function initFirebase() {
   onValue(recipesRef, snap => {
     FB_RECIPES = [];
     snap.forEach(child=>{ const r=child.val(); r._fbKey=child.key; r._src='fb'; ensureCat(r); FB_RECIPES.push(r); });
-    const fbLinks = new Set(FB_RECIPES.map(r=>r.link));
-    ALL_RECIPES = FB_RECIPES.slice();
-    setFbStatus('ok', '✅ متصل — ' + FB_RECIPES.length + ' وصفة');
+    ALL_RECIPES = FB_RECIPES;
+    setFbStatus('ok', '✅ متصل — ' + FB_RECIPES.length + ' وصفة Firebase');
     updateStats(); renderTable();
   }, err => { setFbStatus('err','فشل — '+err.message); });
 
@@ -903,7 +898,6 @@ window.renderTable = function() {
   const list = ALL_RECIPES.filter(r=>{
     if(br!=='all'&&r.brewer!==br) return false;
     if(src==='fb'&&r._src!=='fb') return false;
-    if(src==='init'&&r._src!=='init') return false;
     if(q){ const t=(str(r.name)+' '+str(r.author)).toLowerCase(); if(!t.includes(q)) return false; }
     return true;
   });
@@ -915,8 +909,7 @@ window.renderTable = function() {
     const catLbl=cat==='hot'?'🔥 حار':cat==='cold'?'🧊 بارد':'⚙️ سيرفر';
     const srcBadge='<span class="badge-fb">☁️ Firebase</span>';
     const actions=`<button class="btn bsm bw" onclick="editRec('${r._fbKey}')">✏️</button>
-      <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(str(r.name))}')">🗑️</button>`
-      :`<button class="btn bsm" style="background:rgba(0,168,150,.12);border:1px solid rgba(0,168,150,.3);color:#00a896;font-size:.75em" onclick="promoteInitRecipe(${i},'${esc(str(r.name))}')">⬆️ تحرير</button>`;
+      <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(str(r.name))}')">🗑️</button>`;
     return `<tr><td>${i+1}</td><td><a href="${esc(str(r.link))}" target="_blank">${esc(str(r.name))}</a></td>
       <td>${esc(str(r.author))}</td><td>${esc(str(r.brewer))}</td><td>${catLbl}</td><td>${srcBadge}</td>
       <td><div class="tblacts">${actions}</div></td></tr>`;
@@ -931,7 +924,6 @@ window.resetForm = function(){
   document.getElementById('addFormTitle').textContent='➕ إضافة وصفة جديدة';
   document.getElementById('saveBtn').textContent='💾 حفظ';
 };
-
 
 window.editRec = function(fbKey){
   const r=FB_RECIPES.find(x=>x._fbKey===fbKey);
