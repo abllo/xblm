@@ -942,14 +942,12 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="success-icon">🎉</div>
       <div class="success-title">تمّت الإضافة بنجاح!</div>
       <div class="success-msg">
-        شكراً لك على مشاركة وصفتك مع مجتمع اكسبلوم ☕<br>
-
+        شكراً لك على مشاركة وصفتك مع مجتمع اكس بلوم ☕<br>
+        وصفتك في طريقها للظهور في الموقع بعد مراجعتها من قِبل الإدارة.
       </div>
       <div class="success-contact">
         💬 للاستفسارات والتواصل:<br>
- <a href="mailto:info@ab-s.me" style="color: #007bff; text-decoration: none; font-family: sans-serif; font-weight: 500;">
-    info@ab-s.me
-</a>
+        <a href="/cdn-cgi/l/email-protection#d9b0b7bfb699b8bbf4aaf7b4bc"><span class="__cf_email__" data-cfemail="c7aea9a1a887a6a5eab4e9aaa2">[email&#160;protected]</span></a>
       </div>
       <button class="btn bp" style="margin-top:18px;justify-content:center;width:100%;padding:12px" onclick="closeAddModal()">
         إغلاق ✕
@@ -1977,29 +1975,29 @@ onValue(ref(db,'pagesContent'), snap => {
 
 // ════ ROASTERY KEYWORD MATCHING ════
 const ROASTERY_KEYWORDS = [
-  ['black knight','black night','بلاك نايت','blacknight'],
-  ['abla','عبلة'],
-  ['suwaa','صواع'],
-  ['arriyadh','alshumaisi','shumaisi'],
-  ['soil','سويل'],
-  ['slope','سلوب'],
-  ['kiffa','كيفا'],
-  ['خطوة جمل'],
+  { keys: ['black knight','black night','بلاك نايت','blacknight'], arabic: 'بلاك نايت' },
+  { keys: ['abla roastery','abla |','| abla','عبلة'], arabic: 'عبلة' },
+  { keys: ['suwaa','صواع- ','suwaa -'], arabic: 'صواع' },
+  { keys: ['arriyadh','alshumaisi','al-shumaisi'], arabic: 'الرياض' },
+  { keys: ['soil guji','soil -','soil.','soil ','سويل'], arabic: 'soil' },
+  { keys: ['محمصة سلوب','slope'], arabic: 'سلوب' },
+  { keys: ['kiffa roastery','kiffa'], arabic: 'كيفا' },
+  { keys: ['خطوة جمل'], arabic: 'خطوة جمل' },
 ];
 
 function matchRoastery(recipe) {
-  // 1. Already has roastery field
+  // 1. Already has roastery field from Firebase
   if(recipe.roastery && String(recipe.roastery).trim()) return String(recipe.roastery).trim();
   // 2. Keyword match on recipe name
   const nameL = String(recipe.name||'').toLowerCase();
-  for(const kws of ROASTERY_KEYWORDS){
-    for(const kw of kws){
-      if(nameL.includes(kw)){
-        // Find actual Firebase roastery whose name contains any of these keywords
-        const match = Object.values(ROASTERIES||{}).find(v =>
-          v && v.name && kws.some(k => v.name.toLowerCase().includes(k))
+  for(const entry of ROASTERY_KEYWORDS){
+    for(const kw of entry.keys){
+      if(nameL.includes(kw.toLowerCase())){
+        // Find actual Firebase roastery whose name contains the Arabic identifier
+        const fbMatch = Object.values(ROASTERIES||{}).find(v =>
+          v && v.name && v.name.toLowerCase().includes(entry.arabic.toLowerCase())
         );
-        return match ? match.name : null;
+        return fbMatch ? fbMatch.name : null;
       }
     }
   }
@@ -2043,38 +2041,77 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
-  if(_roasteryAutoScroll){clearInterval(_roasteryAutoScroll);_roasteryAutoScroll=null;}
-  let paused=false,pauseTimer=null,dir=1;
-  const SPEED=0.6;
+  if(_roasteryAutoScroll){ clearInterval(_roasteryAutoScroll); _roasteryAutoScroll=null; }
 
-  setTimeout(()=>{
-    _roasteryAutoScroll=setInterval(()=>{
-      if(paused)return;
-      const max=grid.scrollWidth-grid.clientWidth;
-      if(max<10)return;
-      grid.scrollLeft+=dir*SPEED;
-      if(grid.scrollLeft<=0){dir=1;grid.scrollLeft=0;}
-      else if(grid.scrollLeft>=max){dir=-1;grid.scrollLeft=max;}
-    },16);
-  },800);
+  // Clone cards for infinite loop effect
+  setTimeout(function(){
+    var origCards = Array.from(grid.children);
+    if(origCards.length === 0) return;
+    var halfW = grid.scrollWidth;
+    if(halfW < 10) return;
 
-  const pause=(ms=2800)=>{paused=true;clearTimeout(pauseTimer);pauseTimer=setTimeout(()=>{paused=false;},ms);};
+    // Clone all cards and append at end
+    origCards.forEach(function(card){
+      grid.appendChild(card.cloneNode(true));
+    });
 
-  // Mouse drag
-  let drag=false,sx=0,ss=0;
-  grid.addEventListener('mousedown',e=>{drag=true;sx=e.pageX;ss=grid.scrollLeft;grid.classList.add('grabbing');pause(4000);e.preventDefault();});
-  document.addEventListener('mousemove',e=>{if(!drag)return;grid.scrollLeft=ss-(e.pageX-sx);});
-  document.addEventListener('mouseup',()=>{drag=false;grid.classList.remove('grabbing');});
+    // Start at beginning
+    grid.scrollLeft = 0;
 
-  // Touch
-  let tx=0,ts=0;
-  grid.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ts=grid.scrollLeft;pause(4000);},{passive:true});
-  grid.addEventListener('touchmove',e=>{grid.scrollLeft=ts-(e.touches[0].clientX-tx);},{passive:true});
+    var paused = false, pauseTimer = null;
+    var SPEED = 0.6; // px per frame — comfortable reading speed
 
-  // Wheel
-  grid.addEventListener('wheel',e=>{
-    if(Math.abs(e.deltaX)>0||e.shiftKey){e.preventDefault();grid.scrollLeft+=e.deltaX||e.deltaY;pause(2000);}
-  },{passive:false});
+    function tick(){
+      if(paused) return;
+      grid.scrollLeft += SPEED;
+      // When we've scrolled through the first set, jump back seamlessly
+      if(grid.scrollLeft >= halfW){
+        grid.scrollLeft = grid.scrollLeft - halfW;
+      }
+    }
+
+    _roasteryAutoScroll = setInterval(tick, 16);
+
+    function pause(ms){
+      paused = true;
+      clearTimeout(pauseTimer);
+      pauseTimer = setTimeout(function(){ paused = false; }, ms || 3000);
+    }
+
+    // Pause on hover
+    grid.addEventListener('mouseenter', function(){ pause(99999); });
+    grid.addEventListener('mouseleave', function(){ paused = false; clearTimeout(pauseTimer); });
+
+    // Mouse drag
+    var drag = false, sx = 0, ss = 0;
+    grid.addEventListener('mousedown', function(e){
+      drag = true; sx = e.pageX; ss = grid.scrollLeft;
+      grid.classList.add('grabbing'); pause(4000); e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e){
+      if(!drag) return; grid.scrollLeft = ss - (e.pageX - sx);
+    });
+    document.addEventListener('mouseup', function(){
+      drag = false; grid.classList.remove('grabbing');
+    });
+
+    // Touch
+    var tx = 0, ts = 0;
+    grid.addEventListener('touchstart', function(e){
+      tx = e.touches[0].clientX; ts = grid.scrollLeft; pause(4000);
+    }, {passive:true});
+    grid.addEventListener('touchmove', function(e){
+      grid.scrollLeft = ts - (e.touches[0].clientX - tx);
+    }, {passive:true});
+
+    // Wheel
+    grid.addEventListener('wheel', function(e){
+      if(Math.abs(e.deltaX) > 0 || e.shiftKey){
+        e.preventDefault(); grid.scrollLeft += e.deltaX || e.deltaY; pause(2000);
+      }
+    }, {passive:false});
+
+  }, 1000);
 }
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
