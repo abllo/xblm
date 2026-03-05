@@ -816,7 +816,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <div class="share-img-title"> مشاركة صورة بطاقة الوصفة </div>
     <canvas id="shareCanvas" width="600" height="360"></canvas>
     <div class="share-img-acts">
-      <button class="btn bp" onclick="downloadShareImage()">⬇️ تحميل</button>
+      <button class="btn bp" onclick="downloadShareImage()">⬇️ حفظ الصورة </button>
       <button class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="document.getElementById('shareImgOv').classList.remove('open')">✕ إغلاق</button>
     </div>
   </div>
@@ -1573,7 +1573,7 @@ window.openShareModal = async function(idx) {
   if(!r) return;
   const siteBase = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
   const recipeName = r.name || 'وصفة';
-  const shareText = '☕ ' + recipeName + ' أشاركك هذه الوصفة الرائعة من موقع وصفات اكسبلوم';
+  const shareText = '☕ ' + recipeName + 'أشاركك هذه الوصفة المميزة من موقع وصفات | وصفات موقع إكسبلوم';
 
   // Show modal immediately with loading state
   document.getElementById('shareRecipeName').textContent = recipeName;
