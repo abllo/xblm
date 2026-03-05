@@ -887,7 +887,7 @@ window.switchTab = function(btn,id){
   document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
   btn.classList.add('on');
   document.getElementById(id).classList.add('open');
-  if(id==='tRoastery') loadRoasteries();
+  if(id==='tRoastery' || id==='tAdd') loadRoasteries();
 };
 
 // ════ TABLE ════
@@ -941,8 +941,14 @@ window.editRec = function(fbKey){
   document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked=true;
   document.getElementById('addFormTitle').textContent='✏️ تعديل الوصفة';
   document.getElementById('saveBtn').textContent='💾 حفظ التعديل';
-  document.querySelectorAll('.atb').forEach((b,i)=>{ b.classList.toggle('on',i===1); });
-  document.querySelectorAll('.acard').forEach((c,i)=>{ c.classList.toggle('open',i===1); });
+  // Switch to tAdd tab by ID (not index — index breaks after tab removal)
+  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
+  const addBtn = document.querySelector('.atb[onclick*="tAdd"]');
+  if(addBtn) addBtn.classList.add('on');
+  document.getElementById('tAdd').classList.add('open');
+  // Load roasteries for dropdown if not already loaded
+  if(!Object.keys(FB_ROASTERIES).length) loadRoasteries();
   window.scrollTo({top:0,behavior:'smooth'});
 };
 
@@ -1576,9 +1582,12 @@ window.copyPassCode = function(){
 
 // ════ إدارة المحامص ════
 let FB_ROASTERIES = {};
+let _roasteriesListenerActive = false;
 
 function loadRoasteries(){
   if(!db) return;
+  if(_roasteriesListenerActive){ renderRoasteryList(); return; }
+  _roasteriesListenerActive = true;
   const rRef = ref(db,'roasteries');
   onValue(rRef, snap=>{
     FB_ROASTERIES = {};
