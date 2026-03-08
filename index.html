@@ -222,11 +222,15 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .ppinfo b{color:var(--t1)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
 .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden}
-.card[data-ci="0"]{background:#1c1c1c;border-color:#333}
-.card[data-ci="1"]{background:#0f2220;border-left:3px solid #00a896;border-color:#1a3a35}
-.card[data-ci="2"]{background:#10121e;border-left:3px solid #4a90e2;border-color:#1a2040}
-.card[data-ci="3"]{background:#1e1214;border-left:3px solid #e25c5c;border-color:#3a1c1e}
-.card[data-ci="4"]{background:#0f1820;border-left:3px solid #7c5ce2;border-color:#1a2840}
+/* Roastery-colored card accents */
+.card{--card-accent:#2a2a2a}
+.card::after{content:'';position:absolute;top:0;right:0;bottom:0;width:4px;background:var(--card-accent);border-radius:0 12px 12px 0;opacity:.85}
+.card:hover::after{opacity:1}
+.card[data-ci="0"]{background:#141414;border-color:#282828}
+.card[data-ci="1"]{background:#0e1f1d;border-color:#183530}
+.card[data-ci="2"]{background:#0e1020;border-color:#181c38}
+.card[data-ci="3"]{background:#1c0e12;border-color:#341820}
+.card[data-ci="4"]{background:#0e1820;border-color:#182a38}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);transform:scaleX(0);transition:.3s}
 .card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,168,150,.2)}
 .card:hover::before{transform:scaleX(1)}
@@ -951,7 +955,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       </div>
       <div class="success-contact">
         💬 للاستفسارات والتواصل:<br>
-        <a href="/cdn-cgi/l/email-protection#d9b0b7bfb699b8bbf4aaf7b4bc"><span class="__cf_email__" data-cfemail="c7aea9a1a887a6a5eab4e9aaa2">[email&#160;protected]</span></a>
+        <span style="direction:ltr;unicode-bidi:embed;display:inline-block">info&#64;ab&#45;s&#46;me</span>
       </div>
       <button class="btn bp" style="margin-top:18px;justify-content:center;width:100%;padding:12px" onclick="closeAddModal()">
         إغلاق ✕
@@ -1320,7 +1324,14 @@ function cardHTML(r,i){
       onmouseout="unhoverStars(this,${idx},${rKey})"
       onclick="rate('${rKey}',${s},${idx})">⭐</span>`;
   }
-  return `<div class="card ani" data-ci="${i%5}" style="animation-delay:${Math.min(i*0.04,.5)}s">
+  const _rName = (function(){try{return matchRoastery(r)||null}catch(e){return null}})();
+  const _rInfo = _rName ? Object.values(ROASTERIES||{}).find(v=>v&&v.name===_rName) : null;
+  const _rColor = _rInfo?.color || null;
+  const _cardStyle = _rColor
+    ? `animation-delay:${Math.min(i*0.04,.5)}s;background:color-mix(in srgb,${_rColor} 14%,#0a0a0a);border-color:color-mix(in srgb,${_rColor} 35%,#1a1a1a);--card-accent:${_rColor}`
+    : `animation-delay:${Math.min(i*0.04,.5)}s`;
+  const _ciAttr = _rColor ? '' : ` data-ci="${i%5}"`;
+  return `<div class="card ani"${_ciAttr} style="${_cardStyle}">
     <div class="ch"><h3 class="cn">${esc(str(r.name))}</h3>
     <div class="cicos">
       <div class="ib fav" id="fav-${rKey}" onclick="toggleFav('${rKey}',this)" title="المفضلة" style="color:var(--t2)">
