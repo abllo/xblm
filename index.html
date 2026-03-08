@@ -2428,11 +2428,11 @@ function rmRender() {
     ? (ratingSum/ratingCnt).toFixed(1)+'⭐' : '—';
 
   // Meta line
-  document.getElementById('rmMeta').textContent = full.length + ' وصفة في هذه المحمصة';
+  document.getElementById('rmMeta').textContent = full.length + ' وصفة في المجتمع';
 
   const body = document.getElementById('rmBody');
   if(!list.length){
-    body.innerHTML = '<div class="rm-empty">☕ لا يوجد وصفات لهذه المحمصة حتى الان</div>';
+    body.innerHTML = '<div class="rm-empty">☕ لا توجد وصفات في هذه الفئة</div>';
     return;
   }
 
@@ -2460,7 +2460,7 @@ function rmRender() {
       </div>
       <div class="rm-card-foot">
         <div class="rm-rating">${starsStr}</div>
-        ${r.link ? `<a href="${esc(r.link)}" target="_blank" class="rm-btn" style="background:${_rmColor}22;border-color:${_rmColor}55"فتح الوصفة ↗</a>` : ''}
+        ${r.link ? `<a href="${esc(r.link)}" target="_blank" class="rm-btn" style="background:${_rmColor}22;border-color:${_rmColor}55">فتح في xBloom ↗</a>` : ''}
       </div>
     </div>`;
   }).join('');
