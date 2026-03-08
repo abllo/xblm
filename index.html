@@ -224,7 +224,7 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden}
 /* Roastery-colored card accents */
 .card{--card-accent:#2a2a2a}
-.card::after{content:'';position:absolute;top:0;right:0;bottom:0;width:4px;background:var(--card-accent);border-radius:0 12px 12px 0;opacity:.85}
+.card::after{content:'';position:absolute;top:0;right:0;bottom:0;width:4px;background:var(--card-accent);border-radius:0 12px 12px 0;opacity:.55}
 .card:hover::after{opacity:1}
 .card[data-ci="0"]{background:#141414;border-color:#282828}
 .card[data-ci="1"]{background:#0e1f1d;border-color:#183530}
@@ -1328,7 +1328,7 @@ function cardHTML(r,i){
   const _rInfo = _rName ? Object.values(ROASTERIES||{}).find(v=>v&&v.name===_rName) : null;
   const _rColor = _rInfo?.color || null;
   const _cardStyle = _rColor
-    ? `animation-delay:${Math.min(i*0.04,.5)}s;background:color-mix(in srgb,${_rColor} 14%,#0a0a0a);border-color:color-mix(in srgb,${_rColor} 35%,#1a1a1a);--card-accent:${_rColor}`
+    ? `animation-delay:${Math.min(i*0.04,.5)}s;background:color-mix(in srgb,${_rColor} 8%,#0a0a0a);border-color:color-mix(in srgb,${_rColor} 22%,#1a1a1a);--card-accent:${_rColor}`
     : `animation-delay:${Math.min(i*0.04,.5)}s`;
   const _ciAttr = _rColor ? '' : ` data-ci="${i%5}"`;
   return `<div class="card ani"${_ciAttr} style="${_cardStyle}">
