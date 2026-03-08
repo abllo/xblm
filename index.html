@@ -1408,13 +1408,15 @@ window.hoverStars=function(el,s){
 window.unhoverStars=function(el,idx){
   const link=RR[idx]?.link;
   const rKey=link?ratingKey(link):'';
-  const rd=RATINGS[rKey]||{total:0,count:0};
-  const avg=rd.count>0?rd.total/rd.count:0;
+  const {avg} = getRatingStats(rKey);
+  const myR = getMyRating(rKey);
   const wrap=el.parentElement;
   wrap.querySelectorAll('.star').forEach((star,i)=>{
     star.classList.remove('shov');
-    if(i<Math.round(avg)){star.classList.add('son');star.classList.remove('soff');}
-    else{star.classList.add('soff');star.classList.remove('son');}
+    // Show my rating if I rated, otherwise show average
+    const fill = myR>0 ? i<myR : i<Math.round(avg);
+    star.classList.toggle('son', fill);
+    star.classList.toggle('soff', !fill);
   });
 };
 
@@ -1423,17 +1425,25 @@ window.unhoverStars=function(el,idx){
 function getRatingStats(rKey){
   const rd = RATINGS[rKey];
   if(!rd) return {avg:0, count:0};
-  if(rd._legacy) return {avg: rd.count>0 ? rd.total/rd.count : 0, count: rd.count};
-  const entries = Object.values(rd).filter(v => typeof v==='number');
+  // Legacy structure {total, count, _legacy}
+  if(rd._legacy){
+    const cnt = rd.count||0;
+    return {avg: cnt>0 ? (rd.total||0)/cnt : 0, count: cnt};
+  }
+  // New structure: {uid: stars} — filter only valid star values 1-5
+  const entries = Object.entries(rd)
+    .filter(([k,v]) => typeof v==='number' && v>=1 && v<=5);
   if(!entries.length) return {avg:0, count:0};
-  const total = entries.reduce((a,b)=>a+b,0);
-  return {avg: total/entries.length, count: entries.length};
+  const total = entries.reduce((s,[,v])=>s+v, 0);
+  return {avg: Math.round((total/entries.length)*10)/10, count: entries.length};
 }
 function getMyRating(rKey){
   const uid = getOrCreateUID();
   const rd = RATINGS[rKey];
-  if(!rd || rd._legacy) return USER_RATINGS[rKey]||0;
-  return rd[uid] || USER_RATINGS[rKey] || 0;
+  // Check Firebase data first (source of truth)
+  if(rd && !rd._legacy && typeof rd[uid]==='number' && rd[uid]>=1) return rd[uid];
+  // Fallback to local cache
+  return USER_RATINGS[rKey]||0;
 }
 
 
@@ -1541,41 +1551,62 @@ window.rate=function(rKey,s,idx){
   const uid = getOrCreateUID();
   const prev = getMyRating(rKey);
 
-  // Same star clicked = remove rating
+  // نفس النجمة = إلغاء التقييم
   if(prev === s){
     USER_RATINGS[rKey] = 0;
     saveLocal();
+    // تحديث UI فوري
+    _updateStarsUI(rKey, idx, 0);
     set(ref(db,'ratings/'+rKey+'/'+uid), null)
-      .then(()=> toast('تم حذف تقييمك ✅'))
-      .catch(()=> toast('خطأ في الحذف','terr'));
+      .then(()=> toast('تم حذف تقييمك'))
+      .catch(()=>{ USER_RATINGS[rKey]=prev; saveLocal(); _updateStarsUI(rKey,idx,prev); toast('خطأ في الحذف','terr'); });
     return;
   }
 
-  // Set/update rating
+  // حفظ التقييم (جديد أو تعديل)
   USER_RATINGS[rKey] = s;
   saveLocal();
+  _updateStarsUI(rKey, idx, s);
 
-  // Optimistic UI update
-  const starsWrap = document.getElementById('stars-'+idx);
-  if(starsWrap){
-    starsWrap.querySelectorAll('.star').forEach((star,i)=>{
-      star.classList.toggle('son', i<s);
-      star.classList.toggle('soff', i>=s);
-      if(i===s-1){ star.classList.add('rated-mine'); setTimeout(()=>star.classList.remove('rated-mine'),400); }
-    });
-  }
-
-  const msg = prev>0 ? 'تم تعديل تقييمك إلى '+s+'⭐' : s+'⭐ شكراً على تقييمك!';
+  const msg = prev>0 ? 'تم تعديل تقييمك إلى '+s+' ⭐' : 'تقييمك '+s+' ⭐ — شكراً!';
   toast(msg);
 
-  // Save to Firebase — just set uid:stars (no transaction needed)
   set(ref(db,'ratings/'+rKey+'/'+uid), s)
-    .catch(err=>{
+    .catch(()=>{
       USER_RATINGS[rKey] = prev;
       saveLocal();
-      toast('خطأ في الحفظ','terr');
+      _updateStarsUI(rKey, idx, prev);
+      toast('خطأ في الحفظ — حاول مجدداً','terr');
     });
 };
+
+// دالة مساعدة لتحديث نجوم البطاقة
+function _updateStarsUI(rKey, idx, myR){
+  const starsWrap = document.getElementById('stars-'+idx);
+  if(!starsWrap) return;
+  const {avg, count} = getRatingStats(rKey);
+  // حساب المعدل المؤقت (optimistic) بدون انتظار Firebase
+  starsWrap.querySelectorAll('.star').forEach((star,i)=>{
+    const fill = myR>0 ? i<myR : i<Math.round(avg);
+    star.classList.toggle('son', fill);
+    star.classList.toggle('soff', !fill);
+    star.classList.remove('shov','rated-mine-dot');
+    if(myR>0 && i===myR-1) star.classList.add('rated-mine-dot');
+  });
+  // تحديث نص المعدل
+  const rinfo = starsWrap.closest('.rating-wrap')?.querySelector('.rinfo');
+  if(rinfo){
+    const dispAvg = myR>0 ? (
+      count>1
+        ? ((avg*(count) - (USER_RATINGS[rKey]||0) + myR) / count).toFixed(1)
+        : myR.toFixed(1)
+    ) : avg.toFixed(1);
+    const dispCount = myR>0 && (USER_RATINGS[rKey]||0)===0 ? count+1 : count;
+    rinfo.innerHTML = dispCount>0
+      ? `<span class="ravg">${dispAvg} ⭐</span><span class="rcnt">${dispCount} تقييم</span><span class="rmine" style="cursor:pointer" title="انقر نجمتك مرة أخرى لإلغاء التقييم">تقييمك: ${myR}⭐ ✏️</span>`
+      : `<span class="rcnt" style="font-size:.75em">كن أول من يقيّم</span>`;
+  }
+}
 
 // ════ SHARE MODAL ════
 window.openShareModal = async function(idx) {
@@ -1959,19 +1990,25 @@ onValue(recipesRef,snap=>{
 onValue(ratingsRef,snap=>{
   RATINGS={};
   let totalRatings=0;
+  const uid = getOrCreateUID();
   snap.forEach(child=>{
     const raw = child.val();
-    // Support BOTH old {total,count} and new {uid:stars} structures
-    if(raw && typeof raw==='object' && ('total' in raw || 'count' in raw)){
-      // Old structure — keep as-is for display, flag it
-      RATINGS[child.key] = {_legacy: true, total: raw.total||0, count: raw.count||0};
+    if(!raw || typeof raw!=='object') return;
+    if('total' in raw || 'count' in raw){
+      // بنية قديمة
+      RATINGS[child.key] = {_legacy:true, total:raw.total||0, count:raw.count||0};
       totalRatings += raw.count||0;
-    } else if(raw && typeof raw==='object'){
-      // New structure: {uid: stars}
+    } else {
+      // بنية جديدة {uid: stars}
       RATINGS[child.key] = raw;
-      totalRatings += Object.keys(raw).length;
+      totalRatings += Object.values(raw).filter(v=>typeof v==='number'&&v>=1&&v<=5).length;
+      // مزامنة تقييم المستخدم الحالي من Firebase (source of truth)
+      if(typeof raw[uid]==='number' && raw[uid]>=1 && raw[uid]<=5){
+        USER_RATINGS[child.key] = raw[uid];
+      }
     }
   });
+  saveLocal();
   const hRt=document.getElementById('hstatRatings');
   if(hRt) hRt.textContent = totalRatings>0 ? '+'+totalRatings : '0';
   render();
