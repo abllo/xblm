@@ -16,7 +16,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Recipes | وصفات </title>
+<title>Xbloom Recipes | وصفات اكس بلوم</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -697,7 +697,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <h1 class="hdr-title">Xbloom Recipes</h1>
     </div>
 
-    <p class="sub">موقع وصفات | وصفات  متنوعة من أشهر المحامص والمشاركين الخاصة بمكينة أكسبلوم</p>
+    <p class="sub">وصفات مجتمع اكس بلوم العربي</p>
 
 
 
@@ -780,7 +780,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="ads-container" id="adsTopContainer" style="display:none"></div>
 <!-- PINNED RECIPES -->
 <div class="pinned-banner" id="pinnedBanner" style="display:none">
-  <div class="pinned-label">وصفات مميزة واستثنائية</div>
+  <div class="pinned-label">📌 وصفات مثبتة</div>
   <div class="grid" id="pinnedGrid"></div>
 </div>
 <div class="ads-container" id="adsMiddleContainer" style="display:none"></div>
@@ -813,10 +813,10 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <!-- SHARE AS IMAGE MODAL -->
 <div class="share-img-ov" id="shareImgOv">
   <div class="share-img-box">
-    <div class="share-img-title"> مشاركة صورة بطاقة الوصفة </div>
+    <div class="share-img-title">🖼️ مشاركة كصورة</div>
     <canvas id="shareCanvas" width="600" height="360"></canvas>
     <div class="share-img-acts">
-      <button class="btn bp" onclick="downloadShareImage()">⬇️ حفظ الصورة </button>
+      <button class="btn bp" onclick="downloadShareImage()">⬇️ تحميل</button>
       <button class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="document.getElementById('shareImgOv').classList.remove('open')">✕ إغلاق</button>
     </div>
   </div>
@@ -947,13 +947,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div class="success-icon">🎉</div>
       <div class="success-title">تمّت الإضافة بنجاح!</div>
       <div class="success-msg">
-        شكراً لك على مشاركة وصفتك  ☕<br>
+        شكراً لك على مشاركة وصفتك مع مجتمع اكس بلوم ☕<br>
+        وصفتك في طريقها للظهور في الموقع بعد مراجعتها من قِبل الإدارة.
       </div>
       <div class="success-contact">
         💬 للاستفسارات والتواصل:<br>
-<a href="mailto:info@ab-s.me" style="color: #007bff; text-decoration: none; font-family: sans-serif; font-weight: 500;">
-    info@ab-s.me
-</a>
+        <a href="/cdn-cgi/l/email-protection#d9b0b7bfb699b8bbf4aaf7b4bc"><span class="__cf_email__" data-cfemail="c7aea9a1a887a6a5eab4e9aaa2">[email&#160;protected]</span></a>
+      </div>
       <button class="btn bp" style="margin-top:18px;justify-content:center;width:100%;padding:12px" onclick="closeAddModal()">
         إغلاق ✕
       </button>
@@ -1573,7 +1573,7 @@ window.openShareModal = async function(idx) {
   if(!r) return;
   const siteBase = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
   const recipeName = r.name || 'وصفة';
-  const shareText = '☕ ' + recipeName + 'أشاركك هذه الوصفة المميزة من موقع وصفات | وصفات موقع إكسبلوم';
+  const shareText = '☕ ' + recipeName + ' أشاركك هذه الوصفة الرائعة من موقع وصفات اكسبلوم';
 
   // Show modal immediately with loading state
   document.getElementById('shareRecipeName').textContent = recipeName;
@@ -2049,7 +2049,7 @@ function renderRoasteriesSection(){
         ? `<img class="roastery-img" src="${esc(v.image)}" alt="${esc(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
         : '';
       const phStyle = v.image ? ' style="display:none"' : '';
-      return `<div class="roastery-card${isActive ? ' active-filter' : ''}" style="background:${color};color:${cc}" onclick="openRoasteryModal('${esc(name)}')">`
+      return `<div class="roastery-card${isActive ? ' active-filter' : ''}" style="background:${color};color:${cc}" data-rname="${esc(name)}" onclick="openRoasteryModal(this.dataset.rname)">`
         + imgHtml
         + `<div class="roastery-img-placeholder"${phStyle}>☕</div>`
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
