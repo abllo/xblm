@@ -24,98 +24,189 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0d0d0d;--card:#141414;--br:#222;
-  --t1:#f0f0f0;--t2:#888;--ta:#00A896;
-  --gr:linear-gradient(135deg,#00A896,#4A90E2);
-  --up:#1a1a1a;
+  --bg:#090909;--card:#111;--br:#1e1e1e;
+  --t1:#f0f0f0;--t2:#666;--ta:#00A896;
+  --up:#161616;
 }
 body{background:var(--bg);color:var(--t1);font-family:'Cairo',sans-serif;min-height:100vh;direction:rtl}
 
-/* Header */
-.hdr{background:#0f0f0f;border-bottom:1px solid var(--br);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+/* ── Header ── */
+.hdr{
+  background:rgba(9,9,9,.85);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--br);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
 .hdr-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .hdr-logo{font-size:1.5em}
-.hdr-name{font-size:.95em;font-weight:800;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hdr-back{display:flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none;font-size:.85em;font-weight:600;padding:8px 14px;border-radius:20px;border:1px solid var(--br);background:var(--up);transition:.2s}
-.hdr-back:hover{color:var(--t1);border-color:var(--ta)}
+.hdr-name{font-size:.95em;font-weight:800;background:linear-gradient(135deg,#00A896,#4A90E2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-back{display:flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none;font-size:.82em;font-weight:700;padding:8px 14px;border-radius:20px;border:1px solid var(--br);background:var(--up);transition:.2s}
+.hdr-back:hover{color:var(--t1);border-color:rgba(255,255,255,.15)}
 
-/* Loading */
-.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px}
+/* ── Loading ── */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px}
 .spinner{width:44px;height:44px;border:3px solid var(--br);border-top-color:var(--ta);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{color:var(--t2);font-size:.9em}
 
-/* Error */
+/* ── Error ── */
 .err-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:12px;text-align:center;padding:20px}
 .err-icon{font-size:3em}
 .err-title{font-size:1.1em;font-weight:700}
 .err-sub{color:var(--t2);font-size:.85em}
 
-/* Main content */
-.page{max-width:680px;margin:0 auto;padding:24px 16px 60px}
+/* ── Page Layout ── */
+.page{max-width:660px;margin:0 auto;padding:28px 16px 80px;position:relative}
 
-/* Hero card */
-.recipe-hero{background:var(--card);border:1px solid var(--br);border-radius:20px;overflow:hidden;margin-bottom:20px}
-.recipe-accent{height:5px}
-.recipe-hero-body{padding:28px 24px 20px}
-.recipe-category-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:.78em;font-weight:700;margin-bottom:14px}
-.cat-hot{background:rgba(255,100,50,.12);color:#ff8060;border:1px solid rgba(255,100,50,.2)}
-.cat-cold{background:rgba(50,150,255,.12);color:#60b0ff;border:1px solid rgba(50,150,255,.2)}
-.cat-server{background:rgba(180,140,255,.12);color:#c0a0ff;border:1px solid rgba(180,140,255,.2)}
-.recipe-name{font-size:1.9em;font-weight:900;line-height:1.2;margin-bottom:10px}
-.recipe-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.recipe-author{font-size:.85em;color:var(--t2)}
-.recipe-author span{color:var(--t1);font-weight:700}
-.recipe-roastery{display:inline-flex;align-items:center;gap:5px;font-size:.82em;color:var(--ta);font-weight:700;background:rgba(0,168,150,.08);padding:4px 12px;border-radius:20px;border:1px solid rgba(0,168,150,.15)}
+/* ── Hero ── */
+.recipe-hero{
+  position:relative;border-radius:24px;overflow:hidden;
+  margin-bottom:16px;border:1px solid var(--br);
+  background:var(--card);
+}
+.recipe-hero-glow{
+  position:absolute;inset:0;pointer-events:none;opacity:.07;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, var(--ac,#00A896), transparent);
+}
+.recipe-accent{height:4px;width:100%}
+.recipe-hero-body{padding:28px 24px 24px;position:relative;z-index:1}
 
-/* Stats grid */
-.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
-@media(min-width:480px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
-.stat-card{background:var(--up);border:1px solid var(--br);border-radius:14px;padding:16px 12px;text-align:center}
-.stat-icon{font-size:1.4em;margin-bottom:6px}
-.stat-label{font-size:.72em;color:var(--t2);margin-bottom:4px}
-.stat-value{font-size:1.05em;font-weight:800;color:var(--t1)}
+/* Category badge */
+.recipe-category-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:20px;font-size:.75em;font-weight:700;
+  margin-bottom:16px;letter-spacing:.3px;
+}
+.cat-hot{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.cat-cold{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2)}
+.cat-server{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
 
-/* Actions */
-.actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;border:none;font-family:'Cairo',sans-serif;font-size:.88em;font-weight:700;cursor:pointer;text-decoration:none;transition:.2s}
-.btn:active{transform:scale(.96)}
-.btn-primary{background:var(--gr);color:#fff;flex:1;min-width:140px}
-.btn-secondary{background:var(--up);border:1px solid var(--br);color:var(--t2);flex:1}
-.btn-secondary:hover{color:var(--t1);border-color:var(--ta)}
+/* Recipe name */
+.recipe-name{
+  font-size:clamp(1.6em,6vw,2.2em);font-weight:900;
+  line-height:1.2;margin-bottom:14px;
+  background:linear-gradient(160deg,#fff 60%,rgba(255,255,255,.55));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.recipe-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.recipe-author{font-size:.83em;color:var(--t2)}
+.recipe-author span{color:rgba(255,255,255,.75);font-weight:700}
+.recipe-roastery{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.8em;font-weight:700;
+  padding:4px 12px;border-radius:20px;
+}
 
-/* Share section */
-.share-section{background:var(--card);border:1px solid var(--br);border-radius:16px;padding:20px;margin-top:16px}
-.share-title{font-size:.9em;font-weight:800;margin-bottom:14px;color:var(--t2)}
-.share-url{background:var(--up);border:1px solid var(--br);border-radius:10px;padding:10px 14px;font-size:.78em;color:var(--t2);word-break:break-all;font-family:monospace;margin-bottom:12px;line-height:1.5}
+/* ── Stats grid ── */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  margin-bottom:16px;
+}
+@media(min-width:440px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{
+  background:var(--card);border:1px solid var(--br);border-radius:16px;
+  padding:16px 10px;text-align:center;
+  transition:.2s;
+}
+.stat-card:hover{border-color:rgba(255,255,255,.1);background:#161616}
+.stat-icon{font-size:1.3em;margin-bottom:6px}
+.stat-label{font-size:.67em;color:var(--t2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.stat-value{font-size:1em;font-weight:900;color:var(--t1)}
+
+/* ── Rating display ── */
+.recipe-rating-bar{
+  background:var(--card);border:1px solid var(--br);border-radius:16px;
+  padding:16px 20px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.rrb-left{display:flex;align-items:center;gap:10px}
+.rrb-big{font-size:2em;font-weight:900;line-height:1}
+.rrb-stars{color:#f59e0b;font-size:1.1em;letter-spacing:2px}
+.rrb-count{font-size:.75em;color:var(--t2);margin-top:2px}
+.rrb-right{font-size:.78em;color:var(--t2)}
+
+/* ── Action buttons ── */
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 20px;border-radius:14px;border:none;
+  font-family:'Cairo',sans-serif;font-size:.88em;font-weight:700;
+  cursor:pointer;text-decoration:none;transition:.2s;flex:1;min-width:130px;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(135deg,#00A896,#4A90E2);
+  color:#fff;box-shadow:0 4px 20px rgba(0,168,150,.25);
+}
+.btn-primary:hover{box-shadow:0 6px 28px rgba(0,168,150,.4)}
+.btn-secondary{background:var(--card);border:1px solid var(--br);color:var(--t2)}
+.btn-secondary:hover{color:var(--t1);border-color:rgba(255,255,255,.15)}
+
+/* ── Share section ── */
+.share-section{
+  background:var(--card);border:1px solid var(--br);
+  border-radius:20px;padding:20px;margin-bottom:16px;
+}
+.section-title{font-size:.82em;font-weight:800;margin-bottom:14px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+.share-url{
+  background:var(--up);border:1px solid var(--br);border-radius:10px;
+  padding:10px 14px;font-size:.75em;color:var(--t2);
+  word-break:break-all;font-family:monospace;margin-bottom:14px;line-height:1.6;
+  cursor:pointer;transition:.2s;
+}
+.share-url:hover{border-color:rgba(255,255,255,.12);color:var(--t1)}
 .share-btns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.share-btn{padding:11px 10px;border-radius:11px;border:none;font-family:'Cairo',sans-serif;font-size:.82em;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s;text-decoration:none}
+.share-btn{
+  padding:11px 10px;border-radius:12px;border:none;
+  font-family:'Cairo',sans-serif;font-size:.82em;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:.2s;text-decoration:none;
+}
 .share-btn:active{transform:scale(.96)}
-.sbtn-copy{background:var(--ta);color:#fff}
+.sbtn-copy{background:#00A896;color:#fff}
 .sbtn-wa{background:#25D366;color:#fff}
-.sbtn-x{background:#000;color:#fff;border:1px solid #333}
+.sbtn-x{background:#000;color:#fff;border:1px solid #222}
 .sbtn-native{background:var(--up);border:1px solid var(--br);color:var(--t2)}
 
-/* Rating */
-.rating-section{background:var(--card);border:1px solid var(--br);border-radius:16px;padding:20px;margin-top:16px;text-align:center}
-.rating-title{font-size:.88em;color:var(--t2);margin-bottom:12px;font-weight:600}
-.stars{display:flex;gap:8px;justify-content:center;font-size:2em;cursor:pointer}
-.star{transition:.15s;opacity:.35}
-.star:hover,.star.lit{opacity:1;transform:scale(1.1)}
-.rating-note{font-size:.75em;color:var(--t2);margin-top:8px}
+/* ── Rating section ── */
+.rating-section{
+  background:var(--card);border:1px solid var(--br);
+  border-radius:20px;padding:24px 20px;margin-bottom:16px;text-align:center;
+}
+.rating-title{font-size:.88em;color:var(--t2);margin-bottom:16px;font-weight:600}
+.stars{display:flex;gap:10px;justify-content:center;font-size:2.2em;cursor:pointer}
+.star{transition:.15s;opacity:.2;filter:grayscale(1)}
+.star:hover,.star.lit{opacity:1;filter:none;transform:scale(1.15)}
+.rating-note{font-size:.75em;color:var(--t2);margin-top:10px}
 
-/* Back home */
-.back-home{text-align:center;margin-top:28px}
-.back-home a{color:var(--ta);text-decoration:none;font-size:.85em;font-weight:700}
-.back-home a:hover{text-decoration:underline}
-
-/* Footer */
-footer{text-align:center;padding:20px;color:var(--t2);font-size:.75em;border-top:1px solid var(--br);margin-top:20px}
-footer a{color:var(--ta);text-decoration:none}
-
-/* Toast */
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e1e1e;border:1px solid var(--br);color:var(--t1);padding:11px 22px;border-radius:30px;font-size:.85em;font-weight:700;opacity:0;transition:.3s;z-index:9999;pointer-events:none;white-space:nowrap}
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1e1e1e;border:1px solid #333;color:var(--t1);
+  padding:11px 22px;border-radius:30px;font-size:.85em;font-weight:700;
+  opacity:0;transition:.3s;z-index:9999;pointer-events:none;white-space:nowrap;
+}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── Share image overlay ── */
+#shareImgOv{
+  position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.85);
+  backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;padding:20px;
+}
+#shareImgOv.open{display:flex}
+.share-mode-tabs{display:flex;gap:8px;margin-bottom:4px}
+.share-mode-tab{
+  padding:8px 20px;border-radius:20px;font-size:.82em;font-weight:700;
+  cursor:pointer;border:1.5px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);
+  font-family:'Cairo',sans-serif;transition:.2s;
+}
+.share-mode-tab.active{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+#shareCanvasWrap{border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+canvas#shareCanvas.story-mode{max-height:70vh;width:auto}
+canvas#shareCanvas.card-mode{max-width:min(100%,560px);height:auto}
+.share-img-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -127,7 +218,7 @@ footer a{color:var(--ta);text-decoration:none}
     <span class="hdr-name">xBloom Recipes</span>
   </a>
   <a class="hdr-back" href="/">
-    <span>→</span> العودة للرئيسية
+    <span>→</span> الرئيسية
   </a>
 </header>
 
@@ -142,13 +233,15 @@ footer a{color:var(--ta);text-decoration:none}
   <div class="err-icon">☕</div>
   <div class="err-title">لم يتم العثور على الوصفة</div>
   <div class="err-sub">الرابط قد يكون غير صحيح أو انتهت صلاحيته</div>
-  <a class="btn btn-primary" href="/" style="margin-top:14px;text-decoration:none">العودة للرئيسية</a>
+  <a class="btn btn-primary" href="/" style="margin-top:16px;text-decoration:none;max-width:200px">العودة للرئيسية</a>
 </div>
 
 <!-- Recipe page -->
 <main class="page" id="recipePage" style="display:none">
 
+  <!-- Hero -->
   <div class="recipe-hero" id="recipeHero">
+    <div class="recipe-hero-glow" id="recipeGlow"></div>
     <div class="recipe-accent" id="recipeAccent"></div>
     <div class="recipe-hero-body">
       <div id="categoryBadge"></div>
@@ -160,23 +253,31 @@ footer a{color:var(--ta);text-decoration:none}
     </div>
   </div>
 
-  <!-- Stats -->
+  <!-- Stats grid -->
   <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- Community rating bar -->
+  <div class="recipe-rating-bar" id="recipeRatingBar" style="display:none">
+    <div class="rrb-left">
+      <div class="rrb-big" id="rrbAvg">—</div>
+      <div>
+        <div class="rrb-stars" id="rrbStars"></div>
+        <div class="rrb-count" id="rrbCount"></div>
+      </div>
+    </div>
+    <div class="rrb-right">متوسط تقييم المجتمع</div>
+  </div>
 
   <!-- Actions -->
   <div class="actions">
-    <a class="btn btn-primary" id="openInAppBtn" href="#" target="_blank">
-      ☕ فتح الوصفة في xBloom
-    </a>
-    <button class="btn btn-secondary" id="shareImgBtn" onclick="openShareImage()">
-      🖼️ مشاركة كصورة
-    </button>
+    <a class="btn btn-primary" id="openInAppBtn" href="#" target="_blank">☕ فتح في xBloom</a>
+    <button class="btn btn-secondary" onclick="openShareImage()">🖼️ مشاركة كصورة</button>
   </div>
 
-  <!-- Share section -->
+  <!-- Share -->
   <div class="share-section">
-    <div class="share-title">🔗 شارك هذه الوصفة</div>
-    <div class="share-url" id="pageUrl">—</div>
+    <div class="section-title">🔗 شارك الوصفة</div>
+    <div class="share-url" id="pageUrl" onclick="copyPageUrl()" title="انقر للنسخ">—</div>
     <div class="share-btns">
       <button class="share-btn sbtn-copy" onclick="copyPageUrl()">📋 نسخ الرابط</button>
       <a class="share-btn sbtn-wa" id="waShareBtn" href="#" target="_blank">💬 واتساب</a>
@@ -198,8 +299,8 @@ footer a{color:var(--ta);text-decoration:none}
     <div class="rating-note" id="ratingNote">اضغط على نجمة للتقييم</div>
   </div>
 
-  <div class="back-home">
-    <a href="/">← تصفح كل الوصفات على xBloom Recipes Hub</a>
+  <div style="text-align:center;margin-top:20px">
+    <a href="/" style="color:var(--ta);text-decoration:none;font-size:.83em;font-weight:700">← تصفح كل الوصفات</a>
   </div>
 
 </main>
@@ -287,12 +388,36 @@ function renderRecipe(r, key) {
   if(r.author) document.getElementById('recipeAuthor').innerHTML = `بواسطة: <span>${r.author}</span>`;
   
   const accentColor = r.roastery ? colorFromName(r.roastery) : colorFromName(name);
-  document.getElementById('recipeAccent').style.background = `linear-gradient(90deg, ${accentColor}, ${accentColor}88)`;
+
+  // Accent bar + glow
+  document.getElementById('recipeAccent').style.background =
+    `linear-gradient(90deg, ${accentColor}, ${accentColor}88, transparent)`;
+  document.getElementById('recipeGlow').style.background =
+    `radial-gradient(ellipse 90% 60% at 50% 0%, ${accentColor}, transparent)`;
 
   if(r.roastery) {
     const rEl = document.getElementById('recipeRoastery');
     rEl.textContent = '☕ ' + r.roastery;
     rEl.style.display = 'inline-flex';
+    rEl.style.background = accentColor + '18';
+    rEl.style.borderColor = accentColor + '44';
+    rEl.style.color = accentColor;
+  }
+
+  // Load + display community rating from Firebase
+  if(key) {
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js')
+      .then(({get, ref: fbr}) => get(fbr(db, 'ratings/' + key)))
+      .then(snap => {
+        const d = snap.val();
+        if(!d || !d.count) return;
+        const avg = d.total / d.count;
+        const filled = Math.round(avg);
+        document.getElementById('rrbAvg').textContent = avg.toFixed(1);
+        document.getElementById('rrbStars').textContent = '★'.repeat(filled) + '☆'.repeat(5-filled);
+        document.getElementById('rrbCount').textContent = d.count + ' تقييم';
+        document.getElementById('recipeRatingBar').style.display = 'flex';
+      }).catch(()=>{});
   }
 
   // Stats

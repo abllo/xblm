@@ -665,23 +665,24 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 /* Recipe cards inside modal */
 .rm-card{
-  border-radius:14px;padding:14px 16px;
+  border-radius:16px;padding:0;
   border:1px solid rgba(255,255,255,.08);
   background:rgba(0,0,0,.25);
   margin-bottom:10px;
   transition:.25s;
   position:relative;overflow:hidden;
+  cursor:pointer;
+  text-decoration:none;
+  display:block;
 }
-.rm-card::before{
-  content:'';position:absolute;top:0;right:0;left:0;height:2px;
-  background:rgba(255,255,255,.0);
-  transition:.25s;
-}
-.rm-card:hover{background:rgba(255,255,255,.06);transform:translateX(-3px)}
-.rm-card:hover::before{background:rgba(255,255,255,.2)}
+.rm-card:hover{background:rgba(255,255,255,.07);transform:translateX(-3px);border-color:rgba(255,255,255,.16)}
+.rm-card-accent{height:3px;width:100%;flex-shrink:0}
+.rm-card-body{padding:14px 16px 14px}
 .rm-card:last-child{margin-bottom:0}
 .rm-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
-.rm-card-name{font-size:.92em;font-weight:800;color:#fff;line-height:1.3;flex:1}
+.rm-card-name{font-size:.93em;font-weight:800;color:#fff;line-height:1.3;flex:1}
+.rm-card-arrow{font-size:.9em;color:rgba(255,255,255,.25);transition:.2s;flex-shrink:0;margin-top:2px}
+.rm-card:hover .rm-card-arrow{color:rgba(255,255,255,.7);transform:translateX(-4px)}
 .rm-card-author{font-size:.73em;color:rgba(255,255,255,.45);margin-bottom:8px}
 .rm-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
 .rm-tag{padding:2px 8px;border-radius:5px;font-size:.68em;font-weight:700}
@@ -697,7 +698,16 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .rm-det-l{display:block;font-size:.62em;color:rgba(255,255,255,.4);margin-bottom:1px}
 .rm-det-v{font-size:.82em;font-weight:800;color:#fff}
 .rm-card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.rm-rating{font-size:.78em;color:rgba(255,255,255,.55)}
+.rm-rating{font-size:.78em;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px}
+.rm-rating-stars{color:#f5a623;letter-spacing:1px}
+.rm-card-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:8px;
+  font-size:.74em;font-weight:800;
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;transition:.2s;white-space:nowrap;
+  font-family:'Cairo',sans-serif;
+}
 .rm-btn{
   display:inline-flex;align-items:center;gap:5px;
   padding:7px 14px;border-radius:8px;
@@ -1919,11 +1929,12 @@ const settingsRef2 = ref(db, 'siteSettings');
 const commentsRef2 = ref(db, 'comments');
 
 // ════ AFFILIATE DATA ════
-let AFF_DATA = { _settings: {}, links: {} };
+let AFF_DATA = { _settings: {}, links: {}, recipe_links: {} };
 onValue(ref(db, 'affiliate'), snap => {
-  AFF_DATA = snap.val() || { _settings: {}, links: {} };
-  if(!AFF_DATA._settings) AFF_DATA._settings = {};
-  if(!AFF_DATA.links) AFF_DATA.links = {};
+  AFF_DATA = snap.val() || { _settings: {}, links: {}, recipe_links: {} };
+  if(!AFF_DATA._settings)    AFF_DATA._settings = {};
+  if(!AFF_DATA.links)        AFF_DATA.links = {};
+  if(!AFF_DATA.recipe_links) AFF_DATA.recipe_links = {};
 });
 
 onValue(settingsRef2, snap => {
@@ -2162,12 +2173,16 @@ window.submitComment = function(rKey) {
 function getAffBtn(r) {
   const s = AFF_DATA._settings || {};
   if(!s.enabled) return '';
-  const links = AFF_DATA.links || {};
-  const url = (r.roastery && links[r.roastery]) || s.defaultUrl || '';
+  const recipeLinks = AFF_DATA.recipe_links || {};
+  const roastLinks  = AFF_DATA.links || {};
+  // Priority: recipe-specific > roastery > default
+  const url = (r._fbKey && recipeLinks[r._fbKey])
+           || (r.roastery && roastLinks[r.roastery])
+           || s.defaultUrl || '';
   if(!url) return '';
   const label = s.btnLabel || 'اشتري القهوة ☕';
-  const roastKey = (r.roastery || 'default').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_');
-  return `<a href="${url}" target="_blank" rel="noopener" class="btn aff-buy-btn" onclick="trackAffClick('${roastKey}')">${label}</a>`;
+  const trackKey = (r._fbKey || r.roastery || 'default').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_');
+  return `<a href="${url}" target="_blank" rel="noopener" class="btn aff-buy-btn" onclick="trackAffClick('${trackKey}')">${label}</a>`;
 }
 
 window.trackAffClick = function(roastKey) {
@@ -2735,30 +2750,53 @@ function rmRender() {
   const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل 🧹'};
   const tagCls = {hot:'rm-tag-hot', cold:'rm-tag-cold', server:'rm-tag-server'};
 
-  body.innerHTML = list.map((r,i) => {
-    const rk  = ratingKey(r.link||r.name||'');
-    const {avg,count} = getRatingStats(rk);
-    const cat = r.category||'hot';
-    const starsStr = avg>0 ? '⭐'.repeat(Math.min(5,Math.round(avg)))+' '+avg.toFixed(1)+' ('+count+')' : '';
+  // accent color variants
+  const ac = _rmColor;
+  const acLight  = ac + '33';
+  const acBorder = ac + '55';
+  const acStrong = ac + 'aa';
 
-    return `<div class="rm-card" style="animation:fadeUp .3s ${Math.min(i*.05,.4)}s both">
-      <div class="rm-card-top">
-        <div class="rm-card-name">${esc(String(r.name||''))}</div>
+  body.innerHTML = list.map((r, i) => {
+    const rk  = ratingKey(r.link||r.name||'');
+    const {avg, count} = getRatingStats(rk);
+    const cat = r.category||'hot';
+
+    // Stars
+    const filled = avg > 0 ? Math.round(avg) : 0;
+    const starsHtml = avg > 0
+      ? `<span class="rm-rating-stars">${'★'.repeat(filled)}${'☆'.repeat(5-filled)}</span>
+         <span style="color:rgba(255,255,255,.5);font-size:.75em">${avg.toFixed(1)} (${count})</span>`
+      : `<span style="color:rgba(255,255,255,.2);font-size:.72em">لم يُقيَّم بعد</span>`;
+
+    // Recipe page URL
+    const recipeUrl = r._fbKey
+      ? `recipe.html?key=${encodeURIComponent(r._fbKey)}`
+      : (r.link || '#');
+
+    return `
+    <a href="${recipeUrl}" class="rm-card" style="animation:fadeUp .3s ${Math.min(i*.06,.5)}s both" onclick="closeRoasteryModal()">
+      <div class="rm-card-accent" style="background:linear-gradient(90deg,${ac},${acStrong},transparent)"></div>
+      <div class="rm-card-body">
+        <div class="rm-card-top">
+          <div class="rm-card-name">${esc(String(r.name||''))}</div>
+          <span class="rm-card-arrow">←</span>
+        </div>
+        ${r.author ? `<div class="rm-card-author">✍️ ${esc(String(r.author))}</div>` : ''}
+        <div class="rm-card-tags">
+          <span class="rm-tag ${tagCls[cat]||'rm-tag-hot'}">${catMap[cat]||cat}</span>
+          ${r.brewer ? `<span class="rm-tag rm-tag-brewer">☕ ${esc(String(r.brewer))}</span>` : ''}
+        </div>
+        <div class="rm-card-dets">
+          ${r.dose  ? `<div class="rm-det"><span class="rm-det-l">⚖️ الجرعة</span><span class="rm-det-v">${esc(String(r.dose))}</span></div>` : ''}
+          ${r.ratio ? `<div class="rm-det"><span class="rm-det-l">💧 النسبة</span><span class="rm-det-v">${esc(String(r.ratio))}</span></div>` : ''}
+          ${r.temp  ? `<div class="rm-det"><span class="rm-det-l">🌡️ الحرارة</span><span class="rm-det-v">${esc(String(r.temp))}</span></div>` : ''}
+        </div>
+        <div class="rm-card-foot">
+          <div class="rm-rating">${starsHtml}</div>
+          <div class="rm-card-cta" style="background:${acLight};border-color:${acBorder}">عرض الوصفة ←</div>
+        </div>
       </div>
-      ${r.author ? `<div class="rm-card-author">بواسطة ${esc(String(r.author))}</div>` : ''}
-      <div class="rm-card-tags">
-        <span class="rm-tag ${tagCls[cat]||'rm-tag-hot'}">${catMap[cat]||cat}</span>
-        ${r.brewer ? `<span class="rm-tag rm-tag-brewer">${esc(String(r.brewer))}</span>` : ''}
-      </div>
-      <div class="rm-card-dets">
-        ${r.dose  ? `<div class="rm-det"><span class="rm-det-l">الجرعة</span><span class="rm-det-v">${esc(String(r.dose))}</span></div>` : ''}
-        ${r.ratio ? `<div class="rm-det"><span class="rm-det-l">النسبة</span><span class="rm-det-v">${esc(String(r.ratio))}</span></div>` : ''}
-      </div>
-      <div class="rm-card-foot">
-        <div class="rm-rating">${starsStr}</div>
-        ${r.link ? `<a href="${esc(r.link)}" target="_blank" class="rm-btn" style="background:${_rmColor}22;border-color:${_rmColor}55">فتح في xBloom ↗</a>` : ''}
-      </div>
-    </div>`;
+    </a>`
   }).join('');
 }
 
