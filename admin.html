@@ -583,56 +583,73 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   <div id="tSEO" class="acard">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
       <div>
-        <h3 style="margin-bottom:4px">🔍 مولّد صفحات SEO الثابتة</h3>
+        <h3 style="margin-bottom:4px">🔍 SEO — نشر تلقائي على GitHub</h3>
         <p style="color:var(--t2);font-size:.82em;line-height:1.6;max-width:520px">
-          Google لا يقرأ الصفحات الديناميكية (JavaScript). هذه الأداة تولّد ملف HTML ثابت لكل وصفة بمحتوى مكتوب مباشرة + meta tags + Structured Data (JSON-LD) — ارفعها على GitHub Pages لتظهر في نتائج البحث.
+          اضغط "🚀 نشر الآن" — يولّد HTML ثابت لكل وصفة ويرفعها على GitHub Pages تلقائياً بدون أي خطوات يدوية.
         </p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn" onclick="previewSEO()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:9px 16px;font-size:.82em">👁️ معاينة</button>
-        <button class="btn" onclick="generateAllSEO()" id="seoGenBtn" style="background:var(--gr);color:#fff;border:none;padding:9px 18px;font-size:.85em">⚡ توليد الكل وتحميل ZIP</button>
+        <button class="btn" onclick="deploySEO()" id="seoGenBtn" style="background:var(--gr);color:#fff;border:none;padding:9px 20px;font-size:.85em;font-weight:700">🚀 نشر الآن</button>
       </div>
     </div>
 
-    <!-- How it works -->
-    <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.15);border-radius:12px;padding:14px 16px;margin-bottom:18px">
-      <div style="font-size:.82em;font-weight:700;margin-bottom:8px;color:var(--ta)">📋 كيف تستخدم الصفحات؟</div>
-      <div style="font-size:.78em;color:var(--t2);line-height:1.9">
-        ١. اضغط "توليد الكل وتحميل ZIP" — سيتحمّل ملف ZIP بكل الصفحات<br>
-        ٢. افتح الـ ZIP — ستجد مجلد <code style="background:var(--up);padding:1px 5px;border-radius:4px">recipes/</code> بملف HTML لكل وصفة<br>
-        ٣. ارفع المجلد على GitHub Pages بجوار <code style="background:var(--up);padding:1px 5px;border-radius:4px">index.html</code><br>
-        ٤. كل وصفة ستكون متاحة على: <code style="background:var(--up);padding:1px 5px;border-radius:4px">xblm.ab-s.me/recipes/اسم-الوصفة.html</code>
+    <!-- GitHub config -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:.82em;font-weight:700;margin-bottom:10px">⚙️ إعدادات GitHub</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="flex:2;min-width:160px">
+          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">المستودع</label>
+          <input class="form-input" id="seoRepo" value="abllo/xblm" style="font-size:.82em;font-family:monospace" placeholder="username/repo">
+        </div>
+        <div style="flex:1;min-width:100px">
+          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">Branch</label>
+          <input class="form-input" id="seoBranch" value="main" style="font-size:.82em;font-family:monospace">
+        </div>
+        <div style="flex:3;min-width:200px">
+          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">GitHub Token</label>
+          <input class="form-input" id="seoToken" type="password" style="font-size:.82em;font-family:monospace" placeholder="ghp_...">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn" onclick="saveSEOConfig()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:10px 14px;font-size:.8em;white-space:nowrap">💾 حفظ</button>
+        </div>
       </div>
     </div>
 
     <!-- Stats -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
-      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
         <div style="font-size:1.4em;font-weight:900" id="seoTotal">—</div>
-        <div style="font-size:.72em;color:var(--t2);margin-top:2px">وصفة في Firebase</div>
+        <div style="font-size:.7em;color:var(--t2);margin-top:2px">وصفة</div>
       </div>
-      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1.4em;font-weight:900;color:#4ade80" id="seoWithLink">—</div>
-        <div style="font-size:.72em;color:var(--t2);margin-top:2px">بصفحة xBloom</div>
+      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900;color:#4ade80" id="seoUploaded">—</div>
+        <div style="font-size:.7em;color:var(--t2);margin-top:2px">رُفعت</div>
       </div>
-      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1.4em;font-weight:900;color:var(--ta)" id="seoIndexable">—</div>
-        <div style="font-size:.72em;color:var(--t2);margin-top:2px">قابلة للفهرسة</div>
+      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900;color:#f59e0b" id="seoFailed">—</div>
+        <div style="font-size:.7em;color:var(--t2);margin-top:2px">فشلت</div>
+      </div>
+      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900;color:var(--ta)" id="seoETA">—</div>
+        <div style="font-size:.7em;color:var(--t2);margin-top:2px">متبقي</div>
       </div>
     </div>
 
     <!-- Options -->
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
-      <div style="font-size:.82em;font-weight:700;margin-bottom:10px">⚙️ خيارات التوليد</div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <label style="display:flex;align-items:center;gap:8px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoIncludeAll" checked> تضمين الوصفات بدون رابط xBloom
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
+          <input type="checkbox" id="seoIncludeAll" checked> تضمين الكل
         </label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoGenSitemap" checked> توليد sitemap.xml ديناميكي
+        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
+          <input type="checkbox" id="seoGenSitemap" checked> sitemap
         </label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoStructuredData" checked> JSON-LD Structured Data
+        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
+          <input type="checkbox" id="seoStructuredData" checked> JSON-LD
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
+          <input type="checkbox" id="seoSkipExisting"> تخطي الموجودة
         </label>
       </div>
     </div>
@@ -640,23 +657,29 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <!-- Progress -->
     <div id="seoProgress" style="display:none;margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:.82em">
-        <span id="seoProgressLabel">جاري التوليد…</span>
-        <span id="seoProgressPct">0%</span>
+        <span id="seoProgressLabel">جاري الرفع…</span>
+        <span id="seoProgressPct" style="font-weight:700;color:var(--ta)">0%</span>
       </div>
-      <div style="background:var(--br);border-radius:4px;height:6px;overflow:hidden">
-        <div id="seoProgressBar" style="height:100%;background:var(--gr);border-radius:4px;width:0%;transition:.2s"></div>
+      <div style="background:var(--br);border-radius:6px;height:8px;overflow:hidden">
+        <div id="seoProgressBar" style="height:100%;background:var(--gr);border-radius:6px;width:0%;transition:.15s"></div>
       </div>
+      <div style="font-size:.73em;color:var(--t2);margin-top:4px" id="seoCurrentFile"></div>
+    </div>
+
+    <!-- Log -->
+    <div id="seoLogWrap" style="display:none;background:#0a0a0a;border:1px solid var(--br);border-radius:10px;padding:10px 12px;max-height:150px;overflow-y:auto;margin-bottom:12px">
+      <div id="seoLog" style="font-family:monospace;font-size:.7em;color:#6ee7a0;line-height:1.8;direction:ltr;text-align:left"></div>
     </div>
 
     <!-- Preview -->
     <div id="seoPreviewWrap" style="display:none">
-      <div style="font-size:.82em;font-weight:700;margin-bottom:8px;color:var(--t2)">معاينة — أول وصفة:</div>
-      <div style="background:#0a0a0a;border:1px solid var(--br);border-radius:10px;padding:14px;overflow:auto;max-height:320px">
-        <pre id="seoPreviewCode" style="font-family:monospace;font-size:.72em;color:#a0ffa0;white-space:pre-wrap;direction:ltr;text-align:left"></pre>
+      <div style="font-size:.82em;font-weight:700;margin-bottom:8px;color:var(--t2)">معاينة HTML أول وصفة:</div>
+      <div style="background:#0a0a0a;border:1px solid var(--br);border-radius:10px;padding:14px;overflow:auto;max-height:260px">
+        <pre id="seoPreviewCode" style="font-family:monospace;font-size:.7em;color:#a0ffa0;white-space:pre-wrap;direction:ltr;text-align:left"></pre>
       </div>
     </div>
 
-    <div id="seoStatus" style="display:none;margin-top:14px;padding:10px 14px;border-radius:10px;font-size:.82em"></div>
+    <div id="seoStatus" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:.82em"></div>
   </div>
 
   <!-- ═══ مزامنة الشيت ═══ -->
@@ -2367,206 +2390,286 @@ function renderAffRecipeLinks() {
 }
 
 
-// ════ SEO PAGE GENERATOR ════
-function seoSlug(name) {
-  return String(name||'recipe')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\u0600-\u06FFa-zA-Z0-9-]/g, '')
-    .slice(0, 60) || 'recipe';
-}
+// ════ SEO PAGE GENERATOR + GITHUB AUTO-DEPLOY ════
 
-function updateSEOStats() {
-  const total     = FB_RECIPES.length;
-  const withLink  = FB_RECIPES.filter(r => r.link).length;
-  const el1 = document.getElementById('seoTotal');
-  const el2 = document.getElementById('seoWithLink');
-  const el3 = document.getElementById('seoIndexable');
-  if(el1) el1.textContent = total;
-  if(el2) el2.textContent = withLink;
-  if(el3) el3.textContent = total;
+// ── Config ──
+function getSEOConfig() {
+  return {
+    repo:   (localStorage.getItem('seo_repo')   || 'abllo/xblm').trim(),
+    branch: (localStorage.getItem('seo_branch') || 'main').trim(),
+    token:  (localStorage.getItem('seo_token')  || '').trim(),
+  };
 }
+window.saveSEOConfig = function() {
+  const repo   = document.getElementById('seoRepo')?.value.trim();
+  const branch = document.getElementById('seoBranch')?.value.trim();
+  const token  = document.getElementById('seoToken')?.value.trim();
+  if(repo)   localStorage.setItem('seo_repo',   repo);
+  if(branch) localStorage.setItem('seo_branch', branch);
+  if(token)  localStorage.setItem('seo_token',  token);
+  toast('✅ تم حفظ إعدادات GitHub');
+};
 
-// Called when tSEO tab opens
+// Load saved config into fields when tab opens
+function loadSEOFields() {
+  const cfg = getSEOConfig();
+  const r = document.getElementById('seoRepo');
+  const b = document.getElementById('seoBranch');
+  const t = document.getElementById('seoToken');
+  if(r && cfg.repo)   r.value = cfg.repo;
+  if(b && cfg.branch) b.value = cfg.branch;
+  if(t && cfg.token)  t.value = cfg.token;
+  updateSEOStats();
+}
 window.addEventListener('click', e => {
-  if(e.target?.textContent?.includes('SEO Pages')) updateSEOStats();
+  if(e.target?.textContent?.includes('SEO')) setTimeout(loadSEOFields, 100);
 });
 
+// ── Slug ──
+function seoSlug(name) {
+  return String(name||'recipe').trim()
+    .replace(/\s+/g,'-')
+    .replace(/[^\u0600-\u06FFa-zA-Z0-9-]/g,'')
+    .slice(0,55) || 'recipe';
+}
+
+// ── Stats ──
+function updateSEOStats() {
+  const t = document.getElementById('seoTotal');
+  if(t) t.textContent = FB_RECIPES.length;
+}
+
+// ── GitHub API helpers ──
+async function ghGet(path, cfg) {
+  const r = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${path}?ref=${cfg.branch}`, {
+    headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  if(r.status === 404) return null;
+  if(!r.ok) throw new Error(`GET ${path}: ${r.status}`);
+  return r.json();
+}
+
+async function ghPut(path, content, sha, cfg) {
+  const body = {
+    message: `SEO: update ${path}`,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch:  cfg.branch,
+  };
+  if(sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${cfg.token}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  if(!r.ok) {
+    const err = await r.json().catch(()=>({}));
+    throw new Error(`PUT ${path}: ${r.status} — ${err.message||''}`);
+  }
+  return r.json();
+}
+
+// ── Build single SEO page ──
 function buildSEOPage(r, fbKey) {
-  const name     = String(r.name || 'وصفة');
-  const author   = String(r.author || '');
-  const roastery = String(r.roastery || '');
-  const brewer   = String(r.brewer || '');
-  const dose     = String(r.dose || '');
-  const ratio    = String(r.ratio || '');
-  const link     = String(r.link || '');
+  const name     = String(r.name    || 'وصفة').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const author   = String(r.author  || '');
+  const roastery = String(r.roastery|| '');
+  const brewer   = String(r.brewer  || '');
+  const dose     = String(r.dose    || '');
+  const ratio    = String(r.ratio   || '');
   const cat      = r.category || 'hot';
   const catLabel = cat==='cold'?'بارد 🧊':cat==='server'?'غسيل':'حار 🔥';
   const canonUrl = `https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(fbKey)}`;
-  const siteUrl  = 'https://xblm.ab-s.me';
-  const desc     = `وصفة ${name}${author?' بواسطة '+author:''}${roastery?' من محمصة '+roastery:''}. ${brewer?'الجهاز: '+brewer+'. ':''}${dose?'الجرعة: '+dose+'. ':''}${ratio?'النسبة: '+ratio+'.':''} وصفة قهوة مختصة من مجتمع xBloom Recipes Hub.`;
+  const desc     = `وصفة ${name}${author?' بواسطة '+author:''}${roastery?' من '+roastery:''}. ${brewer?brewer+'. ':''}${dose?dose+' ':''}${ratio?ratio:''}`.slice(0,155);
 
-  const structuredData = document.getElementById('seoStructuredData')?.checked ? `
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Recipe",
-    "name": "${name.replace(/"/g,'\\"')}",
-    "description": "${desc.replace(/"/g,'\\"').replace(/\n/g,' ')}",
-    "author": {"@type":"Person","name":"${author.replace(/"/g,'\\"')||'مجتمع xBloom'}"},
-    "url": "${canonUrl}",
-    "keywords": "قهوة مختصة, ${brewer}, ${roastery}, xBloom",
-    "recipeIngredient": [${dose?`"${dose} قهوة"`:''}${dose&&ratio?',':''}${ratio?`"ماء بنسبة ${ratio}"`:''}],
-    "recipeYield": "كوب واحد",
-    "recipeCategory": "${catLabel}"
-  }
-  <\/script>` : '';
+  const sd = document.getElementById('seoStructuredData')?.checked ? `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","name":"${name.replace(/"/g,'\\"')}","author":{"@type":"Person","name":"${author.replace(/"/g,'\\"')||'مجتمع xBloom'}"},"url":"${canonUrl}","description":"${desc.replace(/"/g,'\\"')}"}<\/script>` : '';
 
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${name} | xBloom Recipes Hub</title>
-<meta name="description" content="${desc.slice(0,155)}">
+<meta name="description" content="${desc}">
 <meta property="og:title" content="${name} | xBloom Recipes Hub">
-<meta property="og:description" content="${desc.slice(0,155)}">
-<meta property="og:type" content="article">
+<meta property="og:description" content="${desc}">
 <meta property="og:url" content="${canonUrl}">
-<meta property="og:site_name" content="xBloom Recipes Hub">
+<meta property="og:type" content="article">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="${name} | xBloom Recipes Hub">
-<meta name="twitter:description" content="${desc.slice(0,155)}">
 <link rel="canonical" href="${canonUrl}">
 <meta http-equiv="refresh" content="0;url=${canonUrl}">
-${structuredData}
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',Arial,sans-serif;background:#090909;color:#f0f0f0;min-height:100vh;display:flex;align-items:center;justify-content:center;direction:rtl;padding:20px}
-.card{max-width:500px;width:100%;background:#111;border:1px solid #222;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.accent{height:4px;background:linear-gradient(90deg,#00A896,#4A90E2)}
-.body{padding:28px 24px}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.75em;font-weight:700;margin-bottom:14px;background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
-h1{font-size:1.8em;font-weight:900;margin-bottom:10px;line-height:1.2}
-.meta{font-size:.83em;color:#888;margin-bottom:20px}
-.meta span{color:#ddd;font-weight:700}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
-.stat{background:#161616;border:1px solid #1e1e1e;border-radius:12px;padding:14px;text-align:center}
-.stat-l{font-size:.68em;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.stat-v{font-size:1em;font-weight:800}
-.cta{display:block;text-align:center;padding:13px;border-radius:14px;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff;text-decoration:none;font-weight:700;font-size:.9em}
-.loading{text-align:center;font-size:.8em;color:#555;margin-top:10px}
-</style>
+${sd}
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Cairo,Arial,sans-serif;background:#090909;color:#f0f0f0;min-height:100vh;display:flex;align-items:center;justify-content:center;direction:rtl;padding:16px}.c{max-width:460px;width:100%;background:#111;border:1px solid #1e1e1e;border-radius:18px;overflow:hidden}.a{height:4px;background:linear-gradient(90deg,#00A896,#4A90E2)}.b{padding:24px 20px}h1{font-size:1.6em;font-weight:900;margin-bottom:8px}.m{font-size:.82em;color:#888;margin-bottom:16px}.s{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}.si{background:#161616;border:1px solid #222;border-radius:10px;padding:12px;text-align:center}.sl{font-size:.65em;color:#555;margin-bottom:3px}.sv{font-size:.9em;font-weight:800}.cta{display:block;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff;text-decoration:none;font-weight:700}</style>
 </head>
-<body>
-<div class="card">
-  <div class="accent"></div>
-  <div class="body">
-    <div class="badge">${catLabel}</div>
-    <h1>${name}</h1>
-    <div class="meta">
-      ${author?`بواسطة: <span>${author}</span>`:''}
-      ${roastery?` &nbsp;·&nbsp; محمصة <span>${roastery}</span>`:''}
-    </div>
-    <div class="stats">
-      ${dose  ?`<div class="stat"><div class="stat-l">⚖️ الجرعة</div><div class="stat-v">${dose}</div></div>`:''}
-      ${ratio ?`<div class="stat"><div class="stat-l">💧 النسبة</div><div class="stat-v">${ratio}</div></div>`:''}
-      ${brewer?`<div class="stat"><div class="stat-l">🔧 الجهاز</div><div class="stat-v">${brewer}</div></div>`:''}
-      <div class="stat"><div class="stat-l">☕ النوع</div><div class="stat-v">${catLabel}</div></div>
-    </div>
-    <a class="cta" href="${canonUrl}">عرض الوصفة الكاملة ←</a>
-    <div class="loading">جاري التحميل التلقائي…</div>
-  </div>
+<body><div class="c"><div class="a"></div><div class="b">
+<h1>${name}</h1>
+<div class="m">${author?'✍️ '+author:''}${author&&roastery?' · ':''}${roastery?'☕ '+roastery:''}</div>
+<div class="s">
+${dose ?`<div class="si"><div class="sl">⚖️ الجرعة</div><div class="sv">${dose}</div></div>`:''}
+${ratio?`<div class="si"><div class="sl">💧 النسبة</div><div class="sv">${ratio}</div></div>`:''}
+${brewer?`<div class="si"><div class="sl">🔧 الجهاز</div><div class="sv">${brewer}</div></div>`:''}
+<div class="si"><div class="sl">🌡️ النوع</div><div class="sv">${catLabel}</div></div>
 </div>
-</body>
-</html>`;
+<a class="cta" href="${canonUrl}">عرض الوصفة الكاملة ←</a>
+</div></div></body></html>`;
 }
 
-window.previewSEO = function() {
-  updateSEOStats();
-  const r = FB_RECIPES[0];
-  if(!r){ toast('لا توجد وصفات بعد','terr'); return; }
-  const html = buildSEOPage(r, r._fbKey || 'preview');
-  document.getElementById('seoPreviewCode').textContent = html;
-  document.getElementById('seoPreviewWrap').style.display = 'block';
-};
-
-window.generateAllSEO = async function() {
-  updateSEOStats();
-  if(!FB_RECIPES.length){ toast('لا توجد وصفات','terr'); return; }
-
-  const btn = document.getElementById('seoGenBtn');
-  btn.disabled = true; btn.textContent = '⏳ جاري التوليد…';
-  document.getElementById('seoProgress').style.display = 'block';
-
-  const includeAll   = document.getElementById('seoIncludeAll')?.checked;
-  const genSitemap   = document.getElementById('seoGenSitemap')?.checked;
-  const recipes      = includeAll ? FB_RECIPES : FB_RECIPES.filter(r => r.link);
-  const files        = {};
-  const sitemapUrls  = [];
-
-  for(let i = 0; i < recipes.length; i++) {
-    const r    = recipes[i];
-    const fbKey = r._fbKey || ('r' + i);
-    const slug = seoSlug(r.name) + '-' + fbKey.slice(-4);
-    const html = buildSEOPage(r, fbKey);
-    files['recipes/' + slug + '.html'] = html;
-    sitemapUrls.push(`  <url><loc>https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(fbKey)}</loc><lastmod>${new Date().toISOString().slice(0,10)}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`);
-
-    const pct = Math.round((i+1)/recipes.length*100);
-    document.getElementById('seoProgressBar').style.width = pct + '%';
-    document.getElementById('seoProgressPct').textContent = pct + '%';
-    document.getElementById('seoProgressLabel').textContent = `جاري التوليد: ${r.name||'وصفة'}`;
-    if(i % 10 === 0) await new Promise(r => setTimeout(r, 0)); // yield to UI
+// ── Log helpers ──
+let _seoLog = [];
+function seoLogAdd(msg, type='info') {
+  const el = document.getElementById('seoLog');
+  const wrap = document.getElementById('seoLogWrap');
+  if(wrap) wrap.style.display = 'block';
+  _seoLog.push(msg);
+  if(el) {
+    const color = type==='ok'?'#4ade80':type==='err'?'#f87171':'#6ee7a0';
+    el.innerHTML += `<span style="color:${color}">${msg}</span>\n`;
+    el.parentElement.scrollTop = el.parentElement.scrollHeight;
   }
-
-  // Sitemap
-  if(genSitemap) {
-    files['sitemap-recipes.xml'] = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xblm.ab-s.me/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-${sitemapUrls.join('\n')}
-</urlset>`;
-  }
-
-  // Build ZIP using JSZip
-  try {
-    const JSZip = await loadJSZip();
-    const zip = new JSZip();
-    Object.entries(files).forEach(([path, content]) => zip.file(path, content));
-    const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'xbloom-seo-pages.zip';
-    a.click();
-    seoMsg(`✅ تم توليد ${recipes.length} صفحة${genSitemap?' + sitemap':''} — تحقق من المجلد`, 'ok');
-  } catch(e) {
-    seoMsg('❌ خطأ في إنشاء ZIP: ' + e.message, 'err');
-  }
-
-  btn.disabled = false; btn.textContent = '⚡ توليد الكل وتحميل ZIP';
-};
-
-async function loadJSZip() {
-  if(window.JSZip) return window.JSZip;
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-    s.onload = () => res(window.JSZip);
-    s.onerror = () => rej(new Error('فشل تحميل JSZip'));
-    document.head.appendChild(s);
-  });
 }
 
 function seoMsg(msg, type='info') {
   const el = document.getElementById('seoStatus');
+  if(!el) return;
   el.style.display = 'block';
-  el.style.background = type==='ok'?'rgba(74,222,128,.08)':type==='err'?'rgba(245,87,108,.08)':'var(--bg)';
-  el.style.border = `1px solid ${type==='ok'?'rgba(74,222,128,.2)':type==='err'?'rgba(245,87,108,.2)':'var(--br)'}`;
-  el.style.color = type==='ok'?'#4ade80':type==='err'?'#f5576c':'var(--t2)';
-  el.textContent = msg;
+  el.style.background = type==='ok'?'rgba(74,222,128,.08)':type==='err'?'rgba(248,113,113,.08)':'var(--bg)';
+  el.style.border = `1px solid ${type==='ok'?'rgba(74,222,128,.2)':type==='err'?'rgba(248,113,113,.2)':'var(--br)'}`;
+  el.style.color  = type==='ok'?'#4ade80':type==='err'?'#f87171':'var(--t2)';
+  el.textContent  = msg;
 }
 
+// ── Preview ──
+window.previewSEO = function() {
+  updateSEOStats();
+  const r = FB_RECIPES[0];
+  if(!r) { toast('لا توجد وصفات','terr'); return; }
+  const html = buildSEOPage(r, r._fbKey||'preview');
+  document.getElementById('seoPreviewCode').textContent = html;
+  document.getElementById('seoPreviewWrap').style.display = 'block';
+};
+
+// ── Main Deploy ──
+window.deploySEO = async function() {
+  updateSEOStats();
+  if(!FB_RECIPES.length) { toast('لا توجد وصفات','terr'); return; }
+
+  const cfg = getSEOConfig();
+  // Also read from fields directly in case user didn't hit save
+  cfg.repo   = document.getElementById('seoRepo')?.value.trim()   || cfg.repo;
+  cfg.branch = document.getElementById('seoBranch')?.value.trim() || cfg.branch;
+  cfg.token  = document.getElementById('seoToken')?.value.trim()  || cfg.token;
+
+  if(!cfg.token) { seoMsg('❌ أدخل GitHub Token أولاً','err'); return; }
+
+  const btn = document.getElementById('seoGenBtn');
+  btn.disabled = true; btn.textContent = '⏳ جاري النشر…';
+  document.getElementById('seoProgress').style.display = 'block';
+  document.getElementById('seoLogWrap').style.display  = 'block';
+  document.getElementById('seoLog').innerHTML = '';
+  _seoLog = [];
+
+  const includeAll = document.getElementById('seoIncludeAll')?.checked;
+  const genSitemap = document.getElementById('seoGenSitemap')?.checked;
+  const skipExist  = document.getElementById('seoSkipExisting')?.checked;
+
+  const recipes = includeAll ? FB_RECIPES : FB_RECIPES.filter(r => r.link);
+  let uploaded = 0, failed = 0;
+  const sitemapUrls = [];
+  const startTime = Date.now();
+
+  // Cache existing files if skip mode
+  let existingFiles = new Set();
+  if(skipExist) {
+    seoLogAdd('⏳ جاري جلب قائمة الملفات الموجودة…');
+    try {
+      const res = await fetch(`https://api.github.com/repos/${cfg.repo}/git/trees/${cfg.branch}?recursive=1`, {
+        headers: { Authorization: `token ${cfg.token}` }
+      });
+      if(res.ok) {
+        const data = await res.json();
+        existingFiles = new Set((data.tree||[]).filter(f=>f.path.startsWith('recipes/')).map(f=>f.path));
+        seoLogAdd(`✅ ${existingFiles.size} ملف موجود مسبقاً`, 'ok');
+      }
+    } catch(e) { seoLogAdd('⚠️ تعذّر جلب القائمة — سيتم رفع الكل'); }
+  }
+
+  for(let i = 0; i < recipes.length; i++) {
+    const r     = recipes[i];
+    const fbKey = r._fbKey || ('r'+i);
+    const slug  = seoSlug(r.name) + '-' + fbKey.slice(-4);
+    const path  = `recipes/${slug}.html`;
+
+    // Update progress
+    const pct = Math.round((i+1)/recipes.length*100);
+    document.getElementById('seoProgressBar').style.width  = pct+'%';
+    document.getElementById('seoProgressPct').textContent  = pct+'%';
+    document.getElementById('seoProgressLabel').textContent= `${i+1} / ${recipes.length}`;
+    document.getElementById('seoCurrentFile').textContent  = path;
+
+    // ETA
+    if(i > 0) {
+      const elapsed = (Date.now()-startTime)/1000;
+      const eta = Math.round((elapsed/i)*(recipes.length-i));
+      document.getElementById('seoETA').textContent = eta > 60 ? Math.round(eta/60)+'د' : eta+'ث';
+    }
+
+    sitemapUrls.push(`https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(fbKey)}`);
+
+    if(skipExist && existingFiles.has(path)) {
+      seoLogAdd(`⏭ تخطي: ${path}`);
+      uploaded++;
+      document.getElementById('seoUploaded').textContent = uploaded;
+      continue;
+    }
+
+    const html = buildSEOPage(r, fbKey);
+    try {
+      // Get existing SHA if file exists (needed for update)
+      const existing = await ghGet(path, cfg);
+      const sha = existing?.sha || null;
+      await ghPut(path, html, sha, cfg);
+      uploaded++;
+      seoLogAdd(`✅ ${path}`, 'ok');
+    } catch(e) {
+      failed++;
+      seoLogAdd(`❌ ${path}: ${e.message}`, 'err');
+    }
+
+    document.getElementById('seoUploaded').textContent = uploaded;
+    document.getElementById('seoFailed').textContent   = failed;
+
+    // Rate limit: ~1 req/sec to be safe with GitHub API
+    await new Promise(res => setTimeout(res, 350));
+  }
+
+  // Upload sitemap
+  if(genSitemap) {
+    seoLogAdd('📋 رفع sitemap-recipes.xml…');
+    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://xblm.ab-s.me/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+${sitemapUrls.map(u=>`  <url><loc>${u}</loc><lastmod>${new Date().toISOString().slice(0,10)}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`).join('\n')}
+</urlset>`;
+    try {
+      const ex = await ghGet('sitemap-recipes.xml', cfg);
+      await ghPut('sitemap-recipes.xml', sitemapXml, ex?.sha||null, cfg);
+      seoLogAdd('✅ sitemap-recipes.xml', 'ok');
+    } catch(e) { seoLogAdd('❌ sitemap: '+e.message, 'err'); }
+  }
+
+  const total = recipes.length;
+  document.getElementById('seoETA').textContent = '✅';
+  btn.disabled = false; btn.textContent = '🚀 نشر الآن';
+
+  if(failed === 0) {
+    seoMsg(`✅ تم نشر ${uploaded} صفحة على GitHub Pages بنجاح!`, 'ok');
+    toast(`✅ نُشرت ${uploaded} صفحة SEO`);
+  } else {
+    seoMsg(`⚠️ ${uploaded} نجحت، ${failed} فشلت — راجع السجل`, 'err');
+  }
+};
 
 // ════ GOOGLE SHEET SYNC ════
 const SHEET_COLS = { name:0, brewer:1, author:2, dose:3, ratio:4, link:5 };
