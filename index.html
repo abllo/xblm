@@ -1245,7 +1245,7 @@ function drawShareImage(idx) {
     const details = [];
     if(r.dose)   details.push({l:'الجرعة', v:String(r.dose), emoji:'⚖️'});
     if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio), emoji:'💧'});
-    if(r.brewer) details.push({l:'الجهاز', v:String(r.brewer), emoji:'🔧'});
+    if(r.brewer) details.push({l:'الفلتر', v:String(r.brewer), emoji:'🔧'});
     const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل 🫧'};
     if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category, emoji:'📋'});
 
@@ -1338,7 +1338,7 @@ function drawShareImage(idx) {
     const details = [];
     if(r.dose)   details.push({l:'الجرعة', v:String(r.dose)});
     if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio)});
-    if(r.brewer) details.push({l:'الجهاز', v:String(r.brewer)});
+    if(r.brewer) details.push({l:'الفلتر', v:String(r.brewer)});
     const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل'};
     if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category});
 
