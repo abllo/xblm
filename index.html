@@ -64,7 +64,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--shadow:0 4px 20px rgba(0,0,0,.4)}
+[data-theme="light"]{--bg:#F5F5F0;--card:#FFFFFF;--up:#EEEEE8;--br:#DEDEDE;--t1:#111;--t2:#666;--ta:#00857A;--shadow:0 4px 20px rgba(0,0,0,.08)}
+*{transition:background-color .25s,border-color .25s,color .15s}
+/* Don't transition transforms/opacity */
+.card,.rm-card,.roastery-card,.atb,.btn,.tag{transition:background-color .25s,border-color .25s,color .15s,transform .2s,opacity .2s}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh;overflow-x:hidden}
 .wrap{max-width:1400px;margin:0 auto}
 
@@ -727,6 +731,35 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   .rm-hero{padding:22px 16px 18px}
   .rm-body{padding:10px 12px 20px}
 }
+
+/* ═══ LIGHT MODE OVERRIDES ═══ */
+[data-theme="light"] header{
+  background:linear-gradient(160deg,#e8f5f3 0%,#f0f0ea 55%,#e8f0f5 100%);
+  border-color:rgba(0,168,150,.2);
+  box-shadow:0 4px 24px rgba(0,0,0,.06);
+}
+[data-theme="light"] header::before{
+  background:linear-gradient(90deg,transparent,rgba(0,133,122,.4) 30%,rgba(74,144,226,.4) 70%,transparent);
+}
+[data-theme="light"] .hdr-title{
+  background:linear-gradient(135deg,#00857A,#2c6fad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+[data-theme="light"] .sub{color:#555}
+[data-theme="light"] .add-header-btn{background:linear-gradient(135deg,#00857A,#2c6fad)}
+[data-theme="light"] .card{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+[data-theme="light"] .cn{color:#111}
+[data-theme="light"] .tag{color:#444}
+[data-theme="light"] .ftab.on{background:linear-gradient(135deg,#00857A,#2c6fad);color:#fff}
+[data-theme="light"] .ftab{color:#555;border-color:#ccc}
+[data-theme="light"] .roastery-card{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+[data-theme="light"] #roasteryModal,
+[data-theme="light"] #roasteryModalOv.open #roasteryModal{background:#1a1a1a}
+[data-theme="light"] .rm-hero{background:#1f2f2e!important}
+[data-theme="light"] .rm-stats,.rm-tabs,[data-theme="light"] .rm-body{background:#181818!important}
+[data-theme="light"] .share-mode-tab{color:rgba(255,255,255,.5)}
+[data-theme="light"] .anno-bar{background:linear-gradient(135deg,#00857A,#2c6fad)}
+[data-theme="light"] .promoTicker{background:#f0f0ea;border-color:#ddd}
 </style>
 </head>
 <body>
@@ -766,10 +799,16 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 
 
-    <!-- CTA -->
-    <button class="btn add-header-btn" onclick="openAddModal()">
-      ✦ نشر وصفة جديدة
-    </button>
+    <!-- CTA + Theme Toggle -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+      <button class="btn add-header-btn" onclick="openAddModal()">
+        ✦ نشر وصفة جديدة
+      </button>
+      <button id="themeToggleBtn" onclick="toggleTheme()" title="تبديل الوضع"
+        style="width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);cursor:pointer;font-size:1.1em;display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0">
+        🌙
+      </button>
+    </div>
   </div>
 </header>
 
@@ -2190,6 +2229,34 @@ window.trackAffClick = function(roastKey) {
   get(ref(db, 'affiliate_clicks/' + roastKey)).then(snap => {
     set(ref(db, 'affiliate_clicks/' + roastKey), (snap.val()||0) + 1);
   }).catch(()=>{});
+};
+
+// ════ THEME TOGGLE ════
+(function initTheme() {
+  const saved = localStorage.getItem('xbloom_theme') || 'dark';
+  applyTheme(saved, false);
+})();
+
+function applyTheme(theme, animate = true) {
+  const root = document.documentElement;
+  const btn  = document.getElementById('themeToggleBtn');
+  if(theme === 'light') {
+    root.setAttribute('data-theme', 'light');
+    if(btn) { btn.textContent = '☀️'; btn.style.borderColor = 'rgba(0,0,0,.12)'; btn.style.background = 'rgba(0,0,0,.05)'; }
+  } else {
+    root.removeAttribute('data-theme');
+    if(btn) { btn.textContent = '🌙'; btn.style.borderColor = 'rgba(255,255,255,.15)'; btn.style.background = 'rgba(255,255,255,.06)'; }
+  }
+  if(animate && btn) {
+    btn.style.transform = 'scale(1.3) rotate(20deg)';
+    setTimeout(() => { btn.style.transform = ''; }, 300);
+  }
+  localStorage.setItem('xbloom_theme', theme);
+}
+
+window.toggleTheme = function() {
+  const cur = localStorage.getItem('xbloom_theme') || 'dark';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
 };
 
 // ════ TRACKING ════

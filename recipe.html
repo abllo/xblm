@@ -28,8 +28,20 @@
   --t1:#f0f0f0;--t2:#666;--ta:#00A896;
   --up:#161616;
 }
+[data-theme="light"]{
+  --bg:#F5F5F0;--card:#fff;--br:#e0e0e0;
+  --t1:#111;--t2:#666;--ta:#00857A;
+  --up:#eeeee8;
+}
+*{transition:background-color .25s,border-color .25s,color .15s}
+.btn,.share-btn,.stat-card{transition:background-color .25s,border-color .25s,color .15s,transform .2s,box-shadow .2s}
 body{background:var(--bg);color:var(--t1);font-family:'Cairo',sans-serif;min-height:100vh;direction:rtl}
 
+/* Light mode overrides */
+[data-theme="light"] .recipe-hero{box-shadow:0 4px 20px rgba(0,0,0,.08)}
+[data-theme="light"] .recipe-name{background:linear-gradient(160deg,#111 60%,rgba(0,0,0,.55));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+[data-theme="light"] .hdr{background:rgba(245,245,240,.9)}
+[data-theme="light"] .hdr-name{background:linear-gradient(135deg,#00857A,#2c6fad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 /* ── Header ── */
 .hdr{
   background:rgba(9,9,9,.85);backdrop-filter:blur(14px);
@@ -220,6 +232,10 @@ canvas#shareCanvas.card-mode{max-width:min(100%,560px);height:auto}
   <a class="hdr-back" href="/">
     <span>→</span> الرئيسية
   </a>
+  <button id="themeToggleBtn" onclick="toggleTheme()" title="تبديل الوضع"
+    style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--br);background:var(--up);cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0">
+    🌙
+  </button>
 </header>
 
 <!-- Loading -->
@@ -780,6 +796,31 @@ window.downloadImg = function() {
   const nm = String(RECIPE&&RECIPE.name||'recipe').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_').slice(0,30);
   a.download = 'xbloom-'+nm+'-'+_imgMode+'.png';
   a.href = canvas.toDataURL('image/png'); a.click();
+};
+
+// ════ THEME TOGGLE ════
+(function(){
+  const saved = localStorage.getItem('xbloom_theme')||'dark';
+  applyThemeR(saved,false);
+})();
+function applyThemeR(theme,animate=true){
+  const btn=document.getElementById('themeToggleBtn');
+  if(theme==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+    if(btn){btn.textContent='☀️';}
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    if(btn){btn.textContent='🌙';}
+  }
+  if(animate&&btn){
+    btn.style.transform='scale(1.3) rotate(20deg)';
+    setTimeout(()=>{btn.style.transform='';},300);
+  }
+  localStorage.setItem('xbloom_theme',theme);
+}
+window.toggleTheme=function(){
+  const cur=localStorage.getItem('xbloom_theme')||'dark';
+  applyThemeR(cur==='dark'?'light':'dark');
 };
 </script>
 </body>
