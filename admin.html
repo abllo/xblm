@@ -121,6 +121,25 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .aff-item-btn{padding:6px 10px;border-radius:8px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-size:.75em;cursor:pointer;font-family:inherit;transition:.15s}
 .aff-item-btn:hover{color:var(--t1)}
 .aff-item-btn.del:hover{background:rgba(245,87,108,.15);border-color:rgba(245,87,108,.3);color:#f5576c}
+.sheet-card{background:var(--bg);border:1px solid var(--br);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:.2s}
+.sheet-card.approved{border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.04)}
+.sheet-card.ignored{border-color:rgba(245,87,108,.2);background:rgba(245,87,108,.03);opacity:.55}
+.sheet-card-accent{height:3px}
+.sheet-card-body{padding:13px 15px}
+.sheet-card-name{font-size:.9em;font-weight:800;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.sheet-card-meta{font-size:.74em;color:var(--t2);margin-bottom:10px}
+.sheet-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.sheet-tag{padding:2px 9px;border-radius:6px;font-size:.7em;font-weight:700;background:var(--up);border:1px solid var(--br);color:var(--t2)}
+.sheet-card-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sheet-card-link{font-size:.72em;color:var(--ta);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;flex:1}
+.sheet-card-actions{display:flex;gap:6px;flex-shrink:0}
+.sca-btn{padding:7px 14px;border-radius:9px;border:none;font-family:inherit;font-size:.78em;font-weight:700;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px}
+.sca-approve{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:#4ade80}
+.sca-approve:hover{background:rgba(74,222,128,.22)}
+.sca-ignore{background:rgba(245,87,108,.08);border:1px solid rgba(245,87,108,.2);color:#f5576c}
+.sca-ignore:hover{background:rgba(245,87,108,.16)}
+.sca-edit{background:var(--up);border:1px solid var(--br);color:var(--t2)}
+.sca-edit:hover{color:var(--t1)}
 .brew-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .brew-bar-label{width:160px;font-size:.78em;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;flex-shrink:0}
 .brew-bar-track{flex:1;height:22px;background:var(--up);border-radius:6px;overflow:hidden;position:relative}
@@ -185,6 +204,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tPinned')">📌 وصفات مثبتة</button>
     <button class="atb" onclick="switchTab(this,'tPromo')">🎫 أكواد الخصم</button>
     <button class="atb" onclick="switchTab(this,'tSite')">⚙️ إعدادات الموقع</button>
+    <button class="atb" onclick="switchTab(this,'tSheet')">📊 مزامنة الشيت</button>
     <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد</button>
     <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
     <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
@@ -557,7 +577,92 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   </div>
 
   <!-- IMPORT -->
-  <div id="tImp" class="acard">
+
+  <!-- ═══ مزامنة الشيت ═══ -->
+  <div id="tSheet" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+      <div>
+        <h3 style="margin-bottom:4px">📊 مزامنة xBloom Community Sheet</h3>
+        <p style="color:var(--t2);font-size:.82em">يسحب الوصفات من Google Sheet ويعرض الجديدة فقط — أنت تعتمد أو ترفض كل وصفة</p>
+      </div>
+      <button class="btn" onclick="fetchSheet()" id="sheetFetchBtn" style="background:var(--gr);color:#fff;border:none;padding:10px 20px;font-size:.85em;min-width:130px">
+        🔄 سحب الجديد
+      </button>
+    </div>
+
+    <!-- Sheet URL config -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:.82em;font-weight:700;margin-bottom:8px">🔗 رابط Google Sheet</div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="sheetId" value="1rWsbVNGkGJSP0QD4_oXbum_nRXlYlw0MM-DQunpOnYQ"
+               style="flex:1;font-size:.78em;font-family:monospace" placeholder="Sheet ID">
+        <button class="btn" onclick="saveSheetId()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:10px 14px;font-size:.8em;white-space:nowrap">حفظ</button>
+      </div>
+      <div style="font-size:.72em;color:var(--t2);margin-top:5px">الـ ID من رابط الشيت — الجزء بين /d/ و /edit</div>
+    </div>
+
+    <!-- Status bar -->
+    <div id="sheetStatus" style="display:none;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.82em"></div>
+
+    <!-- Stats row -->
+    <div id="sheetStats" style="display:none;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900" id="sheetStatTotal">—</div>
+        <div style="font-size:.72em;color:var(--t2);margin-top:2px">إجمالي الشيت</div>
+      </div>
+      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900;color:#4ade80" id="sheetStatNew">—</div>
+        <div style="font-size:.72em;color:var(--t2);margin-top:2px">جديدة</div>
+      </div>
+      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900;color:var(--t2)" id="sheetStatExist">—</div>
+        <div style="font-size:.72em;color:var(--t2);margin-top:2px">موجودة مسبقاً</div>
+      </div>
+      <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:1.4em;font-weight:900;color:#f59e0b" id="sheetStatPending">—</div>
+        <div style="font-size:.72em;color:var(--t2);margin-top:2px">بانتظار القرار</div>
+      </div>
+    </div>
+
+    <!-- Bulk actions -->
+    <div id="sheetBulk" style="display:none;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.82em;color:var(--t2);flex:1">تحديد الكل:</span>
+      <button class="btn" onclick="sheetBulkApprove()" style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:#4ade80;font-size:.78em;padding:7px 14px">✅ اعتماد الكل</button>
+      <button class="btn" onclick="sheetBulkIgnore()" style="background:rgba(245,87,108,.08);border:1px solid rgba(245,87,108,.2);color:#f5576c;font-size:.78em;padding:7px 14px">🚫 تجاهل الكل</button>
+    </div>
+
+    <!-- Category + roastery defaults for new recipes -->
+    <div id="sheetDefaults" style="display:none;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:.8em;font-weight:700;margin-bottom:8px;color:var(--t2)">⚙️ إعدادات افتراضية للوصفات المعتمدة</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="flex:1;min-width:120px">
+          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">التصنيف الافتراضي</label>
+          <select class="form-input" id="sheetDefCat" style="font-size:.82em;padding:8px">
+            <option value="hot">حار 🔥</option>
+            <option value="cold">بارد 🧊</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:120px">
+          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">المصدر</label>
+          <select class="form-input" id="sheetDefSrc" style="font-size:.82em;padding:8px">
+            <option value="community">Community</option>
+            <option value="xbloom">xBloom</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- New recipes list -->
+    <div id="sheetNewList"></div>
+
+    <!-- Empty state -->
+    <div id="sheetEmpty" style="display:none;text-align:center;padding:40px 20px;color:var(--t2)">
+      <div style="font-size:2em;margin-bottom:8px">✅</div>
+      <div style="font-size:.88em">كل شيء محدّث — لا توجد وصفات جديدة</div>
+    </div>
+  </div>
+
+  <!-- ═══ استيراد ═══ -->
     <h3 style="margin-bottom:14px">📤 استيراد من Excel</h3>
     <div class="upl" onclick="document.getElementById('xlsIn').click()">
       <div style="font-size:2.5em;margin-bottom:8px">📁</div>
@@ -684,6 +789,37 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <input class="form-input" id="affNewUrl" type="url" placeholder="https://affiliate-link.com" style="flex:2;min-width:200px;font-size:.82em">
         <button class="btn" onclick="addAffLink()" style="background:var(--gr);color:#fff;border:none;padding:10px 16px;font-size:.82em;white-space:nowrap">إضافة</button>
       </div>
+    </div>
+
+    <!-- Recipe-specific affiliate link -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:.85em;font-weight:700;margin-bottom:4px">🔍 رابط لوصفة محددة</div>
+      <div style="font-size:.76em;color:var(--t2);margin-bottom:12px">ابحث عن وصفة وأضف لها رابط شراء خاص — يأخذ أولوية على رابط المحمصة</div>
+
+      <!-- Search box -->
+      <input class="form-input" id="affRecipeSearch" placeholder="ابحث باسم الوصفة أو الكاتب..." style="font-size:.82em;margin-bottom:10px"
+             oninput="searchAffRecipes(this.value)">
+
+      <!-- Results -->
+      <div id="affRecipeResults" style="display:none;max-height:220px;overflow-y:auto;border:1px solid var(--br);border-radius:10px;margin-bottom:10px"></div>
+
+      <!-- Selected recipe + URL -->
+      <div id="affRecipeSelected" style="display:none;background:var(--up);border:1px solid var(--ta);border-radius:10px;padding:12px 14px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div>
+            <div style="font-size:.85em;font-weight:700" id="affSelName">—</div>
+            <div style="font-size:.74em;color:var(--t2)" id="affSelMeta">—</div>
+          </div>
+          <button onclick="clearAffRecipeSel()" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:1.1em">✕</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input class="form-input" id="affRecipeUrl" type="url" placeholder="https://affiliate-link.com" style="flex:1;font-size:.82em">
+          <button class="btn" onclick="saveAffRecipeLink()" style="background:var(--gr);color:#fff;border:none;padding:10px 16px;font-size:.82em;white-space:nowrap">💾 حفظ</button>
+        </div>
+      </div>
+
+      <!-- Existing recipe-specific links -->
+      <div id="affRecipeLinksList" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
 
     <!-- Button label customization -->
@@ -1951,6 +2087,7 @@ function renderAffList() {
 
   // Load click analytics
   renderAffClicks();
+  renderAffRecipeLinks();
 }
 
 window.toggleAffEnabled = function(el) {
@@ -2035,6 +2172,356 @@ function renderAffClicks() {
       </div>`).join('');
   }).catch(() => {});
 }
+
+// ════ RECIPE-SPECIFIC AFFILIATE ════
+let _affSelKey = null;
+
+window.searchAffRecipes = function(q) {
+  const results = document.getElementById('affRecipeResults');
+  if(!q || q.length < 2) { results.style.display = 'none'; return; }
+  const qL = q.toLowerCase();
+  const matches = FB_RECIPES.filter(r =>
+    String(r.name||'').toLowerCase().includes(qL) ||
+    String(r.author||'').toLowerCase().includes(qL) ||
+    String(r.roastery||'').toLowerCase().includes(qL)
+  ).slice(0, 12);
+
+  if(!matches.length) {
+    results.style.display = 'block';
+    results.innerHTML = '<div style="padding:12px;color:var(--t2);font-size:.82em;text-align:center">لا توجد نتائج</div>';
+    return;
+  }
+
+  // Check existing recipe links
+  const existingLinks = FB_AFFILIATE?.recipe_links || {};
+
+  results.style.display = 'block';
+  results.innerHTML = matches.map(r => {
+    const hasLink = !!existingLinks[r._fbKey];
+    return `<div onclick="selectAffRecipe('${r._fbKey}')"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px;transition:.15s"
+      onmouseenter="this.style.background='var(--up)'" onmouseleave="this.style.background=''">
+      <div style="flex:1">
+        <div style="font-size:.85em;font-weight:700">${esc(String(r.name||''))}</div>
+        <div style="font-size:.74em;color:var(--t2)">${r.author?esc(r.author)+' · ':''}${r.roastery?esc(r.roastery)+' · ':''}${r.brewer||''}</div>
+      </div>
+      ${hasLink ? '<span style="font-size:.72em;color:var(--ta);font-weight:700;background:rgba(0,168,150,.1);padding:3px 8px;border-radius:10px">رابط موجود ✓</span>' : ''}
+    </div>`;
+  }).join('');
+};
+
+window.selectAffRecipe = function(fbKey) {
+  const r = FB_RECIPES.find(x => x._fbKey === fbKey);
+  if(!r) return;
+  _affSelKey = fbKey;
+
+  document.getElementById('affRecipeResults').style.display = 'none';
+  document.getElementById('affRecipeSearch').value = '';
+  document.getElementById('affSelName').textContent = String(r.name||'وصفة');
+  document.getElementById('affSelMeta').textContent =
+    [r.author, r.roastery, r.brewer].filter(Boolean).join(' · ');
+
+  // Pre-fill if link exists
+  const existing = FB_AFFILIATE?.recipe_links?.[fbKey] || '';
+  document.getElementById('affRecipeUrl').value = existing;
+
+  document.getElementById('affRecipeSelected').style.display = 'block';
+  document.getElementById('affRecipeUrl').focus();
+};
+
+window.clearAffRecipeSel = function() {
+  _affSelKey = null;
+  document.getElementById('affRecipeSelected').style.display = 'none';
+  document.getElementById('affRecipeUrl').value = '';
+};
+
+window.saveAffRecipeLink = async function() {
+  if(!_affSelKey) return;
+  const url = document.getElementById('affRecipeUrl').value.trim();
+  if(!url) { toast('أدخل الرابط ❗', 'terr'); return; }
+  try {
+    await set(ref(db, 'affiliate/recipe_links/' + _affSelKey), url);
+    toast('✅ تم حفظ رابط الوصفة');
+    clearAffRecipeSel();
+    renderAffRecipeLinks();
+  } catch(e) { toast('خطأ: ' + e.message, 'terr'); }
+};
+
+window.delAffRecipeLink = async function(fbKey) {
+  if(!confirm('حذف رابط هذه الوصفة؟')) return;
+  try {
+    await set(ref(db, 'affiliate/recipe_links/' + fbKey), null);
+    toast('🗑️ تم الحذف');
+    renderAffRecipeLinks();
+  } catch(e) { toast('خطأ: ' + e.message, 'terr'); }
+};
+
+function renderAffRecipeLinks() {
+  const container = document.getElementById('affRecipeLinksList');
+  if(!container) return;
+  const links = FB_AFFILIATE?.recipe_links || {};
+  const entries = Object.entries(links);
+  if(!entries.length) { container.innerHTML = ''; return; }
+
+  container.innerHTML = `
+    <div style="font-size:.8em;color:var(--t2);font-weight:700;margin-bottom:6px">الوصفات المرتبطة بروابط (${entries.length})</div>
+    ${entries.map(([fbKey, url]) => {
+      const r = FB_RECIPES.find(x => x._fbKey === fbKey);
+      const name = r ? String(r.name||fbKey) : fbKey;
+      const meta = r ? [r.author, r.roastery].filter(Boolean).join(' · ') : '';
+      return `<div class="aff-item">
+        <div style="flex:1;min-width:0">
+          <div class="aff-item-name" style="font-size:.83em">${esc(name)}</div>
+          ${meta ? `<div style="font-size:.72em;color:var(--t2)">${esc(meta)}</div>` : ''}
+          <div class="aff-item-url has-link" style="margin-top:2px">${url}</div>
+        </div>
+        <div class="aff-item-actions">
+          <button class="aff-item-btn" onclick="window.open('${url}','_blank')" title="تجربة">🔗</button>
+          <button class="aff-item-btn" onclick="selectAffRecipe('${fbKey}')" title="تعديل">✏️</button>
+          <button class="aff-item-btn del" onclick="delAffRecipeLink('${fbKey}')" title="حذف">🗑️</button>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+
+// ════ GOOGLE SHEET SYNC ════
+const SHEET_COLS = { name:0, brewer:1, author:2, dose:3, ratio:4, link:5 };
+let SHEET_ROWS = []; // raw from sheet
+let SHEET_NEW  = []; // after dedup
+let _sheetDecisions = {}; // { rowIdx: 'approve'|'ignore' }
+
+function sheetStatus(msg, type='info') {
+  const el = document.getElementById('sheetStatus');
+  el.style.display = 'block';
+  const colors = { info:'var(--ta)', err:'#f5576c', ok:'#4ade80' };
+  el.style.color = colors[type] || 'var(--t1)';
+  el.textContent = msg;
+}
+
+window.saveSheetId = function() {
+  const id = document.getElementById('sheetId').value.trim();
+  if(!id) return;
+  set(ref(db, 'siteSettings/sheetId'), id).then(() => toast('✅ تم حفظ الـ ID'));
+};
+
+window.fetchSheet = async function() {
+  const btn = document.getElementById('sheetFetchBtn');
+  btn.disabled = true; btn.textContent = '⏳ جاري السحب…';
+  sheetStatus('جاري جلب البيانات من Google Sheet…');
+
+  const sheetId = document.getElementById('sheetId').value.trim()
+    || '1rWsbVNGkGJSP0QD4_oXbum_nRXlYlw0MM-DQunpOnYQ';
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+
+  try {
+    const res = await fetch(csvUrl);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const csv = await res.text();
+    SHEET_ROWS = parseCSV(csv);
+    if(SHEET_ROWS.length < 2) { sheetStatus('الشيت فارغ أو لا يمكن قراءته', 'err'); return; }
+
+    // Remove header row
+    const dataRows = SHEET_ROWS.slice(1).filter(r => r[SHEET_COLS.link]?.trim());
+
+    // Deduplicate against Firebase — compare by normalized link
+    const existingLinks = new Set(
+      FB_RECIPES.map(r => normalizeLink(r.link || ''))
+    );
+
+    SHEET_NEW = dataRows.filter(r => {
+      const link = normalizeLink(r[SHEET_COLS.link] || '');
+      return link && !existingLinks.has(link);
+    });
+
+    const existCount = dataRows.length - SHEET_NEW.length;
+    _sheetDecisions = {};
+
+    // Update stats
+    document.getElementById('sheetStatTotal').textContent   = dataRows.length;
+    document.getElementById('sheetStatNew').textContent     = SHEET_NEW.length;
+    document.getElementById('sheetStatExist').textContent   = existCount;
+    document.getElementById('sheetStatPending').textContent = SHEET_NEW.length;
+    document.getElementById('sheetStats').style.display     = 'flex';
+    document.getElementById('sheetDefaults').style.display  = 'block';
+
+    if(!SHEET_NEW.length) {
+      document.getElementById('sheetEmpty').style.display = 'block';
+      document.getElementById('sheetNewList').innerHTML   = '';
+      document.getElementById('sheetBulk').style.display  = 'none';
+      sheetStatus(`✅ تم السحب — كل الوصفات (${existCount}) موجودة مسبقاً`, 'ok');
+    } else {
+      document.getElementById('sheetEmpty').style.display = 'none';
+      document.getElementById('sheetBulk').style.display  = 'flex';
+      renderSheetCards();
+      sheetStatus(`✅ تم السحب — ${SHEET_NEW.length} وصفة جديدة من أصل ${dataRows.length}`, 'ok');
+    }
+  } catch(e) {
+    sheetStatus('❌ فشل الجلب: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false; btn.textContent = '🔄 سحب الجديد';
+  }
+};
+
+function normalizeLink(link) {
+  return link.trim().toLowerCase()
+    .replace(/[?&].*$/, '') // remove query params
+    .replace(/\/$/, '');
+}
+
+function parseCSV(csv) {
+  const lines = csv.split('\n');
+  return lines.map(line => {
+    const cols = [];
+    let cur = '', inQ = false;
+    for(let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if(c === '"') { inQ = !inQ; continue; }
+      if(c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; continue; }
+      cur += c;
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+}
+
+function renderSheetCards() {
+  const PALETTE = ['#E07B39','#00A896','#4A90E2','#9B59B6','#E74C3C','#27AE60','#F39C12'];
+  const list = document.getElementById('sheetNewList');
+  list.innerHTML = SHEET_NEW.map((row, idx) => {
+    const name   = row[SHEET_COLS.name]   || '—';
+    const brewer = row[SHEET_COLS.brewer] || '';
+    const author = row[SHEET_COLS.author] || '';
+    const dose   = row[SHEET_COLS.dose]   || '';
+    const ratio  = row[SHEET_COLS.ratio]  || '';
+    const link   = row[SHEET_COLS.link]   || '';
+    const ac     = PALETTE[idx % PALETTE.length];
+    const dec    = _sheetDecisions[idx];
+
+    return `
+    <div class="sheet-card ${dec||''}" id="sheetcard_${idx}">
+      <div class="sheet-card-accent" style="background:${ac}"></div>
+      <div class="sheet-card-body">
+        <div class="sheet-card-name">
+          <span>${esc(name)}</span>
+          ${dec === 'approve' ? '<span style="font-size:.7em;color:#4ade80">✅ معتمدة</span>' : ''}
+          ${dec === 'ignore'  ? '<span style="font-size:.7em;color:#f5576c">🚫 مرفوضة</span>' : ''}
+        </div>
+        <div class="sheet-card-meta">
+          ${author ? `✍️ ${esc(author)}` : ''}
+          ${author && brewer ? ' · ' : ''}
+          ${brewer ? `☕ ${esc(brewer)}` : ''}
+        </div>
+        <div class="sheet-card-tags">
+          ${dose   ? `<span class="sheet-tag">⚖️ ${esc(dose)}</span>` : ''}
+          ${ratio  ? `<span class="sheet-tag">💧 ${esc(ratio)}</span>` : ''}
+          ${brewer ? `<span class="sheet-tag">🔧 ${esc(brewer)}</span>` : ''}
+        </div>
+        <div style="margin-bottom:10px">
+          <select class="form-input" id="sheetcat_${idx}" style="font-size:.78em;padding:7px;width:auto">
+            <option value="hot">حار 🔥</option>
+            <option value="cold">بارد 🧊</option>
+            <option value="server">غسيل</option>
+          </select>
+        </div>
+        <div class="sheet-card-foot">
+          <a class="sheet-card-link" href="${esc(link)}" target="_blank" title="${esc(link)}">🔗 ${esc(link.replace('https://share-h5.xbloom.com','xbloom…'))}</a>
+          <div class="sheet-card-actions">
+            <button class="sca-btn sca-approve" onclick="sheetApprove(${idx})">✅ اعتماد</button>
+            <button class="sca-btn sca-ignore"  onclick="sheetIgnore(${idx})">🚫 تجاهل</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.sheetApprove = async function(idx) {
+  const row  = SHEET_NEW[idx];
+  const cat  = document.getElementById('sheetcat_' + idx)?.value || document.getElementById('sheetDefCat').value || 'hot';
+  const recipe = {
+    name:    (row[SHEET_COLS.name]   || '').trim(),
+    brewer:  (row[SHEET_COLS.brewer] || '').trim(),
+    author:  (row[SHEET_COLS.author] || '').trim(),
+    dose:    (row[SHEET_COLS.dose]   || '').trim(),
+    ratio:   (row[SHEET_COLS.ratio]  || '').trim(),
+    link:    (row[SHEET_COLS.link]   || '').trim(),
+    category: cat,
+    source:  document.getElementById('sheetDefSrc')?.value || 'community',
+    addedAt: Date.now()
+  };
+  // Remove empty fields
+  Object.keys(recipe).forEach(k => { if(!recipe[k]) delete recipe[k]; });
+
+  try {
+    await push(ref(db, 'recipes'), recipe);
+    _sheetDecisions[idx] = 'approve';
+    updateSheetCard(idx);
+    updateSheetPendingCount();
+    toast('✅ تمت إضافة "' + recipe.name + '"');
+  } catch(e) { toast('خطأ: ' + e.message, 'terr'); }
+};
+
+window.sheetIgnore = function(idx) {
+  _sheetDecisions[idx] = 'ignore';
+  updateSheetCard(idx);
+  updateSheetPendingCount();
+};
+
+function updateSheetCard(idx) {
+  const card = document.getElementById('sheetcard_' + idx);
+  if(!card) return;
+  const dec = _sheetDecisions[idx];
+  card.className = 'sheet-card ' + (dec || '');
+  const nameEl = card.querySelector('.sheet-card-name');
+  // Remove old badge
+  nameEl.querySelectorAll('span:not(:first-child)').forEach(s => s.remove());
+  if(dec === 'approve') nameEl.innerHTML += '<span style="font-size:.7em;color:#4ade80">✅ معتمدة</span>';
+  if(dec === 'ignore')  nameEl.innerHTML += '<span style="font-size:.7em;color:#f5576c">🚫 مرفوضة</span>';
+}
+
+function updateSheetPendingCount() {
+  const pending = SHEET_NEW.filter((_,i) => !_sheetDecisions[i]).length;
+  document.getElementById('sheetStatPending').textContent = pending;
+}
+
+window.sheetBulkApprove = async function() {
+  if(!SHEET_NEW.length) return;
+  if(!confirm(`اعتماد كل الـ ${SHEET_NEW.filter((_,i)=>!_sheetDecisions[i]).length} وصفة جديدة؟`)) return;
+  const defCat = document.getElementById('sheetDefCat').value || 'hot';
+  const defSrc = document.getElementById('sheetDefSrc').value || 'community';
+  let added = 0;
+  for(let idx = 0; idx < SHEET_NEW.length; idx++) {
+    if(_sheetDecisions[idx]) continue;
+    const row = SHEET_NEW[idx];
+    const recipe = {
+      name:     (row[SHEET_COLS.name]   || '').trim(),
+      brewer:   (row[SHEET_COLS.brewer] || '').trim(),
+      author:   (row[SHEET_COLS.author] || '').trim(),
+      dose:     (row[SHEET_COLS.dose]   || '').trim(),
+      ratio:    (row[SHEET_COLS.ratio]  || '').trim(),
+      link:     (row[SHEET_COLS.link]   || '').trim(),
+      category: document.getElementById('sheetcat_' + idx)?.value || defCat,
+      source:   defSrc,
+      addedAt:  Date.now()
+    };
+    Object.keys(recipe).forEach(k => { if(!recipe[k]) delete recipe[k]; });
+    try { await push(ref(db, 'recipes'), recipe); _sheetDecisions[idx] = 'approve'; added++; }
+    catch(e) { console.warn('skip', idx, e.message); }
+  }
+  SHEET_NEW.forEach((_,i) => updateSheetCard(i));
+  updateSheetPendingCount();
+  toast(`✅ تم اعتماد ${added} وصفة`);
+};
+
+window.sheetBulkIgnore = function() {
+  const pending = SHEET_NEW.filter((_,i) => !_sheetDecisions[i]).length;
+  if(!pending) return;
+  if(!confirm(`تجاهل ${pending} وصفة؟`)) return;
+  SHEET_NEW.forEach((_,i) => { if(!_sheetDecisions[i]) _sheetDecisions[i] = 'ignore'; });
+  SHEET_NEW.forEach((_,i) => updateSheetCard(i));
+  updateSheetPendingCount();
+};
 
 
 // ════ DUPLICATE SCANNER ════
