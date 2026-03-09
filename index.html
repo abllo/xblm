@@ -527,11 +527,17 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .fav-toggle.active{background:rgba(224,90,107,.2)}
 
 /* ═══ SHARE AS IMAGE ═══ */
-.share-img-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
+.share-img-ov{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
 .share-img-ov.open{display:flex}
-.share-img-box{background:var(--card);border-radius:16px;border:1px solid var(--br);padding:24px;max-width:480px;width:100%;text-align:center}
-.share-img-title{font-size:1em;font-weight:800;margin-bottom:16px}
-#shareCanvas{border-radius:12px;max-width:100%;border:1px solid var(--br);margin-bottom:16px}
+.share-img-box{background:var(--card);border-radius:20px;border:1px solid var(--br);padding:20px;max-width:440px;width:100%;text-align:center}
+.share-img-title{font-size:1em;font-weight:800;margin-bottom:12px}
+.share-mode-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.share-mode-tab{padding:7px 18px;border-radius:20px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit}
+.share-mode-tab.active{background:var(--gr);color:#fff;border-color:transparent}
+#shareCanvasWrap{display:flex;justify-content:center;margin-bottom:14px}
+#shareCanvas{border-radius:12px;border:1px solid var(--br);display:block}
+#shareCanvas.story-mode{max-height:70vh;width:auto}
+#shareCanvas.card-mode{max-width:100%;height:auto}
 .share-img-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
 
@@ -862,9 +868,15 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <div class="share-img-ov" id="shareImgOv">
   <div class="share-img-box">
     <div class="share-img-title">🖼️ مشاركة كصورة</div>
-    <canvas id="shareCanvas" width="600" height="360"></canvas>
+    <div class="share-mode-tabs">
+      <button class="share-mode-tab active" id="storyTabBtn" onclick="switchShareMode('story')">📱 ستوري</button>
+      <button class="share-mode-tab" id="cardTabBtn" onclick="switchShareMode('card')">🃏 بطاقة</button>
+    </div>
+    <div id="shareCanvasWrap">
+      <canvas id="shareCanvas" class="story-mode"></canvas>
+    </div>
     <div class="share-img-acts">
-      <button class="btn bp" onclick="downloadShareImage()">⬇️ تحميل</button>
+      <button class="btn bp" onclick="downloadShareImage()">⬇️ تحميل الصورة</button>
       <button class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="document.getElementById('shareImgOv').classList.remove('open')">✕ إغلاق</button>
     </div>
   </div>
@@ -1064,116 +1076,280 @@ function updateCounts(){
 
 
 // ════ SHARE AS IMAGE ════
-window.shareAsImage = function(idx){
+let _shareImgIdx = null;
+let _shareImgMode = 'story'; // 'story' | 'card'
+
+window.switchShareMode = function(mode) {
+  _shareImgMode = mode;
+  document.getElementById('storyTabBtn').classList.toggle('active', mode === 'story');
+  document.getElementById('cardTabBtn').classList.toggle('active', mode === 'card');
+  const canvas = document.getElementById('shareCanvas');
+  canvas.className = mode === 'story' ? 'story-mode' : 'card-mode';
+  if(_shareImgIdx !== null) drawShareImage(_shareImgIdx);
+};
+
+function drawShareImage(idx) {
   const r = RR[idx];
   if(!r) return;
   const canvas = document.getElementById('shareCanvas');
   const ctx = canvas.getContext('2d');
-  const W = 600, H = 360;
+  const isStory = _shareImgMode === 'story';
+  const W = isStory ? 1080 : 1200;
+  const H = isStory ? 1920 : 630;
   canvas.width = W; canvas.height = H;
 
-  // Background
-  ctx.fillStyle = '#0f0f0f';
-  ctx.beginPath();
-  ctx.roundRect(0,0,W,H,20);
-  ctx.fill();
+  const PAD = isStory ? 80 : 50;
+  const accentColor = '#00A896';
+  const accentColor2 = '#4A90E2';
 
-  // Top gradient bar
-  const grad = ctx.createLinearGradient(0,0,W,0);
-  grad.addColorStop(0,'#00A896');
-  grad.addColorStop(1,'#4A90E2');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,4);
+  // ── Background ──
+  ctx.fillStyle = '#0d0d0d';
+  ctx.fillRect(0, 0, W, H);
 
-  // Brand
-  ctx.font = 'bold 13px Cairo, sans-serif';
-  ctx.fillStyle = '#00A896';
-  ctx.textAlign = 'right';
-  ctx.fillText('☕ Xbloom Recipes', W-24, 36);
+  // Subtle noise texture via radial gradients
+  const gBg = ctx.createRadialGradient(W*0.2, H*0.15, 0, W*0.2, H*0.15, W*0.8);
+  gBg.addColorStop(0, 'rgba(0,168,150,0.07)');
+  gBg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gBg;
+  ctx.fillRect(0,0,W,H);
+  const gBg2 = ctx.createRadialGradient(W*0.85, H*0.85, 0, W*0.85, H*0.85, W*0.7);
+  gBg2.addColorStop(0, 'rgba(74,144,226,0.06)');
+  gBg2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gBg2;
+  ctx.fillRect(0,0,W,H);
 
-  // Recipe name
-  const name = String(r.name||'وصفة');
-  ctx.font = 'bold 32px Cairo, sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'right';
-  // Truncate if too long
-  let displayName = name;
-  while(ctx.measureText(displayName).width > W-48 && displayName.length > 5){
-    displayName = displayName.slice(0,-1);
-  }
-  if(displayName !== name) displayName += '...';
-  ctx.fillText(displayName, W-24, 88);
+  // ── Top gradient bar ──
+  const topGrad = ctx.createLinearGradient(0,0,W,0);
+  topGrad.addColorStop(0, accentColor);
+  topGrad.addColorStop(0.5, '#00c4b0');
+  topGrad.addColorStop(1, accentColor2);
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, isStory ? 8 : 6);
 
-  // Author
-  if(r.author){
-    ctx.font = '15px Cairo, sans-serif';
-    ctx.fillStyle = '#A0A0A0';
-    ctx.fillText('بواسطة: ' + String(r.author), W-24, 118);
-  }
+  if(isStory) {
+    // ── STORY MODE (1080×1920) ──
 
-  // Divider
-  ctx.strokeStyle = '#2a2a2a';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(24, 138); ctx.lineTo(W-24, 138);
-  ctx.stroke();
+    // Coffee cup decoration (large faint)
+    ctx.font = isStory ? '320px serif' : '200px serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.textAlign = 'center';
+    ctx.fillText('☕', W/2, H*0.52);
 
-  // Details boxes
-  const details = [];
-  if(r.dose)   details.push({l:'الجرعة',  v:String(r.dose)});
-  if(r.ratio)  details.push({l:'النسبة',  v:String(r.ratio)});
-  if(r.brewer) details.push({l:'الجهاز',  v:String(r.brewer)});
-  const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل'};
-  if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category});
+    // Brand logo area
+    ctx.font = 'bold 38px Cairo, Arial, sans-serif';
+    ctx.fillStyle = accentColor;
+    ctx.textAlign = 'right';
+    ctx.fillText('☕ xBloom Recipes', W - PAD, PAD + 50);
 
-  const boxW = 120, boxH = 64, boxGap = 14;
-  const totalW = details.length * boxW + (details.length-1) * boxGap;
-  let startX = W - 24 - totalW;
-  details.forEach(d=>{
-    // Box bg
-    ctx.fillStyle = '#1a1a1a';
-    ctx.strokeStyle = '#2a2a2a';
+    // Thin brand line
+    ctx.strokeStyle = 'rgba(0,168,150,0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(startX, 155, boxW, boxH, 10);
-    ctx.fill(); ctx.stroke();
-    // Label
-    ctx.font = '11px Cairo, sans-serif';
-    ctx.fillStyle = '#666';
+    ctx.moveTo(PAD, PAD + 70); ctx.lineTo(W - PAD, PAD + 70);
+    ctx.stroke();
+
+    // Recipe name — centered large
+    const name = String(r.name || 'وصفة');
     ctx.textAlign = 'center';
-    ctx.fillText(d.l, startX + boxW/2, 174);
-    // Value
-    ctx.font = 'bold 16px Cairo, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    // wrap name if long
+    const maxNameW = W - PAD*2;
+    ctx.font = 'bold 96px Cairo, Arial, sans-serif';
+    const words = name.split(' ');
+    let lines = [], line = '';
+    for(const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if(ctx.measureText(test).width > maxNameW && line) {
+        lines.push(line); line = w;
+      } else { line = test; }
+    }
+    lines.push(line);
+    // If still too wide, shrink font
+    let nameFontSize = 96;
+    while(nameFontSize > 52) {
+      ctx.font = `bold ${nameFontSize}px Cairo, Arial, sans-serif`;
+      const maxW = lines.reduce((m,l)=>Math.max(m,ctx.measureText(l).width),0);
+      if(maxW <= maxNameW) break;
+      nameFontSize -= 6;
+    }
+    const lineH = nameFontSize * 1.3;
+    const nameStartY = H * 0.38 - ((lines.length-1)*lineH)/2;
+    lines.forEach((ln, i) => ctx.fillText(ln, W/2, nameStartY + i*lineH));
+
+    // Author
+    if(r.author) {
+      ctx.font = '44px Cairo, Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.fillText('بواسطة: ' + String(r.author), W/2, nameStartY + lines.length*lineH + 30);
+    }
+
+    // Divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    const divY = H * 0.52;
+    ctx.beginPath();
+    ctx.moveTo(PAD*2, divY); ctx.lineTo(W-PAD*2, divY);
+    ctx.stroke();
+
+    // Stats cards — 2 per row
+    const details = [];
+    if(r.dose)   details.push({l:'الجرعة', v:String(r.dose), emoji:'⚖️'});
+    if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio), emoji:'💧'});
+    if(r.brewer) details.push({l:'الجهاز', v:String(r.brewer), emoji:'🔧'});
+    const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل 🫧'};
+    if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category, emoji:'📋'});
+
+    const statsY = H * 0.56;
+    const cols = 2;
+    const boxW = (W - PAD*2 - 20*(cols-1)) / cols;
+    const boxH = 160;
+    const boxGap = 20;
+    details.slice(0,4).forEach((d,i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const bx = PAD + col * (boxW + boxGap);
+      const by = statsY + row * (boxH + boxGap);
+      // box bg
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(bx, by, boxW, boxH, 20);
+      ctx.fill(); ctx.stroke();
+      // label
+      ctx.font = '32px Cairo, Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.textAlign = 'center';
+      ctx.fillText(d.l, bx + boxW/2, by + 52);
+      // value
+      ctx.font = 'bold 44px Cairo, Arial, sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(d.v, bx + boxW/2, by + 108);
+    });
+
+    // Roastery badge
+    if(r.roastery) {
+      const roastY = statsY + Math.ceil(details.length/2)*(boxH+boxGap) + 40;
+      ctx.font = 'bold 40px Cairo, Arial, sans-serif';
+      ctx.fillStyle = accentColor;
+      ctx.textAlign = 'center';
+      ctx.fillText('☕ ' + String(r.roastery), W/2, roastY);
+    }
+
+    // Bottom CTA bar
+    const ctaH = 130;
+    const ctaGrad = ctx.createLinearGradient(0, H-ctaH, W, H-ctaH);
+    ctaGrad.addColorStop(0, accentColor);
+    ctaGrad.addColorStop(1, accentColor2);
+    ctx.fillStyle = ctaGrad;
+    ctx.beginPath();
+    ctx.roundRect(PAD, H - ctaH - PAD/2, W - PAD*2, ctaH, 24);
+    ctx.fill();
+    ctx.font = 'bold 38px Cairo, Arial, sans-serif';
     ctx.fillStyle = '#fff';
-    ctx.fillText(d.v, startX + boxW/2, 200);
-    startX += boxW + boxGap;
-  });
+    ctx.textAlign = 'center';
+    ctx.fillText('تصفح المزيد: xblm.ab-s.me', W/2, H - ctaH - PAD/2 + 78);
 
-  // Roastery
-  if(r.roastery){
-    ctx.font = '13px Cairo, sans-serif';
-    ctx.fillStyle = '#00A896';
+  } else {
+    // ── CARD MODE (1200×630) ──
+    const name = String(r.name || 'وصفة');
+
+    // Brand
+    ctx.font = 'bold 26px Cairo, Arial, sans-serif';
+    ctx.fillStyle = accentColor;
     ctx.textAlign = 'right';
-    ctx.fillText('☕ ' + String(r.roastery), W-24, 250);
+    ctx.fillText('☕ xBloom Recipes Hub', W - PAD, PAD + 30);
+
+    // Recipe name — right-aligned large
+    ctx.font = 'bold 72px Cairo, Arial, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    let displayName = name;
+    while(ctx.measureText(displayName).width > W - PAD*2 - 10 && displayName.length > 4){
+      displayName = displayName.slice(0,-1);
+    }
+    if(displayName !== name) displayName += '…';
+    ctx.fillText(displayName, W - PAD, PAD + 110);
+
+    // Author
+    if(r.author){
+      ctx.font = '32px Cairo, Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText('بواسطة: ' + String(r.author), W - PAD, PAD + 155);
+    }
+
+    // Divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PAD, 200); ctx.lineTo(W-PAD, 200);
+    ctx.stroke();
+
+    // Stat boxes — horizontal row
+    const details = [];
+    if(r.dose)   details.push({l:'الجرعة', v:String(r.dose)});
+    if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio)});
+    if(r.brewer) details.push({l:'الجهاز', v:String(r.brewer)});
+    const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل'};
+    if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category});
+
+    const bW = Math.min(200, (W - PAD*2 - (details.length-1)*16) / details.length);
+    const bH = 120;
+    const totalBW = details.length * bW + (details.length-1)*16;
+    let bx = W - PAD - totalBW;
+    const by = 230;
+    details.forEach(d => {
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(bx, by, bW, bH, 16);
+      ctx.fill(); ctx.stroke();
+      ctx.font = '22px Cairo, Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.textAlign = 'center';
+      ctx.fillText(d.l, bx + bW/2, by + 38);
+      ctx.font = 'bold 30px Cairo, Arial, sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(d.v, bx + bW/2, by + 84);
+      bx += bW + 16;
+    });
+
+    // Roastery
+    if(r.roastery){
+      ctx.font = 'bold 28px Cairo, Arial, sans-serif';
+      ctx.fillStyle = accentColor;
+      ctx.textAlign = 'right';
+      ctx.fillText('☕ ' + String(r.roastery), W - PAD, 400);
+    }
+
+    // Bottom CTA
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    ctx.beginPath();
+    ctx.roundRect(PAD, H - 90, W - PAD*2, 64, 14);
+    ctx.fill();
+    ctx.font = 'bold 26px Cairo, Arial, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.textAlign = 'center';
+    ctx.fillText('🔗 xblm.ab-s.me — أكبر مجتمع وصفات اكسبلوم بالعربي', W/2, H - 52);
   }
+}
 
-  // Bottom CTA
-  ctx.fillStyle = '#1a1a1a';
-  ctx.beginPath();
-  ctx.roundRect(24, H-64, W-48, 44, 10);
-  ctx.fill();
-  ctx.font = 'bold 14px Cairo, sans-serif';
-  ctx.fillStyle = '#fff';
-  ctx.textAlign = 'center';
-  ctx.fillText('🔗 تصفح المزيد من الوصفات على xblm.ab-s.me', W/2, H-36);
-
+window.shareAsImage = function(idx){
+  _shareImgIdx = idx;
+  _shareImgMode = 'story';
+  document.getElementById('storyTabBtn').classList.add('active');
+  document.getElementById('cardTabBtn').classList.remove('active');
+  const canvas = document.getElementById('shareCanvas');
+  canvas.className = 'story-mode';
+  drawShareImage(idx);
   document.getElementById('shareImgOv').classList.add('open');
 };
 
 window.downloadShareImage = function(){
   const canvas = document.getElementById('shareCanvas');
   const a = document.createElement('a');
-  a.download = 'recipe-xbloom.png';
+  const name = (_shareImgIdx !== null && RR[_shareImgIdx]) ? String(RR[_shareImgIdx].name||'recipe').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_').slice(0,30) : 'recipe';
+  a.download = 'xbloom-' + name + '-' + _shareImgMode + '.png';
   a.href = canvas.toDataURL('image/png');
   a.click();
 };
