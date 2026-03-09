@@ -113,9 +113,14 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 @media(min-width:768px){#adminPanel{padding:24px}.fr2{grid-template-columns:1fr 1fr}}
 .aff-icon-btn{width:40px;height:40px;border-radius:8px;background:var(--up);border:1px solid var(--br);font-size:1.3em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
 .aff-icon-btn.on{background:var(--gr);border-color:transparent}
-.aff-item{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--br);border-radius:10px;margin-bottom:8px}
-.aff-item-name{flex:1;font-size:.87em;font-weight:700}
-.aff-item-url{font-size:.75em;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.aff-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border:1px solid var(--br);border-radius:12px}
+.aff-item-name{font-size:.87em;font-weight:700;min-width:80px}
+.aff-item-url{flex:1;font-size:.76em;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aff-item-url.has-link{color:var(--ta)}
+.aff-item-actions{display:flex;gap:6px;flex-shrink:0}
+.aff-item-btn{padding:6px 10px;border-radius:8px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-size:.75em;cursor:pointer;font-family:inherit;transition:.15s}
+.aff-item-btn:hover{color:var(--t1)}
+.aff-item-btn.del:hover{background:rgba(245,87,108,.15);border-color:rgba(245,87,108,.3);color:#f5576c}
 .brew-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .brew-bar-label{width:160px;font-size:.78em;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;flex-shrink:0}
 .brew-bar-track{flex:1;height:22px;background:var(--up);border-radius:6px;overflow:hidden;position:relative}
@@ -184,7 +189,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
     <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
     <button class="atb" onclick="switchTab(this,'tRoastery')">☕ إدارة المحامص</button>
-    <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍الوصفات المكررة</button>
+    <button class="atb" onclick="switchTab(this,'tAff')">🛒 الأفلييت</button>
+    <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 مكررات الروابط</button>
   </div>
 
   <!-- STATS -->
@@ -628,6 +634,66 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <span style="color:#f093fb">const</span> <span style="color:var(--t1)">_CP</span> <span style="color:#f5576c">=</span> <span style="color:#43e97b">'<span id="passNewLine">—</span>'</span>;
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ═══ الأفلييت ═══ -->
+  <div id="tAff" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+      <div>
+        <h3 style="margin-bottom:4px">🛒 إدارة روابط الأفلييت</h3>
+        <p style="color:var(--t2);font-size:.82em">أضف روابط "اشتري القهوة" لكل محمصة — تظهر تلقائياً في بطاقات الوصفات</p>
+      </div>
+      <button class="btn" onclick="saveAffGlobal()" style="background:var(--gr);color:#fff;border:none;padding:9px 18px;font-size:.85em">💾 حفظ الكل</button>
+    </div>
+
+    <!-- Global affiliate toggle -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
+      <div style="flex:1">
+        <div style="font-size:.88em;font-weight:700">تفعيل زر "اشتري القهوة" في البطاقات</div>
+        <div style="font-size:.76em;color:var(--t2);margin-top:2px">عند التفعيل يظهر زر الشراء في كل وصفة عندها رابط أفلييت</div>
+      </div>
+      <label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer">
+        <input type="checkbox" id="affEnabled" style="opacity:0;width:0;height:0" onchange="toggleAffEnabled(this)">
+        <span id="affToggleSpan" style="position:absolute;inset:0;background:#333;border-radius:13px;transition:.3s"></span>
+        <span id="affToggleKnob" style="position:absolute;top:3px;right:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s"></span>
+      </label>
+    </div>
+
+    <!-- Global default link -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:20px">
+      <div style="font-size:.85em;font-weight:700;margin-bottom:8px">🔗 رابط افتراضي (للوصفات بدون محمصة محددة)</div>
+      <input class="form-input" id="affDefaultUrl" type="url" placeholder="https://..." style="font-size:.82em">
+      <div style="font-size:.74em;color:var(--t2);margin-top:5px">يُستخدم عندما لا توجد محمصة مرتبطة بالوصفة أو لا يوجد رابط خاص بها</div>
+    </div>
+
+    <!-- Per-roastery links -->
+    <div style="font-size:.88em;font-weight:700;margin-bottom:10px;color:var(--t2)">🏪 روابط حسب المحمصة</div>
+    <div id="affRoasteryList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+      <div style="color:var(--t2);font-size:.82em;padding:20px;text-align:center">جاري التحميل…</div>
+    </div>
+
+    <!-- Add custom roastery link -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:.85em;font-weight:700;margin-bottom:10px">➕ إضافة رابط لمحمصة</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input class="form-input" id="affNewName" placeholder="اسم المحمصة" style="flex:1;min-width:140px;font-size:.82em">
+        <input class="form-input" id="affNewUrl" type="url" placeholder="https://affiliate-link.com" style="flex:2;min-width:200px;font-size:.82em">
+        <button class="btn" onclick="addAffLink()" style="background:var(--gr);color:#fff;border:none;padding:10px 16px;font-size:.82em;white-space:nowrap">إضافة</button>
+      </div>
+    </div>
+
+    <!-- Button label customization -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px">
+      <div style="font-size:.85em;font-weight:700;margin-bottom:8px">✏️ نص زر الشراء</div>
+      <input class="form-input" id="affBtnLabel" placeholder="اشتري القهوة ☕" style="font-size:.82em">
+      <div style="font-size:.74em;color:var(--t2);margin-top:5px">النص الذي يظهر على الزر في بطاقات الوصفات</div>
+    </div>
+
+    <!-- Analytics preview -->
+    <div style="margin-top:20px;background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px">
+      <div style="font-size:.85em;font-weight:700;margin-bottom:10px">📊 إحصائيات النقرات</div>
+      <div id="affClicksChart" style="color:var(--t2);font-size:.82em">لا توجد بيانات بعد</div>
     </div>
   </div>
 
@@ -1824,6 +1890,147 @@ window.clearBrewData = function(){
     set(ref(db,'affiliate_clicks'), null)
   ]).then(()=>{ toast('تم مسح البيانات ✅'); document.getElementById('brewChart').innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">تمت إعادة التعيين</p>'; document.getElementById('affClicksChart').innerHTML='<p style="color:var(--t2);font-size:.83em">لا توجد بيانات</p>'; }).catch(err=>toast('خطأ: '+err.message,'terr'));
 };
+
+
+// ════ AFFILIATE MANAGEMENT ════
+function renderAffList() {
+  const aff = FB_AFFILIATE || {};
+  const roasteries = [...new Set(FB_RECIPES.map(r => r.roastery).filter(Boolean))].sort();
+  const container = document.getElementById('affRoasteryList');
+  if(!container) return;
+
+  // Load global settings
+  const settings = aff._settings || {};
+  const affEnabled = document.getElementById('affEnabled');
+  const affDefaultUrl = document.getElementById('affDefaultUrl');
+  const affBtnLabel = document.getElementById('affBtnLabel');
+  if(affEnabled) {
+    affEnabled.checked = !!settings.enabled;
+    const span = document.getElementById('affToggleSpan');
+    const knob = document.getElementById('affToggleKnob');
+    if(span) span.style.background = settings.enabled ? '#00A896' : '#333';
+    if(knob) knob.style.right = settings.enabled ? '3px' : 'auto';
+    if(knob) knob.style.left = settings.enabled ? 'auto' : '3px';
+  }
+  if(affDefaultUrl) affDefaultUrl.value = settings.defaultUrl || '';
+  if(affBtnLabel) affBtnLabel.value = settings.btnLabel || 'اشتري القهوة ☕';
+
+  // Render roastery links
+  // Combine roasteries from recipes + any custom ones in aff
+  const links = aff.links || {};
+  const allNames = [...new Set([...roasteries, ...Object.keys(links)])];
+
+  if(!allNames.length) {
+    container.innerHTML = '<div style="color:var(--t2);font-size:.82em;padding:20px;text-align:center">لا توجد محامص بعد — أضف الوصفات أولاً أو استخدم النموذج أدناه</div>';
+    return;
+  }
+
+  container.innerHTML = allNames.map(name => {
+    const url = links[name] || '';
+    const safeKey = name.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_');
+    return `
+    <div class="aff-item" id="affrow_${safeKey}">
+      <div class="aff-item-name">☕ ${name}</div>
+      <input class="form-input aff-item-url ${url?'has-link':''}" 
+             id="affurl_${safeKey}" 
+             type="url" 
+             placeholder="أضف رابط أفلييت..." 
+             value="${url}"
+             style="font-size:.78em;padding:8px 12px"
+             oninput="this.classList.toggle('has-link',!!this.value)">
+      <div class="aff-item-actions">
+        <button class="aff-item-btn" onclick="testAffLink('${safeKey}')" title="تجربة الرابط">🔗</button>
+        <button class="aff-item-btn del" onclick="delAffLink('${name}')" title="حذف">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Load click analytics
+  renderAffClicks();
+}
+
+window.toggleAffEnabled = function(el) {
+  const span = document.getElementById('affToggleSpan');
+  const knob = document.getElementById('affToggleKnob');
+  if(span) span.style.background = el.checked ? '#00A896' : '#333';
+  if(knob) { knob.style.right = el.checked ? '3px' : 'auto'; knob.style.left = el.checked ? 'auto' : '3px'; }
+};
+
+window.saveAffGlobal = async function() {
+  const aff = FB_AFFILIATE || {};
+  const links = aff.links || {};
+  const roasteries = [...new Set(FB_RECIPES.map(r => r.roastery).filter(Boolean))];
+  const allNames = [...new Set([...roasteries, ...Object.keys(links)])];
+
+  // Collect all URL inputs
+  const newLinks = {};
+  allNames.forEach(name => {
+    const safeKey = name.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_');
+    const el = document.getElementById('affurl_' + safeKey);
+    if(el && el.value.trim()) newLinks[name] = el.value.trim();
+  });
+
+  const settings = {
+    enabled: document.getElementById('affEnabled')?.checked || false,
+    defaultUrl: document.getElementById('affDefaultUrl')?.value.trim() || '',
+    btnLabel: document.getElementById('affBtnLabel')?.value.trim() || 'اشتري القهوة ☕'
+  };
+
+  try {
+    await set(ref(db, 'affiliate'), { _settings: settings, links: newLinks });
+    toast('✅ تم حفظ إعدادات الأفلييت');
+  } catch(e) { toast('خطأ: ' + e.message, 'terr'); }
+};
+
+window.addAffLink = async function() {
+  const name = document.getElementById('affNewName').value.trim();
+  const url = document.getElementById('affNewUrl').value.trim();
+  if(!name) { toast('أدخل اسم المحمصة ❗', 'terr'); return; }
+  if(!url)  { toast('أدخل رابط الأفلييت ❗', 'terr'); return; }
+  try {
+    const existing = FB_AFFILIATE?.links || {};
+    existing[name] = url;
+    await set(ref(db, 'affiliate/links'), existing);
+    document.getElementById('affNewName').value = '';
+    document.getElementById('affNewUrl').value = '';
+    toast('✅ تمت الإضافة');
+  } catch(e) { toast('خطأ: ' + e.message, 'terr'); }
+};
+
+window.delAffLink = async function(name) {
+  if(!confirm('حذف رابط "' + name + '"؟')) return;
+  try {
+    const existing = FB_AFFILIATE?.links || {};
+    delete existing[name];
+    await set(ref(db, 'affiliate/links'), existing);
+    toast('🗑️ تم الحذف');
+  } catch(e) { toast('خطأ: ' + e.message, 'terr'); }
+};
+
+window.testAffLink = function(safeKey) {
+  const el = document.getElementById('affurl_' + safeKey);
+  if(el && el.value) window.open(el.value, '_blank');
+  else toast('أدخل الرابط أولاً ❗', 'terr');
+};
+
+function renderAffClicks() {
+  const container = document.getElementById('affClicksChart');
+  if(!container) return;
+  get(ref(db, 'affiliate_clicks')).then(snap => {
+    const data = snap.val();
+    if(!data) { container.innerHTML = '<div style="color:var(--t2);font-size:.82em">لا توجد بيانات بعد — ستظهر هنا بعد نقر الزوار على روابط الأفلييت</div>'; return; }
+    const sorted = Object.entries(data).sort((a,b) => (b[1]||0) - (a[1]||0));
+    const max = sorted[0]?.[1] || 1;
+    container.innerHTML = sorted.map(([name, count]) => `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="font-size:.82em;min-width:120px;text-align:right">${name}</div>
+        <div style="flex:1;background:var(--br);border-radius:4px;height:8px;overflow:hidden">
+          <div style="height:100%;background:var(--gr);border-radius:4px;width:${Math.round(count/max*100)}%"></div>
+        </div>
+        <div style="font-size:.82em;color:var(--ta);font-weight:700;min-width:30px">${count}</div>
+      </div>`).join('');
+  }).catch(() => {});
+}
 
 
 // ════ DUPLICATE SCANNER ════

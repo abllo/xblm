@@ -247,6 +247,7 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .bs{background:transparent;border:2px solid var(--br);color:var(--t2)}
 .bsm{padding:7px 13px;font-size:12px}
 .bbl{width:100%;justify-content:center}
+.aff-buy-btn{background:linear-gradient(135deg,#E07B39,#c85a1a)!important;color:#fff!important;width:100%;justify-content:center;margin-top:6px;text-decoration:none}
 .ctrls{margin-bottom:16px}
 .sbox{position:relative;margin-bottom:13px}
 .sbox input{width:100%;padding:13px 48px 13px 14px;font-size:15px;border:2px solid var(--br);border-radius:10px;background:var(--card);color:var(--t1);font-family:inherit}
@@ -1575,6 +1576,7 @@ function cardHTML(r,i){
     </div>
     <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
+      ${getAffBtn(r)}
     </div>
     <div class="comments-section">
       <button class="comments-toggle" onclick="toggleComments('${rKey}',this)" id="ctoggle-${rKey}">
@@ -1916,6 +1918,14 @@ window.nativeShare = function() {
 const settingsRef2 = ref(db, 'siteSettings');
 const commentsRef2 = ref(db, 'comments');
 
+// ════ AFFILIATE DATA ════
+let AFF_DATA = { _settings: {}, links: {} };
+onValue(ref(db, 'affiliate'), snap => {
+  AFF_DATA = snap.val() || { _settings: {}, links: {} };
+  if(!AFF_DATA._settings) AFF_DATA._settings = {};
+  if(!AFF_DATA.links) AFF_DATA.links = {};
+});
+
 onValue(settingsRef2, snap => {
   const s = snap.val() || {};
   
@@ -2026,7 +2036,7 @@ onValue(settingsRef2, snap => {
         ${avg>0?`<div class="rinfo" style="justify-content:center;margin-bottom:10px"><span class="ravg">${avg.toFixed(1)} ⭐</span><span class="rcnt">${rdCount} تقييم</span></div>`:''}
         <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
-
+      ${getAffBtn(r)}
     </div>
       </div>`;
     }).join('');
@@ -2146,6 +2156,25 @@ window.submitComment = function(rKey) {
       toast('خطأ: ' + err.message, 'terr');
       if(sub) { sub.disabled=false; sub.textContent='✉️ نشر التعليق'; }
     });
+};
+
+// ════ AFFILIATE BUTTON ════
+function getAffBtn(r) {
+  const s = AFF_DATA._settings || {};
+  if(!s.enabled) return '';
+  const links = AFF_DATA.links || {};
+  const url = (r.roastery && links[r.roastery]) || s.defaultUrl || '';
+  if(!url) return '';
+  const label = s.btnLabel || 'اشتري القهوة ☕';
+  const roastKey = (r.roastery || 'default').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_');
+  return `<a href="${url}" target="_blank" rel="noopener" class="btn aff-buy-btn" onclick="trackAffClick('${roastKey}')">${label}</a>`;
+}
+
+window.trackAffClick = function(roastKey) {
+  if(!db || !roastKey) return;
+  get(ref(db, 'affiliate_clicks/' + roastKey)).then(snap => {
+    set(ref(db, 'affiliate_clicks/' + roastKey), (snap.val()||0) + 1);
+  }).catch(()=>{});
 };
 
 // ════ TRACKING ════
