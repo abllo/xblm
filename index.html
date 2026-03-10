@@ -1731,7 +1731,20 @@ function cardHTML(r,i){
   }
   const _rName = (function(){try{return matchRoastery(r)||null}catch(e){return null}})();
   const _rInfo = _rName ? Object.values(ROASTERIES||{}).find(v=>v&&v.name===_rName) : null;
-  const _rColor = _rInfo?.color || null;
+  const _rColorRaw = _rInfo?.color || null;
+  // Filter out colors too dark to be useful (luminance check)
+  const _rColor = (function(c){
+    if(!c) return null;
+    try {
+      const hex = c.replace('#','');
+      if(hex.length < 6) return null;
+      const r = parseInt(hex.slice(0,2),16);
+      const g = parseInt(hex.slice(2,4),16);
+      const b = parseInt(hex.slice(4,6),16);
+      const lum = (0.299*r + 0.587*g + 0.114*b);
+      return lum > 30 ? c : null; // too dark → use default
+    } catch(e){ return null; }
+  })(_rColorRaw);
   const _cardStyle = _rColor
     ? `animation-delay:${Math.min(i*0.04,.5)}s;background:color-mix(in srgb,${_rColor} 8%,#0a0a0a);border-color:color-mix(in srgb,${_rColor} 22%,#1a1a1a);--card-accent:${_rColor}`
     : `animation-delay:${Math.min(i*0.04,.5)}s`;
