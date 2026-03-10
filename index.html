@@ -425,8 +425,6 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .promo-ticker-inner{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;align-items:stretch}
 .promo-ticker-inner:hover{animation-play-state:paused}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes roastery-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
 .promo-item{display:flex;align-items:center;gap:0;white-space:nowrap;font-size:.82em;padding:10px 0;border-left:1px solid rgba(255,255,255,.07);margin-left:0}
 .promo-item-inner{display:flex;align-items:center;gap:8px;padding:0 20px}
 .promo-item-name{color:var(--t2);font-size:.85em}
@@ -2648,20 +2646,26 @@ function initRoasteryScroll(grid){
     });
   };
 
-  addSet(); addSet();
+  addSet(); addSet(); // 2 sets for seamless loop
 
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      const totalW = track.scrollWidth;
-      const duration = totalW / 2 / 60;
-      track.style.animation = `roastery-marquee ${duration}s linear infinite`;
-    });
-  });
+  // After 2 rAF frames the browser has measured the layout
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+    const setW = Math.round(track.scrollWidth / 2);
+    if(!setW) return;
+    const duration = setW / 60; // 60px per second
 
-  grid.addEventListener('mouseenter', ()=> track.style.animationPlayState = 'paused');
-  grid.addEventListener('mouseleave', ()=> track.style.animationPlayState = 'running');
-  grid.addEventListener('touchstart', ()=> track.style.animationPlayState = 'paused', {passive:true});
-  grid.addEventListener('touchend', ()=>{ setTimeout(()=> track.style.animationPlayState = 'running', 800); }, {passive:true});
+    // Inject pixel-based keyframes dynamically to avoid -50% issues
+    let kfStyle = document.getElementById('_roastery_kf');
+    if(!kfStyle){ kfStyle = document.createElement('style'); kfStyle.id='_roastery_kf'; document.head.appendChild(kfStyle); }
+    kfStyle.textContent = `@keyframes _rmq { from { transform: translateX(0px) } to { transform: translateX(-${setW}px) } }`;
+
+    track.style.animation = `_rmq ${duration}s linear infinite`;
+
+    grid.addEventListener('mouseenter', ()=> track.style.animationPlayState='paused');
+    grid.addEventListener('mouseleave', ()=> track.style.animationPlayState='running');
+    grid.addEventListener('touchstart', ()=> track.style.animationPlayState='paused', {passive:true});
+    grid.addEventListener('touchend', ()=>{ setTimeout(()=> track.style.animationPlayState='running', 800); }, {passive:true});
+  });});
 }
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
