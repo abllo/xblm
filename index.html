@@ -65,10 +65,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--shadow:0 4px 20px rgba(0,0,0,.4)}
-[data-theme="light"]{--bg:#F5F5F0;--card:#FFFFFF;--up:#EEEEE8;--br:#DEDEDE;--t1:#111;--t2:#666;--ta:#00857A;--shadow:0 4px 20px rgba(0,0,0,.08)}
-*{transition:background-color .25s,border-color .25s,color .15s}
-/* Don't transition transforms/opacity */
-.card,.rm-card,.roastery-card,.atb,.btn,.tag{transition:background-color .25s,border-color .25s,color .15s,transform .2s,opacity .2s}
+[data-theme="light"]{--bg:#E8E5DE;--card:#F4F2EC;--up:#DEDAD2;--br:#CBC7BE;--t1:#1C1A16;--t2:#76726A;--ta:#00857A;--shadow:0 2px 14px rgba(0,0,0,.09)}
+*{transition:background-color .28s,border-color .28s,color .18s}
+.card,.rm-card,.roastery-card,.atb,.btn,.tag{transition:background-color .28s,border-color .28s,color .18s,transform .2s,opacity .2s,box-shadow .2s}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh;overflow-x:hidden}
 .wrap{max-width:1400px;margin:0 auto}
 
@@ -732,34 +731,162 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   .rm-body{padding:10px 12px 20px}
 }
 
-/* ═══ LIGHT MODE OVERRIDES ═══ */
-[data-theme="light"] header{
-  background:linear-gradient(160deg,#e8f5f3 0%,#f0f0ea 55%,#e8f0f5 100%);
-  border-color:rgba(0,168,150,.2);
-  box-shadow:0 4px 24px rgba(0,0,0,.06);
+/* ═══════════════════════════════════════
+   LIGHT MODE — WARM STONE
+═══════════════════════════════════════ */
+
+/* ── Switch pill in light mode ── */
+[data-theme="light"] #themeSwitchWrap {
+  background: rgba(0,0,0,.06) !important;
+  border-color: rgba(0,0,0,.12) !important;
 }
-[data-theme="light"] header::before{
-  background:linear-gradient(90deg,transparent,rgba(0,133,122,.4) 30%,rgba(74,144,226,.4) 70%,transparent);
+[data-theme="light"] #themeSwitchTrack {
+  background: linear-gradient(135deg,#00A896,#4A90E2) !important;
+  border-color: transparent !important;
 }
-[data-theme="light"] .hdr-title{
-  background:linear-gradient(135deg,#00857A,#2c6fad);
+[data-theme="light"] #themeSwitchKnob {
+  background: #fff !important;
+  right: auto !important;
+  left: 2px !important;
+  box-shadow: 0 1px 6px rgba(0,133,122,.35) !important;
+}
+[data-theme="light"] #themeSwitchLabel { color: rgba(28,26,22,.45) !important }
+
+/* ── Header ── */
+[data-theme="light"] header {
+  background: linear-gradient(160deg,#ceeae7 0%,#dedad2 55%,#ccdae8 100%);
+  border-color: rgba(0,133,122,.2);
+  box-shadow: 0 4px 28px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.55);
+}
+[data-theme="light"] header::before {
+  background: linear-gradient(90deg,transparent,rgba(0,133,122,.4) 30%,rgba(44,111,173,.4) 70%,transparent);
+}
+[data-theme="light"] .hdr-title {
+  background: linear-gradient(135deg,#007A72,#1a5fa0);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-[data-theme="light"] .sub{color:#555}
-[data-theme="light"] .add-header-btn{background:linear-gradient(135deg,#00857A,#2c6fad)}
-[data-theme="light"] .card{box-shadow:0 2px 10px rgba(0,0,0,.07)}
-[data-theme="light"] .cn{color:#111}
-[data-theme="light"] .tag{color:#444}
-[data-theme="light"] .ftab.on{background:linear-gradient(135deg,#00857A,#2c6fad);color:#fff}
-[data-theme="light"] .ftab{color:#555;border-color:#ccc}
-[data-theme="light"] .roastery-card{box-shadow:0 2px 8px rgba(0,0,0,.1)}
-[data-theme="light"] #roasteryModal,
-[data-theme="light"] #roasteryModalOv.open #roasteryModal{background:#1a1a1a}
-[data-theme="light"] .rm-hero{background:#1f2f2e!important}
-[data-theme="light"] .rm-stats,.rm-tabs,[data-theme="light"] .rm-body{background:#181818!important}
-[data-theme="light"] .share-mode-tab{color:rgba(255,255,255,.5)}
-[data-theme="light"] .anno-bar{background:linear-gradient(135deg,#00857A,#2c6fad)}
-[data-theme="light"] .promoTicker{background:#f0f0ea;border-color:#ddd}
+[data-theme="light"] .sub { color: #5A5650 }
+[data-theme="light"] .add-header-btn { background: linear-gradient(135deg,#007A72,#1a5fa0) !important }
+
+/* ── Search bar ── */
+[data-theme="light"] .sbox input {
+  background: #EAE7DF;
+  border-color: #C8C4BC;
+  color: #1C1A16;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.06);
+}
+[data-theme="light"] .sbox input::placeholder { color: #9A9690 }
+[data-theme="light"] .sbox input:focus { border-color: #00857A; background: #F0EDE5; box-shadow: 0 0 0 3px rgba(0,133,122,.1) }
+
+/* ── Filter tabs ── */
+[data-theme="light"] .ftab {
+  color: #5A5650;
+  border-color: #C4C0B8;
+  background: #E0DDD6;
+}
+[data-theme="light"] .ftab:hover { background: #D6D3CC; color: #1C1A16 }
+[data-theme="light"] .ftab.on {
+  background: linear-gradient(135deg,#007A72,#1a5fa0);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 10px rgba(0,122,114,.25);
+}
+[data-theme="light"] .cnt { background: rgba(0,0,0,.12); color: #1C1A16 }
+[data-theme="light"] .ftab.on .cnt { background: rgba(255,255,255,.22); color: #fff }
+
+/* ── Roastery strip ── */
+[data-theme="light"] .roastery-strip-wrap {
+  background: #E0DDD6;
+  border-color: #C8C4BC;
+}
+[data-theme="light"] .roastery-card {
+  box-shadow: 0 2px 10px rgba(0,0,0,.1);
+}
+[data-theme="light"] .roastery-card:hover {
+  box-shadow: 0 4px 18px rgba(0,0,0,.14);
+}
+
+/* ── Recipe cards — warm white with accent top bar ── */
+[data-theme="light"] .card {
+  background: #F4F1EB;
+  border-color: #CAC7BF;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 1px 0 rgba(255,255,255,.7) inset;
+}
+[data-theme="light"] .card:hover {
+  background: #F8F5EF;
+  border-color: #B8B4AC;
+  box-shadow: 0 6px 22px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.7) inset;
+  transform: translateY(-2px);
+}
+
+/* Card text */
+[data-theme="light"] .cn { color: #1C1A16; font-weight: 800 }
+[data-theme="light"] .cauth { color: #7A7670 }
+
+/* Card action icons */
+[data-theme="light"] .card-icon-btn {
+  background: rgba(0,0,0,.06) !important;
+  border-color: rgba(0,0,0,.1) !important;
+  color: #5A5650 !important;
+}
+[data-theme="light"] .card-icon-btn:hover { background: rgba(0,0,0,.1) !important }
+
+/* ── Tags ── */
+[data-theme="light"] .tag { border-color: #C0BCB4; color: #4A4844 }
+[data-theme="light"] .tth { background: rgba(220,80,80,.09); color: #B03030; border-color: rgba(220,80,80,.18) }
+[data-theme="light"] .tc  { background: rgba(44,111,173,.09); color: #1A5FA0; border-color: rgba(44,111,173,.18) }
+[data-theme="light"] .to  { background: rgba(0,133,122,.09); color: #007A72; border-color: rgba(0,133,122,.18) }
+[data-theme="light"] .tx  { background: rgba(130,80,200,.09); color: #6040B0; border-color: rgba(130,80,200,.18) }
+
+/* ── Dose/ratio stat boxes ── */
+[data-theme="light"] .dbox {
+  background: #E8E5DD !important;
+  border-color: #C8C4BC !important;
+  color: #1C1A16 !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.04) !important;
+}
+[data-theme="light"] .dbox-l { color: #8A8680 !important }
+
+/* ── Stars ── */
+[data-theme="light"] .star-filled { color: #C87C0A }
+[data-theme="light"] .star-empty { color: #C0BDB5 }
+
+/* ── xBloom btn ── */
+[data-theme="light"] .btn.bp {
+  background: linear-gradient(135deg,#007A72,#1a5fa0);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0,122,114,.2);
+}
+
+/* ── Pagination + sort ── */
+[data-theme="light"] .pg-info { color: #7A7670 }
+[data-theme="light"] .pg-btn {
+  background: #E0DDD6;
+  border-color: #C4C0B8;
+  color: #4A4844;
+}
+[data-theme="light"] .pg-btn:hover { background: #D4D1CA }
+[data-theme="light"] select {
+  background: #E8E5DD;
+  border-color: #C4C0B8;
+  color: #1C1A16;
+}
+
+/* ── Modals stay dark (better) ── */
+[data-theme="light"] #roasteryModalOv.open { background: rgba(0,0,0,.55) }
+[data-theme="light"] #roasteryModal { background: #111 }
+[data-theme="light"] .rm-stats,[data-theme="light"] .rm-tabs,[data-theme="light"] .rm-body { background: #0e0e0e !important }
+[data-theme="light"] .rm-hero { background: #162624 !important }
+[data-theme="light"] #shareImgOv { background: rgba(20,18,14,.9) }
+[data-theme="light"] #addModal { background: #111 }
+
+/* ── Announcement + promo ── */
+[data-theme="light"] .anno-bar { background: linear-gradient(135deg,#007A72,#1a5fa0) }
+[data-theme="light"] .promo-ticker { background: #DDD9D0; border-color: #C4C0B8 }
+
+/* ── Footer ── */
+[data-theme="light"] footer { background: #DEDAD2; border-color: #C4C0B8 }
+[data-theme="light"] footer a { color: var(--ta) }
 </style>
 </head>
 <body>
@@ -781,6 +908,18 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   <!-- Particle canvas -->
   <canvas id="hdrCanvas"></canvas>
 
+  <!-- Theme switch — top left -->
+  <div id="themeSwitchWrap" onclick="toggleTheme()" title="تبديل الوضع الليلي / النهاري"
+    style="position:absolute;top:12px;left:14px;z-index:10;cursor:pointer;display:flex;align-items:center;gap:7px;user-select:none;padding:5px 10px 5px 8px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);transition:background .3s,border-color .3s">
+    <span id="themeSwitchIcon" style="font-size:.8em;transition:.3s;line-height:1">🌙</span>
+    <div id="themeSwitchTrack"
+      style="width:36px;height:20px;border-radius:10px;background:#333;border:1.5px solid #444;position:relative;transition:all .35s;flex-shrink:0">
+      <div id="themeSwitchKnob"
+        style="position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:50%;background:#666;transition:all .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>
+    </div>
+    <span id="themeSwitchLabel" style="display:none"></span>
+  </div>
+
   <div class="hdr-inner">
     <!-- Logo row -->
     <div class="hdr-logo">
@@ -799,14 +938,10 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 
 
-    <!-- CTA + Theme Toggle -->
+    <!-- CTA -->
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
       <button class="btn add-header-btn" onclick="openAddModal()">
         ✦ نشر وصفة جديدة
-      </button>
-      <button id="themeToggleBtn" onclick="toggleTheme()" title="تبديل الوضع"
-        style="width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);cursor:pointer;font-size:1.1em;display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0">
-        🌙
       </button>
     </div>
   </div>
@@ -2238,18 +2373,30 @@ window.trackAffClick = function(roastKey) {
 })();
 
 function applyTheme(theme, animate = true) {
-  const root = document.documentElement;
-  const btn  = document.getElementById('themeToggleBtn');
+  const root  = document.documentElement;
+  const track = document.getElementById('themeSwitchTrack');
+  const knob  = document.getElementById('themeSwitchKnob');
+  const icon  = document.getElementById('themeSwitchIcon');
+  const label = document.getElementById('themeSwitchLabel');
+
   if(theme === 'light') {
     root.setAttribute('data-theme', 'light');
-    if(btn) { btn.textContent = '☀️'; btn.style.borderColor = 'rgba(0,0,0,.12)'; btn.style.background = 'rgba(0,0,0,.05)'; }
+    if(icon)  icon.textContent = '☀️';
+    if(label) label.textContent = 'نهاري';
+    // CSS handles track/knob via [data-theme="light"] rules
   } else {
     root.removeAttribute('data-theme');
-    if(btn) { btn.textContent = '🌙'; btn.style.borderColor = 'rgba(255,255,255,.15)'; btn.style.background = 'rgba(255,255,255,.06)'; }
+    if(icon)  icon.textContent = '🌙';
+    if(label) label.textContent = 'ليلي';
+    if(track) { track.style.background='#333'; track.style.borderColor='#444'; }
+    if(knob)  { knob.style.background='#666'; knob.style.right='2px'; knob.style.left='auto'; }
   }
-  if(animate && btn) {
-    btn.style.transform = 'scale(1.3) rotate(20deg)';
-    setTimeout(() => { btn.style.transform = ''; }, 300);
+  if(animate) {
+    const wrap = document.getElementById('themeSwitchWrap');
+    if(wrap) {
+      wrap.style.transform='scale(1.05)';
+      setTimeout(()=>{ wrap.style.transform=''; },200);
+    }
   }
   localStorage.setItem('xbloom_theme', theme);
 }
