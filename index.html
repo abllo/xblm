@@ -270,6 +270,11 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .ppinfo b{color:var(--t1)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;margin-bottom:16px}
 .card{background:var(--card);border-radius:12px;padding:17px;border:1px solid var(--br);transition:.3s;position:relative;overflow:hidden}
+/* Dark mode: tint card bg with roastery color */
+.card[style*="--card-color"]{
+  background: color-mix(in srgb, var(--card-color) 8%, #0a0a0a);
+  border-color: color-mix(in srgb, var(--card-color) 22%, #1a1a1a);
+}
 /* Roastery-colored card accents */
 .card{--card-accent:#2a2a2a}
 .card::after{content:'';position:absolute;top:0;right:0;bottom:0;width:4px;background:var(--card-accent);border-radius:0 12px 12px 0;opacity:.55}
@@ -812,11 +817,19 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   border-color: #CAC7BF;
   box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 1px 0 rgba(255,255,255,.7) inset;
 }
+/* Colored cards in light mode — light tint, not dark */
+[data-theme="light"] .card[style*="--card-color"] {
+  background: color-mix(in srgb, var(--card-color) 7%, #F4F1EB) !important;
+  border-color: color-mix(in srgb, var(--card-color) 28%, #CAC7BF) !important;
+}
 [data-theme="light"] .card:hover {
   background: #F8F5EF;
   border-color: #B8B4AC;
   box-shadow: 0 6px 22px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.7) inset;
   transform: translateY(-2px);
+}
+[data-theme="light"] .card[style*="--card-color"]:hover {
+  background: color-mix(in srgb, var(--card-color) 12%, #F8F5EF) !important;
 }
 
 /* Card text */
@@ -1746,7 +1759,7 @@ function cardHTML(r,i){
     } catch(e){ return null; }
   })(_rColorRaw);
   const _cardStyle = _rColor
-    ? `animation-delay:${Math.min(i*0.04,.5)}s;background:color-mix(in srgb,${_rColor} 8%,#0a0a0a);border-color:color-mix(in srgb,${_rColor} 22%,#1a1a1a);--card-accent:${_rColor}`
+    ? `animation-delay:${Math.min(i*0.04,.5)}s;--card-accent:${_rColor};--card-color:${_rColor}`
     : `animation-delay:${Math.min(i*0.04,.5)}s`;
   const _ciAttr = _rColor ? '' : ` data-ci="${i%5}"`;
   return `<div class="card ani"${_ciAttr} style="${_cardStyle}">

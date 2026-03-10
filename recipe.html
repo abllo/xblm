@@ -452,7 +452,7 @@ function renderRecipe(r, key) {
   const stats = [];
   if(r.dose)   stats.push({icon:'⚖️', label:'الجرعة', value:r.dose});
   if(r.ratio)  stats.push({icon:'💧', label:'النسبة', value:r.ratio});
-  if(r.brewer) stats.push({icon:'🔧', label:'الجهاز', value:r.brewer});
+  if(r.brewer) stats.push({icon:'🔧', label:'الفلتر', value:r.brewer});
   if(r.category) stats.push({icon: r.category==='cold'?'🧊':'🔥', label:'النوع', value:cat.label.replace(/ [^\s]+$/,'')});
   document.getElementById('statsGrid').innerHTML = stats.map(s => `
     <div class="stat-card">
@@ -573,7 +573,7 @@ function buildOgImage(r, accentColor) {
   const details = [];
   if(r.dose)   details.push({l:'الجرعة', v:String(r.dose)});
   if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio)});
-  if(r.brewer) details.push({l:'الجهاز', v:String(r.brewer)});
+  if(r.brewer) details.push({l:'الفلتر', v:String(r.brewer)});
   const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل'};
   if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category});
 
@@ -729,7 +729,7 @@ function drawImg() {
   const details = [];
   if(r.dose)   details.push({l:'الجرعة', v:String(r.dose)});
   if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio)});
-  if(r.brewer) details.push({l:'الجهاز', v:String(r.brewer)});
+  if(r.brewer) details.push({l:'الفلتر', v:String(r.brewer)});
   const catMap2 = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل'};
   if(r.category) details.push({l:'النوع', v:catMap2[r.category]||r.category});
 
