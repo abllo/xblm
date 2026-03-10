@@ -1393,9 +1393,9 @@ function drawShareImage(idx) {
     const details = [];
     if(r.dose)   details.push({l:'الجرعة', v:String(r.dose), emoji:'⚖️'});
     if(r.ratio)  details.push({l:'النسبة', v:String(r.ratio), emoji:'💧'});
-    if(r.brewer) details.push({l:'الفلتر', v:String(r.brewer), emoji:'🔽'});
+    if(r.brewer) details.push({l:'الفلتر', v:String(r.brewer), emoji:'🔧'});
     const catMap = {hot:'حار 🔥', cold:'بارد 🧊', server:'غسيل 🫧'};
-    if(r.category) details.push({l:'نوع المشروب', v:catMap[r.category]||r.category, emoji:'📋'});
+    if(r.category) details.push({l:'النوع', v:catMap[r.category]||r.category, emoji:'📋'});
 
     const statsY = H * 0.56;
     const cols = 2;
@@ -2624,56 +2624,54 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
-  // Cancel any previous RAF loop
   if(_roasteryAutoScroll){cancelAnimationFrame(_roasteryAutoScroll);_roasteryAutoScroll=null;}
 
-  let paused = false;
+  // ── Infinite marquee via DOM cloning ──
+  const originalCards = Array.from(grid.children);
+  if(!originalCards.length) return;
+
+  grid.innerHTML = '';
+  grid.style.overflow = 'hidden';
+  grid.style.cursor = 'default';
+
+  const track = document.createElement('div');
+  track.style.cssText = 'display:flex;gap:10px;width:max-content;will-change:transform';
+  grid.appendChild(track);
+
+  const addSet = () => {
+    originalCards.forEach(c => {
+      const clone = c.cloneNode(true);
+      const rname = c.dataset.rname;
+      if(rname) clone.addEventListener('click', ()=> window.openRoasteryModal(rname));
+      track.appendChild(clone);
+    });
+  };
+  addSet(); // set 1
+  addSet(); // set 2 — seamless loop clone
+
+  const SPEED = 45; // px/sec
   let hovering = false;
-  let pauseTimer = null;
-  let dir = 1;
+  let offset = 0;
   let lastTime = null;
-  const SPEED = 40; // px per second
 
   function step(ts){
     _roasteryAutoScroll = requestAnimationFrame(step);
-    if(paused || hovering){ lastTime=null; return; }
-    if(lastTime===null){ lastTime=ts; return; }
-    const dt = Math.min(ts-lastTime, 50); // cap delta to avoid jump after tab switch
+    if(hovering){ lastTime = null; return; }
+    if(lastTime === null){ lastTime = ts; return; }
+    const dt = Math.min(ts - lastTime, 50);
     lastTime = ts;
-    const max = grid.scrollWidth - grid.clientWidth;
-    if(max < 10) return;
-    grid.scrollLeft += dir * SPEED * dt / 1000;
-    if(grid.scrollLeft <= 0)     { dir=1;  grid.scrollLeft=0; }
-    else if(grid.scrollLeft >= max){ dir=-1; grid.scrollLeft=max; }
+    offset += SPEED * dt / 1000;
+    const half = track.scrollWidth / 2;
+    if(offset >= half) offset -= half;
+    track.style.transform = `translateX(-${offset}px)`;
   }
 
-  // Start after a short delay so the grid is fully laid out
-  setTimeout(()=>{ _roasteryAutoScroll = requestAnimationFrame(step); }, 800);
+  setTimeout(()=>{ _roasteryAutoScroll = requestAnimationFrame(step); }, 400);
 
-  const pause = (ms=2800) => {
-    paused=true; clearTimeout(pauseTimer);
-    pauseTimer = setTimeout(()=>{ paused=false; }, ms);
-  };
-
-  // Hover — instant pause, instant resume
-  grid.addEventListener('mouseenter', ()=>{ hovering=true; lastTime=null; });
-  grid.addEventListener('mouseleave', ()=>{ hovering=false; });
-
-  // Mouse drag
-  let drag=false, sx=0, ss=0;
-  grid.addEventListener('mousedown', e=>{ drag=true; sx=e.pageX; ss=grid.scrollLeft; grid.classList.add('grabbing'); pause(4000); e.preventDefault(); });
-  document.addEventListener('mousemove', e=>{ if(!drag)return; grid.scrollLeft=ss-(e.pageX-sx); });
-  document.addEventListener('mouseup',  ()=>{ drag=false; grid.classList.remove('grabbing'); });
-
-  // Touch
-  let tx=0, ts2=0;
-  grid.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; ts2=grid.scrollLeft; pause(4000); }, {passive:true});
-  grid.addEventListener('touchmove',  e=>{ grid.scrollLeft=ts2-(e.touches[0].clientX-tx); }, {passive:true});
-
-  // Wheel
-  grid.addEventListener('wheel', e=>{
-    if(Math.abs(e.deltaX)>0||e.shiftKey){ e.preventDefault(); grid.scrollLeft+=e.deltaX||e.deltaY; pause(2000); }
-  }, {passive:false});
+  grid.addEventListener('mouseenter', ()=>{ hovering = true; });
+  grid.addEventListener('mouseleave', ()=>{ hovering = false; });
+  grid.addEventListener('touchstart', ()=>{ hovering = true; }, {passive:true});
+  grid.addEventListener('touchend',   ()=>{ setTimeout(()=>{ hovering = false; }, 1200); }, {passive:true});
 }
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
