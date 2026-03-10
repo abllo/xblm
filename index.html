@@ -2626,7 +2626,6 @@ function renderRoasteriesSection(){
 function initRoasteryScroll(grid){
   if(_roasteryAutoScroll){cancelAnimationFrame(_roasteryAutoScroll);_roasteryAutoScroll=null;}
 
-  // ── Infinite marquee via DOM cloning ──
   const originalCards = Array.from(grid.children);
   if(!originalCards.length) return;
 
@@ -2646,32 +2645,51 @@ function initRoasteryScroll(grid){
       track.appendChild(clone);
     });
   };
-  addSet(); // set 1
-  addSet(); // set 2 — seamless loop clone
 
-  const SPEED = 45; // px/sec
+  // Add enough sets to guarantee no gap (at least fill screen width × 3)
+  const fillSets = () => {
+    addSet();
+    addSet();
+    addSet();
+    // If still not wide enough, add more
+    requestAnimationFrame(()=>{
+      const containerW = grid.clientWidth;
+      const setW = track.scrollWidth / 3;
+      if(setW > 0 && setW < containerW * 1.5){
+        addSet(); addSet();
+      }
+      startLoop(track.scrollWidth / Math.round(track.children.length / originalCards.length));
+    });
+  };
+
   let hovering = false;
   let offset = 0;
   let lastTime = null;
+  const SPEED = 50; // px/sec — يمين لليسار (RTL feel) → نزيد offset
 
-  function step(ts){
+  function startLoop(setWidth){
+    function step(ts){
+      _roasteryAutoScroll = requestAnimationFrame(step);
+      if(hovering){ lastTime = null; return; }
+      if(lastTime === null){ lastTime = ts; return; }
+      const dt = Math.min(ts - lastTime, 50);
+      lastTime = ts;
+      // Move RIGHT to LEFT = decrease offset (نحو اليسار)
+      // But user wants LEFT to RIGHT = increase offset then reset
+      offset -= SPEED * dt / 1000; // ← يمين (RTL)
+      if(offset <= -setWidth) offset += setWidth;
+      if(offset > 0) offset = 0;
+      track.style.transform = `translateX(${offset}px)`;
+    }
     _roasteryAutoScroll = requestAnimationFrame(step);
-    if(hovering){ lastTime = null; return; }
-    if(lastTime === null){ lastTime = ts; return; }
-    const dt = Math.min(ts - lastTime, 50);
-    lastTime = ts;
-    offset += SPEED * dt / 1000;
-    const half = track.scrollWidth / 2;
-    if(offset >= half) offset -= half;
-    track.style.transform = `translateX(-${offset}px)`;
   }
 
-  setTimeout(()=>{ _roasteryAutoScroll = requestAnimationFrame(step); }, 400);
+  setTimeout(fillSets, 300);
 
   grid.addEventListener('mouseenter', ()=>{ hovering = true; });
   grid.addEventListener('mouseleave', ()=>{ hovering = false; });
   grid.addEventListener('touchstart', ()=>{ hovering = true; }, {passive:true});
-  grid.addEventListener('touchend',   ()=>{ setTimeout(()=>{ hovering = false; }, 1200); }, {passive:true});
+  grid.addEventListener('touchend',   ()=>{ setTimeout(()=>{ hovering = false; }, 1000); }, {passive:true});
 }
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
