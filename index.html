@@ -2606,7 +2606,7 @@ function renderRoasteriesSection(){
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
         + `</div>`;
     }).join('');
-    initRoasteryScroll(grid);
+    setTimeout(()=> initRoasteryScroll(grid), 300);
   } else {
     // Update counts only — no scroll restart
     sortedEntries.forEach(([k,v])=>{
@@ -2663,14 +2663,10 @@ function initRoasteryScroll(grid){
     const dt = Math.min(ts - prev, 50);
     prev = ts;
 
-    pos += SPEED * dt / 1000;
-
-    // One set width = total track / 4 sets
+    pos -= SPEED * dt / 1000;
     const setW = track.scrollWidth / 4;
-    if(pos >= setW) pos -= setW; // seamless reset
-
-    // RTL: move right-to-left = negative X
-    track.style.transform = `translateX(-${pos}px)`;
+    if(pos <= -setW) pos += setW;
+    track.style.transform = `translateX(${pos}px)`;
   }
 
   setTimeout(()=> requestAnimationFrame(loop), 200);
