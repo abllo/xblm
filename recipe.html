@@ -229,13 +229,25 @@ canvas#shareCanvas.card-mode{max-width:min(100%,560px);height:auto}
     <span class="hdr-logo">☕</span>
     <span class="hdr-name">xBloom Recipes</span>
   </a>
-  <a class="hdr-back" href="/">
-    <span>→</span> الرئيسية
-  </a>
-  <button id="themeToggleBtn" onclick="toggleTheme()" title="تبديل الوضع"
-    style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--br);background:var(--up);cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0">
-    🌙
+
+  <!-- زر الرجوع / إغلاق -->
+  <button onclick="goBack()" title="رجوع"
+    style="position:absolute;top:12px;right:14px;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--br);background:var(--up);color:var(--t2);font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;z-index:10;line-height:1"
+    onmouseover="this.style.background='var(--br)';this.style.color='var(--t1)'"
+    onmouseout="this.style.background='var(--up)';this.style.color='var(--t2)'">
+    ✕
   </button>
+
+  <!-- Theme switch -->
+  <div id="themeSwitchWrap" onclick="toggleTheme()" title="تبديل الوضع"
+    style="display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;padding:4px 0">
+    <span id="themeSwitchIcon" style="font-size:.85em;opacity:.7;transition:.3s">🌙</span>
+    <div id="themeSwitchTrack"
+      style="width:40px;height:22px;border-radius:11px;background:var(--up);border:1.5px solid var(--br);position:relative;transition:background .3s,border-color .3s;flex-shrink:0">
+      <div id="themeSwitchKnob"
+        style="position:absolute;top:2px;right:2px;width:15px;height:15px;border-radius:50%;background:#555;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>
+    </div>
+  </div>
 </header>
 
 <!-- Loading -->
@@ -796,6 +808,15 @@ window.downloadImg = function() {
   const nm = String(RECIPE&&RECIPE.name||'recipe').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_').slice(0,30);
   a.download = 'xbloom-'+nm+'-'+_imgMode+'.png';
   a.href = canvas.toDataURL('image/png'); a.click();
+};
+
+// ════ BACK NAVIGATION ════
+window.goBack = function() {
+  if(document.referrer && document.referrer.includes(location.hostname)) {
+    history.back();
+  } else {
+    location.href = '/';
+  }
 };
 
 // ════ THEME TOGGLE ════
