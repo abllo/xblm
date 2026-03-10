@@ -2626,7 +2626,7 @@ function renderRoasteriesSection(){
 function initRoasteryScroll(grid){
   if(_roasteryAutoScroll){cancelAnimationFrame(_roasteryAutoScroll);_roasteryAutoScroll=null;}
 
-  const originalCards = Array.from(grid.children);
+  const originalCards = Array.from(grid.querySelectorAll('.roastery-card'));
   if(!originalCards.length) return;
 
   grid.innerHTML = '';
@@ -2634,7 +2634,7 @@ function initRoasteryScroll(grid){
   grid.style.position = 'relative';
 
   const track = document.createElement('div');
-  track.style.cssText = 'display:flex;gap:10px;padding:4px 0;width:max-content;';
+  track.style.cssText = 'display:flex;gap:10px;padding:4px 10px;width:max-content;direction:ltr;';
   grid.appendChild(track);
 
   const addSet = () => {
@@ -2645,28 +2645,28 @@ function initRoasteryScroll(grid){
       track.appendChild(cl);
     });
   };
+  addSet(); addSet();
 
-  addSet(); addSet(); // 2 sets for seamless loop
-
-  // After 2 rAF frames the browser has measured the layout
   requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
-    const setW = Math.round(track.scrollWidth / 2);
-    if(!setW) return;
-    const duration = setW / 60; // 60px per second
+    const cards = Array.from(track.children);
+    const half = cards.length / 2;
+    // الرقم الدقيق: من بداية كرت[0] لبداية كرت[half]
+    const setW = cards[half].offsetLeft - cards[0].offsetLeft;
 
-    // Inject pixel-based keyframes dynamically to avoid -50% issues
-    let kfStyle = document.getElementById('_roastery_kf');
-    if(!kfStyle){ kfStyle = document.createElement('style'); kfStyle.id='_roastery_kf'; document.head.appendChild(kfStyle); }
-    kfStyle.textContent = `@keyframes _rmq { from { transform: translateX(0px) } to { transform: translateX(-${setW}px) } }`;
+    let kf = document.getElementById('_roastery_kf');
+    if(!kf){kf=document.createElement('style');kf.id='_roastery_kf';document.head.appendChild(kf);}
+    kf.textContent = `@keyframes _rmq{0%{transform:translateX(0)}100%{transform:translateX(-${setW}px)}}`;
 
-    track.style.animation = `_rmq ${duration}s linear infinite`;
+    void track.offsetWidth;
+    track.style.animation = `_rmq ${setW/60}s linear infinite`;
 
     grid.addEventListener('mouseenter', ()=> track.style.animationPlayState='paused');
     grid.addEventListener('mouseleave', ()=> track.style.animationPlayState='running');
-    grid.addEventListener('touchstart', ()=> track.style.animationPlayState='paused', {passive:true});
-    grid.addEventListener('touchend', ()=>{ setTimeout(()=> track.style.animationPlayState='running', 800); }, {passive:true});
+    grid.addEventListener('touchstart', ()=> track.style.animationPlayState='paused',{passive:true});
+    grid.addEventListener('touchend', ()=>{ setTimeout(()=> track.style.animationPlayState='running',800); },{passive:true});
   });});
 }
+
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
   if(activeRoastery&&activeRoastery.toLowerCase()===name.toLowerCase()){
