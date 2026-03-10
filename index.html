@@ -2654,17 +2654,21 @@ function initRoasteryScroll(grid){
   let hovering = false;
   let pos = 0;
   let prev = null;
-  const SPEED = 50; // px per second, RTL (right → left)
+  const SPEED = 50;
+  let setW = 0;
 
   function loop(ts){
     _roasteryAutoScroll = requestAnimationFrame(loop);
     if(hovering){ prev = null; return; }
     if(prev === null){ prev = ts; return; }
+    // Read setW lazily after first render
+    if(setW === 0){
+      setW = track.scrollWidth / 4;
+      if(setW === 0) return; // not rendered yet
+    }
     const dt = Math.min(ts - prev, 50);
     prev = ts;
-
     pos -= SPEED * dt / 1000;
-    const setW = track.scrollWidth / 4;
     if(pos <= -setW) pos += setW;
     track.style.transform = `translateX(${pos}px)`;
   }
