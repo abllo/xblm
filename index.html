@@ -2606,7 +2606,8 @@ function renderRoasteriesSection(){
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
         + `</div>`;
     }).join('');
-    setTimeout(()=> initRoasteryScroll(grid), 300);
+    // Wait for browser to render cards, then init scroll
+    requestAnimationFrame(()=> requestAnimationFrame(()=> initRoasteryScroll(grid)));
   } else {
     // Update counts only — no scroll restart
     sortedEntries.forEach(([k,v])=>{
@@ -2654,21 +2655,17 @@ function initRoasteryScroll(grid){
   let hovering = false;
   let pos = 0;
   let prev = null;
-  const SPEED = 50;
-  let setW = 0;
+  const SPEED = 50; // px per second, RTL (right → left)
 
   function loop(ts){
     _roasteryAutoScroll = requestAnimationFrame(loop);
     if(hovering){ prev = null; return; }
     if(prev === null){ prev = ts; return; }
-    // Read setW lazily after first render
-    if(setW === 0){
-      setW = track.scrollWidth / 4;
-      if(setW === 0) return; // not rendered yet
-    }
     const dt = Math.min(ts - prev, 50);
     prev = ts;
+
     pos -= SPEED * dt / 1000;
+    const setW = track.scrollWidth / 4;
     if(pos <= -setW) pos += setW;
     track.style.transform = `translateX(${pos}px)`;
   }
