@@ -425,7 +425,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .promo-ticker-inner{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;align-items:stretch}
 .promo-ticker-inner:hover{animation-play-state:paused}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes _roastery_scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes _rmq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .promo-item{display:flex;align-items:center;gap:0;white-space:nowrap;font-size:.82em;padding:10px 0;border-left:1px solid rgba(255,255,255,.07);margin-left:0}
 .promo-item-inner{display:flex;align-items:center;gap:8px;padding:0 20px}
 .promo-item-name{color:var(--t2);font-size:.85em}
@@ -477,7 +477,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .roasteries-scroll-wrap::before,.roasteries-scroll-wrap::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
 .roasteries-scroll-wrap::before{right:0;background:linear-gradient(to left,var(--card),transparent)}
 .roasteries-scroll-wrap::after{left:0;background:linear-gradient(to right,var(--card),transparent)}
-.roasteries-grid{display:block;overflow:hidden;padding:4px 0 10px;position:relative}.roasteries-grid::-webkit-scrollbar{display:none}
+.roasteries-grid{overflow:hidden;padding:4px 0 10px;position:relative}.roasteries-grid::-webkit-scrollbar{display:none}.roastery-track{display:flex;gap:0;width:max-content;direction:ltr;animation:_rmq 22s linear infinite}.roastery-track .roastery-card{margin-right:10px;flex-shrink:0}
 .roastery-card{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:130px;max-width:160px;flex-shrink:0;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25);scroll-snap-align:start}
 .roastery-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.15),rgba(0,0,0,.05));transition:.25s;pointer-events:none}
 .roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -2591,7 +2591,7 @@ function renderRoasteriesSection(){
 
   if(newKeys !== _lastRoasteryKeys){
     _lastRoasteryKeys = newKeys;
-    grid.innerHTML = sortedEntries.map(([k,v])=>{
+    const makeCard = ([k,v])=>{
       const name = v.name || k;
       const cnt = counts[normR(name)] || 0;
       const isActive = activeRoastery && activeRoastery.toLowerCase() === name.toLowerCase();
@@ -2606,7 +2606,10 @@ function renderRoasteriesSection(){
         + `<div class="roastery-img-placeholder"${phStyle}>☕</div>`
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
         + `</div>`;
-    }).join('');
+    };
+    const oneSet = sortedEntries.map(makeCard).join('');
+    // نسختين مطابقتين في HTML — -50% دقيق 100%
+    grid.innerHTML = `<div class="roastery-track">${oneSet}${oneSet}</div>`;
     initRoasteryScroll(grid);
   } else {
     // Update counts only — no scroll restart
@@ -2625,29 +2628,8 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
-  const origCards = Array.from(grid.querySelectorAll('.roastery-card'));
-  if(!origCards.length) return;
-
-  grid.innerHTML = '';
-
-  const track = document.createElement('div');
-  // gap:0 + margin-right on each card = trailing space included in width
-  // هذا يضمن -50% تقع بالضبط على بداية النسخة الثانية
-  track.style.cssText = 'display:flex;gap:0;width:max-content;direction:ltr;animation:_roastery_scroll 20s linear infinite;';
-  grid.appendChild(track);
-
-  const addSet = () => {
-    origCards.forEach(c=>{
-      const cl = c.cloneNode(true);
-      cl.style.marginRight = '10px'; // trailing gap على كل كرت
-      const rn = c.dataset.rname;
-      if(rn) cl.addEventListener('click', e=>{ e.stopPropagation(); window.openRoasteryModal(rn); });
-      track.appendChild(cl);
-    });
-  };
-
-  addSet(); addSet(); // نسختين — -50% = نهاية النسخة الأولى بالضبط
-
+  const track = grid.querySelector('.roastery-track');
+  if(!track) return;
   grid.addEventListener('mouseenter', ()=> track.style.animationPlayState='paused');
   grid.addEventListener('mouseleave', ()=> track.style.animationPlayState='running');
   grid.addEventListener('touchstart', ()=> track.style.animationPlayState='paused',{passive:true});
