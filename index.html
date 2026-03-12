@@ -425,7 +425,6 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .promo-ticker-inner{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;align-items:stretch}
 .promo-ticker-inner:hover{animation-play-state:paused}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes _rmq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .promo-item{display:flex;align-items:center;gap:0;white-space:nowrap;font-size:.82em;padding:10px 0;border-left:1px solid rgba(255,255,255,.07);margin-left:0}
 .promo-item-inner{display:flex;align-items:center;gap:8px;padding:0 20px}
 .promo-item-name{color:var(--t2);font-size:.85em}
@@ -477,7 +476,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .roasteries-scroll-wrap::before,.roasteries-scroll-wrap::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
 .roasteries-scroll-wrap::before{right:0;background:linear-gradient(to left,var(--card),transparent)}
 .roasteries-scroll-wrap::after{left:0;background:linear-gradient(to right,var(--card),transparent)}
-.roasteries-grid{overflow:hidden;padding:4px 0 10px;position:relative}.roasteries-grid::-webkit-scrollbar{display:none}.roastery-track{display:flex;gap:0;width:max-content;direction:ltr;animation:_rmq 22s linear infinite}.roastery-track .roastery-card{margin-right:10px;flex-shrink:0}
+.roasteries-grid{display:flex;flex-wrap:nowrap;gap:10px;overflow-x:auto;padding:4px 16px 10px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab}.roasteries-grid::-webkit-scrollbar{display:none}.roasteries-grid.dragging{cursor:grabbing;user-select:none}
 .roastery-card{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:130px;max-width:160px;flex-shrink:0;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25);scroll-snap-align:start}
 .roastery-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.15),rgba(0,0,0,.05));transition:.25s;pointer-events:none}
 .roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -2591,7 +2590,7 @@ function renderRoasteriesSection(){
 
   if(newKeys !== _lastRoasteryKeys){
     _lastRoasteryKeys = newKeys;
-    const makeCard = ([k,v])=>{
+    grid.innerHTML = sortedEntries.map(([k,v])=>{
       const name = v.name || k;
       const cnt = counts[normR(name)] || 0;
       const isActive = activeRoastery && activeRoastery.toLowerCase() === name.toLowerCase();
@@ -2606,10 +2605,7 @@ function renderRoasteriesSection(){
         + `<div class="roastery-img-placeholder"${phStyle}>☕</div>`
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
         + `</div>`;
-    };
-    const oneSet = sortedEntries.map(makeCard).join('');
-    // نسختين مطابقتين في HTML — -50% دقيق 100%
-    grid.innerHTML = `<div class="roastery-track">${oneSet}${oneSet}</div>`;
+    }).join('');
     initRoasteryScroll(grid);
   } else {
     // Update counts only — no scroll restart
@@ -2628,12 +2624,18 @@ function renderRoasteriesSection(){
 }
 
 function initRoasteryScroll(grid){
-  const track = grid.querySelector('.roastery-track');
-  if(!track) return;
-  grid.addEventListener('mouseenter', ()=> track.style.animationPlayState='paused');
-  grid.addEventListener('mouseleave', ()=> track.style.animationPlayState='running');
-  grid.addEventListener('touchstart', ()=> track.style.animationPlayState='paused',{passive:true});
-  grid.addEventListener('touchend', ()=>{ setTimeout(()=> track.style.animationPlayState='running',800); },{passive:true});
+  let down=false, startX=0, scrollLeft=0;
+  grid.addEventListener('mousedown', e=>{
+    down=true; startX=e.pageX; scrollLeft=grid.scrollLeft;
+    grid.classList.add('dragging');
+  });
+  window.addEventListener('mouseup', ()=>{ down=false; grid.classList.remove('dragging'); });
+  window.addEventListener('mousemove', e=>{
+    if(!down) return;
+    grid.scrollLeft = scrollLeft - (e.pageX - startX);
+  });
+  grid.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; scrollLeft=grid.scrollLeft; },{passive:true});
+  grid.addEventListener('touchmove', e=>{ grid.scrollLeft=scrollLeft-(e.touches[0].clientX-startX); },{passive:true});
 }
 
 window.filterByRoastery = function(e, name){
