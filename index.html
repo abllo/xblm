@@ -2631,19 +2631,22 @@ function initRoasteryScroll(grid){
   grid.innerHTML = '';
 
   const track = document.createElement('div');
-  // direction:ltr هو المفتاح — يمنع RTL من عكس translateX
-  track.style.cssText = 'display:flex;gap:10px;width:max-content;direction:ltr;animation:_roastery_scroll 20s linear infinite;';
+  // gap:0 + margin-right on each card = trailing space included in width
+  // هذا يضمن -50% تقع بالضبط على بداية النسخة الثانية
+  track.style.cssText = 'display:flex;gap:0;width:max-content;direction:ltr;animation:_roastery_scroll 20s linear infinite;';
   grid.appendChild(track);
 
-  // نسختين فقط — translateX(-50%) = نهاية النسخة الأولى بالضبط
-  [0,1].forEach(()=>{
+  const addSet = () => {
     origCards.forEach(c=>{
       const cl = c.cloneNode(true);
+      cl.style.marginRight = '10px'; // trailing gap على كل كرت
       const rn = c.dataset.rname;
       if(rn) cl.addEventListener('click', e=>{ e.stopPropagation(); window.openRoasteryModal(rn); });
       track.appendChild(cl);
     });
-  });
+  };
+
+  addSet(); addSet(); // نسختين — -50% = نهاية النسخة الأولى بالضبط
 
   grid.addEventListener('mouseenter', ()=> track.style.animationPlayState='paused');
   grid.addEventListener('mouseleave', ()=> track.style.animationPlayState='running');
