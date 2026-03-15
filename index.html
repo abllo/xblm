@@ -64,12 +64,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{overflow-x:hidden}
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--shadow:0 4px 20px rgba(0,0,0,.4)}
 [data-theme="light"]{--bg:#E8E5DE;--card:#F4F2EC;--up:#DEDAD2;--br:#CBC7BE;--t1:#1C1A16;--t2:#76726A;--ta:#00857A;--shadow:0 2px 14px rgba(0,0,0,.09)}
 *{transition:background-color .28s,border-color .28s,color .18s}
 .card,.rm-card,.roastery-card,.atb,.btn,.tag{transition:background-color .28s,border-color .28s,color .18s,transform .2s,opacity .2s,box-shadow .2s}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh;overflow-x:hidden}
-.wrap{max-width:1400px;margin:0 auto}
+.wrap{max-width:1400px;width:100%;margin:0 auto}
 
 /* ═══════════════════════════════════════════
    HEADER — WORLD-CLASS REDESIGN
@@ -235,10 +236,15 @@ header::before{
 }
 
 @media(max-width:600px){
-  .hdr-inner{padding:28px 16px 22px}
-  .hdr-logo-icon{width:40px;height:40px}
-  .hdr-stats{gap:4px}
-  .hdr-stat{padding:4px 9px;font-size:.7em}
+  .hdr-inner{padding:22px 14px 18px}
+  .hdr-logo-icon{width:38px;height:38px}
+  .hdr-logo{gap:10px;margin-bottom:4px}
+  .hdr-title{font-size:clamp(1.3em,6vw,1.8em)!important}
+  .sub{font-size:.76em}
+  .hdr-stats{gap:4px;margin-top:12px}
+  .hdr-stat{padding:4px 8px;font-size:.68em;white-space:nowrap}
+  .hdr-stat-sep{display:none}
+  .add-header-btn{padding:10px 20px!important;font-size:.82em!important;margin-top:14px!important}
 }
 
 header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
@@ -608,7 +614,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 }
 .rm-hero-glow{
   position:absolute;top:-80px;left:50%;transform:translateX(-50%);
-  width:400px;height:250px;border-radius:50%;
+  width:min(400px,100vw);height:250px;border-radius:50%;
   filter:blur(70px);opacity:.35;pointer-events:none;
 }
 .rm-hero-content{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
