@@ -1349,9 +1349,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <input class="fi" type="url" id="rL" required placeholder="https://share-h5.xbloom.com/?id=...">
       <div style="font-size:.75em;color:var(--t2);margin-top:5px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
     </div>
-    <div style="display:flex;gap:10px">
-      <button type="button" class="btn bgray" style="flex:0 0 auto;padding:14px 20px;font-size:13px" onclick="closeAddModal()">✕ إلغاء</button>
-      <button type="submit" class="btn bp bbl" style="flex:1;padding:14px;font-size:14px">
+    <div style="display:flex;gap:10px;align-items:center">
+      <button type="button" class="btn" style="flex:0 0 auto;padding:10px 16px;font-size:12px;background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.35);color:#f5576c;border-radius:10px" onclick="closeAddModal()">✕ إلغاء</button>
+      <button type="submit" class="btn bp bbl" style="flex:1;padding:15px;font-size:15px;font-weight:900;background:linear-gradient(135deg,#4A90E2,#2563eb);border-radius:12px">
         📮 نشر الوصفة
       </button>
     </div>
@@ -1365,9 +1365,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <div style="font-weight:800;font-size:1em;margin-bottom:8px">مراجعة الوصفة قبل النشر</div>
     </div>
     <div class="confirm-box" id="confirmPreview"></div>
-    <div style="display:flex;gap:10px;margin-top:14px">
-      <button class="btn bgray" style="flex:1;justify-content:center;padding:11px" onclick="goBackToForm()">← تعديل</button>
-      <button class="btn bp" style="flex:1;justify-content:center;padding:11px" id="submitBtn" onclick="doSubmitRecipe()">✅ تأكيد النشر</button>
+    <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
+      <button class="btn" style="flex:0 0 auto;padding:10px 16px;font-size:12px;background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.35);color:#f5576c;border-radius:10px" onclick="goBackToForm()">← تعديل</button>
+      <button class="btn" style="flex:1;justify-content:center;padding:15px;font-size:15px;font-weight:900;background:linear-gradient(135deg,#4A90E2,#2563eb);color:#fff;border:none;border-radius:12px" id="submitBtn" onclick="doSubmitRecipe()">✅ تأكيد النشر</button>
     </div>
   </div><!-- /mstep2 -->
 
