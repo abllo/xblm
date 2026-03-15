@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Sitemap Generator — xBloom</title>
+<style>
+body{font-family:monospace;background:#0a0a0a;color:#00A896;padding:20px}
+pre{white-space:pre-wrap;word-break:break-all;font-size:12px}
+button{padding:10px 20px;background:#00A896;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;margin:8px 4px}
+#status{color:#A0A0A0;font-size:13px;margin:10px 0}
+textarea{width:100%;height:400px;background:#111;color:#00ff88;border:1px solid #333;border-radius:8px;padding:12px;font-family:monospace;font-size:11px}
+</style>
+</head>
+<body>
+<h2 style="color:#fff">🗺️ Sitemap Generator — xBloom Recipes Hub</h2>
+<p id="status">اضغط لتوليد Sitemap من Firebase...</p>
+<button onclick="generateSitemap()">🔄 توليد Sitemap</button>
+<button onclick="copyXML()">📋 نسخ XML</button>
+<button onclick="downloadXML()">⬇️ تحميل sitemap.xml</button>
+<br><br>
+<textarea id="output" readonly placeholder="سيظهر هنا كود XML..."></textarea>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL: "https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "xbloom-recipes-hub"
+});
+const db = getDatabase(app);
+const BASE = 'https://xblm.ab-s.me';
+
+window.generateSitemap = async function() {
+  document.getElementById('status').textContent = '⏳ جاري جلب الوصفات من Firebase...';
+  try {
+    const snap = await get(ref(db, 'recipes'));
+    const data = snap.val() || {};
+    const recipes = Object.entries(data);
+    document.getElementById('status').textContent = `✅ تم جلب ${recipes.length} وصفة`;
+
+    const today = new Date().toISOString().split('T')[0];
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ══ الصفحة الرئيسية ══ -->
+  <url>
+    <loc>${BASE}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="${BASE}/"/>
+  </url>
+
+  <!-- ══ الوصفات (${recipes.length} وصفة) ══ -->\n`;
+
+    for(const [key, r] of recipes) {
+      if(!r || !r.name) continue;
+      const url = `${BASE}/recipe.html?key=${encodeURIComponent(key)}`;
+      const lastmod = r.createdAt
+        ? new Date(r.createdAt).toISOString().split('T')[0]
+        : today;
+      xml += `  <url>
+    <loc>${url}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>\n`;
+    }
+
+    xml += `</urlset>`;
+
+    document.getElementById('output').value = xml;
+    document.getElementById('status').textContent =
+      `✅ Sitemap جاهز — ${recipes.length} وصفة + الصفحة الرئيسية = ${recipes.length+1} URL`;
+
+    window._sitemapXML = xml;
+  } catch(e) {
+    document.getElementById('status').textContent = '❌ خطأ: ' + e.message;
+  }
+};
+
+window.copyXML = function() {
+  const ta = document.getElementById('output');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    document.getElementById('status').textContent = '✅ تم النسخ!';
+  });
+};
+
+window.downloadXML = function() {
+  const xml = document.getElementById('output').value;
+  if(!xml){ alert('ولّد الـ Sitemap أولاً'); return; }
+  const blob = new Blob([xml], {type: 'application/xml'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sitemap.xml';
+  a.click();
+};
+</script>
+</body>
+</html>
