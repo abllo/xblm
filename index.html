@@ -504,7 +504,6 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   overflow:hidden;
   line-height:0;
   background:transparent;
-  box-shadow:0 4px 24px rgba(0,0,0,.3);
   box-sizing:border-box;
 }
 .site-banner.show{display:block}
@@ -515,18 +514,23 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   height:auto;
   display:block;
   object-fit:contain;
-  object-position:center;
   image-rendering:auto;
-  -webkit-backface-visibility:hidden;
-  backface-visibility:hidden;
+}
+.site-banner iframe{
+  width:100%;
+  display:block;
+  min-height:200px;
+  border-radius:14px;
 }
 .site-banner-top{margin-bottom:16px}
 .site-banner-bottom{margin-top:16px}
 @media(max-width:700px){
   .site-banner{border-radius:10px}
+  .site-banner iframe{border-radius:10px}
 }
 @media(max-width:480px){
   .site-banner{border-radius:8px}
+  .site-banner iframe{border-radius:8px}
 }
 /* ═══ ROASTERY TAG on card ═══ */
 .tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta);font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
@@ -974,8 +978,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <!-- ═══ TOP BANNER — فوق خانة البحث مباشرة ═══ -->
 <div class="site-banner site-banner-top" id="siteBannerTop">
   <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
-    <img id="siteBannerTopImg" src="" alt="بنر إعلاني">
+    <img id="siteBannerTopImg" src="" alt="بنر إعلاني" style="display:none">
   </a>
+  <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
 </div>
 
 <div class="ctrls">
@@ -1056,8 +1061,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 <!-- ═══ BOTTOM BANNER — فوق الفوتر مباشرة ═══ -->
 <div class="site-banner site-banner-bottom" id="siteBannerBottom">
   <a id="siteBannerBottomLink" href="#" target="_blank" style="display:block;line-height:0">
-    <img id="siteBannerBottomImg" src="" alt="بنر إعلاني">
+    <img id="siteBannerBottomImg" src="" alt="بنر إعلاني" style="display:none">
   </a>
+  <iframe id="siteBannerBottomFrame" scrolling="no" frameborder="0" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
 </div>
 
 <footer id="siteFooter">
@@ -2162,16 +2168,46 @@ onValue(settingsRef2, snap => {
   
   // ═══ BANNERS ═══
   function applyBanner(slotId, imgId, linkId, cfg){
-    const slot = document.getElementById(slotId);
-    const img  = document.getElementById(imgId);
-    const lnk  = document.getElementById(linkId);
+    const slot  = document.getElementById(slotId);
+    const img   = document.getElementById(imgId);
+    const lnk   = document.getElementById(linkId);
+    const frame = document.getElementById(slotId + 'Frame');
     if(!slot) return;
+
+    // Reset both modes
+    if(img)   { img.style.display='none'; img.src=''; }
+    if(frame) { frame.style.display='none'; frame.srcdoc=''; }
+    if(lnk)   lnk.style.display='none';
+
     if(cfg && cfg.enabled && cfg.url){
-      img.src = cfg.url;
-      img.alt = cfg.alt || 'بنر إعلاني';
-      lnk.href = cfg.link || '#';
-      lnk.style.cursor = cfg.link ? 'pointer' : 'default';
-      if(!cfg.link) lnk.onclick = e => e.preventDefault();
+      const val = cfg.url.trim();
+      const isHTML = /^\s*<!DOCTYPE|^\s*<html|^\s*<style|^\s*<div|^\s*<a\b/i.test(val);
+
+      if(isHTML && frame){
+        // ── HTML Banner → عبر iframe معزول ──
+        frame.style.display = 'block';
+        // احسب الارتفاع تلقائياً بعد التحميل
+        frame.onload = function(){
+          try {
+            const h = frame.contentDocument.body.scrollHeight;
+            if(h > 0) frame.style.height = h + 'px';
+          } catch(e){}
+        };
+        frame.srcdoc = val;
+      } else {
+        // ── Image Banner ──
+        if(img) {
+          img.src = val;
+          img.alt = cfg.alt || 'بنر إعلاني';
+          img.style.display = 'block';
+        }
+        if(lnk) {
+          lnk.style.display = 'block';
+          lnk.href = cfg.link || '#';
+          lnk.style.cursor = cfg.link ? 'pointer' : 'default';
+          if(!cfg.link) lnk.onclick = e => e.preventDefault();
+        }
+      }
       slot.classList.add('show');
     } else {
       slot.classList.remove('show');

@@ -436,17 +436,32 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <span style="font-size:.82em">تفعيل وإظهار</span>
         </label>
       </div>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع من الجهاز</button>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع صورة</button>
         <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
-        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
+        <button type="button" class="btn bsm bs" onclick="toggleBannerMode('Top')">🧩 تبديل: صورة / HTML</button>
       </div>
-      <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:8px">
-      <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
-      <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
-      <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
+      <!-- وضع الصورة -->
+      <div id="bannerTopImgMode">
+        <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg — أو الصق كود HTML البانر أدناه" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:8px">
+        <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر على البنر (للصور فقط)" style="margin-bottom:8px">
+        <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
+        <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+          <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة الصورة</div>
+        </div>
+      </div>
+      <!-- وضع HTML -->
+      <div id="bannerTopHtmlMode" style="display:none">
+        <div style="font-size:.78em;color:var(--ta);margin-bottom:6px;padding:8px;background:rgba(0,168,150,.08);border-radius:8px;border:1px solid rgba(0,168,150,.2)">
+          🧩 وضع HTML — الكود سيُعرض في iframe معزول لا يؤثر على ألوان الموقع
+        </div>
+        <textarea class="form-input" id="bannerTopHtml" rows="8" placeholder="الصق كود HTML البانر هنا..." style="font-family:monospace;font-size:.78em;margin-bottom:8px;resize:vertical"></textarea>
+        <button type="button" class="btn bsm bp" onclick="previewBannerHtml('Top')">👁 معاينة</button>
+        <div id="bannerTopHtmlPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br);margin-top:8px">
+          <iframe id="bannerTopHtmlPreviewFrame" scrolling="no" frameborder="0" style="width:100%;min-height:180px;border:0;display:block"></iframe>
+          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة HTML — معزول تماماً عن الموقع</div>
+        </div>
       </div>
     </div>
 
@@ -459,17 +474,32 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <span style="font-size:.82em">تفعيل وإظهار</span>
         </label>
       </div>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع من الجهاز</button>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع صورة</button>
         <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
-        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
+        <button type="button" class="btn bsm bs" onclick="toggleBannerMode('Bottom')">🧩 تبديل: صورة / HTML</button>
       </div>
-      <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:8px">
-      <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
-      <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
-      <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
+      <!-- وضع الصورة -->
+      <div id="bannerBottomImgMode">
+        <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:8px">
+        <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر على البنر (للصور فقط)" style="margin-bottom:8px">
+        <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
+        <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+          <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة الصورة</div>
+        </div>
+      </div>
+      <!-- وضع HTML -->
+      <div id="bannerBottomHtmlMode" style="display:none">
+        <div style="font-size:.78em;color:var(--ta);margin-bottom:6px;padding:8px;background:rgba(0,168,150,.08);border-radius:8px;border:1px solid rgba(0,168,150,.2)">
+          🧩 وضع HTML — الكود سيُعرض في iframe معزول لا يؤثر على ألوان الموقع
+        </div>
+        <textarea class="form-input" id="bannerBottomHtml" rows="8" placeholder="الصق كود HTML البانر هنا..." style="font-family:monospace;font-size:.78em;margin-bottom:8px;resize:vertical"></textarea>
+        <button type="button" class="btn bsm bp" onclick="previewBannerHtml('Bottom')">👁 معاينة</button>
+        <div id="bannerBottomHtmlPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br);margin-top:8px">
+          <iframe id="bannerBottomHtmlPreviewFrame" scrolling="no" frameborder="0" style="width:100%;min-height:180px;border:0;display:block"></iframe>
+          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة HTML — معزول تماماً عن الموقع</div>
+        </div>
       </div>
     </div>
 
@@ -1183,6 +1213,32 @@ function initFirebase() {
     document.getElementById('promoBarEnabled').checked = !!s.promoBarEnabled;
     renderPinnedList(s.pinnedRecipes||[]);
     renderPromoList(s.promoCodes||[]);
+
+    // Load banners
+    ['Top','Bottom'].forEach(pos => {
+      const cfg = s['banner'+pos] || {};
+      const enEl = document.getElementById('banner'+pos+'Enabled');
+      if(enEl) enEl.checked = !!cfg.enabled;
+      if(!cfg.url) return;
+      const isHTML = /^\s*<!DOCTYPE|^\s*<html|^\s*<style|^\s*<div|^\s*<a\b/i.test(cfg.url);
+      if(isHTML){
+        // Switch to HTML mode
+        const imgMode  = document.getElementById('banner'+pos+'ImgMode');
+        const htmlMode = document.getElementById('banner'+pos+'HtmlMode');
+        const htmlEl   = document.getElementById('banner'+pos+'Html');
+        if(imgMode)  imgMode.style.display  = 'none';
+        if(htmlMode) htmlMode.style.display = 'block';
+        if(htmlEl)   htmlEl.value           = cfg.url;
+      } else {
+        const urlEl = document.getElementById('banner'+pos+'Url');
+        const lnkEl = document.getElementById('banner'+pos+'Link');
+        const altEl = document.getElementById('banner'+pos+'Alt');
+        if(urlEl) urlEl.value = cfg.url;
+        if(lnkEl) lnkEl.value = cfg.link||'';
+        if(altEl) altEl.value = cfg.alt||'';
+        previewBanner('banner'+pos+'Url','banner'+pos+'Preview');
+      }
+    });
   }, ()=>{});
 
   // Load pages content
@@ -1755,7 +1811,6 @@ window.previewBanner = function(urlInputId, previewId){
 window.handleBannerUpload = function(input, urlInputId, previewId){
   const file = input.files[0];
   if(!file) return;
-  // Check size — warn if over 500KB
   if(file.size > 500*1024){
     toast('⚠️ الصورة كبيرة ('+Math.round(file.size/1024)+'KB) — يُفضل أقل من 500KB لسرعة التحميل','terr');
   }
@@ -1766,6 +1821,31 @@ window.handleBannerUpload = function(input, urlInputId, previewId){
     toast('✅ تم تحميل الصورة — اضغط "حفظ جميع الإعدادات" لحفظها','tok');
   };
   reader.readAsDataURL(file);
+};
+
+// ── Banner HTML mode toggle ──
+window.toggleBannerMode = function(pos){
+  const imgMode  = document.getElementById('banner'+pos+'ImgMode');
+  const htmlMode = document.getElementById('banner'+pos+'HtmlMode');
+  if(!imgMode||!htmlMode) return;
+  const isImg = imgMode.style.display !== 'none';
+  imgMode.style.display  = isImg ? 'none'  : 'block';
+  htmlMode.style.display = isImg ? 'block' : 'none';
+};
+
+// ── Banner HTML preview ──
+window.previewBannerHtml = function(pos){
+  const ta    = document.getElementById('banner'+pos+'Html');
+  const pvDiv = document.getElementById('banner'+pos+'HtmlPreview');
+  const frame = document.getElementById('banner'+pos+'HtmlPreviewFrame');
+  if(!ta||!pvDiv||!frame) return;
+  const html = ta.value.trim();
+  if(!html){ toast('أدخل كود HTML أولاً','terr'); return; }
+  frame.srcdoc = html;
+  pvDiv.style.display = 'block';
+  frame.onload = function(){
+    try{ const h=frame.contentDocument.body.scrollHeight; if(h>0) frame.style.height=h+'px'; }catch(e){}
+  };
 };
 
 window.saveSiteSettings = function(){
@@ -1779,18 +1859,28 @@ window.saveSiteSettings = function(){
     annoText: document.getElementById('annoText').value.trim(),
     annoType: document.getElementById('annoType').value,
     annoEnabled: document.getElementById('annoEnabled').checked,
-    bannerTop: {
-      enabled: document.getElementById('bannerTopEnabled').checked,
-      url: document.getElementById('bannerTopUrl').value.trim(),
-      link: document.getElementById('bannerTopLink').value.trim(),
-      alt: document.getElementById('bannerTopAlt').value.trim()
-    },
-    bannerBottom: {
-      enabled: document.getElementById('bannerBottomEnabled').checked,
-      url: document.getElementById('bannerBottomUrl').value.trim(),
-      link: document.getElementById('bannerBottomLink').value.trim(),
-      alt: document.getElementById('bannerBottomAlt').value.trim()
-    }
+    bannerTop: (()=>{
+      const htmlMode = document.getElementById('bannerTopHtmlMode');
+      const isHtml   = htmlMode && htmlMode.style.display !== 'none';
+      const htmlVal  = isHtml ? (document.getElementById('bannerTopHtml')||{value:''}).value.trim() : '';
+      return {
+        enabled: document.getElementById('bannerTopEnabled').checked,
+        url:     isHtml ? htmlVal : document.getElementById('bannerTopUrl').value.trim(),
+        link:    isHtml ? '' : document.getElementById('bannerTopLink').value.trim(),
+        alt:     isHtml ? '' : document.getElementById('bannerTopAlt').value.trim()
+      };
+    })(),
+    bannerBottom: (()=>{
+      const htmlMode = document.getElementById('bannerBottomHtmlMode');
+      const isHtml   = htmlMode && htmlMode.style.display !== 'none';
+      const htmlVal  = isHtml ? (document.getElementById('bannerBottomHtml')||{value:''}).value.trim() : '';
+      return {
+        enabled: document.getElementById('bannerBottomEnabled').checked,
+        url:     isHtml ? htmlVal : document.getElementById('bannerBottomUrl').value.trim(),
+        link:    isHtml ? '' : document.getElementById('bannerBottomLink').value.trim(),
+        alt:     isHtml ? '' : document.getElementById('bannerBottomAlt').value.trim()
+      };
+    })()
   };
   // Pages content — save separately
   const pages = {
