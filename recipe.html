@@ -407,11 +407,89 @@ function renderRecipe(r, key) {
   const cat = catMap[r.category] || catMap.hot;
   document.getElementById('categoryBadge').innerHTML = `<span class="recipe-category-badge ${cat.cls}">${cat.label}</span>`;
 
-  const name = String(r.name || 'وصفة');
+  const name    = String(r.name    || 'وصفة');
+  const author  = String(r.author  || '');
+  const roastery= String(r.roastery|| '');
+  const brewer  = String(r.brewer  || '');
+  const dose    = String(r.dose    || '');
+  const ratio   = String(r.ratio   || '');
+  const catLbl  = r.category==='cold'?'باردة':r.category==='server'?'سيرفر':'حارة';
+  const recipeUrl = `https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(key)}`;
+
   document.getElementById('recipeName').textContent = name;
-  document.title = name + ' | xBloom Recipes Hub';
-  document.getElementById('ogTitle').content = name + ' | xBloom Recipes Hub';
-  document.getElementById('ogDesc').content = (r.author ? 'وصفة بواسطة ' + r.author + ' — ' : '') + (r.roastery ? r.roastery + ' — ' : '') + 'من مجتمع xBloom Recipes Hub';
+
+  // ── Dynamic SEO ──
+  const titleStr = `${name}${roastery?' — '+roastery:''} | وصفة xBloom`;
+  const descParts = [
+    `وصفة قهوة ${catLbl} على جهاز xBloom`,
+    author   ? `بواسطة ${author}` : '',
+    roastery ? `من محمصة ${roastery}` : '',
+    brewer   ? `فلتر: ${brewer}` : '',
+    dose     ? `جرعة: ${dose}` : '',
+    ratio    ? `نسبة: ${ratio}` : '',
+    'من مجتمع xBloom Recipes Hub — وصفات القهوة المختصة'
+  ].filter(Boolean).join(' | ');
+
+  const keywords = [
+    name,
+    roastery,
+    author,
+    brewer,
+    `وصفة xbloom ${catLbl}`,
+    'وصفات xbloom',
+    'قهوة مختصة',
+    roastery ? `وصفات ${roastery}` : '',
+    brewer   ? `وصفة ${brewer}` : '',
+    'xbloom recipes',
+    'specialty coffee'
+  ].filter(Boolean).join(', ');
+
+  document.title = titleStr;
+  document.getElementById('ogTitle').content  = titleStr;
+  document.getElementById('ogDesc').content   = descParts;
+  document.getElementById('twTitle').content  = titleStr;
+  document.getElementById('twDesc').content   = descParts;
+  document.getElementById('ogUrl').content    = recipeUrl;
+
+  // ── keywords meta (أضف إذا مش موجود) ──
+  let kwMeta = document.getElementById('metaKeywords');
+  if(!kwMeta){ kwMeta = document.createElement('meta'); kwMeta.id='metaKeywords'; kwMeta.name='keywords'; document.head.appendChild(kwMeta); }
+  kwMeta.content = keywords;
+
+  // ── canonical ──
+  let canon = document.querySelector('link[rel="canonical"]');
+  if(!canon){ canon = document.createElement('link'); canon.rel='canonical'; document.head.appendChild(canon); }
+  canon.href = recipeUrl;
+
+  // ── Schema.org Recipe ──
+  let schemaEl = document.getElementById('recipeSchema');
+  if(!schemaEl){ schemaEl = document.createElement('script'); schemaEl.type='application/ld+json'; schemaEl.id='recipeSchema'; document.head.appendChild(schemaEl); }
+  schemaEl.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "name": name,
+    "description": descParts,
+    "url": recipeUrl,
+    "author": author ? { "@type": "Person", "name": author } : undefined,
+    "inLanguage": "ar",
+    "recipeCategory": `قهوة ${catLbl}`,
+    "recipeCuisine": "قهوة مختصة",
+    "keywords": keywords,
+    "recipeIngredient": [
+      dose  ? `${dose} قهوة` : null,
+      ratio ? `نسبة ${ratio}` : null
+    ].filter(Boolean),
+    "recipeInstructions": [{
+      "@type": "HowToStep",
+      "text": `افتح وصفة ${name} على جهاز xBloom وابدأ التحضير`
+    }],
+    "publisher": {
+      "@type": "Organization",
+      "name": "xBloom Recipes Hub",
+      "url": "https://xblm.ab-s.me"
+    }
+  });
+
 
   if(r.author) document.getElementById('recipeAuthor').innerHTML = `بواسطة: <span>${r.author}</span>`;
   
