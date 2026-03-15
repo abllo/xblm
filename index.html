@@ -302,6 +302,9 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .ib{width:34px;height:34px;border-radius:8px;background:var(--up);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s}
 .ib:active{transform:scale(.88)}
 .ib.share:hover{background:var(--gr);border-color:transparent}
+/* زر إرسال الوصفة لصديق */
+.btn-share-friend{background:transparent;border:1.5px solid rgba(74,144,226,.5);color:rgba(74,144,226,.9);width:100%;justify-content:center;font-size:12px;padding:7px 13px;border-radius:10px;display:flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit;font-weight:700;transition:.2s;text-decoration:none}
+.btn-share-friend:hover{background:rgba(74,144,226,.12);border-color:rgba(74,144,226,.8);color:#4A90E2}
 .ib.report:hover{background:rgba(245,87,108,.15);border-color:rgba(245,87,108,.4);color:#f5576c}
 /* Report Modal */
 .report-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:none;align-items:flex-end;justify-content:center;padding:0}
@@ -348,12 +351,14 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .cauth{color:var(--ta);font-size:.88em;margin-bottom:10px}
 .ctags{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
 .tag{padding:4px 9px;border-radius:10px;font-size:.78em;font-weight:700;color:#fff}
-.to{background:linear-gradient(135deg,#667eea,#764ba2)}
-.tx{background:linear-gradient(135deg,#f093fb,#f5576c)}
-.tth{background:linear-gradient(135deg,#4facfe,#00f2fe)}
-.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24)}
-.tc{background:linear-gradient(135deg,#48dbfb,#0abde3)}
-.ts{background:linear-gradient(135deg,#667eea,#764ba2)}
+/* نوع التحضير — حرارة */
+.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24);box-shadow:0 2px 8px rgba(238,90,36,.35)}
+.tc{background:linear-gradient(135deg,#48dbfb,#0abde3);box-shadow:0 2px 8px rgba(10,189,227,.35)}
+.ts{background:linear-gradient(135deg,#a29bfe,#6c5ce7);box-shadow:0 2px 8px rgba(108,92,231,.35)}
+/* نوع الجهاز */
+.to{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 2px 8px rgba(118,75,162,.3)}
+.tx{background:linear-gradient(135deg,#fd79a8,#e84393);box-shadow:0 2px 8px rgba(232,67,147,.3)}
+.tth{background:linear-gradient(135deg,#55efc4,#00b894);box-shadow:0 2px 8px rgba(0,184,148,.3);color:#fff}
 .cdets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
 .det{background:var(--up);padding:7px;border-radius:7px;text-align:center}
 .dl{font-size:.73em;color:var(--t2);display:block;margin-bottom:2px}
@@ -376,6 +381,8 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .rmine{font-size:.72em;color:var(--ta);background:rgba(0,168,150,.12);padding:2px 8px;border-radius:10px}
 .rloading{opacity:.5;pointer-events:none}
 .cacts{display:flex;flex-direction:column;gap:7px}
+.btn-share-friend{width:100%;justify-content:center;padding:7px 13px;font-size:12px;background:transparent;border:1.5px solid rgba(74,144,226,.5);color:#4A90E2;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:.2s;text-decoration:none}
+.btn-share-friend:hover{background:rgba(74,144,226,.1);border-color:#4A90E2}
 .pgn{display:flex;justify-content:center;align-items:center;gap:7px;margin:16px 0 40px;flex-wrap:wrap}
 .pb{min-width:38px;height:38px;padding:0 11px;border-radius:8px;background:var(--card);border:1px solid var(--br);color:var(--t2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .pb:disabled{opacity:.4;cursor:not-allowed}
@@ -1853,7 +1860,6 @@ function cardHTML(r,i){
       <div class="ib fav" id="fav-${rKey}" onclick="toggleFav('${rKey}',this)" title="المفضلة" style="color:var(--t2)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
       </div>
-      <div class="ib share" onclick="openShareModal(${idx})" title="مشاركة الوصفة">🔗</div>
       <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
       <div class="ib report" onclick="openReportModal('${rKey}','${esc(str(r.name))}')" title="الإبلاغ عن مشكلة" style="font-size:14px;color:var(--t2)">🚩</div>
     </div></div>
@@ -1872,6 +1878,7 @@ function cardHTML(r,i){
     </div>
     <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
+      <button class="btn-share-friend" onclick="openShareModal(${idx})">📤 أرسل الوصفة لصديق</button>
       ${getAffBtn(r)}
     </div>
     <div class="comments-section">
@@ -2229,7 +2236,7 @@ window.submitReport = function() {
   };
   push(ref(db, 'reports'), report)
     .then(() => { toast('تم إرسال البلاغ ✅ شكراً!'); closeReportModal(); })
-    .catch(() => { toast('حدث خطأ، حاول مرة أخرى','terr'); btn.disabled=false; btn.textContent='إرسال البلاغ 🚩'; });
+    .catch(err => { console.error('Report error:', err); toast('خطأ: ' + (err.code||err.message||'غير معروف') ,'terr'); btn.disabled=false; btn.textContent='إرسال البلاغ 🚩'; });
 };
 
 window.copyShareLink = function() {
