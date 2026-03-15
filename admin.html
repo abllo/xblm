@@ -3388,7 +3388,7 @@ const userPrompt = `اكتب مقال ${CG_TYPE_LABELS[_cgType]} عن: “${topi
 “sections”: [
 {“heading”: “عنوان قسم”, “content”: “محتوى القسم 200-300 كلمة مع معلومات تقنية دقيقة”}
 ],
-${withFAQ ? `"faq": [{"q": "سؤال", "a": "جواب تفصيلي"}],` : ‘’}
+${withFAQ ? ’  “faq”: [{“q”: “سؤال”, “a”: “جواب تفصيلي”}],’ : ‘’}
 “conclusion”: “خلاصة وتوصية نهائية 100 كلمة”,
 “keywords”: [“كلمة1”, “كلمة2”, “كلمة3”]
 }
@@ -3423,14 +3423,14 @@ const relatedHTML = relatedRecipes.length ? `
 <div class="related-recipes">
   <h3>وصفات ذات صلة</h3>
   <div class="recipe-links">
-    ${relatedRecipes.map(r => `<a href="https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(r.key)}" class="recipe-link">☕ ${r.name}</a>`).join('')}
+    ${relatedRecipes.map(r => '<a href="https://xblm.ab-s.me/recipe.html?key='+encodeURIComponent(r.key)+'" class="recipe-link">☕ '+r.name+'</a>').join('')}
   </div>
 </div>` : '';
 
 const faqHTML = withFAQ && article.faq ? `
 <div class="faq-section">
   <h2>الأسئلة الشائعة</h2>
-  ${article.faq.map(f => `<div class="faq-item"><h3>${f.q}</h3><p>${f.a}</p></div>`).join('')}
+  ${article.faq.map(f => '<div class="faq-item"><h3>'+f.q+'</h3><p>'+f.a+'</p></div>').join('')}
 </div>` : '';
 
 const schemaJSON = withSchema ? JSON.stringify({
@@ -3461,7 +3461,7 @@ _cgGeneratedHTML = `<!DOCTYPE html>
 <meta property="og:url" content="https://xblm.ab-s.me/guides/${article.slug}.html">
 <meta property="og:image" content="https://xblm.ab-s.me/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-${withSchema ? `<script type="application/ld+json">${schemaJSON}<\/script>` : ''}
+${withSchema ? '<script type="application/ld+json">'+schemaJSON+'<\/script>' : ''}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;background:#0A0A0A;color:#fff;line-height:1.75;direction:rtl}
@@ -3498,7 +3498,7 @@ p{color:#C0C0C0;margin-bottom:14px}
     <span>🏷️ ${CG_TYPE_LABELS[_cgType]}</span>
   </div>
   <div class="intro">${article.intro}</div>
-  ${(article.sections||[]).map(s => `<h2>${s.heading}</h2><p>${s.content}</p>`).join('\n  ')}
+  ${(article.sections||[]).map(s => '<h2>'+s.heading+'</h2><p>'+s.content+'</p>').join('\n  ')}
   ${faqHTML}
   <div class="conclusion"><h2>الخلاصة</h2><p>${article.conclusion}</p></div>
   ${relatedHTML}
@@ -3657,4 +3657,4 @@ updateReportsBadge();
 </script>
 
 </body>
-</html> 
+</html>
