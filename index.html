@@ -503,7 +503,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   border-radius:14px;
   overflow:hidden;
   line-height:0;
-  background:#111;
+  background:transparent;
   box-shadow:0 4px 24px rgba(0,0,0,.3);
   box-sizing:border-box;
 }
@@ -514,7 +514,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   max-width:100%;
   height:auto;
   display:block;
-  object-fit:cover;
+  object-fit:contain;
   object-position:center;
   image-rendering:auto;
   -webkit-backface-visibility:hidden;
@@ -524,11 +524,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .site-banner-bottom{margin-top:16px}
 @media(max-width:700px){
   .site-banner{border-radius:10px}
-  .site-banner img{min-height:60px;max-height:120px}
 }
 @media(max-width:480px){
   .site-banner{border-radius:8px}
-  .site-banner img{min-height:50px;max-height:100px}
 }
 /* ═══ ROASTERY TAG on card ═══ */
 .tag-roastery{background:linear-gradient(135deg,rgba(0,168,150,.3),rgba(74,144,226,.3));border:1px solid rgba(0,168,150,.5);color:var(--ta);font-size:.72em;padding:3px 9px;border-radius:10px;font-weight:700}
