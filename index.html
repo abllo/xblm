@@ -67,9 +67,12 @@
 html{overflow-x:hidden}
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--shadow:0 4px 20px rgba(0,0,0,.4)}
 [data-theme="light"]{--bg:#E8E5DE;--card:#F4F2EC;--up:#DEDAD2;--br:#CBC7BE;--t1:#1C1A16;--t2:#76726A;--ta:#00857A;--shadow:0 2px 14px rgba(0,0,0,.09)}
+/* حماية الألوان الأساسية ضد تسرب CSS من بانرات HTML */
+body{font-family:'Cairo',sans-serif !important;background:var(--bg) !important;color:var(--t1) !important;padding:12px;min-height:100vh;overflow-x:hidden}
+.bp{background:var(--gr) !important;color:#fff !important}
 *{transition:background-color .28s,border-color .28s,color .18s}
 .card,.rm-card,.roastery-card,.atb,.btn,.tag{transition:background-color .28s,border-color .28s,color .18s,transform .2s,opacity .2s,box-shadow .2s}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);padding:12px;min-height:100vh;overflow-x:hidden}
+html{overflow-x:hidden}
 .wrap{max-width:1400px;width:100%;margin:0 auto}
 
 /* ═══════════════════════════════════════════
@@ -980,7 +983,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
     <img id="siteBannerTopImg" src="" alt="بنر إعلاني" style="display:none">
   </a>
-  <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
+  <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
 </div>
 
 <div class="ctrls">
@@ -1063,7 +1066,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   <a id="siteBannerBottomLink" href="#" target="_blank" style="display:block;line-height:0">
     <img id="siteBannerBottomImg" src="" alt="بنر إعلاني" style="display:none">
   </a>
-  <iframe id="siteBannerBottomFrame" scrolling="no" frameborder="0" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
+  <iframe id="siteBannerBottomFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
 </div>
 
 <footer id="siteFooter">
@@ -2181,19 +2184,37 @@ onValue(settingsRef2, snap => {
 
     if(cfg && cfg.enabled && cfg.url){
       const val = cfg.url.trim();
-      const isHTML = /^\s*<!DOCTYPE|^\s*<html|^\s*<style|^\s*<div|^\s*<a\b/i.test(val);
+      const isHTML = /^\s*<!DOCTYPE|^\s*<html|^\s*<head|^\s*<body|^\s*<style|^\s*<div|^\s*<a\b/i.test(val);
 
       if(isHTML && frame){
         // ── HTML Banner → عبر iframe معزول ──
         frame.style.display = 'block';
-        // احسب الارتفاع تلقائياً بعد التحميل
+        frame.style.height  = '220px'; // default height
         frame.onload = function(){
+          // Try direct access first (same-origin)
           try {
             const h = frame.contentDocument.body.scrollHeight;
             if(h > 0) frame.style.height = h + 'px';
+            return;
           } catch(e){}
+          // Fallback: postMessage
+          frame.contentWindow.postMessage('getHeight','*');
         };
-        frame.srcdoc = val;
+        // Listen for height from iframe
+        window.addEventListener('message', function onMsg(e){
+          if(e.source === frame.contentWindow && e.data && e.data.height){
+            frame.style.height = e.data.height + 'px';
+            window.removeEventListener('message', onMsg);
+          }
+        });
+        // Inject postMessage responder into HTML before loading
+        const htmlWithResize = val.replace('</body>', `
+<script>
+  function sendH(){ parent.postMessage({height:document.body.scrollHeight},'*'); }
+  window.addEventListener('load', sendH);
+  window.addEventListener('message', function(e){ if(e.data==='getHeight') sendH(); });
+<\/script></body>`);
+        frame.srcdoc = htmlWithResize;
       } else {
         // ── Image Banner ──
         if(img) {
