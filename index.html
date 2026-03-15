@@ -69,7 +69,10 @@ html{overflow-x:hidden}
 [data-theme="light"]{--bg:#E8E5DE;--card:#F4F2EC;--up:#DEDAD2;--br:#CBC7BE;--t1:#1C1A16;--t2:#76726A;--ta:#00857A;--shadow:0 2px 14px rgba(0,0,0,.09)}
 /* حماية الألوان الأساسية ضد تسرب CSS من بانرات HTML */
 body{font-family:'Cairo',sans-serif !important;background:var(--bg) !important;color:var(--t1) !important;padding:12px;min-height:100vh;overflow-x:hidden}
+.btn{padding:9px 18px !important;border-radius:10px !important;border:none !important;font-size:13px !important;font-weight:700 !important;cursor:pointer !important;font-family:inherit !important;transition:.2s !important;display:inline-flex !important;align-items:center !important;gap:5px !important;text-decoration:none !important}
 .bp{background:var(--gr) !important;color:#fff !important}
+.bsm{padding:7px 13px !important;font-size:12px !important}
+.bbl{width:100% !important;justify-content:center !important}
 *{transition:background-color .28s,border-color .28s,color .18s}
 .card,.rm-card,.roastery-card,.atb,.btn,.tag{transition:background-color .28s,border-color .28s,color .18s,transform .2s,opacity .2s,box-shadow .2s}
 html{overflow-x:hidden}
@@ -253,12 +256,8 @@ header::before{
 header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
 h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
 /* sub merged into header redesign */
-.btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
 .btn:active{transform:scale(.95)}
-.bp{background:var(--gr);color:#fff}
 .bs{background:transparent;border:2px solid var(--br);color:var(--t2)}
-.bsm{padding:7px 13px;font-size:12px}
-.bbl{width:100%;justify-content:center}
 .aff-buy-btn{background:linear-gradient(135deg,#E07B39,#c85a1a)!important;color:#fff!important;width:100%;justify-content:center;margin-top:6px;text-decoration:none}
 .ctrls{margin-bottom:16px}
 .sbox{position:relative;margin-bottom:13px}
