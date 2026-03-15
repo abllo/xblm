@@ -669,6 +669,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn" onclick="previewSEO()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:9px 16px;font-size:.82em">👁️ معاينة</button>
+        <button class="btn" onclick="updateSitemapOnly()" id="sitemapBtn" style="background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.4);color:var(--ta);padding:9px 16px;font-size:.82em;font-weight:700">🗺️ تحديث Sitemap</button>
         <button class="btn" onclick="deploySEO()" id="seoGenBtn" style="background:var(--gr);color:#fff;border:none;padding:9px 20px;font-size:.85em;font-weight:700">🚀 نشر الآن</button>
       </div>
     </div>
@@ -687,7 +688,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         </div>
         <div style="flex:3;min-width:200px">
           <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">GitHub Token</label>
-          <input class="form-input" id="seoToken" type="password" style="font-size:.82em;font-family:monospace" placeholder="ghp_...">
+          <input class="form-input" id="seoToken" type="password" style="font-size:.82em;font-family:monospace" placeholder="ghp_..." value="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">
         </div>
         <div style="display:flex;align-items:flex-end">
           <button class="btn" onclick="saveSEOConfig()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:10px 14px;font-size:.8em;white-space:nowrap">💾 حفظ</button>
@@ -2690,6 +2691,63 @@ window.previewSEO = function() {
 };
 
 // ── Main Deploy ──
+window.updateSitemapOnly = async function() {
+  if(!FB_RECIPES.length) { toast('لا توجد وصفات','terr'); return; }
+
+  const cfg = getSEOConfig();
+  cfg.repo   = document.getElementById('seoRepo')?.value.trim()   || cfg.repo;
+  cfg.branch = document.getElementById('seoBranch')?.value.trim() || cfg.branch;
+  cfg.token  = document.getElementById('seoToken')?.value.trim()  || cfg.token;
+
+  if(!cfg.token) { toast('❌ أدخل GitHub Token أولاً','terr'); return; }
+
+  const btn = document.getElementById('sitemapBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري التحديث...';
+
+  try {
+    const today = new Date().toISOString().slice(0,10);
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://xblm.ab-s.me/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+${FB_RECIPES.map(r => {
+  const key = r._fbKey;
+  if(!key) return '';
+  const lastmod = r.createdAt
+    ? new Date(r.createdAt).toISOString().slice(0,10)
+    : today;
+  return `  <url>
+    <loc>https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(key)}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+}).filter(Boolean).join('\n')}
+
+</urlset>`;
+
+    // Get existing SHA
+    const existing = await ghGet('sitemap.xml', cfg);
+    await ghPut('sitemap.xml', xml, existing?.sha || null, cfg);
+
+    toast(`✅ تم تحديث sitemap.xml — ${FB_RECIPES.length} وصفة`);
+  } catch(e) {
+    toast('❌ فشل: ' + e.message, 'terr');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🗺️ تحديث Sitemap';
+};
+
 window.deploySEO = async function() {
   updateSEOStats();
   if(!FB_RECIPES.length) { toast('لا توجد وصفات','terr'); return; }
