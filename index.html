@@ -351,13 +351,13 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .ctags{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
 .tag{padding:4px 9px;border-radius:10px;font-size:.78em;font-weight:700;color:#fff}
 /* نوع التحضير — حرارة */
-.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24);box-shadow:0 2px 8px rgba(238,90,36,.35)}
-.tc{background:linear-gradient(135deg,#48dbfb,#0abde3);box-shadow:0 2px 8px rgba(10,189,227,.35)}
-.ts{background:linear-gradient(135deg,#a29bfe,#6c5ce7);box-shadow:0 2px 8px rgba(108,92,231,.35)}
+.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24) !important;box-shadow:0 2px 8px rgba(238,90,36,.35);color:#fff !important}
+.tc{background:linear-gradient(135deg,#48dbfb,#0abde3) !important;box-shadow:0 2px 8px rgba(10,189,227,.35);color:#fff !important}
+.ts{background:linear-gradient(135deg,#a29bfe,#6c5ce7) !important;box-shadow:0 2px 8px rgba(108,92,231,.35);color:#fff !important}
 /* نوع الجهاز */
-.to{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 2px 8px rgba(118,75,162,.3)}
-.tx{background:linear-gradient(135deg,#fd79a8,#e84393);box-shadow:0 2px 8px rgba(232,67,147,.3)}
-.tth{background:linear-gradient(135deg,#55efc4,#00b894);box-shadow:0 2px 8px rgba(0,184,148,.3);color:#fff}
+.to{background:linear-gradient(135deg,#667eea,#764ba2) !important;box-shadow:0 2px 8px rgba(118,75,162,.3);color:#fff !important}
+.tx{background:linear-gradient(135deg,#fd79a8,#e84393) !important;box-shadow:0 2px 8px rgba(232,67,147,.3);color:#fff !important}
+.tth{background:linear-gradient(135deg,#55efc4,#00b894) !important;box-shadow:0 2px 8px rgba(0,184,148,.3);color:#fff !important}
 .cdets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
 .det{background:var(--up);padding:7px;border-radius:7px;text-align:center}
 .dl{font-size:.73em;color:var(--t2);display:block;margin-bottom:2px}
@@ -893,11 +893,11 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 [data-theme="light"] .card-icon-btn:hover { background: rgba(0,0,0,.1) !important }
 
 /* ── Tags ── */
-[data-theme="light"] .tag { border-color: #C0BCB4; color: #4A4844 }
-[data-theme="light"] .tth { background: rgba(220,80,80,.09); color: #B03030; border-color: rgba(220,80,80,.18) }
-[data-theme="light"] .tc  { background: rgba(44,111,173,.09); color: #1A5FA0; border-color: rgba(44,111,173,.18) }
-[data-theme="light"] .to  { background: rgba(0,133,122,.09); color: #007A72; border-color: rgba(0,133,122,.18) }
-[data-theme="light"] .tx  { background: rgba(130,80,200,.09); color: #6040B0; border-color: rgba(130,80,200,.18) }
+[data-theme="light"] .tag { color: #fff }
+[data-theme="light"] .tth { background: linear-gradient(135deg,#ff6b6b,#ee5a24) !important; color: #fff !important }
+[data-theme="light"] .tc  { background: linear-gradient(135deg,#48dbfb,#0abde3) !important; color: #fff !important }
+[data-theme="light"] .to  { background: linear-gradient(135deg,#667eea,#764ba2) !important; color: #fff !important }
+[data-theme="light"] .tx  { background: linear-gradient(135deg,#fd79a8,#e84393) !important; color: #fff !important }
 
 /* ── Dose/ratio stat boxes ── */
 [data-theme="light"] .dbox {
@@ -1061,7 +1061,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <select id="sortSelect" onchange="setSortSelect(this.value)">
       <option value="default">📋 الافتراضي</option>
       <option value="top">⭐ الأعلى تقييماً</option>
-      <option value="newest">🆕 المضافة حديثاً</option>
+      <option value="newest" selected>🆕 المضافة حديثاً</option>
       <option value="popular">🔥 الأكثر تحضيراً</option>
     </select>
   </div>
@@ -1323,7 +1323,7 @@ const INIT = [{"name": "وصفة بارده 24 جرام قهوة", "author": "mf
 const CKW=['بارد','ثلج','ice','🧊','iced','الثلج','cold','باردة','مثلج','بارده','مثلجة','مثلجه'];
 const SKW=['غسيل','ترطيب','سيرفر','غسل','server','cleaning','wash'];
 let RR=[],BREW={},FAVS={},RATINGS={},USER_RATINGS={},BREW_CLICKS={};let SHOW_FAVS=false;
-let SORT='default';
+let SORT='newest';
 let ROASTERIES={};
 let activeRoastery=null;
 let fTemp='all',fBrew='all',Q='',PAGE=1,PP=24;
