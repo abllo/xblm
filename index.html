@@ -517,7 +517,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .topt.cold{border-color:rgba(72,219,251,.4)}
 .topt.srv{border-color:rgba(102,126,234,.4)}
 .topt input[type=radio]{accent-color:var(--ta);width:16px;height:16px}
-.add-fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
+.add-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,168,150,.5);z-index:500;display:flex;align-items:center;justify-content:center;transition:.2s}
 .add-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,168,150,.7)}
 .add-fab:active{transform:scale(.94)}
 /* add-header-btn merged into header redesign */
@@ -1086,6 +1086,25 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </div>
 </header>
 
+<!-- ROASTERIES SECTION -->
+<div class="roasteries-section" id="roasteriesSection" style="display:none">
+  <div class="roasteries-label">☕ المحامص الرائجة</div>
+  <div class="roasteries-scroll-wrap">
+    <div class="roasteries-grid" id="roasteriesGrid"></div>
+  </div>
+  <div style="text-align:center;margin-top:10px;padding:0 20px">
+    <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
+  </div>
+</div>
+
+<!-- ═══ TOP BANNER ═══ -->
+<div class="site-banner site-banner-top" id="siteBannerTop">
+  <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
+    <img id="siteBannerTopImg" src="" alt="بنر إعلاني" style="display:none">
+  </a>
+  <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
+</div>
+
 <div class="ctrls">
   <div class="sbox"><input type="text" id="srch" placeholder="ابحث عن وصفة..." autocomplete="off"></div>
   <div class="fsec">
@@ -1107,30 +1126,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     </div>
   </div>
 </div>
-<!-- ROASTERIES SECTION -->
-<div class="roasteries-section" id="roasteriesSection" style="display:none">
-  <div class="roasteries-label">☕ المحامص الرائجة</div>
-  <div class="roasteries-scroll-wrap">
-    <div class="roasteries-grid" id="roasteriesGrid"></div>
-  </div>
-  <div style="text-align:center;margin-top:10px;padding:0 20px">
-    <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
-  </div>
-</div>
+
 <div class="fav-bar" id="favBar">
   <div class="fav-bar-left">❤️ <b id="favCount">0</b> وصفة في المفضلة</div>
   <div style="display:flex;gap:8px">
     <button class="fav-toggle" id="favFilterBtn" onclick="toggleFavFilter()">عرض المفضلة فقط</button>
     <button class="fav-toggle" onclick="clearAllFavs()" style="background:rgba(255,100,100,.08);border-color:rgba(255,100,100,.25);color:#ff6464">مسح الكل</button>
   </div>
-</div>
-
-<!-- ═══ TOP BANNER ═══ -->
-<div class="site-banner site-banner-top" id="siteBannerTop">
-  <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
-    <img id="siteBannerTopImg" src="" alt="بنر إعلاني" style="display:none">
-  </a>
-  <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
 </div>
 
 <div class="ppbar">
