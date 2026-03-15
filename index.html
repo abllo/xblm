@@ -348,14 +348,12 @@ h1{font-size:clamp(1.7em,5vw,2.8em);font-weight:900;background:var(--gr);-webkit
 .cauth{color:var(--ta);font-size:.88em;margin-bottom:10px}
 .ctags{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
 .tag{padding:4px 9px;border-radius:10px;font-size:.78em;font-weight:700;color:#fff}
-/* نوع التحضير — حرارة */
-.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24);box-shadow:0 2px 8px rgba(238,90,36,.35)}
-.tc{background:linear-gradient(135deg,#48dbfb,#0abde3);box-shadow:0 2px 8px rgba(10,189,227,.35)}
-.ts{background:linear-gradient(135deg,#a29bfe,#6c5ce7);box-shadow:0 2px 8px rgba(108,92,231,.35)}
-/* نوع الجهاز */
-.to{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 2px 8px rgba(118,75,162,.3)}
-.tx{background:linear-gradient(135deg,#fd79a8,#e84393);box-shadow:0 2px 8px rgba(232,67,147,.3)}
-.tth{background:linear-gradient(135deg,#55efc4,#00b894);box-shadow:0 2px 8px rgba(0,184,148,.3);color:#fff}
+.to{background:linear-gradient(135deg,#667eea,#764ba2)}
+.tx{background:linear-gradient(135deg,#f093fb,#f5576c)}
+.tth{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.th{background:linear-gradient(135deg,#ff6b6b,#ee5a24)}
+.tc{background:linear-gradient(135deg,#48dbfb,#0abde3)}
+.ts{background:linear-gradient(135deg,#667eea,#764ba2)}
 .cdets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
 .det{background:var(--up);padding:7px;border-radius:7px;text-align:center}
 .dl{font-size:.73em;color:var(--t2);display:block;margin-bottom:2px}
@@ -2231,7 +2229,7 @@ window.submitReport = function() {
   };
   push(ref(db, 'reports'), report)
     .then(() => { toast('تم إرسال البلاغ ✅ شكراً!'); closeReportModal(); })
-    .catch(err => { console.error('Report error:', err); toast('خطأ: ' + (err.code||err.message||'غير معروف') ,'terr'); btn.disabled=false; btn.textContent='إرسال البلاغ 🚩'; });
+    .catch(() => { toast('حدث خطأ، حاول مرة أخرى','terr'); btn.disabled=false; btn.textContent='إرسال البلاغ 🚩'; });
 };
 
 window.copyShareLink = function() {
