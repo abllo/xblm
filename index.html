@@ -1086,23 +1086,24 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
   </div>
 </header>
 
-<!-- ROASTERIES SECTION -->
-<div class="roasteries-section" id="roasteriesSection" style="display:none">
-  <div class="roasteries-label">☕ المحامص الرائجة</div>
-  <div class="roasteries-scroll-wrap">
-    <div class="roasteries-grid" id="roasteriesGrid"></div>
+<!-- ROASTERIES + BANNER WRAPPER -->
+<div id="roasteriesBannerWrap">
+  <div class="roasteries-section" id="roasteriesSection" style="display:none">
+    <div class="roasteries-label">☕ المحامص الرائجة</div>
+    <div class="roasteries-scroll-wrap">
+      <div class="roasteries-grid" id="roasteriesGrid"></div>
+    </div>
+    <div style="text-align:center;margin-top:10px;padding:0 20px">
+      <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
+    </div>
   </div>
-  <div style="text-align:center;margin-top:10px;padding:0 20px">
-    <button class="roastery-clear" id="clearRoasteryBtn" onclick="clearRoasteryFilter()" style="display:none">✕ إلغاء فلتر المحمصة</button>
+  <!-- ═══ TOP BANNER ═══ -->
+  <div class="site-banner site-banner-top" id="siteBannerTop">
+    <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
+      <img id="siteBannerTopImg" src="" alt="بنر إعلاني" style="display:none">
+    </a>
+    <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
   </div>
-</div>
-
-<!-- ═══ TOP BANNER ═══ -->
-<div class="site-banner site-banner-top" id="siteBannerTop">
-  <a id="siteBannerTopLink" href="#" target="_blank" style="display:block;line-height:0">
-    <img id="siteBannerTopImg" src="" alt="بنر إعلاني" style="display:none">
-  </a>
-  <iframe id="siteBannerTopFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
 </div>
 
 <div class="ctrls">
