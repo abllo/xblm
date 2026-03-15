@@ -48,6 +48,26 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .acard{background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:14px;display:none}
 .acard.open{display:block}
 .alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;font-size:.88em;line-height:1.6;display:none}
+/* Reports */
+.report-card{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:.2s}
+.report-card.status-new{border-color:rgba(245,87,108,.4);background:rgba(245,87,108,.04)}
+.report-card.status-resolved{opacity:.55}
+.report-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.report-card-name{font-weight:800;font-size:.9em;color:var(--t1)}
+.report-card-badge{padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:800;white-space:nowrap}
+.badge-new{background:rgba(245,87,108,.15);color:#f5576c;border:1px solid rgba(245,87,108,.3)}
+.badge-reviewed{background:rgba(0,168,150,.1);color:var(--ta);border:1px solid rgba(0,168,150,.2)}
+.badge-resolved{background:rgba(160,160,160,.1);color:var(--t2);border:1px solid var(--br)}
+.report-card-type{font-size:.82em;color:var(--t2);margin-bottom:6px}
+.report-card-note{font-size:.82em;color:var(--t1);background:var(--up);padding:8px 12px;border-radius:8px;margin-bottom:10px;border:1px solid var(--br)}
+.report-card-meta{font-size:.72em;color:var(--t2);margin-bottom:10px}
+.report-card-actions{display:flex;gap:7px;flex-wrap:wrap}
+.report-card-actions button{padding:6px 12px;border-radius:7px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-size:.78em;font-weight:700;font-family:inherit;cursor:pointer;transition:.2s}
+.report-card-actions button:hover{background:var(--card);color:var(--t1)}
+.report-card-actions .btn-resolve{border-color:rgba(0,168,150,.3);color:var(--ta)}
+.report-card-actions .btn-resolve:hover{background:rgba(0,168,150,.1)}
+.report-card-actions .btn-del{border-color:rgba(245,87,108,.3);color:#f5576c}
+.report-card-actions .btn-del:hover{background:rgba(245,87,108,.1)}
 .alert.show{display:block}
 .alert-warn{background:rgba(255,213,101,.12);border:1px solid rgba(255,213,101,.4);color:#ffd565}
 .alert-err{background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.4);color:#f5576c}
@@ -195,7 +215,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
   <!-- Tabs -->
   <div class="atabs">
-    <button class="atb on" onclick="switchTab(this,'tStats')">📊 إحصائيات</button>
+    <button class="atb" onclick="switchTab(this,'tStats')">📊 إحصائيات</button>
+    <button class="atb" id="reportsTab" onclick="switchTab(this,'tReports');loadReports()">🚩 البلاغات <span id="reportsBadge" style="display:none;background:#f5576c;color:#fff;border-radius:50%;padding:1px 6px;font-size:.72em;margin-right:4px;font-weight:800"></span></button>
     <button class="atb" onclick="switchTab(this,'tAdd')">➕ إضافة وصفة</button>
     <button class="atb" onclick="switchTab(this,'tRec')">📝 إدارة الوصفات</button>
     <button class="atb" onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
@@ -214,6 +235,16 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 مكررات الروابط</button>
   </div>
 
+  <!-- REPORTS ALERT BANNER -->
+  <div id="reportsAlertBanner" style="display:none;background:rgba(245,87,108,.12);border:2px solid rgba(245,87,108,.5);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:12px;cursor:pointer" onclick="switchTab(document.getElementById('reportsTab'),'tReports');loadReports()">
+    <span style="font-size:1.6em">🚩</span>
+    <div style="flex:1">
+      <div style="font-weight:800;color:#f5576c;font-size:.95em">بلاغات جديدة تنتظر المراجعة</div>
+      <div id="reportsAlertText" style="font-size:.8em;color:rgba(245,87,108,.8);margin-top:2px">—</div>
+    </div>
+    <span style="font-size:.82em;color:var(--t2)">اضغط للمراجعة ←</span>
+  </div>
+
   <!-- STATS -->
   <div id="tStats" class="acard open">
     <h3 style="margin-bottom:14px;font-size:1em;color:var(--t2)">إجمالي الموقع</h3>
@@ -229,6 +260,24 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div class="sc fb-sc"><div class="sv" id="sRated">—</div><div class="sl">⭐ مُقيَّمة</div></div>
       <div class="sc fb-sc"><div class="sv" id="sComments">—</div><div class="sl">💬 تعليقات</div></div>
     </div>
+  </div>
+
+  <!-- REPORTS MANAGEMENT -->
+  <div id="tReports" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <h3 style="font-size:1em;color:#f5576c;margin:0">🚩 البلاغات الواردة</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="reportsFilter" onchange="renderReports()" style="padding:7px 12px;border-radius:8px;background:var(--up);border:1px solid var(--br);color:var(--t1);font-family:inherit;font-size:.82em">
+          <option value="all">الكل</option>
+          <option value="new">🔴 جديد</option>
+          <option value="reviewed">✅ مراجع</option>
+          <option value="resolved">🗃️ محلول</option>
+        </select>
+        <button class="btn bsm bs" onclick="loadReports()">🔄 تحديث</button>
+        <button class="btn bsm bs" onclick="markAllReportsReviewed()" style="font-size:.78em">✅ تعيين الكل كمراجَع</button>
+      </div>
+    </div>
+    <div id="reportsList"><p style="text-align:center;color:var(--t2);padding:30px">جاري التحميل...</p></div>
   </div>
 
   <!-- ADD RECIPE -->
@@ -3095,6 +3144,123 @@ window.scanDuplicates = function(){
   // Clean message
   document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
 };
+
+// ═══════════════════════════════════════
+// REPORTS SYSTEM
+// ═══════════════════════════════════════
+let _allReports = {};
+
+window.loadReports = function() {
+  if(!db) return;
+  onValue(ref(db,'reports'), snap => {
+    _allReports = snap.val() || {};
+    renderReports();
+    updateReportsBadge();
+  }, { onlyOnce: true });
+};
+
+function updateReportsBadge() {
+  const newCount = Object.values(_allReports).filter(r => r.status === 'new').length;
+  const badge = document.getElementById('reportsBadge');
+  const banner = document.getElementById('reportsAlertBanner');
+  const alertText = document.getElementById('reportsAlertText');
+  if(newCount > 0) {
+    if(badge) { badge.textContent = newCount; badge.style.display = 'inline'; }
+    if(banner) {
+      banner.style.display = 'flex';
+      if(alertText) alertText.textContent = `${newCount} بلاغ جديد يحتاج مراجعة`;
+    }
+  } else {
+    if(badge) badge.style.display = 'none';
+    if(banner) banner.style.display = 'none';
+  }
+}
+
+window.renderReports = function() {
+  const container = document.getElementById('reportsList');
+  if(!container) return;
+  const filter = (document.getElementById('reportsFilter')||{}).value || 'all';
+  const reports = Object.entries(_allReports)
+    .filter(([,r]) => filter === 'all' || r.status === filter)
+    .sort(([,a],[,b]) => (b.ts||0) - (a.ts||0));
+
+  if(!reports.length) {
+    container.innerHTML = `<p style="text-align:center;color:var(--t2);padding:30px">${filter==='new'?'لا توجد بلاغات جديدة 🎉':'لا توجد بلاغات'}</p>`;
+    return;
+  }
+
+  const typeIcons = { broken_link:'🔗', wrong_info:'📝', duplicate:'📋', other:'⚠️' };
+  const statusLabels = { new:'🔴 جديد', reviewed:'✅ مراجَع', resolved:'🗃️ محلول' };
+
+  container.innerHTML = reports.map(([key, r]) => {
+    const date = r.ts ? new Date(r.ts).toLocaleString('ar-SA') : '—';
+    const badgeClass = r.status === 'new' ? 'badge-new' : r.status === 'reviewed' ? 'badge-reviewed' : 'badge-resolved';
+    return `
+    <div class="report-card status-${r.status||'new'}" id="rcard-${key}">
+      <div class="report-card-header">
+        <div>
+          <div class="report-card-name">${esc(r.recipeName||'وصفة غير معروفة')}</div>
+          <div class="report-card-type">${typeIcons[r.type]||'⚠️'} ${esc(r.typeLabel||r.type||'')}</div>
+        </div>
+        <span class="report-card-badge ${badgeClass}">${statusLabels[r.status||'new']||r.status}</span>
+      </div>
+      ${r.note ? `<div class="report-card-note">💬 "${esc(r.note)}"</div>` : ''}
+      <div class="report-card-meta">🕐 ${date} &nbsp;|&nbsp; 🔑 وصفة: ${esc(r.recipeKey||'—')}</div>
+      <div class="report-card-actions">
+        ${r.status==='new' ? `<button onclick="updateReportStatus('${key}','reviewed')">✅ تعيين كمراجَع</button>` : ''}
+        ${r.status!=='resolved' ? `<button class="btn-resolve" onclick="updateReportStatus('${key}','resolved')">🗃️ تعيين كمحلول</button>` : ''}
+        <button onclick="window.open('https://xblm.ab-s.me','_blank')" style="font-size:.75em">🌐 فتح الموقع</button>
+        <button class="btn-del" onclick="deleteReport('${key}')">🗑️ حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+window.updateReportStatus = function(key, status) {
+  if(!db) return;
+  set(ref(db, `reports/${key}/status`), status)
+    .then(() => {
+      if(_allReports[key]) _allReports[key].status = status;
+      renderReports();
+      updateReportsBadge();
+      toast(`تم التحديث: ${status==='reviewed'?'مراجَع':'محلول'} ✅`);
+    })
+    .catch(() => toast('خطأ في التحديث','terr'));
+};
+
+window.deleteReport = function(key) {
+  if(!confirm('حذف هذا البلاغ نهائياً؟')) return;
+  set(ref(db, `reports/${key}`), null)
+    .then(() => {
+      delete _allReports[key];
+      renderReports();
+      updateReportsBadge();
+      toast('تم حذف البلاغ');
+    })
+    .catch(() => toast('خطأ في الحذف','terr'));
+};
+
+window.markAllReportsReviewed = function() {
+  if(!db) return;
+  const newOnes = Object.keys(_allReports).filter(k => _allReports[k].status === 'new');
+  if(!newOnes.length) { toast('لا توجد بلاغات جديدة'); return; }
+  Promise.all(newOnes.map(k => set(ref(db,`reports/${k}/status`),'reviewed')))
+    .then(() => {
+      newOnes.forEach(k => { if(_allReports[k]) _allReports[k].status = 'reviewed'; });
+      renderReports();
+      updateReportsBadge();
+      toast(`تم تعيين ${newOnes.length} بلاغ كمراجَع ✅`);
+    })
+    .catch(() => toast('خطأ','terr'));
+};
+
+// تحميل البلاغات عند فتح الأدمن لمعرفة العدد
+setTimeout(() => { if(db) {
+  onValue(ref(db,'reports'), snap => {
+    _allReports = snap.val() || {};
+    updateReportsBadge();
+  });
+}}, 3000);
 </script>
 </body>
 </html>
