@@ -644,6 +644,23 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .art-card-title{font-size:.9em;font-weight:800;color:var(--t1);line-height:1.4}
 .art-card-desc{font-size:.78em;color:var(--t2);line-height:1.55;flex:1}
 .art-card-footer{font-size:.72em;color:var(--ta);font-weight:700;margin-top:4px}
+/* ═══ Articles scroll strip ═══ */
+.art-strip-wrap{position:relative;overflow:hidden;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:14px 0 10px;margin-top:14px;display:none}
+.art-strip-wrap.show{display:block}
+.art-strip-label{font-size:.72em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:10px;letter-spacing:.5px}
+.art-strip-fade-r{position:absolute;top:0;bottom:0;right:0;width:44px;background:linear-gradient(to left,var(--card),transparent);z-index:2;pointer-events:none}
+.art-strip-fade-l{position:absolute;top:0;bottom:0;left:0;width:44px;background:linear-gradient(to right,var(--card),transparent);z-index:2;pointer-events:none}
+.art-strip-grid{display:flex;gap:10px;overflow-x:auto;padding:4px 16px 8px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
+.art-strip-grid::-webkit-scrollbar{display:none}
+.art-strip-grid.dragging{cursor:grabbing;user-select:none}
+.art-strip-card{flex-shrink:0;min-width:190px;max-width:210px;background:var(--up);border:1px solid var(--br);border-radius:12px;padding:12px 14px;text-decoration:none;display:flex;flex-direction:column;gap:5px;scroll-snap-align:start;transition:.2s;position:relative;overflow:hidden}
+.art-strip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gr);transform:scaleX(0);transition:.3s;transform-origin:right}
+.art-strip-card:hover{border-color:rgba(0,168,150,.35);transform:translateY(-2px)}
+.art-strip-card:hover::before{transform:scaleX(1)}
+.art-strip-type{font-size:.66em;font-weight:800;color:var(--ta);letter-spacing:.4px}
+.art-strip-title{font-size:.8em;font-weight:800;color:var(--t1);line-height:1.35;flex:1}
+.art-strip-meta{font-size:.66em;color:var(--t2);margin-top:auto}
+.art-strip-cta{font-size:.7em;color:var(--ta);font-weight:700;margin-top:4px}
 @media(max-width:700px){
   .site-banner{border-radius:10px}
   .site-banner iframe{border-radius:10px}
@@ -1196,7 +1213,17 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     </div>
     <a href="/guides/" style="padding:8px 16px;border-radius:8px;background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);color:var(--ta);text-decoration:none;font-size:.82em;font-weight:700;transition:.2s">كل المقالات ←</a>
   </div>
-  <div id="articlesHomeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
+  <!-- Grid — أول 4 مقالات -->
+  <div id="articlesHomeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
+  <!-- Scroll strip — ما زاد عن 4 -->
+  <div class="art-strip-wrap" id="articlesStripWrap">
+    <div class="art-strip-label">📜 مقالات أخرى</div>
+    <div style="position:relative">
+      <div class="art-strip-fade-r"></div>
+      <div class="art-strip-fade-l"></div>
+      <div class="art-strip-grid" id="articlesStripGrid"></div>
+    </div>
+  </div>
 </div>
 
 <footer id="siteFooter">
@@ -3440,52 +3467,110 @@ if("serviceWorker" in navigator){
 <script>
 // ── تحميل المقالات في الرئيسية ──
 (async function loadHomeArticles() {
-  const section = document.getElementById('articlesHomeSection');
-  const grid    = document.getElementById('articlesHomeGrid');
+  const section    = document.getElementById('articlesHomeSection');
+  const grid       = document.getElementById('articlesHomeGrid');
+  const stripWrap  = document.getElementById('articlesStripWrap');
+  const stripGrid  = document.getElementById('articlesStripGrid');
   if(!section || !grid) return;
 
   const TYPE_ICONS  = {guide:'📖',comparison:'⚖️',review:'⭐',howto:'🔧',faq:'❓'};
   const TYPE_LABELS = {guide:'دليل',comparison:'مقارنة',review:'مراجعة',howto:'خطوة بخطوة',faq:'FAQ'};
 
   try {
+    // ─ 1. جلب قائمة الملفات ─
     const res = await fetch('https://api.github.com/repos/abllo/xblm/contents/guides?ref=main');
     if(!res.ok) return;
     const files = await res.json();
     const htmlFiles = files.filter(f => f.name.endsWith('.html') && f.name !== 'index.html');
     if(!htmlFiles.length) return;
 
-    // جلب آخر 3 مقالات فقط
-    const latest = htmlFiles.slice(-3).reverse();
-    const articles = await Promise.all(latest.map(async f => {
+    // ─ 2. جلب تاريخ آخر commit لكل ملف بشكل متوازٍ ─
+    const withDates = await Promise.all(htmlFiles.map(async f => {
       try {
-        const r = await fetch(f.download_url);
+        const cr = await fetch(
+          `https://api.github.com/repos/abllo/xblm/commits?path=guides/${f.name}&per_page=1&ref=main`
+        );
+        const commits = cr.ok ? await cr.json() : [];
+        const raw = commits[0]?.commit?.committer?.date
+                 || commits[0]?.commit?.author?.date
+                 || null;
+        return { ...f, _ts: raw ? new Date(raw).getTime() : 0, _dateRaw: raw };
+      } catch { return { ...f, _ts: 0, _dateRaw: null }; }
+    }));
+
+    // ─ 3. ترتيب من الأحدث للأقدم ─
+    withDates.sort((a, b) => b._ts - a._ts);
+
+    // ─ 4. جلب محتوى كل ملف لاستخراج meta ─
+    const articles = await Promise.all(withDates.map(async f => {
+      try {
+        const r    = await fetch(f.download_url);
         const html = await r.text();
-        const titleM = html.match(/<title>([^<]+)<\/title>/);
-        const descM  = html.match(/<meta name="description" content="([^"]+)"/);
-        const typeM  = html.match(/data-type="([^"]+)"/);
-        return {
-          url:   `https://xblm.ab-s.me/guides/${f.name}`,
-          title: titleM ? titleM[1].replace(' | xBloom Recipes Hub','') : f.name,
-          desc:  descM  ? descM[1].slice(0,90)+'...' : '',
-          type:  typeM  ? typeM[1] : 'guide'
-        };
+        const titleM = html.match(/<title>([^<]+)<\/title>/i);
+        const descM  = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)
+                    || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
+        const typeM  = html.match(/data-type=["']([^"']+)["']/i);
+        const title  = titleM
+          ? titleM[1].replace(/\s*\|\s*[Xx][Bb]loom.*$/i,'').trim()
+          : f.name.replace('.html','').replace(/-/g,' ');
+        const desc   = descM ? descM[1].slice(0,95) + (descM[1].length > 95 ? '...' : '') : '';
+        const type   = typeM ? typeM[1] : 'guide';
+        const url    = `https://xblm.ab-s.me/guides/${f.name}`;
+        const dateStr = f._ts
+          ? new Date(f._ts).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'})
+          : '';
+        return { url, title, desc, type, dateStr };
       } catch { return null; }
     }));
 
     const valid = articles.filter(Boolean);
     if(!valid.length) return;
 
-    grid.innerHTML = valid.map(a => `
+    // ─ 5. بطاقات grid (أول 4) ─
+    grid.innerHTML = valid.slice(0, 4).map(a => `
       <a href="${a.url}" class="art-card">
         <div class="art-card-type">${TYPE_ICONS[a.type]||'📖'} ${TYPE_LABELS[a.type]||'مقال'}</div>
         <div class="art-card-title">${a.title}</div>
-        <div class="art-card-desc">${a.desc}</div>
-        <div class="art-card-footer">اقرأ المقال ←</div>
+        ${a.desc ? `<div class="art-card-desc">${a.desc}</div>` : ''}
+        <div class="art-card-footer" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <span>اقرأ المقال ←</span>
+          ${a.dateStr ? `<span style="font-size:.68em;color:var(--t2);font-weight:400">${a.dateStr}</span>` : ''}
+        </div>
       </a>`).join('');
 
     section.style.display = 'block';
-  } catch(e) {}
+
+    // ─ 6. شريط السحب الأفقي (ما زاد عن 4) ─
+    if(valid.length > 4 && stripGrid && stripWrap) {
+      stripGrid.innerHTML = valid.slice(4).map(a => `
+        <a href="${a.url}" class="art-strip-card">
+          <div class="art-strip-type">${TYPE_ICONS[a.type]||'📖'} ${TYPE_LABELS[a.type]||'مقال'}</div>
+          <div class="art-strip-title">${a.title}</div>
+          ${a.dateStr ? `<div class="art-strip-meta">${a.dateStr}</div>` : ''}
+          <div class="art-strip-cta">اقرأ ←</div>
+        </a>`).join('');
+      stripWrap.classList.add('show');
+      initArtStrip(stripGrid);
+    }
+
+  } catch(e) { console.warn('articles:', e); }
 })();
+
+// ── Drag-to-scroll for articles strip ──
+function initArtStrip(el) {
+  let down = false, startX = 0, scrollL = 0;
+  el.addEventListener('mousedown', e => {
+    down = true; startX = e.pageX; scrollL = el.scrollLeft;
+    el.classList.add('dragging');
+  });
+  window.addEventListener('mouseup',   () => { down = false; el.classList.remove('dragging'); });
+  window.addEventListener('mousemove', e => {
+    if(!down) return;
+    el.scrollLeft = scrollL - (e.pageX - startX);
+  });
+  el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; scrollL = el.scrollLeft; }, {passive:true});
+  el.addEventListener('touchmove',  e => { el.scrollLeft = scrollL - (e.touches[0].clientX - startX); }, {passive:true});
+}
 </script>
 </body>
 </html>
