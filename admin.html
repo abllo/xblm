@@ -1115,6 +1115,94 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
+  <!-- CONTENT GENERATOR -->
+  <div id="tContent" class="acard">
+    <style>
+#tContent * {margin:0;padding:0;box-sizing:border-box}
+
+/* Header */
+#tContent .hdr {display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--br)}
+#tContent .hdr-logo {width:40px;height:40px;background:var(--gr);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3em;flex-shrink:0}
+#tContent .hdr h1 {font-size:1.1em;font-weight:900}
+#tContent .hdr p {font-size:.8em;color:var(--t2)}
+#tContent .back-btn {margin-right:auto;padding:7px 14px;border-radius:8px;border:1px solid var(--br);color:var(--t2);text-decoration:none;font-size:.82em;transition:.2s}
+#tContent .back-btn:hover {border-color:var(--ta);color:var(--ta)}
+
+/* Type selector */
+#tContent .types {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+#tContent .type-btn {padding:7px 14px;border-radius:8px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s}
+#tContent .type-btn.on {background:rgba(0,168,150,.15);border-color:var(--ta);color:var(--ta)}
+#tContent .type-btn:hover {border-color:var(--ta)}
+
+/* Inputs */
+#tContent .fi {width:100%;padding:11px 14px;background:var(--card);border:1px solid var(--br);border-radius:10px;color:var(--t1);font-family:inherit;font-size:.9em;outline:none;transition:.2s;margin-bottom:10px}
+#tContent .fi:focus {border-color:var(--ta)}
+#tContent .fi::placeholder {color:var(--t2)}
+#tContent label {font-size:.8em;color:var(--t2);display:block;margin-bottom:5px}
+
+/* Suggestions */
+#tContent .suggests {display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+#tContent .sug {padding:5px 12px;border-radius:20px;border:1px solid var(--br);background:none;color:var(--t2);font-family:inherit;font-size:.78em;cursor:pointer;transition:.2s}
+#tContent .sug:hover {border-color:var(--ta);color:var(--ta)}
+
+/* Options */
+#tContent .opts {display:flex;flex-wrap:wrap;gap:12px;background:var(--card);border:1px solid var(--br);border-radius:10px;padding:12px 16px;margin-bottom:16px}
+#tContent .opts label {display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer;color:var(--t1)}
+#tContent .opts input {accent-color:var(--ta);width:15px;height:15px}
+
+/* Generate button */
+#tContent .gen-btn {width:100%;padding:14px;border-radius:12px;border:none;background:var(--gr);color:#fff;font-family:inherit;font-size:1em;font-weight:900;cursor:pointer;transition:.3s;margin-bottom:16px}
+#tContent .gen-btn:hover {opacity:.9;transform:translateY(-1px)}
+#tContent .gen-btn:active {transform:scale(.98)}
+
+/* Prompt output */
+#tContent .prompt-wrap {display:none;background:var(--card);border:1px solid var(--br);border-radius:12px;overflow:hidden;margin-bottom:16px}
+#tContent .prompt-header {display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--br)}
+#tContent .prompt-header span {font-size:.85em;font-weight:800;color:var(--ta)}
+#tContent .copy-btn {padding:7px 16px;border-radius:8px;border:none;background:var(--ta);color:#fff;font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
+#tContent .copy-btn:hover {opacity:.85}
+#tContent .copy-btn.done {background:#43e97b;color:#0a0a0a}
+#tContent .prompt-text {padding:16px;font-family:monospace;font-size:.78em;color:#a0ffa0;line-height:1.7;max-height:200px;overflow-y:auto;white-space:pre-wrap;direction:ltr;text-align:left}
+
+/* Claude CTA */
+#tContent .claude-cta {display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#0d1f1c,#0a1520);border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin-bottom:24px}
+#tContent .claude-cta-icon {font-size:2em;flex-shrink:0}
+#tContent .claude-cta-text h3 {font-size:.95em;font-weight:800;margin-bottom:4px}
+#tContent .claude-cta-text p {font-size:.78em;color:var(--t2);line-height:1.5}
+#tContent .open-claude {margin-right:auto;padding:11px 22px;border-radius:50px;background:var(--gr);color:#fff;text-decoration:none;font-weight:800;font-size:.88em;white-space:nowrap;flex-shrink:0;transition:.2s}
+#tContent .open-claude:hover {opacity:.9}
+
+/* Steps */
+#tContent .steps {display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+#tContent .step {display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--card);border:1px solid var(--br);border-radius:10px}
+#tContent .step-num {width:28px;height:28px;border-radius:50%;background:var(--gr);color:#fff;font-weight:900;font-size:.85em;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+#tContent .step-content h4 {font-size:.88em;font-weight:800;margin-bottom:3px}
+#tContent .step-content p {font-size:.78em;color:var(--t2);line-height:1.5}
+
+/* GitHub upload section */
+#tContent .upload-section {background:var(--card);border:1px solid var(--br);border-radius:12px;padding:18px;margin-bottom:16px}
+#tContent .upload-section h3 {font-size:.9em;font-weight:800;margin-bottom:4px}
+#tContent .upload-section p {font-size:.8em;color:var(--t2);margin-bottom:12px}
+#tContent .slug-wrap {display:flex;gap:8px;align-items:center}
+#tContent .slug-prefix {font-size:.82em;color:var(--t2);white-space:nowrap;font-family:monospace}
+#tContent .slug-input {flex:1;padding:9px 12px;background:var(--up);border:1px solid var(--br);border-radius:8px;color:var(--t1);font-family:monospace;font-size:.85em;outline:none}
+#tContent .slug-input:focus {border-color:var(--ta)}
+#tContent .github-btn {padding:10px 18px;border-radius:8px;border:none;background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.3);color:var(--ta);font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+#tContent .github-btn:hover {background:rgba(0,168,150,.25)}
+
+    </style>
+    <div style="margin-bottom:16px">
+      <h3 style="font-size:1em;margin-bottom:4px">🧠 مولّد المحتوى — EEAT</h3>
+      <p style="color:var(--t2);font-size:.8em">أنشئ مقالات احترافية بـ Claude مجاناً — Prompt جاهز تنسخه وتفتح Claude</p>
+    </div>
+
+  <!-- Header -->
+  <div>
+      <h1>مولّد المحتوى</h1>
+      <p>أنشئ مقالات EEAT احترافية بـ Claude مجاناً</p>
+    </div>
+    <a href="https://xblm.ab-s.me" class="back-btn">← الرئيسية</a>
+  </div>
 
   <!-- Steps -->
   <div class="steps">
@@ -1413,16 +1501,10 @@ window.switchTab = function(btn,id){
     c.classList.remove('open');
     c.style.display='none';
   });
-  // Also hide tContent if switching away
-  const tc = document.getElementById('tContent');
-  if(tc) tc.style.display='none';
   btn.classList.add('on');
-  if(id==='tContent'){
-    if(tc) tc.style.display='block';
-  } else {
-    const target = document.getElementById(id);
-    if(target){ target.classList.add('open'); target.style.display='block'; }
-  }
+  const target = document.getElementById(id);
+  target.classList.add('open');
+  target.style.display='block';
   if(id==='tRoastery' || id==='tAdd') loadRoasteries();
 };
 
@@ -3657,99 +3739,5 @@ function openGithub() {
 }
 
 </script>
-
-<!-- CONTENT GENERATOR PANEL -->
-<div id="tContent" style="display:none;background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:14px">
-
-    <style>
-
-
-#tContent * {margin:0;padding:0;box-sizing:border-box}
-
-/* Header */
-#tContent .hdr {display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--br)}
-#tContent .hdr-logo {width:40px;height:40px;background:var(--gr);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3em;flex-shrink:0}
-#tContent .hdr h1 {font-size:1.1em;font-weight:900}
-#tContent .hdr p {font-size:.8em;color:var(--t2)}
-#tContent .back-btn {margin-right:auto;padding:7px 14px;border-radius:8px;border:1px solid var(--br);color:var(--t2);text-decoration:none;font-size:.82em;transition:.2s}
-#tContent .back-btn:hover {border-color:var(--ta);color:var(--ta)}
-
-/* Type selector */
-#tContent .types {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
-#tContent .type-btn {padding:7px 14px;border-radius:8px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s}
-#tContent .type-btn.on {background:rgba(0,168,150,.15);border-color:var(--ta);color:var(--ta)}
-#tContent .type-btn:hover {border-color:var(--ta)}
-
-/* Inputs */
-#tContent .fi {width:100%;padding:11px 14px;background:var(--card);border:1px solid var(--br);border-radius:10px;color:var(--t1);font-family:inherit;font-size:.9em;outline:none;transition:.2s;margin-bottom:10px}
-#tContent .fi:focus {border-color:var(--ta)}
-#tContent .fi::placeholder {color:var(--t2)}
-#tContent label {font-size:.8em;color:var(--t2);display:block;margin-bottom:5px}
-
-/* Suggestions */
-#tContent .suggests {display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-#tContent .sug {padding:5px 12px;border-radius:20px;border:1px solid var(--br);background:none;color:var(--t2);font-family:inherit;font-size:.78em;cursor:pointer;transition:.2s}
-#tContent .sug:hover {border-color:var(--ta);color:var(--ta)}
-
-/* Options */
-#tContent .opts {display:flex;flex-wrap:wrap;gap:12px;background:var(--card);border:1px solid var(--br);border-radius:10px;padding:12px 16px;margin-bottom:16px}
-#tContent .opts label {display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer;color:var(--t1)}
-#tContent .opts input {accent-color:var(--ta);width:15px;height:15px}
-
-/* Generate button */
-#tContent .gen-btn {width:100%;padding:14px;border-radius:12px;border:none;background:var(--gr);color:#fff;font-family:inherit;font-size:1em;font-weight:900;cursor:pointer;transition:.3s;margin-bottom:16px}
-#tContent .gen-btn:hover {opacity:.9;transform:translateY(-1px)}
-#tContent .gen-btn:active {transform:scale(.98)}
-
-/* Prompt output */
-#tContent .prompt-wrap {display:none;background:var(--card);border:1px solid var(--br);border-radius:12px;overflow:hidden;margin-bottom:16px}
-#tContent .prompt-header {display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--br)}
-#tContent .prompt-header span {font-size:.85em;font-weight:800;color:var(--ta)}
-#tContent .copy-btn {padding:7px 16px;border-radius:8px;border:none;background:var(--ta);color:#fff;font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
-#tContent .copy-btn:hover {opacity:.85}
-#tContent .copy-btn.done {background:#43e97b;color:#0a0a0a}
-#tContent .prompt-text {padding:16px;font-family:monospace;font-size:.78em;color:#a0ffa0;line-height:1.7;max-height:200px;overflow-y:auto;white-space:pre-wrap;direction:ltr;text-align:left}
-
-/* Claude CTA */
-#tContent .claude-cta {display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#0d1f1c,#0a1520);border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin-bottom:24px}
-#tContent .claude-cta-icon {font-size:2em;flex-shrink:0}
-#tContent .claude-cta-text h3 {font-size:.95em;font-weight:800;margin-bottom:4px}
-#tContent .claude-cta-text p {font-size:.78em;color:var(--t2);line-height:1.5}
-#tContent .open-claude {margin-right:auto;padding:11px 22px;border-radius:50px;background:var(--gr);color:#fff;text-decoration:none;font-weight:800;font-size:.88em;white-space:nowrap;flex-shrink:0;transition:.2s}
-#tContent .open-claude:hover {opacity:.9}
-
-/* Steps */
-#tContent .steps {display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-#tContent .step {display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--card);border:1px solid var(--br);border-radius:10px}
-#tContent .step-num {width:28px;height:28px;border-radius:50%;background:var(--gr);color:#fff;font-weight:900;font-size:.85em;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-#tContent .step-content h4 {font-size:.88em;font-weight:800;margin-bottom:3px}
-#tContent .step-content p {font-size:.78em;color:var(--t2);line-height:1.5}
-
-/* GitHub upload section */
-#tContent .upload-section {background:var(--card);border:1px solid var(--br);border-radius:12px;padding:18px;margin-bottom:16px}
-#tContent .upload-section h3 {font-size:.9em;font-weight:800;margin-bottom:4px}
-#tContent .upload-section p {font-size:.8em;color:var(--t2);margin-bottom:12px}
-#tContent .slug-wrap {display:flex;gap:8px;align-items:center}
-#tContent .slug-prefix {font-size:.82em;color:var(--t2);white-space:nowrap;font-family:monospace}
-#tContent .slug-input {flex:1;padding:9px 12px;background:var(--up);border:1px solid var(--br);border-radius:8px;color:var(--t1);font-family:monospace;font-size:.85em;outline:none}
-#tContent .slug-input:focus {border-color:var(--ta)}
-#tContent .github-btn {padding:10px 18px;border-radius:8px;border:none;background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.3);color:var(--ta);font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
-#tContent .github-btn:hover {background:rgba(0,168,150,.25)}
-
-    </style>
-    <div style="margin-bottom:16px">
-      <h3 style="font-size:1em;margin-bottom:4px">🧠 مولّد المحتوى — EEAT</h3>
-      <p style="color:var(--t2);font-size:.8em">أنشئ مقالات احترافية بـ Claude مجاناً — Prompt جاهز تنسخه وتفتح Claude</p>
-    </div>
-
-  <!-- Header -->
-  <div>
-      <h1>مولّد المحتوى</h1>
-      <p>أنشئ مقالات EEAT احترافية بـ Claude مجاناً</p>
-    </div>
-    <a href="https://xblm.ab-s.me" class="back-btn">← الرئيسية</a>
-  
-</div>
-
 </body>
 </html>
