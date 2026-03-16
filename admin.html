@@ -48,14 +48,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .acard{background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:14px;display:none}
 .acard.open{display:block}
 .alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;font-size:.88em;line-height:1.6;display:none}
-/* Content Generator */
-.cg-type{background:var(--up);border:1px solid var(--br);color:var(--t2);transition:.2s}
-.cg-type.on{background:rgba(0,168,150,.15);border-color:var(--ta);color:var(--ta)}
-.cg-suggest{padding:6px 12px;border-radius:20px;background:var(--up);border:1px solid var(--br);color:var(--t2);font-size:.78em;font-family:inherit;cursor:pointer;transition:.2s}
-.cg-suggest:hover{background:rgba(0,168,150,.1);border-color:var(--ta);color:var(--ta)}
-#cgStatus.ok{background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);color:var(--ta)}
-#cgStatus.err{background:rgba(245,87,108,.1);border:1px solid rgba(245,87,108,.3);color:#f5576c}
-#cgStatus.loading{background:rgba(74,144,226,.1);border:1px solid rgba(74,144,226,.3);color:#4A90E2}
 /* Reports */
 .report-card{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:.2s}
 .report-card.status-new{border-color:rgba(245,87,108,.4);background:rgba(245,87,108,.04)}
@@ -1122,107 +1114,313 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div id="roasteryList"><p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">جاري التحميل...</p></div>
     </div>
   </div>
-<!-- ══════════════════════════════════════
-     🧠 مولّد المحتوى EEAT
-══════════════════════════════════════ -->
-<div id="tContent" class="acard">
-  <div style="margin-bottom:20px">
-    <h3 style="font-size:1em;margin-bottom:6px">🧠 مولّد المحتوى — EEAT بـ Claude</h3>
-    <p style="color:var(--t2);font-size:.82em;line-height:1.6">أدخل موضوع المقال وسيقوم Claude بكتابة محتوى خبير كامل (مقدمة، جداول، FAQ، Schema) وينشره على GitHub تلقائياً كصفحة SEO مستقلة.</p>
+
+  <!-- CONTENT GENERATOR -->
+  <div id="tContent" class="acard">
+    <style>
+
+
+#tContent * {margin:0;padding:0;box-sizing:border-box}
+
+/* Header */
+#tContent .hdr {display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--br)}
+#tContent .hdr-logo {width:40px;height:40px;background:var(--gr);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3em;flex-shrink:0}
+#tContent .hdr h1 {font-size:1.1em;font-weight:900}
+#tContent .hdr p {font-size:.8em;color:var(--t2)}
+#tContent .back-btn {margin-right:auto;padding:7px 14px;border-radius:8px;border:1px solid var(--br);color:var(--t2);text-decoration:none;font-size:.82em;transition:.2s}
+#tContent .back-btn:hover {border-color:var(--ta);color:var(--ta)}
+
+/* Type selector */
+#tContent .types {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+#tContent .type-btn {padding:7px 14px;border-radius:8px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s}
+#tContent .type-btn.on {background:rgba(0,168,150,.15);border-color:var(--ta);color:var(--ta)}
+#tContent .type-btn:hover {border-color:var(--ta)}
+
+/* Inputs */
+#tContent .fi {width:100%;padding:11px 14px;background:var(--card);border:1px solid var(--br);border-radius:10px;color:var(--t1);font-family:inherit;font-size:.9em;outline:none;transition:.2s;margin-bottom:10px}
+#tContent .fi:focus {border-color:var(--ta)}
+#tContent .fi::placeholder {color:var(--t2)}
+#tContent label {font-size:.8em;color:var(--t2);display:block;margin-bottom:5px}
+
+/* Suggestions */
+#tContent .suggests {display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+#tContent .sug {padding:5px 12px;border-radius:20px;border:1px solid var(--br);background:none;color:var(--t2);font-family:inherit;font-size:.78em;cursor:pointer;transition:.2s}
+#tContent .sug:hover {border-color:var(--ta);color:var(--ta)}
+
+/* Options */
+#tContent .opts {display:flex;flex-wrap:wrap;gap:12px;background:var(--card);border:1px solid var(--br);border-radius:10px;padding:12px 16px;margin-bottom:16px}
+#tContent .opts label {display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer;color:var(--t1)}
+#tContent .opts input {accent-color:var(--ta);width:15px;height:15px}
+
+/* Generate button */
+#tContent .gen-btn {width:100%;padding:14px;border-radius:12px;border:none;background:var(--gr);color:#fff;font-family:inherit;font-size:1em;font-weight:900;cursor:pointer;transition:.3s;margin-bottom:16px}
+#tContent .gen-btn:hover {opacity:.9;transform:translateY(-1px)}
+#tContent .gen-btn:active {transform:scale(.98)}
+
+/* Prompt output */
+#tContent .prompt-wrap {display:none;background:var(--card);border:1px solid var(--br);border-radius:12px;overflow:hidden;margin-bottom:16px}
+#tContent .prompt-header {display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--br)}
+#tContent .prompt-header span {font-size:.85em;font-weight:800;color:var(--ta)}
+#tContent .copy-btn {padding:7px 16px;border-radius:8px;border:none;background:var(--ta);color:#fff;font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
+#tContent .copy-btn:hover {opacity:.85}
+#tContent .copy-btn.done {background:#43e97b;color:#0a0a0a}
+#tContent .prompt-text {padding:16px;font-family:monospace;font-size:.78em;color:#a0ffa0;line-height:1.7;max-height:200px;overflow-y:auto;white-space:pre-wrap;direction:ltr;text-align:left}
+
+/* Claude CTA */
+#tContent .claude-cta {display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#0d1f1c,#0a1520);border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin-bottom:24px}
+#tContent .claude-cta-icon {font-size:2em;flex-shrink:0}
+#tContent .claude-cta-text h3 {font-size:.95em;font-weight:800;margin-bottom:4px}
+#tContent .claude-cta-text p {font-size:.78em;color:var(--t2);line-height:1.5}
+#tContent .open-claude {margin-right:auto;padding:11px 22px;border-radius:50px;background:var(--gr);color:#fff;text-decoration:none;font-weight:800;font-size:.88em;white-space:nowrap;flex-shrink:0;transition:.2s}
+#tContent .open-claude:hover {opacity:.9}
+
+/* Steps */
+#tContent .steps {display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+#tContent .step {display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--card);border:1px solid var(--br);border-radius:10px}
+#tContent .step-num {width:28px;height:28px;border-radius:50%;background:var(--gr);color:#fff;font-weight:900;font-size:.85em;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+#tContent .step-content h4 {font-size:.88em;font-weight:800;margin-bottom:3px}
+#tContent .step-content p {font-size:.78em;color:var(--t2);line-height:1.5}
+
+/* GitHub upload section */
+#tContent .upload-section {background:var(--card);border:1px solid var(--br);border-radius:12px;padding:18px;margin-bottom:16px}
+#tContent .upload-section h3 {font-size:.9em;font-weight:800;margin-bottom:4px}
+#tContent .upload-section p {font-size:.8em;color:var(--t2);margin-bottom:12px}
+#tContent .slug-wrap {display:flex;gap:8px;align-items:center}
+#tContent .slug-prefix {font-size:.82em;color:var(--t2);white-space:nowrap;font-family:monospace}
+#tContent .slug-input {flex:1;padding:9px 12px;background:var(--up);border:1px solid var(--br);border-radius:8px;color:var(--t1);font-family:monospace;font-size:.85em;outline:none}
+#tContent .slug-input:focus {border-color:var(--ta)}
+#tContent .github-btn {padding:10px 18px;border-radius:8px;border:none;background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.3);color:var(--ta);font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+#tContent .github-btn:hover {background:rgba(0,168,150,.25)}
+
+    </style>
+    <div style="margin-bottom:16px">
+      <h3 style="font-size:1em;margin-bottom:4px">🧠 مولّد المحتوى — EEAT</h3>
+      <p style="color:var(--t2);font-size:.8em">أنشئ مقالات احترافية بـ Claude مجاناً — Prompt جاهز تنسخه وتفتح Claude</p>
+    </div>
+
+  <!-- Header -->
+  <div>
+      <h1>مولّد المحتوى</h1>
+      <p>أنشئ مقالات EEAT احترافية بـ Claude مجاناً</p>
+    </div>
+    <a href="https://xblm.ab-s.me" class="back-btn">← الرئيسية</a>
   </div>
 
-  <!-- GitHub Config (نفس إعدادات SEO) -->
-  <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
-    <div style="font-size:.8em;font-weight:700;margin-bottom:10px;color:var(--t2)">⚙️ إعدادات GitHub + Anthropic API</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-      <input class="form-input" id="cgRepo"   value="abllo/xblm" style="flex:2;min-width:140px;font-size:.82em;font-family:monospace" placeholder="username/repo">
-      <input class="form-input" id="cgBranch" value="main"       style="flex:1;min-width:80px;font-size:.82em;font-family:monospace">
-      <input class="form-input" id="cgToken"  type="password"    style="flex:3;min-width:180px;font-size:.82em;font-family:monospace" placeholder="GitHub Token ghp_..." value="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">
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><h4>اختر نوع المقال وأدخل الموضوع</h4><p>اختر من الأنواع أدناه واكتب موضوع المقال بالعربية</p></div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <input class="form-input" id="cgApiKey" type="password" style="flex:1;font-size:.82em;font-family:monospace" placeholder="Anthropic API Key: sk-ant-...">
-      <button class="btn bsm bs" onclick="
-        const k=document.getElementById('cgApiKey').value.trim();
-        if(k){localStorage.setItem('cg_apikey',k);toast('✅ تم حفظ API Key');}
-      ">💾 حفظ</button>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><h4>انسخ الـ Prompt واضغط "افتح Claude"</h4><p>انسخ الطلب الجاهز والصقه في claude.ai</p></div>
     </div>
-    <div style="font-size:.72em;color:var(--t2);margin-top:6px">
-      🔑 احصل على API Key من <a href="https://console.anthropic.com/keys" target="_blank" style="color:var(--ta)">console.anthropic.com</a> — يُحفظ محلياً في متصفحك فقط
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><h4>انسخ HTML من Claude وارفعه على GitHub</h4><p>في مجلد <code style="background:var(--up);padding:2px 6px;border-radius:4px;font-size:.85em">guides/</code> باسم مناسب</p></div>
     </div>
   </div>
 
-  <!-- Article Type -->
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-    <button class="btn bsm cg-type on" data-type="guide"      onclick="setCGType(this,'guide')">📖 دليل شامل</button>
-    <button class="btn bsm cg-type"    data-type="comparison" onclick="setCGType(this,'comparison')">⚖️ مقارنة</button>
-    <button class="btn bsm cg-type"    data-type="review"     onclick="setCGType(this,'review')">⭐ مراجعة</button>
-    <button class="btn bsm cg-type"    data-type="howto"      onclick="setCGType(this,'howto')">🔧 خطوة بخطوة</button>
-    <button class="btn bsm cg-type"    data-type="faq"        onclick="setCGType(this,'faq')">❓ FAQ</button>
+  <!-- Type selector -->
+  <div style="margin-bottom:8px">
+    <label>نوع المقال</label>
+    <div class="types">
+      <button class="type-btn on" data-type="guide"      onclick="setType(this)">📖 دليل شامل</button>
+      <button class="type-btn"    data-type="comparison" onclick="setType(this)">⚖️ مقارنة</button>
+      <button class="type-btn"    data-type="howto"      onclick="setType(this)">🔧 خطوة بخطوة</button>
+      <button class="type-btn"    data-type="faq"        onclick="setType(this)">❓ أسئلة وأجوبة</button>
+      <button class="type-btn"    data-type="review"     onclick="setType(this)">⭐ مراجعة</button>
+    </div>
   </div>
 
-  <!-- Topic Input -->
-  <div style="margin-bottom:12px">
-    <label style="font-size:.82em;color:var(--t2);display:block;margin-bottom:6px">موضوع المقال (عربي أو إنجليزي)</label>
-    <input class="form-input" id="cgTopic" placeholder="مثال: أفضل فلاتر القهوة لجهاز xBloom 2025" style="font-size:.9em">
+  <!-- Topic input -->
+  <label>موضوع المقال *</label>
+  <input class="fi" id="topic" placeholder="مثال: أفضل فلاتر xBloom للقهوة الباردة 2025" oninput="clearPrompt()">
+
+  <!-- Suggestions -->
+  <div class="suggests">
+    <button class="sug" onclick="useSuggest(this)">أفضل فلاتر xBloom 2025</button>
+    <button class="sug" onclick="useSuggest(this)">Wave 155 vs Wave 185 — أيهما أفضل؟</button>
+    <button class="sug" onclick="useSuggest(this)">دليل الطحن المثالي لجهاز xBloom</button>
+    <button class="sug" onclick="useSuggest(this)">أفضل محامص القهوة السعودية 2025</button>
+    <button class="sug" onclick="useSuggest(this)">كيف تحضر قهوة باردة على xBloom</button>
+    <button class="sug" onclick="useSuggest(this)">مقارنة xBloom Studio مع الأجهزة الأخرى</button>
+    <button class="sug" onclick="useSuggest(this)">أسرار القهوة المختصة للمبتدئين</button>
   </div>
 
   <!-- Keywords -->
-  <div style="margin-bottom:12px">
-    <label style="font-size:.82em;color:var(--t2);display:block;margin-bottom:6px">الكلمات المفتاحية المستهدفة (افصل بفواصل)</label>
-    <input class="form-input" id="cgKeywords" placeholder="فلاتر xbloom, فلتر القهوة السعودية, wave 155">
-  </div>
+  <label>كلمات مفتاحية (اختياري)</label>
+  <input class="fi" id="keywords" placeholder="فلاتر xbloom, قهوة مختصة, wave 155" oninput="clearPrompt()">
 
   <!-- Options -->
-  <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap">
-    <label style="display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer"><input type="checkbox" id="cgFAQ"      checked> تضمين FAQ</label>
-    <label style="display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer"><input type="checkbox" id="cgSchema"   checked> Schema.org</label>
-    <label style="display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer"><input type="checkbox" id="cgLinks"    checked> روابط داخلية للوصفات</label>
-    <label style="display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer"><input type="checkbox" id="cgAutoPublish">  نشر مباشرة على GitHub</label>
+  <div class="opts">
+    <label><input type="checkbox" id="withFaq" checked> تضمين FAQ</label>
+    <label><input type="checkbox" id="withTable"> جدول مقارنة</label>
+    <label><input type="checkbox" id="withTips"> نصائح عملية</label>
+    <label><input type="checkbox" id="withLinks" checked> روابط للوصفات</label>
   </div>
 
-  <!-- Action Buttons -->
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <button class="btn bp" id="cgGenerateBtn" onclick="generateContent()" style="flex:1;min-width:160px;padding:12px;font-size:.9em;font-weight:800">⚡ توليد المحتوى</button>
-    <button class="btn bs" onclick="cgClear()" style="padding:12px 16px;font-size:.85em">🗑️ مسح</button>
-  </div>
+  <!-- Generate button -->
+  <button class="gen-btn" id="genBtn" onclick="generatePrompt()">⚡ توليد الـ Prompt</button>
 
-  <!-- Status -->
-  <div id="cgStatus" style="display:none;padding:12px;border-radius:10px;margin-bottom:14px;font-size:.85em"></div>
-
-  <!-- Preview -->
-  <div id="cgPreviewWrap" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
-      <span style="font-size:.85em;font-weight:700;color:var(--ta)">📄 المحتوى المولّد</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn bsm bs" onclick="cgCopyHTML()">📋 نسخ HTML</button>
-        <button class="btn bsm bp" id="cgPublishBtn" onclick="cgPublish()" style="display:none">🚀 نشر على GitHub</button>
-      </div>
+  <!-- Prompt output -->
+  <div class="prompt-wrap" id="promptWrap">
+    <div class="prompt-header">
+      <span>📋 الـ Prompt جاهز — انسخه والصقه في Claude</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">📋 نسخ الكل</button>
     </div>
-    <!-- Live Preview -->
-    <iframe id="cgPreviewFrame" style="width:100%;height:500px;border:1px solid var(--br);border-radius:10px;background:#fff" sandbox="allow-scripts"></iframe>
-    <!-- HTML Code -->
-    <div style="margin-top:10px">
-      <div style="font-size:.75em;color:var(--t2);margin-bottom:4px">كود HTML:</div>
-      <textarea id="cgHTMLOutput" rows="6" style="width:100%;background:#0a0a0a;border:1px solid var(--br);border-radius:8px;padding:10px;font-family:monospace;font-size:.7em;color:#6ee7a0;resize:vertical" readonly></textarea>
-    </div>
+    <div class="prompt-text" id="promptText"></div>
   </div>
 
-  <!-- Suggestions -->
-  <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--br)">
-    <div style="font-size:.82em;font-weight:700;color:var(--t2);margin-bottom:10px">💡 اقتراحات مواضيع EEAT عالية القيمة:</div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px" id="cgSuggestions">
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">أفضل فلاتر xBloom 2025</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">Wave 155 vs Wave 185 — أيهما أفضل؟</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">دليل الطحن المثالي لجهاز xBloom</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">أفضل محامص القهوة السعودية 2025</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">كيف تحضر قهوة باردة على xBloom</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">مقارنة xBloom Studio vs الأجهزة الأخرى</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">أسرار القهوة المختصة للمبتدئين</button>
-      <button class="cg-suggest" onclick="cgUseSuggest(this)">أفضل نسب الجرعة للقهوة الباردة</button>
+  <!-- Claude CTA -->
+  <div class="claude-cta" id="claudeCta" style="display:none">
+    <div class="claude-cta-icon">🤖</div>
+    <div class="claude-cta-text">
+      <h3>افتح Claude والصق الـ Prompt</h3>
+      <p>سيكتب لك المقال كاملاً كـ HTML جاهز للنشر خلال ثوانٍ</p>
+    </div>
+    <a href="https://claude.ai/new" target="_blank" class="open-claude">افتح Claude ↗</a>
+  </div>
+
+  <!-- GitHub upload helper -->
+  <div class="upload-section" id="uploadSection" style="display:none">
+    <h3>📁 بعد ما تحصل على HTML من Claude</h3>
+    <p>ارفعه على GitHub في هذا المسار — اختر اسماً مناسباً بالإنجليزي:</p>
+    <div class="slug-wrap">
+      <span class="slug-prefix">guides/</span>
+      <input class="slug-input" id="slugInput" placeholder="best-xbloom-filters-2025">
+      <span class="slug-prefix">.html</span>
+      <button class="github-btn" onclick="openGithub()">فتح GitHub ↗</button>
     </div>
   </div>
+
 </div>
 
+<script>
+const TYPE_LABELS = {
+  guide:'دليل شامل',comparison:'مقارنة تفصيلية',
+  review:'مراجعة خبير',howto:'خطوة بخطوة',faq:'أسئلة وأجوبة'
+};
+let currentType = 'guide';
+
+function setType(btn) {
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  currentType = btn.dataset.type;
+  clearPrompt();
+}
+
+function useSuggest(btn) {
+  document.getElementById('topic').value = btn.textContent;
+  clearPrompt();
+}
+
+function clearPrompt() {
+  document.getElementById('promptWrap').style.display = 'none';
+  document.getElementById('claudeCta').style.display = 'none';
+  document.getElementById('uploadSection').style.display = 'none';
+}
+
+function generatePrompt() {
+  const topic    = document.getElementById('topic').value.trim();
+  const keywords = document.getElementById('keywords').value.trim();
+  if(!topic) { alert('أدخل موضوع المقال أولاً'); return; }
+
+  const withFaq   = document.getElementById('withFaq').checked;
+  const withTable = document.getElementById('withTable').checked;
+  const withTips  = document.getElementById('withTips').checked;
+  const withLinks = document.getElementById('withLinks').checked;
+
+  const extras = [
+    withFaq   ? '- قسم FAQ بـ 5 أسئلة وأجوبة تفصيلية' : '',
+    withTable ? '- جدول مقارنة واضح ومنظم' : '',
+    withTips  ? '- قسم "نصائح عملية" في النهاية' : '',
+    withLinks ? '- أضف في النهاية: <a href="https://xblm.ab-s.me">اكتشف وصفات xBloom</a>' : ''
+  ].filter(Boolean).join('\n');
+
+  const slug = topic.toLowerCase()
+    .replace(/[أإآا]/g,'a').replace(/[ةه]/g,'h').replace(/[يى]/g,'y')
+    .replace(/[وؤ]/g,'w').replace(/ب/g,'b').replace(/ت/g,'t')
+    .replace(/[جچ]/g,'j').replace(/ح/g,'h').replace(/خ/g,'kh')
+    .replace(/د/g,'d').replace(/[ذ]/g,'th').replace(/ر/g,'r')
+    .replace(/ز/g,'z').replace(/س/g,'s').replace(/ش/g,'sh')
+    .replace(/ص/g,'s').replace(/ض/g,'d').replace(/ط/g,'t')
+    .replace(/ظ/g,'z').replace(/ع/g,'a').replace(/غ/g,'gh')
+    .replace(/ف/g,'f').replace(/ق/g,'q').replace(/ك/g,'k')
+    .replace(/ل/g,'l').replace(/م/g,'m').replace(/ن/g,'n')
+    .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-')
+    .slice(0,50) || 'article';
+
+  document.getElementById('slugInput').value = slug;
+
+  const prompt = `أنت خبير قهوة مختصة عربي ومتخصص في SEO. اكتب ${TYPE_LABELS[currentType]} احترافي باللغة العربية عن:
+
+"${topic}"
+
+الموقع: xBloom Recipes Hub (xblm.ab-s.me) — أكبر مجتمع عربي لوصفات القهوة المختصة.
+الكلمات المفتاحية: ${keywords || topic}
+
+المتطلبات:
+- مقدمة جذابة 150-200 كلمة (تبدأ بسؤال أو إحصائية)
+- 4-5 أقسام تفصيلية مع معلومات تقنية دقيقة
+${extras}
+- اللغة: عربية فصحى بسيطة، أسلوب خبير وليس تسويقي
+
+أعطني الكود HTML كاملاً بهذا القالب بالضبط (لا تضف أي شرح قبله أو بعده):
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[عنوان SEO 60 حرف] | xBloom Recipes Hub</title>
+<meta name="description" content="[وصف 150-155 حرف]">
+<meta name="keywords" content="${keywords || topic}, xbloom, قهوة مختصة">
+<link rel="canonical" href="https://xblm.ab-s.me/guides/${slug}.html">
+<meta property="og:title" content="[عنوان]">
+<meta property="og:description" content="[وصف]">
+<meta property="og:image" content="https://xblm.ab-s.me/og-image.png">
+<meta property="og:url" content="https://xblm.ab-s.me/guides/${slug}.html">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"[عنوان]","description":"[وصف]","url":"https://xblm.ab-s.me/guides/${slug}.html","author":{"@type":"Organization","name":"xBloom Recipes Hub"},"publisher":{"@type":"Organization","name":"xBloom Recipes Hub","logo":{"@type":"ImageObject","url":"https://xblm.ab-s.me/icon-192.png"}},"datePublished":"${new Date().toISOString().slice(0,10)}","inLanguage":"ar","keywords":"${keywords||topic}"}
+<\/script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:#0A0A0A;color:#fff;line-height:1.8;direction:rtl}
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+.breadcrumb{font-size:.8em;color:#A0A0A0;margin-bottom:24px}
+.breadcrumb a{color:#00A896;text-decoration:none}
+h1{font-size:clamp(1.5em,4vw,2.2em);font-weight:900;line-height:1.3;margin-bottom:16px;background:linear-gradient(135deg,#fff,#A0A0A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.meta{font-size:.8em;color:#A0A0A0;margin-bottom:32px;display:flex;gap:16px;flex-wrap:wrap}
+.intro{background:#1A1A1A;border-right:4px solid #00A896;padding:20px 24px;border-radius:8px;margin-bottom:32px;font-size:1.05em;color:#E0E0E0}
+h2{font-size:1.25em;font-weight:800;color:#fff;margin:36px 0 14px;padding-bottom:8px;border-bottom:2px solid #2A2A2A}
+h2::before{content:"◆ ";color:#00A896;font-size:.8em}
+p{color:#C0C0C0;margin-bottom:14px}
+ul,ol{color:#C0C0C0;padding-right:20px;margin-bottom:14px}
+li{margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.9em}
+th{background:#00A896;color:#fff;padding:12px;text-align:right;font-weight:700}
+td{padding:12px;border-bottom:1px solid #2A2A2A;color:#C0C0C0}
+tr:hover td{background:#1A1A1A}
+.faq-section{margin-top:40px}
+.faq-item{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;padding:18px;margin-bottom:12px}
+.faq-item h3{color:#00A896;font-size:.95em;margin-bottom:8px}
+.faq-item p{font-size:.9em;margin:0}
+.tips-box{background:linear-gradient(135deg,rgba(0,168,150,.1),rgba(74,144,226,.05));border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin:24px 0}
+.tips-box h3{color:#00A896;margin-bottom:12px}
+.conclusion{background:#1A1A1A;border-radius:12px;padding:24px;margin:32px 0}
+.back-home{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#00A896,#4A90E2);border-radius:50px;color:#fff;text-decoration:none;font-weight:800;margin-top:16px}
+@media(max-width:600px){h1{font-size:1.4em}.container{padding:24px 16px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="breadcrumb"><a href="https://xblm.ab-s.me">الرئيسية</a> ← <a href="https://xblm.ab-s.me/guides/">المقالات</a> ← [عنوان المقال]</div>
+[المحتوى الكامل هنا]
+<a href="https://xblm.ab-s.me" class="back-home">← العودة لوصفات xBloom</a>
+  </div>
 
 
 </div>
@@ -3310,274 +3508,160 @@ window.scanDuplicates = function(){
     suspectEl.innerHTML = '';
   }
 
-  // Clean message
-  document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
+// ══════════ CONTENT GENERATOR ══════════
+
+const TYPE_LABELS = {
+  guide:'دليل شامل',comparison:'مقارنة تفصيلية',
+  review:'مراجعة خبير',howto:'خطوة بخطوة',faq:'أسئلة وأجوبة'
 };
+let currentType = 'guide';
 
-// ══════════════════════════════════════════
-// 🧠 CONTENT GENERATOR — EEAT with Claude
-// ══════════════════════════════════════════
-let _cgType = 'guide';
-let _cgGeneratedHTML = '';
-
-// Load saved API key
-setTimeout(() => {
-  const saved = localStorage.getItem('cg_apikey');
-  if(saved) { const el = document.getElementById('cgApiKey'); if(el) el.value = saved; }
-}, 500);
-
-window.setCGType = function(btn, type) {
-  document.querySelectorAll('.cg-type').forEach(b => b.classList.remove('on'));
+function setType(btn) {
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
-  _cgType = type;
-};
-
-window.cgUseSuggest = function(btn) {
-  document.getElementById('cgTopic').value = btn.textContent;
-  document.getElementById('cgTopic').focus();
-};
-
-window.cgClear = function() {
-  document.getElementById('cgTopic').value = '';
-  document.getElementById('cgKeywords').value = '';
-  document.getElementById('cgPreviewWrap').style.display = 'none';
-  document.getElementById('cgStatus').style.display = 'none';
-  _cgGeneratedHTML = '';
-};
-
-function cgSetStatus(msg, type='loading') {
-  const el = document.getElementById('cgStatus');
-  el.style.display = 'block';
-  el.className = type;
-  el.innerHTML = msg;
+  currentType = btn.dataset.type;
+  clearPrompt();
 }
 
-window.cgCopyHTML = function() {
-  navigator.clipboard.writeText(_cgGeneratedHTML)
-    .then(() => toast('✅ تم نسخ HTML'));
-};
-
-const CG_TYPE_LABELS = {
-  guide:      'دليل شامل',
-  comparison: 'مقارنة تفصيلية',
-  review:     'مراجعة خبير',
-  howto:      'دليل خطوة بخطوة',
-  faq:        'أسئلة وأجوبة'
-};
-
-window.generateContent = async function() {
-  const topic    = document.getElementById('cgTopic').value.trim();
-  const keywords = document.getElementById('cgKeywords').value.trim();
-  const withFAQ    = document.getElementById('cgFAQ').checked;
-  const withSchema = document.getElementById('cgSchema').checked;
-  const withLinks  = document.getElementById('cgLinks').checked;
-  const autoPublish= document.getElementById('cgAutoPublish').checked;
-
-  if(!topic){ toast('أدخل موضوع المقال أولاً','terr'); return; }
-
-  const apiKey = document.getElementById('cgApiKey').value.trim() || localStorage.getItem('cg_apikey') || '';
-  if(!apiKey){ toast('أدخل Anthropic API Key أولاً','terr'); return; }
-
-  const btn = document.getElementById('cgGenerateBtn');
-  btn.disabled = true; btn.textContent = '⏳ Claude يكتب...';
-  cgSetStatus('🤖 Claude يولّد المحتوى... قد يستغرق 30-60 ثانية', 'loading');
-  document.getElementById('cgPreviewWrap').style.display = 'none';
-
-  // Related recipes for internal linking
-  const relatedRecipes = withLinks
-    ? FB_RECIPES.slice(0,6).map(r => ({name: r.name, key: r._fbKey}))
-    : [];
-
-  const systemPrompt = `أنت خبير قهوة مختصة عربي ومتخصص في SEO. تكتب محتوى EEAT عالي الجودة للموقع xBloom Recipes Hub (xblm.ab-s.me) — أكبر مجتمع عربي لوصفات القهوة المختصة على جهاز xBloom.
-
-قواعد الكتابة:
-- اكتب بالعربية الفصحى البسيطة
-- أسلوب خبير موثوق وليس تسويقي مبالغ
-- أضمّن معلومات تقنية دقيقة (جرعات، نسب، درجات حرارة)
-- اذكر تجارب حقيقية ومقارنات موضوعية
-- اذكر محامص سعودية حقيقية عند الملائمة
-
-النوع المطلوب: ${CG_TYPE_LABELS[_cgType]}
-الموقع المستهدف: xblm.ab-s.me
-الكلمات المفتاحية: ${keywords || topic}`;
-
-  const userPrompt = `اكتب مقال ${CG_TYPE_LABELS[_cgType]} عن: "${topic}"
-
-المطلوب بالضبط — أعد JSON فقط بهذا الشكل:
-{
-  "title": "عنوان SEO قوي (60 حرف)",
-  "metaDesc": "وصف meta (155 حرف)",
-  "slug": "article-slug-in-english",
-  "intro": "مقدمة جذابة 150 كلمة تبدأ بسؤال أو إحصائية",
-  "sections": [
-    {"heading": "عنوان قسم", "content": "محتوى القسم 200-300 كلمة مع معلومات تقنية دقيقة"}
-  ],
-  ${withFAQ ? '  "faq": [{"q": "سؤال", "a": "جواب تفصيلي"}],' : ''}
-  "conclusion": "خلاصة وتوصية نهائية 100 كلمة",
-  "keywords": ["كلمة1", "كلمة2", "كلمة3"]
+function useSuggest(btn) {
+  document.getElementById('topic').value = btn.textContent;
+  clearPrompt();
 }
 
-اكتب 4-6 أقسام. ${withFAQ ? 'اكتب 5 أسئلة FAQ.' : ''} لا تضف أي نص خارج الـ JSON.`;
+function clearPrompt() {
+  document.getElementById('promptWrap').style.display = 'none';
+  document.getElementById('claudeCta').style.display = 'none';
+  document.getElementById('uploadSection').style.display = 'none';
+}
 
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': document.getElementById('cgApiKey').value.trim() || localStorage.getItem('cg_apikey') || '',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }]
-      })
-    });
+function generatePrompt() {
+  const topic    = document.getElementById('topic').value.trim();
+  const keywords = document.getElementById('keywords').value.trim();
+  if(!topic) { alert('أدخل موضوع المقال أولاً'); return; }
 
-    const data = await response.json();
-    if(!data.content?.[0]?.text) throw new Error('لا يوجد محتوى في الرد');
+  const withFaq   = document.getElementById('withFaq').checked;
+  const withTable = document.getElementById('withTable').checked;
+  const withTips  = document.getElementById('withTips').checked;
+  const withLinks = document.getElementById('withLinks').checked;
 
-    let raw = data.content[0].text.trim();
-    // Clean JSON
-    raw = raw.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/```\s*$/,'');
-    const article = JSON.parse(raw);
+  const extras = [
+    withFaq   ? '- قسم FAQ بـ 5 أسئلة وأجوبة تفصيلية' : '',
+    withTable ? '- جدول مقارنة واضح ومنظم' : '',
+    withTips  ? '- قسم "نصائح عملية" في النهاية' : '',
+    withLinks ? '- أضف في النهاية: <a href="https://xblm.ab-s.me">اكتشف وصفات xBloom</a>' : ''
+  ].filter(Boolean).join('\n');
 
-    cgSetStatus(`✅ تم توليد "${article.title}" بنجاح!`, 'ok');
+  const slug = topic.toLowerCase()
+    .replace(/[أإآا]/g,'a').replace(/[ةه]/g,'h').replace(/[يى]/g,'y')
+    .replace(/[وؤ]/g,'w').replace(/ب/g,'b').replace(/ت/g,'t')
+    .replace(/[جچ]/g,'j').replace(/ح/g,'h').replace(/خ/g,'kh')
+    .replace(/د/g,'d').replace(/[ذ]/g,'th').replace(/ر/g,'r')
+    .replace(/ز/g,'z').replace(/س/g,'s').replace(/ش/g,'sh')
+    .replace(/ص/g,'s').replace(/ض/g,'d').replace(/ط/g,'t')
+    .replace(/ظ/g,'z').replace(/ع/g,'a').replace(/غ/g,'gh')
+    .replace(/ف/g,'f').replace(/ق/g,'q').replace(/ك/g,'k')
+    .replace(/ل/g,'l').replace(/م/g,'m').replace(/ن/g,'n')
+    .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-')
+    .slice(0,50) || 'article';
 
-    // Build HTML page
-    const relatedHTML = relatedRecipes.length ? `
-    <div class="related-recipes">
-      <h3>وصفات ذات صلة</h3>
-      <div class="recipe-links">
-        ${relatedRecipes.map(r => '<a href="https://xblm.ab-s.me/recipe.html?key='+encodeURIComponent(r.key)+'" class="recipe-link">☕ '+r.name+'</a>').join('')}
-      </div>
-    </div>` : '';
+  document.getElementById('slugInput').value = slug;
 
-    const faqHTML = withFAQ && article.faq ? `
-    <div class="faq-section">
-      <h2>الأسئلة الشائعة</h2>
-      ${article.faq.map(f => '<div class="faq-item"><h3>'+f.q+'</h3><p>'+f.a+'</p></div>').join('')}
-    </div>` : '';
+  const prompt = `أنت خبير قهوة مختصة عربي ومتخصص في SEO. اكتب ${TYPE_LABELS[currentType]} احترافي باللغة العربية عن:
 
-    const schemaJSON = withSchema ? JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": _cgType === 'howto' ? 'HowTo' : _cgType === 'faq' ? 'FAQPage' : 'Article',
-      "headline": article.title,
-      "description": article.metaDesc,
-      "inLanguage": "ar",
-      "author": { "@type": "Organization", "name": "xBloom Recipes Hub", "url": "https://xblm.ab-s.me" },
-      "publisher": { "@type": "Organization", "name": "xBloom Recipes Hub", "logo": { "@type": "ImageObject", "url": "https://xblm.ab-s.me/icon-192.png" }},
-      "datePublished": new Date().toISOString().slice(0,10),
-      "keywords": (article.keywords || []).join(', ')
-    }) : '';
+"${topic}"
 
-    _cgGeneratedHTML = `<!DOCTYPE html>
+الموقع: xBloom Recipes Hub (xblm.ab-s.me) — أكبر مجتمع عربي لوصفات القهوة المختصة.
+الكلمات المفتاحية: ${keywords || topic}
+
+المتطلبات:
+- مقدمة جذابة 150-200 كلمة (تبدأ بسؤال أو إحصائية)
+- 4-5 أقسام تفصيلية مع معلومات تقنية دقيقة
+${extras}
+- اللغة: عربية فصحى بسيطة، أسلوب خبير وليس تسويقي
+
+أعطني الكود HTML كاملاً بهذا القالب بالضبط (لا تضف أي شرح قبله أو بعده):
+
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${article.title} | xBloom Recipes Hub</title>
-<meta name="description" content="${article.metaDesc}">
-<meta name="keywords" content="${(article.keywords||[]).join(', ')}">
-<link rel="canonical" href="https://xblm.ab-s.me/guides/${article.slug}.html">
-<meta property="og:title" content="${article.title}">
-<meta property="og:description" content="${article.metaDesc}">
-<meta property="og:url" content="https://xblm.ab-s.me/guides/${article.slug}.html">
+<title>[عنوان SEO 60 حرف] | xBloom Recipes Hub</title>
+<meta name="description" content="[وصف 150-155 حرف]">
+<meta name="keywords" content="${keywords || topic}, xbloom, قهوة مختصة">
+<link rel="canonical" href="https://xblm.ab-s.me/guides/${slug}.html">
+<meta property="og:title" content="[عنوان]">
+<meta property="og:description" content="[وصف]">
 <meta property="og:image" content="https://xblm.ab-s.me/og-image.png">
+<meta property="og:url" content="https://xblm.ab-s.me/guides/${slug}.html">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-${withSchema ? '<script type="application/ld+json">'+schemaJSON+'<\/script>' : ''}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"[عنوان]","description":"[وصف]","url":"https://xblm.ab-s.me/guides/${slug}.html","author":{"@type":"Organization","name":"xBloom Recipes Hub"},"publisher":{"@type":"Organization","name":"xBloom Recipes Hub","logo":{"@type":"ImageObject","url":"https://xblm.ab-s.me/icon-192.png"}},"datePublished":"${new Date().toISOString().slice(0,10)}","inLanguage":"ar","keywords":"${keywords||topic}"}
+<\/script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;background:#0A0A0A;color:#fff;line-height:1.75;direction:rtl}
+body{font-family:'Cairo',sans-serif;background:#0A0A0A;color:#fff;line-height:1.8;direction:rtl}
 .container{max-width:800px;margin:0 auto;padding:40px 20px}
 .breadcrumb{font-size:.8em;color:#A0A0A0;margin-bottom:24px}
 .breadcrumb a{color:#00A896;text-decoration:none}
-h1{font-size:clamp(1.6em,4vw,2.4em);font-weight:900;line-height:1.3;margin-bottom:16px;background:linear-gradient(135deg,#fff,#A0A0A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h1{font-size:clamp(1.5em,4vw,2.2em);font-weight:900;line-height:1.3;margin-bottom:16px;background:linear-gradient(135deg,#fff,#A0A0A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .meta{font-size:.8em;color:#A0A0A0;margin-bottom:32px;display:flex;gap:16px;flex-wrap:wrap}
-.meta span{display:flex;align-items:center;gap:4px}
-.intro{font-size:1.05em;color:#E0E0E0;background:#1A1A1A;border:1px solid #2A2A2A;border-radius:12px;padding:20px 24px;margin-bottom:32px;border-right:4px solid #00A896}
-h2{font-size:1.3em;font-weight:800;color:#fff;margin:32px 0 12px;border-bottom:2px solid #2A2A2A;padding-bottom:8px}
-h2::before{content:'◆ ';color:#00A896;font-size:.8em}
+.intro{background:#1A1A1A;border-right:4px solid #00A896;padding:20px 24px;border-radius:8px;margin-bottom:32px;font-size:1.05em;color:#E0E0E0}
+h2{font-size:1.25em;font-weight:800;color:#fff;margin:36px 0 14px;padding-bottom:8px;border-bottom:2px solid #2A2A2A}
+h2::before{content:"◆ ";color:#00A896;font-size:.8em}
 p{color:#C0C0C0;margin-bottom:14px}
-.faq-section{margin-top:40px;padding-top:32px;border-top:1px solid #2A2A2A}
+ul,ol{color:#C0C0C0;padding-right:20px;margin-bottom:14px}
+li{margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.9em}
+th{background:#00A896;color:#fff;padding:12px;text-align:right;font-weight:700}
+td{padding:12px;border-bottom:1px solid #2A2A2A;color:#C0C0C0}
+tr:hover td{background:#1A1A1A}
+.faq-section{margin-top:40px}
 .faq-item{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;padding:18px;margin-bottom:12px}
-.faq-item h3{font-size:.95em;color:#00A896;margin-bottom:8px}
-.faq-item p{font-size:.9em;color:#B0B0B0;margin:0}
-.related-recipes{margin-top:40px;padding:24px;background:#1A1A1A;border-radius:12px;border:1px solid #2A2A2A}
-.related-recipes h3{margin-bottom:14px;color:#fff}
-.recipe-links{display:flex;flex-wrap:wrap;gap:8px}
-.recipe-link{padding:7px 14px;background:#252525;border:1px solid #2A2A2A;border-radius:20px;color:#00A896;text-decoration:none;font-size:.85em;transition:.2s}
-.recipe-link:hover{background:#00A896;color:#fff;border-color:#00A896}
-.conclusion{margin-top:32px;padding:24px;background:linear-gradient(135deg,rgba(0,168,150,.1),rgba(74,144,226,.05));border:1px solid rgba(0,168,150,.3);border-radius:12px}
-.back-home{display:inline-flex;align-items:center;gap:8px;margin-top:32px;padding:12px 24px;background:linear-gradient(135deg,#00A896,#4A90E2);border-radius:50px;color:#fff;text-decoration:none;font-weight:700}
+.faq-item h3{color:#00A896;font-size:.95em;margin-bottom:8px}
+.faq-item p{font-size:.9em;margin:0}
+.tips-box{background:linear-gradient(135deg,rgba(0,168,150,.1),rgba(74,144,226,.05));border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin:24px 0}
+.tips-box h3{color:#00A896;margin-bottom:12px}
+.conclusion{background:#1A1A1A;border-radius:12px;padding:24px;margin:32px 0}
+.back-home{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#00A896,#4A90E2);border-radius:50px;color:#fff;text-decoration:none;font-weight:800;margin-top:16px}
+@media(max-width:600px){h1{font-size:1.4em}.container{padding:24px 16px}}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="breadcrumb"><a href="https://xblm.ab-s.me">الرئيسية</a> ← <a href="https://xblm.ab-s.me/guides">المقالات</a> ← ${article.title}</div>
-  <h1>${article.title}</h1>
-  <div class="meta">
-    <span>📅 ${new Date().toLocaleDateString('ar-SA')}</span>
-    <span>✍️ xBloom Recipes Hub</span>
-    <span>🏷️ ${CG_TYPE_LABELS[_cgType]}</span>
-  </div>
-  <div class="intro">${article.intro}</div>
-  ${(article.sections||[]).map(s => '<h2>'+s.heading+'</h2><p>'+s.content+'</p>').join('\n  ')}
-  ${faqHTML}
-  <div class="conclusion"><h2>الخلاصة</h2><p>${article.conclusion}</p></div>
-  ${relatedHTML}
-  <a href="https://xblm.ab-s.me" class="back-home">← العودة لوصفات xBloom</a>
+<div class="breadcrumb"><a href="https://xblm.ab-s.me">الرئيسية</a> ← <a href="https://xblm.ab-s.me/guides/">المقالات</a> ← [عنوان المقال]</div>
+[المحتوى الكامل هنا]
+<a href="https://xblm.ab-s.me" class="back-home">← العودة لوصفات xBloom</a>
 </div>
 </body>
 </html>`;
 
-    // Show preview
-    document.getElementById('cgPreviewFrame').srcdoc = _cgGeneratedHTML;
-    document.getElementById('cgHTMLOutput').value = _cgGeneratedHTML;
-    document.getElementById('cgPreviewWrap').style.display = 'block';
-
-    if(!autoPublish) {
-      document.getElementById('cgPublishBtn').style.display = 'inline-flex';
-      document.getElementById('cgPublishBtn').dataset.slug = article.slug;
-    } else {
-      await cgPublishFile(article.slug);
-    }
-
-  } catch(e) {
-    cgSetStatus('❌ خطأ: ' + e.message, 'err');
-    console.error(e);
-  }
-
-  btn.disabled = false; btn.textContent = '⚡ توليد المحتوى';
-};
-
-window.cgPublish = async function() {
-  const slug = document.getElementById('cgPublishBtn').dataset.slug;
-  await cgPublishFile(slug);
-};
-
-async function cgPublishFile(slug) {
-  const cfg = {
-    repo:   document.getElementById('cgRepo').value.trim(),
-    branch: document.getElementById('cgBranch').value.trim(),
-    token:  document.getElementById('cgToken').value.trim()
-  };
-  if(!cfg.token){ toast('أدخل GitHub Token','terr'); return; }
-
-  cgSetStatus('🚀 جاري النشر على GitHub...', 'loading');
-  const path = `guides/${slug}.html`;
-  try {
-    const existing = await ghGet(path, cfg);
-    await ghPut(path, _cgGeneratedHTML, existing?.sha || null, cfg);
-    cgSetStatus(`✅ نُشر على: xblm.ab-s.me/${path}`, 'ok');
-    toast('✅ المقال منشور على GitHub!');
-    document.getElementById('cgPublishBtn').style.display = 'none';
-  } catch(e) {
-    cgSetStatus('❌ فشل النشر: ' + e.message, 'err');
-  }
+  document.getElementById('promptText').textContent = prompt;
+  document.getElementById('promptWrap').style.display = 'block';
+  document.getElementById('claudeCta').style.display = 'flex';
+  document.getElementById('uploadSection').style.display = 'block';
+  document.getElementById('promptWrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ تم النسخ!';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = '📋 نسخ الكل'; btn.classList.remove('done'); }, 2500);
+  });
+}
+
+function openGithub() {
+  const slug = document.getElementById('slugInput').value.trim() || 'article';
+  window.open(`https://github.com/abllo/xblm/new/main/guides?filename=${slug}.html`, '_blank');
+}
+
+  // Clean message
+  document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
+};
+
 
 // ═══════════════════════════════════════
 // REPORTS SYSTEM
