@@ -1010,14 +1010,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         </div>
       </div>
 
-      <!-- اسم ملف HTML -->
-      <div>
-        <div class="fg">
-          <label>📄 اسم ملف HTML (بدون امتداد)</label>
-          <input class="form-input" id="tcFilename" placeholder="مثال: omni-guide" style="font-family:monospace">
-        </div>
-      </div>
-
       <!-- خيارات إضافية -->
       <div style="grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap">
         <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.85em">
@@ -1059,7 +1051,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <li>انسخ الـ Prompt ← افتح Claude ← احصل على كود HTML كامل</li>
           <li>افتح مستودع <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">abllo/xblm</code> على GitHub</li>
           <li>انتقل لمجلد <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">guides/</code> ← اضغط "Add file" ← "Create new file"</li>
-          <li>اسم الملف: <span id="tcFilenameHint" style="color:var(--ta);font-family:monospace">omni-guide.html</span></li>
+          <li>اسم الملف: <span id="tcFilenameHint" style="color:var(--ta);font-family:monospace">يختاره Claude تلقائياً</span></li>
           <li>الصق HTML ← "Commit changes" ✅</li>
         </ol>
         <a href="https://github.com/abllo/xblm/tree/main/guides" target="_blank" class="btn bp bbl" style="margin-top:14px;justify-content:center;text-decoration:none">
@@ -2688,7 +2680,7 @@ window.sheetBulkIgnore = function() {
     const type     = document.querySelector('input[name="tcType"]:checked')?.value || 'guide';
     const audience = document.getElementById('tcAudience').value;
     const lang     = document.getElementById('tcLang').value;
-    const filename = document.getElementById('tcFilename').value.trim() || 'article';
+    const filename = document.getElementById('tcFilename')?.value.trim() || null;
     const incFaq   = document.getElementById('tcIncludeFaq').checked;
     const incCta   = document.getElementById('tcIncludeCta').checked;
     const incSeo   = document.getElementById('tcIncludeSeo').checked;
@@ -2727,7 +2719,7 @@ window.sheetBulkIgnore = function() {
 
 متطلبات الكود:
 - أعطني ملف HTML كامل وجاهز للرفع مباشرة
-- اسم الملف: guides/${filename}.html
+- اسم الملف: اختر الاسم الأمثل لـ SEO بصيغة kebab-case باللغة الإنجليزية (مثال: omni-brewing-guide.html) وضعه في مجلد guides/
 - استخدم هذا الـ template بالضبط:
 
 ${'<'}!DOCTYPE html>
@@ -2780,7 +2772,7 @@ Content requirements:
 
 Code requirements:
 - Provide a complete, ready-to-upload HTML file
-- Filename: guides/${filename}.html
+- Filename: choose the best SEO-friendly kebab-case name (e.g. omni-brewing-guide.html) and place it in guides/
 - Use this exact template:
 
 ${'<'}!DOCTYPE html>
