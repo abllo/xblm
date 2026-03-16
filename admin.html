@@ -1133,11 +1133,21 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
   <!-- GitHub Config (نفس إعدادات SEO) -->
   <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
-    <div style="font-size:.8em;font-weight:700;margin-bottom:10px;color:var(--t2)">⚙️ إعدادات GitHub (تُملأ تلقائياً من SEO Pages)</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div style="font-size:.8em;font-weight:700;margin-bottom:10px;color:var(--t2)">⚙️ إعدادات GitHub + Anthropic API</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
       <input class="form-input" id="cgRepo"   value="abllo/xblm" style="flex:2;min-width:140px;font-size:.82em;font-family:monospace" placeholder="username/repo">
       <input class="form-input" id="cgBranch" value="main"       style="flex:1;min-width:80px;font-size:.82em;font-family:monospace">
-      <input class="form-input" id="cgToken"  type="password"    style="flex:3;min-width:180px;font-size:.82em;font-family:monospace" placeholder="ghp_..." value="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">
+      <input class="form-input" id="cgToken"  type="password"    style="flex:3;min-width:180px;font-size:.82em;font-family:monospace" placeholder="GitHub Token ghp_..." value="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">
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input class="form-input" id="cgApiKey" type="password" style="flex:1;font-size:.82em;font-family:monospace" placeholder="Anthropic API Key: sk-ant-...">
+      <button class="btn bsm bs" onclick="
+        const k=document.getElementById('cgApiKey').value.trim();
+        if(k){localStorage.setItem('cg_apikey',k);toast('✅ تم حفظ API Key');}
+      ">💾 حفظ</button>
+    </div>
+    <div style="font-size:.72em;color:var(--t2);margin-top:6px">
+      🔑 احصل على API Key من <a href="https://console.anthropic.com/keys" target="_blank" style="color:var(--ta)">console.anthropic.com</a> — يُحفظ محلياً في متصفحك فقط
     </div>
   </div>
 
@@ -3310,6 +3320,12 @@ window.scanDuplicates = function(){
 let _cgType = 'guide';
 let _cgGeneratedHTML = '';
 
+// Load saved API key
+setTimeout(() => {
+  const saved = localStorage.getItem('cg_apikey');
+  if(saved) { const el = document.getElementById('cgApiKey'); if(el) el.value = saved; }
+}, 500);
+
 window.setCGType = function(btn, type) {
   document.querySelectorAll('.cg-type').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
@@ -3359,6 +3375,9 @@ window.generateContent = async function() {
 
   if(!topic){ toast('أدخل موضوع المقال أولاً','terr'); return; }
 
+  const apiKey = document.getElementById('cgApiKey').value.trim() || localStorage.getItem('cg_apikey') || '';
+  if(!apiKey){ toast('أدخل Anthropic API Key أولاً','terr'); return; }
+
   const btn = document.getElementById('cgGenerateBtn');
   btn.disabled = true; btn.textContent = '⏳ Claude يكتب...';
   cgSetStatus('🤖 Claude يولّد المحتوى... قد يستغرق 30-60 ثانية', 'loading');
@@ -3403,7 +3422,12 @@ window.generateContent = async function() {
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': document.getElementById('cgApiKey').value.trim() || localStorage.getItem('cg_apikey') || '',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 4000,
