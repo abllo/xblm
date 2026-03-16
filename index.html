@@ -653,7 +653,7 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .art-strip-grid{display:flex;gap:10px;overflow-x:auto;padding:4px 16px 8px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
 .art-strip-grid::-webkit-scrollbar{display:none}
 .art-strip-grid.dragging{cursor:grabbing;user-select:none}
-.art-strip-card{flex-shrink:0;min-width:190px;max-width:210px;background:var(--up);border:1px solid var(--br);border-radius:12px;padding:12px 14px;text-decoration:none;display:flex;flex-direction:column;gap:5px;scroll-snap-align:start;transition:.2s;position:relative;overflow:hidden}
+.art-strip-card{flex-shrink:0;min-width:220px;max-width:250px;background:var(--card);border:1px solid var(--br);border-radius:14px;padding:14px 16px;text-decoration:none;display:flex;flex-direction:column;gap:6px;scroll-snap-align:start;transition:.25s;position:relative;overflow:hidden}
 .art-strip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gr);transform:scaleX(0);transition:.3s;transform-origin:right}
 .art-strip-card:hover{border-color:rgba(0,168,150,.35);transform:translateY(-2px)}
 .art-strip-card:hover::before{transform:scaleX(1)}
@@ -1206,18 +1206,15 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <!-- ═══ ARTICLES SECTION ═══ -->
 <div id="articlesHomeSection" style="margin-top:32px;display:none">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
     <div>
       <div style="font-size:.75em;color:var(--ta);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">📖 مركز المعرفة</div>
       <h2 style="font-size:1.1em;font-weight:900;color:var(--t1)">أحدث المقالات</h2>
     </div>
     <a href="/guides/" style="padding:8px 16px;border-radius:8px;background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);color:var(--ta);text-decoration:none;font-size:.82em;font-weight:700;transition:.2s">كل المقالات ←</a>
   </div>
-  <!-- Grid — أول 4 مقالات -->
-  <div id="articlesHomeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
-  <!-- Scroll strip — ما زاد عن 4 -->
-  <div class="art-strip-wrap" id="articlesStripWrap">
-    <div class="art-strip-label">📜 مقالات أخرى</div>
+  <!-- شريط سحب واحد — كل المقالات، الأحدث أقصى اليمين -->
+  <div class="art-strip-wrap show" id="articlesStripWrap" style="margin-top:0;background:transparent;border:none;padding:0">
     <div style="position:relative">
       <div class="art-strip-fade-r"></div>
       <div class="art-strip-fade-l"></div>
@@ -3467,11 +3464,9 @@ if("serviceWorker" in navigator){
 <script>
 // ── تحميل المقالات في الرئيسية ──
 (async function loadHomeArticles() {
-  const section    = document.getElementById('articlesHomeSection');
-  const grid       = document.getElementById('articlesHomeGrid');
-  const stripWrap  = document.getElementById('articlesStripWrap');
-  const stripGrid  = document.getElementById('articlesStripGrid');
-  if(!section || !grid) return;
+  const section   = document.getElementById('articlesHomeSection');
+  const stripGrid = document.getElementById('articlesStripGrid');
+  if(!section || !stripGrid) return;
 
   const TYPE_ICONS  = {guide:'📖',comparison:'⚖️',review:'⭐',howto:'🔧',faq:'❓'};
   const TYPE_LABELS = {guide:'دليل',comparison:'مقارنة',review:'مراجعة',howto:'خطوة بخطوة',faq:'FAQ'};
@@ -3494,14 +3489,14 @@ if("serviceWorker" in navigator){
         const raw = commits[0]?.commit?.committer?.date
                  || commits[0]?.commit?.author?.date
                  || null;
-        return { ...f, _ts: raw ? new Date(raw).getTime() : 0, _dateRaw: raw };
-      } catch { return { ...f, _ts: 0, _dateRaw: null }; }
+        return { ...f, _ts: raw ? new Date(raw).getTime() : 0 };
+      } catch { return { ...f, _ts: 0 }; }
     }));
 
-    // ─ 3. ترتيب من الأحدث للأقدم ─
+    // ─ 3. ترتيب من الأحدث للأقدم (الأحدث أقصى اليمين في RTL = أول العرض) ─
     withDates.sort((a, b) => b._ts - a._ts);
 
-    // ─ 4. جلب محتوى كل ملف لاستخراج meta ─
+    // ─ 4. جلب meta لكل ملف ─
     const articles = await Promise.all(withDates.map(async f => {
       try {
         const r    = await fetch(f.download_url);
@@ -3513,7 +3508,7 @@ if("serviceWorker" in navigator){
         const title  = titleM
           ? titleM[1].replace(/\s*\|\s*[Xx][Bb]loom.*$/i,'').trim()
           : f.name.replace('.html','').replace(/-/g,' ');
-        const desc   = descM ? descM[1].slice(0,95) + (descM[1].length > 95 ? '...' : '') : '';
+        const desc   = descM ? descM[1].slice(0,80) + (descM[1].length > 80 ? '...' : '') : '';
         const type   = typeM ? typeM[1] : 'guide';
         const url    = `https://xblm.ab-s.me/guides/${f.name}`;
         const dateStr = f._ts
@@ -3526,32 +3521,21 @@ if("serviceWorker" in navigator){
     const valid = articles.filter(Boolean);
     if(!valid.length) return;
 
-    // ─ 5. بطاقات grid (أول 4) ─
-    grid.innerHTML = valid.slice(0, 4).map(a => `
-      <a href="${a.url}" class="art-card">
-        <div class="art-card-type">${TYPE_ICONS[a.type]||'📖'} ${TYPE_LABELS[a.type]||'مقال'}</div>
-        <div class="art-card-title">${a.title}</div>
-        ${a.desc ? `<div class="art-card-desc">${a.desc}</div>` : ''}
-        <div class="art-card-footer" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <span>اقرأ المقال ←</span>
-          ${a.dateStr ? `<span style="font-size:.68em;color:var(--t2);font-weight:400">${a.dateStr}</span>` : ''}
+    // ─ 5. كل المقالات في شريط واحد — الأحدث أول (أقصى اليمين) ─
+    stripGrid.innerHTML = valid.map((a, i) => `
+      <a href="${a.url}" class="art-strip-card">
+        ${i === 0 ? `<div style="position:absolute;top:8px;left:10px;background:var(--gr);color:#fff;font-size:.6em;font-weight:900;padding:2px 7px;border-radius:10px;white-space:nowrap">✦ جديد</div>` : ''}
+        <div class="art-strip-type">${TYPE_ICONS[a.type]||'📖'} ${TYPE_LABELS[a.type]||'مقال'}</div>
+        <div class="art-strip-title">${a.title}</div>
+        ${a.desc ? `<div class="art-strip-meta" style="font-size:.71em;color:var(--t2);line-height:1.45;margin-top:2px">${a.desc}</div>` : ''}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:6px">
+          <div class="art-strip-cta">اقرأ المقال ←</div>
+          ${a.dateStr ? `<div class="art-strip-meta">${a.dateStr}</div>` : ''}
         </div>
       </a>`).join('');
 
     section.style.display = 'block';
-
-    // ─ 6. شريط السحب الأفقي (ما زاد عن 4) ─
-    if(valid.length > 4 && stripGrid && stripWrap) {
-      stripGrid.innerHTML = valid.slice(4).map(a => `
-        <a href="${a.url}" class="art-strip-card">
-          <div class="art-strip-type">${TYPE_ICONS[a.type]||'📖'} ${TYPE_LABELS[a.type]||'مقال'}</div>
-          <div class="art-strip-title">${a.title}</div>
-          ${a.dateStr ? `<div class="art-strip-meta">${a.dateStr}</div>` : ''}
-          <div class="art-strip-cta">اقرأ ←</div>
-        </a>`).join('');
-      stripWrap.classList.add('show');
-      initArtStrip(stripGrid);
-    }
+    initArtStrip(stripGrid);
 
   } catch(e) { console.warn('articles:', e); }
 })();
