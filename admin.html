@@ -1116,9 +1116,9 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   </div>
 
   <!-- CONTENT GENERATOR -->
-  <div id="tContent" class="acard" style="display:none">
+  <div id="tContent" class="acard">
     <style>
-#tContent.open{display:block !important}
+#tContent * {margin:0;padding:0;box-sizing:border-box}
 
 /* Header */
 #tContent .hdr {display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--br)}
@@ -1364,6 +1364,8 @@ window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload
   document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') window.doLogin(); });
 });
 
+// Hide all acards except the open one
+document.querySelectorAll('.acard:not(.open)').forEach(el=>el.style.display='none');
 if(sessionStorage.getItem('xba')==='1'){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminPanel').style.display='block';
@@ -1495,9 +1497,14 @@ function updateStats() {
 
 window.switchTab = function(btn,id){
   document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
+  document.querySelectorAll('.acard').forEach(c=>{
+    c.classList.remove('open');
+    c.style.display='none';
+  });
   btn.classList.add('on');
-  document.getElementById(id).classList.add('open');
+  const target = document.getElementById(id);
+  target.classList.add('open');
+  target.style.display='block';
   if(id==='tRoastery' || id==='tAdd') loadRoasteries();
 };
 
