@@ -3709,6 +3709,29 @@ ${extras}
 - اللغة: عربية فصحى بسيطة، أسلوب خبير وليس تسويقي
 
 أعطني الكود HTML كاملاً بهذا القالب بالضبط (لا تضف أي شرح قبله أو بعده):
+`;
+
+  document.getElementById('promptText').textContent = prompt;
+  document.getElementById('promptWrap').style.display = 'block';
+  document.getElementById('claudeCta').style.display = 'flex';
+  document.getElementById('uploadSection').style.display = 'block';
+  document.getElementById('promptWrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ تم النسخ!';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = '📋 نسخ الكل'; btn.classList.remove('done'); }, 2500);
+  });
+}
+
+function openGithub() {
+  const slug = document.getElementById('slugInput').value.trim() || 'article';
+  window.open(`https://github.com/abllo/xblm/new/main/guides?filename=${slug}.html`, '_blank');
+}
 
 </script>
 </body>
