@@ -48,26 +48,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .acard{background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:14px;display:none}
 .acard.open{display:block}
 .alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;font-size:.88em;line-height:1.6;display:none}
-/* Reports */
-.report-card{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:.2s}
-.report-card.status-new{border-color:rgba(245,87,108,.4);background:rgba(245,87,108,.04)}
-.report-card.status-resolved{opacity:.55}
-.report-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.report-card-name{font-weight:800;font-size:.9em;color:var(--t1)}
-.report-card-badge{padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:800;white-space:nowrap}
-.badge-new{background:rgba(245,87,108,.15);color:#f5576c;border:1px solid rgba(245,87,108,.3)}
-.badge-reviewed{background:rgba(0,168,150,.1);color:var(--ta);border:1px solid rgba(0,168,150,.2)}
-.badge-resolved{background:rgba(160,160,160,.1);color:var(--t2);border:1px solid var(--br)}
-.report-card-type{font-size:.82em;color:var(--t2);margin-bottom:6px}
-.report-card-note{font-size:.82em;color:var(--t1);background:var(--up);padding:8px 12px;border-radius:8px;margin-bottom:10px;border:1px solid var(--br)}
-.report-card-meta{font-size:.72em;color:var(--t2);margin-bottom:10px}
-.report-card-actions{display:flex;gap:7px;flex-wrap:wrap}
-.report-card-actions button{padding:6px 12px;border-radius:7px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-size:.78em;font-weight:700;font-family:inherit;cursor:pointer;transition:.2s}
-.report-card-actions button:hover{background:var(--card);color:var(--t1)}
-.report-card-actions .btn-resolve{border-color:rgba(0,168,150,.3);color:var(--ta)}
-.report-card-actions .btn-resolve:hover{background:rgba(0,168,150,.1)}
-.report-card-actions .btn-del{border-color:rgba(245,87,108,.3);color:#f5576c}
-.report-card-actions .btn-del:hover{background:rgba(245,87,108,.1)}
 .alert.show{display:block}
 .alert-warn{background:rgba(255,213,101,.12);border:1px solid rgba(255,213,101,.4);color:#ffd565}
 .alert-err{background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.4);color:#f5576c}
@@ -171,6 +151,11 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
 @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .acard.open{animation:slideIn .25s ease}
+/* ═══ #tContent — مولّد المحتوى (scoped) ═══ */
+#tContent .tc-type-opt{padding:10px 14px;border-radius:9px;border:2px solid var(--br);text-align:center;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;color:var(--t2);background:var(--up)}
+#tContent label:has(input[type=radio]:checked) .tc-type-opt,
+#tContent .tc-type-sel{border-color:var(--ta);background:rgba(0,168,150,.1);color:var(--ta)}
+#tContent .fg label{font-size:.82em;color:var(--t2);font-weight:700}
 </style>
 </head>
 <body>
@@ -215,8 +200,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
   <!-- Tabs -->
   <div class="atabs">
-    <button class="atb" onclick="switchTab(this,'tStats')">📊 إحصائيات</button>
-    <button class="atb" id="reportsTab" onclick="switchTab(this,'tReports');loadReports()">🚩 البلاغات <span id="reportsBadge" style="display:none;background:#f5576c;color:#fff;border-radius:50%;padding:1px 6px;font-size:.72em;margin-right:4px;font-weight:800"></span></button>
+    <button class="atb on" onclick="switchTab(this,'tStats')">📊 إحصائيات</button>
     <button class="atb" onclick="switchTab(this,'tAdd')">➕ إضافة وصفة</button>
     <button class="atb" onclick="switchTab(this,'tRec')">📝 إدارة الوصفات</button>
     <button class="atb" onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
@@ -225,7 +209,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tPinned')">📌 وصفات مثبتة</button>
     <button class="atb" onclick="switchTab(this,'tPromo')">🎫 أكواد الخصم</button>
     <button class="atb" onclick="switchTab(this,'tSite')">⚙️ إعدادات الموقع</button>
-    <button class="atb" onclick="switchTab(this,'tSEO')">🔍 SEO Pages</button>
     <button class="atb" onclick="switchTab(this,'tSheet')">📊 مزامنة الشيت</button>
     <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد</button>
     <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
@@ -233,17 +216,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="atb" onclick="switchTab(this,'tRoastery')">☕ إدارة المحامص</button>
     <button class="atb" onclick="switchTab(this,'tAff')">🛒 الأفلييت</button>
     <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 مكررات الروابط</button>
-    <button class="atb" onclick="switchTab(this,'tContent')" style="background:linear-gradient(135deg,rgba(0,168,150,.15),rgba(74,144,226,.15));border-color:rgba(0,168,150,.5);color:var(--ta);font-weight:800">🧠 مولّد المحتوى</button>
-  </div>
-
-  <!-- REPORTS ALERT BANNER -->
-  <div id="reportsAlertBanner" style="display:none;background:rgba(245,87,108,.12);border:2px solid rgba(245,87,108,.5);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:12px;cursor:pointer" onclick="switchTab(document.getElementById('reportsTab'),'tReports');loadReports()">
-    <span style="font-size:1.6em">🚩</span>
-    <div style="flex:1">
-      <div style="font-weight:800;color:#f5576c;font-size:.95em">بلاغات جديدة تنتظر المراجعة</div>
-      <div id="reportsAlertText" style="font-size:.8em;color:rgba(245,87,108,.8);margin-top:2px">—</div>
-    </div>
-    <span style="font-size:.82em;color:var(--t2)">اضغط للمراجعة ←</span>
+    <button class="atb" onclick="switchTab(this,'tContent')">🧠 مولّد المحتوى</button>
   </div>
 
   <!-- STATS -->
@@ -261,24 +234,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div class="sc fb-sc"><div class="sv" id="sRated">—</div><div class="sl">⭐ مُقيَّمة</div></div>
       <div class="sc fb-sc"><div class="sv" id="sComments">—</div><div class="sl">💬 تعليقات</div></div>
     </div>
-  </div>
-
-  <!-- REPORTS MANAGEMENT -->
-  <div id="tReports" class="acard">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-      <h3 style="font-size:1em;color:#f5576c;margin:0">🚩 البلاغات الواردة</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <select id="reportsFilter" onchange="renderReports()" style="padding:7px 12px;border-radius:8px;background:var(--up);border:1px solid var(--br);color:var(--t1);font-family:inherit;font-size:.82em">
-          <option value="all">الكل</option>
-          <option value="new">🔴 جديد</option>
-          <option value="reviewed">✅ مراجع</option>
-          <option value="resolved">🗃️ محلول</option>
-        </select>
-        <button class="btn bsm bs" onclick="loadReports()">🔄 تحديث</button>
-        <button class="btn bsm bs" onclick="markAllReportsReviewed()" style="font-size:.78em">✅ تعيين الكل كمراجَع</button>
-      </div>
-    </div>
-    <div id="reportsList"><p style="text-align:center;color:var(--t2);padding:30px">جاري التحميل...</p></div>
   </div>
 
   <!-- ADD RECIPE -->
@@ -486,32 +441,17 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <span style="font-size:.82em">تفعيل وإظهار</span>
         </label>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع صورة</button>
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع من الجهاز</button>
         <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
-        <button type="button" class="btn bsm bs" onclick="toggleBannerMode('Top')">🧩 تبديل: صورة / HTML</button>
+        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
       </div>
-      <!-- وضع الصورة -->
-      <div id="bannerTopImgMode">
-        <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg — أو الصق كود HTML البانر أدناه" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:8px">
-        <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر على البنر (للصور فقط)" style="margin-bottom:8px">
-        <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
-        <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-          <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة الصورة</div>
-        </div>
-      </div>
-      <!-- وضع HTML -->
-      <div id="bannerTopHtmlMode" style="display:none">
-        <div style="font-size:.78em;color:var(--ta);margin-bottom:6px;padding:8px;background:rgba(0,168,150,.08);border-radius:8px;border:1px solid rgba(0,168,150,.2)">
-          🧩 وضع HTML — الكود سيُعرض في iframe معزول لا يؤثر على ألوان الموقع
-        </div>
-        <textarea class="form-input" id="bannerTopHtml" rows="8" placeholder="الصق كود HTML البانر هنا..." style="font-family:monospace;font-size:.78em;margin-bottom:8px;resize:vertical"></textarea>
-        <button type="button" class="btn bsm bp" onclick="previewBannerHtml('Top')">👁 معاينة</button>
-        <div id="bannerTopHtmlPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br);margin-top:8px">
-          <iframe id="bannerTopHtmlPreviewFrame" scrolling="no" frameborder="0" style="width:100%;min-height:180px;border:0;display:block"></iframe>
-          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة HTML — معزول تماماً عن الموقع</div>
-        </div>
+      <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:8px">
+      <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
+      <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
+      <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
       </div>
     </div>
 
@@ -524,32 +464,17 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <span style="font-size:.82em">تفعيل وإظهار</span>
         </label>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع صورة</button>
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع من الجهاز</button>
         <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
-        <button type="button" class="btn bsm bs" onclick="toggleBannerMode('Bottom')">🧩 تبديل: صورة / HTML</button>
+        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
       </div>
-      <!-- وضع الصورة -->
-      <div id="bannerBottomImgMode">
-        <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:8px">
-        <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر على البنر (للصور فقط)" style="margin-bottom:8px">
-        <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
-        <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-          <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة الصورة</div>
-        </div>
-      </div>
-      <!-- وضع HTML -->
-      <div id="bannerBottomHtmlMode" style="display:none">
-        <div style="font-size:.78em;color:var(--ta);margin-bottom:6px;padding:8px;background:rgba(0,168,150,.08);border-radius:8px;border:1px solid rgba(0,168,150,.2)">
-          🧩 وضع HTML — الكود سيُعرض في iframe معزول لا يؤثر على ألوان الموقع
-        </div>
-        <textarea class="form-input" id="bannerBottomHtml" rows="8" placeholder="الصق كود HTML البانر هنا..." style="font-family:monospace;font-size:.78em;margin-bottom:8px;resize:vertical"></textarea>
-        <button type="button" class="btn bsm bp" onclick="previewBannerHtml('Bottom')">👁 معاينة</button>
-        <div id="bannerBottomHtmlPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br);margin-top:8px">
-          <iframe id="bannerBottomHtmlPreviewFrame" scrolling="no" frameborder="0" style="width:100%;min-height:180px;border:0;display:block"></iframe>
-          <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة HTML — معزول تماماً عن الموقع</div>
-        </div>
+      <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:8px">
+      <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
+      <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
+      <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
       </div>
     </div>
 
@@ -657,112 +582,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <button class="btn bp bbl" onclick="saveSiteSettings()" style="margin-top:6px">💾 حفظ جميع الإعدادات</button>
   </div>
 
-  <!-- IMPORT -->
-
-  <!-- ═══ SEO PAGES GENERATOR ═══ -->
-  <div id="tSEO" class="acard">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-      <div>
-        <h3 style="margin-bottom:4px">🔍 SEO — نشر تلقائي على GitHub</h3>
-        <p style="color:var(--t2);font-size:.82em;line-height:1.6;max-width:520px">
-          اضغط "🚀 نشر الآن" — يولّد HTML ثابت لكل وصفة ويرفعها على GitHub Pages تلقائياً بدون أي خطوات يدوية.
-        </p>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="previewSEO()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:9px 16px;font-size:.82em">👁️ معاينة</button>
-        <button class="btn" onclick="updateSitemapOnly()" id="sitemapBtn" style="background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.4);color:var(--ta);padding:9px 16px;font-size:.82em;font-weight:700">🗺️ تحديث Sitemap</button>
-        <button class="btn" onclick="deploySEO()" id="seoGenBtn" style="background:var(--gr);color:#fff;border:none;padding:9px 20px;font-size:.85em;font-weight:700">🚀 نشر الآن</button>
-      </div>
-    </div>
-
-    <!-- GitHub config -->
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
-      <div style="font-size:.82em;font-weight:700;margin-bottom:10px">⚙️ إعدادات GitHub</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <div style="flex:2;min-width:160px">
-          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">المستودع</label>
-          <input class="form-input" id="seoRepo" value="abllo/xblm" style="font-size:.82em;font-family:monospace" placeholder="username/repo">
-        </div>
-        <div style="flex:1;min-width:100px">
-          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">Branch</label>
-          <input class="form-input" id="seoBranch" value="main" style="font-size:.82em;font-family:monospace">
-        </div>
-        <div style="flex:3;min-width:200px">
-          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">GitHub Token</label>
-          <input class="form-input" id="seoToken" type="password" style="font-size:.82em;font-family:monospace" placeholder="ghp_..." value="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">
-        </div>
-        <div style="display:flex;align-items:flex-end">
-          <button class="btn" onclick="saveSEOConfig()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:10px 14px;font-size:.8em;white-space:nowrap">💾 حفظ</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1.4em;font-weight:900" id="seoTotal">—</div>
-        <div style="font-size:.7em;color:var(--t2);margin-top:2px">وصفة</div>
-      </div>
-      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1.4em;font-weight:900;color:#4ade80" id="seoUploaded">—</div>
-        <div style="font-size:.7em;color:var(--t2);margin-top:2px">رُفعت</div>
-      </div>
-      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1.4em;font-weight:900;color:#f59e0b" id="seoFailed">—</div>
-        <div style="font-size:.7em;color:var(--t2);margin-top:2px">فشلت</div>
-      </div>
-      <div style="flex:1;min-width:85px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1.4em;font-weight:900;color:var(--ta)" id="seoETA">—</div>
-        <div style="font-size:.7em;color:var(--t2);margin-top:2px">متبقي</div>
-      </div>
-    </div>
-
-    <!-- Options -->
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin-bottom:14px">
-      <div style="display:flex;gap:14px;flex-wrap:wrap">
-        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoIncludeAll" checked> تضمين الكل
-        </label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoGenSitemap" checked> sitemap
-        </label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoStructuredData" checked> JSON-LD
-        </label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:.82em;cursor:pointer">
-          <input type="checkbox" id="seoSkipExisting"> تخطي الموجودة
-        </label>
-      </div>
-    </div>
-
-    <!-- Progress -->
-    <div id="seoProgress" style="display:none;margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:.82em">
-        <span id="seoProgressLabel">جاري الرفع…</span>
-        <span id="seoProgressPct" style="font-weight:700;color:var(--ta)">0%</span>
-      </div>
-      <div style="background:var(--br);border-radius:6px;height:8px;overflow:hidden">
-        <div id="seoProgressBar" style="height:100%;background:var(--gr);border-radius:6px;width:0%;transition:.15s"></div>
-      </div>
-      <div style="font-size:.73em;color:var(--t2);margin-top:4px" id="seoCurrentFile"></div>
-    </div>
-
-    <!-- Log -->
-    <div id="seoLogWrap" style="display:none;background:#0a0a0a;border:1px solid var(--br);border-radius:10px;padding:10px 12px;max-height:150px;overflow-y:auto;margin-bottom:12px">
-      <div id="seoLog" style="font-family:monospace;font-size:.7em;color:#6ee7a0;line-height:1.8;direction:ltr;text-align:left"></div>
-    </div>
-
-    <!-- Preview -->
-    <div id="seoPreviewWrap" style="display:none">
-      <div style="font-size:.82em;font-weight:700;margin-bottom:8px;color:var(--t2)">معاينة HTML أول وصفة:</div>
-      <div style="background:#0a0a0a;border:1px solid var(--br);border-radius:10px;padding:14px;overflow:auto;max-height:260px">
-        <pre id="seoPreviewCode" style="font-family:monospace;font-size:.7em;color:#a0ffa0;white-space:pre-wrap;direction:ltr;text-align:left"></pre>
-      </div>
-    </div>
-
-    <div id="seoStatus" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:.82em"></div>
-  </div>
-
   <!-- ═══ مزامنة الشيت ═══ -->
   <div id="tSheet" class="acard">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px">
@@ -790,7 +609,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div id="sheetStatus" style="display:none;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.82em"></div>
 
     <!-- Stats row -->
-    <div id="sheetStats" style="display:none;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+    <div id="sheetStats" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:16px">
       <div style="flex:1;min-width:100px;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
         <div style="font-size:1.4em;font-weight:900" id="sheetStatTotal">—</div>
         <div style="font-size:.72em;color:var(--t2);margin-top:2px">إجمالي الشيت</div>
@@ -1115,186 +934,153 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
-  <!-- CONTENT GENERATOR -->
+  <!-- ═══ مولّد المحتوى ═══ -->
   <div id="tContent" class="acard">
-    <style>
-#tContent * {margin:0;padding:0;box-sizing:border-box}
+    <h3 style="margin-bottom:6px">🧠 مولّد محتوى المدونة</h3>
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:20px;line-height:1.6">
+      اختر نوع المقال واملأ التفاصيل ← احصل على Prompt جاهز ← افتح Claude وأنشئ المحتوى ← ارفع HTML في <code style="background:rgba(255,255,255,.08);padding:1px 6px;border-radius:4px">guides/</code> على GitHub
+    </p>
 
-/* Header */
-#tContent .hdr {display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--br)}
-#tContent .hdr-logo {width:40px;height:40px;background:var(--gr);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3em;flex-shrink:0}
-#tContent .hdr h1 {font-size:1.1em;font-weight:900}
-#tContent .hdr p {font-size:.8em;color:var(--t2)}
-#tContent .back-btn {margin-right:auto;padding:7px 14px;border-radius:8px;border:1px solid var(--br);color:var(--t2);text-decoration:none;font-size:.82em;transition:.2s}
-#tContent .back-btn:hover {border-color:var(--ta);color:var(--ta)}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
 
-/* Type selector */
-#tContent .types {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
-#tContent .type-btn {padding:7px 14px;border-radius:8px;border:1px solid var(--br);background:var(--up);color:var(--t2);font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s}
-#tContent .type-btn.on {background:rgba(0,168,150,.15);border-color:var(--ta);color:var(--ta)}
-#tContent .type-btn:hover {border-color:var(--ta)}
+      <!-- نوع المقال -->
+      <div style="grid-column:1/-1">
+        <div style="font-size:.82em;color:var(--t2);font-weight:700;margin-bottom:10px">📌 نوع المقال</div>
+        <div id="tcTypeGrid" style="display:flex;gap:8px;flex-wrap:wrap">
+          <label style="flex:1;min-width:120px;cursor:pointer">
+            <input type="radio" name="tcType" value="guide" checked style="display:none">
+            <div class="tc-type-opt tc-type-sel">📖 دليل شامل</div>
+          </label>
+          <label style="flex:1;min-width:120px;cursor:pointer">
+            <input type="radio" name="tcType" value="compare" style="display:none">
+            <div class="tc-type-opt">⚖️ مقارنة</div>
+          </label>
+          <label style="flex:1;min-width:120px;cursor:pointer">
+            <input type="radio" name="tcType" value="steps" style="display:none">
+            <div class="tc-type-opt">🪜 خطوة بخطوة</div>
+          </label>
+          <label style="flex:1;min-width:120px;cursor:pointer">
+            <input type="radio" name="tcType" value="faq" style="display:none">
+            <div class="tc-type-opt">❓ FAQ</div>
+          </label>
+          <label style="flex:1;min-width:120px;cursor:pointer">
+            <input type="radio" name="tcType" value="review" style="display:none">
+            <div class="tc-type-opt">⭐ مراجعة</div>
+          </label>
+        </div>
+      </div>
 
-/* Inputs */
-#tContent .fi {width:100%;padding:11px 14px;background:var(--card);border:1px solid var(--br);border-radius:10px;color:var(--t1);font-family:inherit;font-size:.9em;outline:none;transition:.2s;margin-bottom:10px}
-#tContent .fi:focus {border-color:var(--ta)}
-#tContent .fi::placeholder {color:var(--t2)}
-#tContent label {font-size:.8em;color:var(--t2);display:block;margin-bottom:5px}
+      <!-- الموضوع -->
+      <div>
+        <div class="fg">
+          <label>✍️ الموضوع *</label>
+          <input class="form-input" id="tcTopic" placeholder="مثال: طريقة تحضير القهوة بجهاز Omni">
+        </div>
+      </div>
 
-/* Suggestions */
-#tContent .suggests {display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-#tContent .sug {padding:5px 12px;border-radius:20px;border:1px solid var(--br);background:none;color:var(--t2);font-family:inherit;font-size:.78em;cursor:pointer;transition:.2s}
-#tContent .sug:hover {border-color:var(--ta);color:var(--ta)}
+      <!-- الكلمات المفتاحية -->
+      <div>
+        <div class="fg">
+          <label>🔑 الكلمات المفتاحية</label>
+          <input class="form-input" id="tcKeywords" placeholder="مثال: قهوة، xbloom، وصفة، تحضير">
+        </div>
+      </div>
 
-/* Options */
-#tContent .opts {display:flex;flex-wrap:wrap;gap:12px;background:var(--card);border:1px solid var(--br);border-radius:10px;padding:12px 16px;margin-bottom:16px}
-#tContent .opts label {display:flex;align-items:center;gap:6px;font-size:.82em;cursor:pointer;color:var(--t1)}
-#tContent .opts input {accent-color:var(--ta);width:15px;height:15px}
+      <!-- الجمهور المستهدف -->
+      <div>
+        <div class="fg">
+          <label>👤 الجمهور المستهدف</label>
+          <select class="form-input" id="tcAudience">
+            <option value="beginners">مبتدئون في القهوة</option>
+            <option value="enthusiasts" selected>محبو القهوة المتوسط</option>
+            <option value="pros">محترفون / بارستا</option>
+            <option value="general">عام</option>
+          </select>
+        </div>
+      </div>
 
-/* Generate button */
-#tContent .gen-btn {width:100%;padding:14px;border-radius:12px;border:none;background:var(--gr);color:#fff;font-family:inherit;font-size:1em;font-weight:900;cursor:pointer;transition:.3s;margin-bottom:16px}
-#tContent .gen-btn:hover {opacity:.9;transform:translateY(-1px)}
-#tContent .gen-btn:active {transform:scale(.98)}
+      <!-- لغة المحتوى -->
+      <div>
+        <div class="fg">
+          <label>🌐 لغة المحتوى</label>
+          <select class="form-input" id="tcLang">
+            <option value="ar" selected>🇸🇦 العربية</option>
+            <option value="en">🇺🇸 الإنجليزية</option>
+          </select>
+        </div>
+      </div>
 
-/* Prompt output */
-#tContent .prompt-wrap {display:none;background:var(--card);border:1px solid var(--br);border-radius:12px;overflow:hidden;margin-bottom:16px}
-#tContent .prompt-header {display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--br)}
-#tContent .prompt-header span {font-size:.85em;font-weight:800;color:var(--ta)}
-#tContent .copy-btn {padding:7px 16px;border-radius:8px;border:none;background:var(--ta);color:#fff;font-family:inherit;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
-#tContent .copy-btn:hover {opacity:.85}
-#tContent .copy-btn.done {background:#43e97b;color:#0a0a0a}
-#tContent .prompt-text {padding:16px;font-family:monospace;font-size:.78em;color:#a0ffa0;line-height:1.7;max-height:200px;overflow-y:auto;white-space:pre-wrap;direction:ltr;text-align:left}
+      <!-- اسم ملف HTML -->
+      <div>
+        <div class="fg">
+          <label>📄 اسم ملف HTML (بدون امتداد)</label>
+          <input class="form-input" id="tcFilename" placeholder="مثال: omni-guide" style="font-family:monospace">
+        </div>
+      </div>
 
-/* Claude CTA */
-#tContent .claude-cta {display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#0d1f1c,#0a1520);border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin-bottom:24px}
-#tContent .claude-cta-icon {font-size:2em;flex-shrink:0}
-#tContent .claude-cta-text h3 {font-size:.95em;font-weight:800;margin-bottom:4px}
-#tContent .claude-cta-text p {font-size:.78em;color:var(--t2);line-height:1.5}
-#tContent .open-claude {margin-right:auto;padding:11px 22px;border-radius:50px;background:var(--gr);color:#fff;text-decoration:none;font-weight:800;font-size:.88em;white-space:nowrap;flex-shrink:0;transition:.2s}
-#tContent .open-claude:hover {opacity:.9}
-
-/* Steps */
-#tContent .steps {display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-#tContent .step {display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--card);border:1px solid var(--br);border-radius:10px}
-#tContent .step-num {width:28px;height:28px;border-radius:50%;background:var(--gr);color:#fff;font-weight:900;font-size:.85em;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-#tContent .step-content h4 {font-size:.88em;font-weight:800;margin-bottom:3px}
-#tContent .step-content p {font-size:.78em;color:var(--t2);line-height:1.5}
-
-/* GitHub upload section */
-#tContent .upload-section {background:var(--card);border:1px solid var(--br);border-radius:12px;padding:18px;margin-bottom:16px}
-#tContent .upload-section h3 {font-size:.9em;font-weight:800;margin-bottom:4px}
-#tContent .upload-section p {font-size:.8em;color:var(--t2);margin-bottom:12px}
-#tContent .slug-wrap {display:flex;gap:8px;align-items:center}
-#tContent .slug-prefix {font-size:.82em;color:var(--t2);white-space:nowrap;font-family:monospace}
-#tContent .slug-input {flex:1;padding:9px 12px;background:var(--up);border:1px solid var(--br);border-radius:8px;color:var(--t1);font-family:monospace;font-size:.85em;outline:none}
-#tContent .slug-input:focus {border-color:var(--ta)}
-#tContent .github-btn {padding:10px 18px;border-radius:8px;border:none;background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.3);color:var(--ta);font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
-#tContent .github-btn:hover {background:rgba(0,168,150,.25)}
-
-    </style>
-    <div style="margin-bottom:16px">
-      <h3 style="font-size:1em;margin-bottom:4px">🧠 مولّد المحتوى — EEAT</h3>
-      <p style="color:var(--t2);font-size:.8em">أنشئ مقالات احترافية بـ Claude مجاناً — Prompt جاهز تنسخه وتفتح Claude</p>
+      <!-- خيارات إضافية -->
+      <div style="grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.85em">
+          <input type="checkbox" id="tcIncludeFaq" style="width:16px;height:16px;accent-color:var(--ta)" checked>
+          <span>أضف قسم FAQ</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.85em">
+          <input type="checkbox" id="tcIncludeCta" style="width:16px;height:16px;accent-color:var(--ta)" checked>
+          <span>أضف CTA للوصفات</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.85em">
+          <input type="checkbox" id="tcIncludeSeo" style="width:16px;height:16px;accent-color:var(--ta)" checked>
+          <span>تحسين SEO (meta + schema)</span>
+        </label>
+      </div>
     </div>
 
-  <!-- Header -->
-  <div>
-      <h1>مولّد المحتوى</h1>
-      <p>أنشئ مقالات EEAT احترافية بـ Claude مجاناً</p>
-    </div>
-    <a href="https://xblm.ab-s.me" class="back-btn">← الرئيسية</a>
-  </div>
+    <!-- زر التوليد -->
+    <button class="btn bp bbl" onclick="generateContentPrompt()" style="margin-bottom:20px;font-size:.95em;padding:14px">
+      ⚡ توليد الـ Prompt
+    </button>
 
-  <!-- Steps -->
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content"><h4>اختر نوع المقال وأدخل الموضوع</h4><p>اختر من الأنواع أدناه واكتب موضوع المقال بالعربية</p></div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content"><h4>انسخ الـ Prompt واضغط "افتح Claude"</h4><p>انسخ الطلب الجاهز والصقه في claude.ai</p></div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content"><h4>انسخ HTML من Claude وارفعه على GitHub</h4><p>في مجلد <code style="background:var(--up);padding:2px 6px;border-radius:4px;font-size:.85em">guides/</code> باسم مناسب</p></div>
-    </div>
-  </div>
+    <!-- منطقة النتيجة -->
+    <div id="tcResult" style="display:none">
+      <div style="height:1px;background:var(--br);margin-bottom:18px"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <span style="font-size:.88em;font-weight:700;color:var(--ta)">✅ الـ Prompt جاهز</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn bg bsm" onclick="copyContentPrompt()">📋 نسخ</button>
+          <a href="https://claude.ai/new" target="_blank" class="btn bp bsm">🤖 افتح Claude</a>
+        </div>
+      </div>
+      <div id="tcPromptBox" style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:16px;font-size:.8em;line-height:1.8;color:var(--t1);font-family:monospace;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow-y:auto;direction:ltr;text-align:left"></div>
 
-  <!-- Type selector -->
-  <div style="margin-bottom:8px">
-    <label>نوع المقال</label>
-    <div class="types">
-      <button class="type-btn on" data-type="guide"      onclick="setType(this)">📖 دليل شامل</button>
-      <button class="type-btn"    data-type="comparison" onclick="setType(this)">⚖️ مقارنة</button>
-      <button class="type-btn"    data-type="howto"      onclick="setType(this)">🔧 خطوة بخطوة</button>
-      <button class="type-btn"    data-type="faq"        onclick="setType(this)">❓ أسئلة وأجوبة</button>
-      <button class="type-btn"    data-type="review"     onclick="setType(this)">⭐ مراجعة</button>
-    </div>
-  </div>
-
-  <!-- Topic input -->
-  <label>موضوع المقال *</label>
-  <input class="fi" id="topic" placeholder="مثال: أفضل فلاتر xBloom للقهوة الباردة 2025" oninput="clearPrompt()">
-
-  <!-- Suggestions -->
-  <div class="suggests">
-    <button class="sug" onclick="useSuggest(this)">أفضل فلاتر xBloom 2025</button>
-    <button class="sug" onclick="useSuggest(this)">Wave 155 vs Wave 185 — أيهما أفضل؟</button>
-    <button class="sug" onclick="useSuggest(this)">دليل الطحن المثالي لجهاز xBloom</button>
-    <button class="sug" onclick="useSuggest(this)">أفضل محامص القهوة السعودية 2025</button>
-    <button class="sug" onclick="useSuggest(this)">كيف تحضر قهوة باردة على xBloom</button>
-    <button class="sug" onclick="useSuggest(this)">مقارنة xBloom Studio مع الأجهزة الأخرى</button>
-    <button class="sug" onclick="useSuggest(this)">أسرار القهوة المختصة للمبتدئين</button>
-  </div>
-
-  <!-- Keywords -->
-  <label>كلمات مفتاحية (اختياري)</label>
-  <input class="fi" id="keywords" placeholder="فلاتر xbloom, قهوة مختصة, wave 155" oninput="clearPrompt()">
-
-  <!-- Options -->
-  <div class="opts">
-    <label><input type="checkbox" id="withFaq" checked> تضمين FAQ</label>
-    <label><input type="checkbox" id="withTable"> جدول مقارنة</label>
-    <label><input type="checkbox" id="withTips"> نصائح عملية</label>
-    <label><input type="checkbox" id="withLinks" checked> روابط للوصفات</label>
-  </div>
-
-  <!-- Generate button -->
-  <button class="gen-btn" id="genBtn" onclick="generatePrompt()">⚡ توليد الـ Prompt</button>
-
-  <!-- Prompt output -->
-  <div class="prompt-wrap" id="promptWrap">
-    <div class="prompt-header">
-      <span>📋 الـ Prompt جاهز — انسخه والصقه في Claude</span>
-      <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">📋 نسخ الكل</button>
-    </div>
-    <div class="prompt-text" id="promptText"></div>
-  </div>
-
-  <!-- Claude CTA -->
-  <div class="claude-cta" id="claudeCta" style="display:none">
-    <div class="claude-cta-icon">🤖</div>
-    <div class="claude-cta-text">
-      <h3>افتح Claude والصق الـ Prompt</h3>
-      <p>سيكتب لك المقال كاملاً كـ HTML جاهز للنشر خلال ثوانٍ</p>
-    </div>
-    <a href="https://claude.ai/new" target="_blank" class="open-claude">افتح Claude ↗</a>
-  </div>
-
-  <!-- GitHub upload helper -->
-  <div class="upload-section" id="uploadSection" style="display:none">
-    <h3>📁 بعد ما تحصل على HTML من Claude</h3>
-    <p>ارفعه على GitHub في هذا المسار — اختر اسماً مناسباً بالإنجليزي:</p>
-    <div class="slug-wrap">
-      <span class="slug-prefix">guides/</span>
-      <input class="slug-input" id="slugInput" placeholder="best-xbloom-filters-2025">
-      <span class="slug-prefix">.html</span>
-      <button class="github-btn" onclick="openGithub()">فتح GitHub ↗</button>
+      <!-- خطوات الرفع -->
+      <div style="margin-top:16px;background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:14px">
+        <div style="font-size:.85em;font-weight:700;color:var(--ta);margin-bottom:10px">📤 خطوات نشر المقال على GitHub</div>
+        <ol style="margin:0;padding-right:18px;font-size:.8em;color:var(--t2);line-height:2">
+          <li>انسخ الـ Prompt ← افتح Claude ← احصل على كود HTML كامل</li>
+          <li>افتح مستودع <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">abllo/xblm</code> على GitHub</li>
+          <li>انتقل لمجلد <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">guides/</code> ← اضغط "Add file" ← "Create new file"</li>
+          <li>اسم الملف: <span id="tcFilenameHint" style="color:var(--ta);font-family:monospace">omni-guide.html</span></li>
+          <li>الصق HTML ← "Commit changes" ✅</li>
+        </ol>
+      </div>
     </div>
   </div>
 
 </div>
+</div>
 
+<!-- Confirm Modal -->
+<div class="ov" id="confirmOv">
+  <div class="cmod">
+    <h3 id="confirmTitle">تأكيد</h3>
+    <p id="confirmMsg"></p>
+    <div class="cmod-acts">
+      <button class="btn bd" id="confirmOk">تأكيد</button>
+      <button class="btn bgray" onclick="document.getElementById('confirmOv').style.display='none'">إلغاء</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1364,8 +1150,6 @@ window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload
   document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') window.doLogin(); });
 });
 
-// Hide all acards except the open one
-document.querySelectorAll('.acard:not(.open)').forEach(el=>el.style.display='none');
 if(sessionStorage.getItem('xba')==='1'){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminPanel').style.display='block';
@@ -1430,32 +1214,6 @@ function initFirebase() {
     document.getElementById('promoBarEnabled').checked = !!s.promoBarEnabled;
     renderPinnedList(s.pinnedRecipes||[]);
     renderPromoList(s.promoCodes||[]);
-
-    // Load banners
-    ['Top','Bottom'].forEach(pos => {
-      const cfg = s['banner'+pos] || {};
-      const enEl = document.getElementById('banner'+pos+'Enabled');
-      if(enEl) enEl.checked = !!cfg.enabled;
-      if(!cfg.url) return;
-      const isHTML = /^\s*<!DOCTYPE|^\s*<html|^\s*<style|^\s*<div|^\s*<a\b/i.test(cfg.url);
-      if(isHTML){
-        // Switch to HTML mode
-        const imgMode  = document.getElementById('banner'+pos+'ImgMode');
-        const htmlMode = document.getElementById('banner'+pos+'HtmlMode');
-        const htmlEl   = document.getElementById('banner'+pos+'Html');
-        if(imgMode)  imgMode.style.display  = 'none';
-        if(htmlMode) htmlMode.style.display = 'block';
-        if(htmlEl)   htmlEl.value           = cfg.url;
-      } else {
-        const urlEl = document.getElementById('banner'+pos+'Url');
-        const lnkEl = document.getElementById('banner'+pos+'Link');
-        const altEl = document.getElementById('banner'+pos+'Alt');
-        if(urlEl) urlEl.value = cfg.url;
-        if(lnkEl) lnkEl.value = cfg.link||'';
-        if(altEl) altEl.value = cfg.alt||'';
-        previewBanner('banner'+pos+'Url','banner'+pos+'Preview');
-      }
-    });
   }, ()=>{});
 
   // Load pages content
@@ -1497,14 +1255,9 @@ function updateStats() {
 
 window.switchTab = function(btn,id){
   document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.acard').forEach(c=>{
-    c.classList.remove('open');
-    c.style.display='none';
-  });
+  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
   btn.classList.add('on');
-  const target = document.getElementById(id);
-  target.classList.add('open');
-  target.style.display='block';
+  document.getElementById(id).classList.add('open');
   if(id==='tRoastery' || id==='tAdd') loadRoasteries();
 };
 
@@ -2033,6 +1786,7 @@ window.previewBanner = function(urlInputId, previewId){
 window.handleBannerUpload = function(input, urlInputId, previewId){
   const file = input.files[0];
   if(!file) return;
+  // Check size — warn if over 500KB
   if(file.size > 500*1024){
     toast('⚠️ الصورة كبيرة ('+Math.round(file.size/1024)+'KB) — يُفضل أقل من 500KB لسرعة التحميل','terr');
   }
@@ -2043,31 +1797,6 @@ window.handleBannerUpload = function(input, urlInputId, previewId){
     toast('✅ تم تحميل الصورة — اضغط "حفظ جميع الإعدادات" لحفظها','tok');
   };
   reader.readAsDataURL(file);
-};
-
-// ── Banner HTML mode toggle ──
-window.toggleBannerMode = function(pos){
-  const imgMode  = document.getElementById('banner'+pos+'ImgMode');
-  const htmlMode = document.getElementById('banner'+pos+'HtmlMode');
-  if(!imgMode||!htmlMode) return;
-  const isImg = imgMode.style.display !== 'none';
-  imgMode.style.display  = isImg ? 'none'  : 'block';
-  htmlMode.style.display = isImg ? 'block' : 'none';
-};
-
-// ── Banner HTML preview ──
-window.previewBannerHtml = function(pos){
-  const ta    = document.getElementById('banner'+pos+'Html');
-  const pvDiv = document.getElementById('banner'+pos+'HtmlPreview');
-  const frame = document.getElementById('banner'+pos+'HtmlPreviewFrame');
-  if(!ta||!pvDiv||!frame) return;
-  const html = ta.value.trim();
-  if(!html){ toast('أدخل كود HTML أولاً','terr'); return; }
-  frame.srcdoc = html;
-  pvDiv.style.display = 'block';
-  frame.onload = function(){
-    try{ const h=frame.contentDocument.body.scrollHeight; if(h>0) frame.style.height=h+'px'; }catch(e){}
-  };
 };
 
 window.saveSiteSettings = function(){
@@ -2081,28 +1810,18 @@ window.saveSiteSettings = function(){
     annoText: document.getElementById('annoText').value.trim(),
     annoType: document.getElementById('annoType').value,
     annoEnabled: document.getElementById('annoEnabled').checked,
-    bannerTop: (()=>{
-      const htmlMode = document.getElementById('bannerTopHtmlMode');
-      const isHtml   = htmlMode && htmlMode.style.display !== 'none';
-      const htmlVal  = isHtml ? (document.getElementById('bannerTopHtml')||{value:''}).value.trim() : '';
-      return {
-        enabled: document.getElementById('bannerTopEnabled').checked,
-        url:     isHtml ? htmlVal : document.getElementById('bannerTopUrl').value.trim(),
-        link:    isHtml ? '' : document.getElementById('bannerTopLink').value.trim(),
-        alt:     isHtml ? '' : document.getElementById('bannerTopAlt').value.trim()
-      };
-    })(),
-    bannerBottom: (()=>{
-      const htmlMode = document.getElementById('bannerBottomHtmlMode');
-      const isHtml   = htmlMode && htmlMode.style.display !== 'none';
-      const htmlVal  = isHtml ? (document.getElementById('bannerBottomHtml')||{value:''}).value.trim() : '';
-      return {
-        enabled: document.getElementById('bannerBottomEnabled').checked,
-        url:     isHtml ? htmlVal : document.getElementById('bannerBottomUrl').value.trim(),
-        link:    isHtml ? '' : document.getElementById('bannerBottomLink').value.trim(),
-        alt:     isHtml ? '' : document.getElementById('bannerBottomAlt').value.trim()
-      };
-    })()
+    bannerTop: {
+      enabled: document.getElementById('bannerTopEnabled').checked,
+      url: document.getElementById('bannerTopUrl').value.trim(),
+      link: document.getElementById('bannerTopLink').value.trim(),
+      alt: document.getElementById('bannerTopAlt').value.trim()
+    },
+    bannerBottom: {
+      enabled: document.getElementById('bannerBottomEnabled').checked,
+      url: document.getElementById('bannerBottomUrl').value.trim(),
+      link: document.getElementById('bannerBottomLink').value.trim(),
+      alt: document.getElementById('bannerBottomAlt').value.trim()
+    }
   };
   // Pages content — save separately
   const pages = {
@@ -2702,349 +2421,6 @@ function renderAffRecipeLinks() {
 }
 
 
-// ════ SEO PAGE GENERATOR + GITHUB AUTO-DEPLOY ════
-
-// ── Config ──
-function getSEOConfig() {
-  return {
-    repo:   (localStorage.getItem('seo_repo')   || 'abllo/xblm').trim(),
-    branch: (localStorage.getItem('seo_branch') || 'main').trim(),
-    token:  (localStorage.getItem('seo_token')  || '').trim(),
-  };
-}
-window.saveSEOConfig = function() {
-  const repo   = document.getElementById('seoRepo')?.value.trim();
-  const branch = document.getElementById('seoBranch')?.value.trim();
-  const token  = document.getElementById('seoToken')?.value.trim();
-  if(repo)   localStorage.setItem('seo_repo',   repo);
-  if(branch) localStorage.setItem('seo_branch', branch);
-  if(token)  localStorage.setItem('seo_token',  token);
-  toast('✅ تم حفظ إعدادات GitHub');
-};
-
-// Load saved config into fields when tab opens
-function loadSEOFields() {
-  const cfg = getSEOConfig();
-  const r = document.getElementById('seoRepo');
-  const b = document.getElementById('seoBranch');
-  const t = document.getElementById('seoToken');
-  if(r && cfg.repo)   r.value = cfg.repo;
-  if(b && cfg.branch) b.value = cfg.branch;
-  if(t && cfg.token)  t.value = cfg.token;
-  updateSEOStats();
-}
-window.addEventListener('click', e => {
-  if(e.target?.textContent?.includes('SEO')) setTimeout(loadSEOFields, 100);
-});
-
-// ── Slug ──
-function seoSlug(name) {
-  return String(name||'recipe').trim()
-    .replace(/\s+/g,'-')
-    .replace(/[^\u0600-\u06FFa-zA-Z0-9-]/g,'')
-    .slice(0,55) || 'recipe';
-}
-
-// ── Stats ──
-function updateSEOStats() {
-  const t = document.getElementById('seoTotal');
-  if(t) t.textContent = FB_RECIPES.length;
-}
-
-// ── GitHub API helpers ──
-async function ghGet(path, cfg) {
-  const r = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${path}?ref=${cfg.branch}`, {
-    headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github.v3+json' }
-  });
-  if(r.status === 404) return null;
-  if(!r.ok) throw new Error(`GET ${path}: ${r.status}`);
-  return r.json();
-}
-
-async function ghPut(path, content, sha, cfg) {
-  const body = {
-    message: `SEO: update ${path}`,
-    content: btoa(unescape(encodeURIComponent(content))),
-    branch:  cfg.branch,
-  };
-  if(sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `token ${cfg.token}`,
-      Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  if(!r.ok) {
-    const err = await r.json().catch(()=>({}));
-    throw new Error(`PUT ${path}: ${r.status} — ${err.message||''}`);
-  }
-  return r.json();
-}
-
-// ── Build single SEO page ──
-function buildSEOPage(r, fbKey) {
-  const name     = String(r.name    || 'وصفة').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const author   = String(r.author  || '');
-  const roastery = String(r.roastery|| '');
-  const brewer   = String(r.brewer  || '');
-  const dose     = String(r.dose    || '');
-  const ratio    = String(r.ratio   || '');
-  const cat      = r.category || 'hot';
-  const catLabel = cat==='cold'?'بارد 🧊':cat==='server'?'غسيل':'حار 🔥';
-  const canonUrl = `https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(fbKey)}`;
-  const desc     = `وصفة ${name}${author?' بواسطة '+author:''}${roastery?' من '+roastery:''}. ${brewer?brewer+'. ':''}${dose?dose+' ':''}${ratio?ratio:''}`.slice(0,155);
-
-  const sd = document.getElementById('seoStructuredData')?.checked ? `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Recipe","name":"${name.replace(/"/g,'\\"')}","author":{"@type":"Person","name":"${author.replace(/"/g,'\\"')||'مجتمع xBloom'}"},"url":"${canonUrl}","description":"${desc.replace(/"/g,'\\"')}"}<\/script>` : '';
-
-  return `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${name} | xBloom Recipes Hub</title>
-<meta name="description" content="${desc}">
-<meta property="og:title" content="${name} | xBloom Recipes Hub">
-<meta property="og:description" content="${desc}">
-<meta property="og:url" content="${canonUrl}">
-<meta property="og:type" content="article">
-<meta name="twitter:card" content="summary">
-<link rel="canonical" href="${canonUrl}">
-<meta http-equiv="refresh" content="0;url=${canonUrl}">
-${sd}
-${'<'}style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Cairo,Arial,sans-serif;background:#090909;color:#f0f0f0;min-height:100vh;display:flex;align-items:center;justify-content:center;direction:rtl;padding:16px}.c{max-width:460px;width:100%;background:#111;border:1px solid #1e1e1e;border-radius:18px;overflow:hidden}.a{height:4px;background:linear-gradient(90deg,#00A896,#4A90E2)}.b{padding:24px 20px}h1{font-size:1.6em;font-weight:900;margin-bottom:8px}.m{font-size:.82em;color:#888;margin-bottom:16px}.s{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}.si{background:#161616;border:1px solid #222;border-radius:10px;padding:12px;text-align:center}.sl{font-size:.65em;color:#555;margin-bottom:3px}.sv{font-size:.9em;font-weight:800}.cta{display:block;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff;text-decoration:none;font-weight:700}${'<'}/style>
-</head>
-<body><div class="c"><div class="a"></div><div class="b">
-<h1>${name}</h1>
-<div class="m">${author?'✍️ '+author:''}${author&&roastery?' · ':''}${roastery?'☕ '+roastery:''}</div>
-<div class="s">
-${dose ?`<div class="si"><div class="sl">⚖️ الجرعة</div><div class="sv">${dose}</div></div>`:''}
-${ratio?`<div class="si"><div class="sl">💧 النسبة</div><div class="sv">${ratio}</div></div>`:''}
-${brewer?`<div class="si"><div class="sl">🔧 الجهاز</div><div class="sv">${brewer}</div></div>`:''}
-<div class="si"><div class="sl">🌡️ النوع</div><div class="sv">${catLabel}</div></div>
-</div>
-<a class="cta" href="${canonUrl}">عرض الوصفة الكاملة ←</a>
-</div></div></body></html>`;
-}
-
-// ── Log helpers ──
-let _seoLog = [];
-function seoLogAdd(msg, type='info') {
-  const el = document.getElementById('seoLog');
-  const wrap = document.getElementById('seoLogWrap');
-  if(wrap) wrap.style.display = 'block';
-  _seoLog.push(msg);
-  if(el) {
-    const color = type==='ok'?'#4ade80':type==='err'?'#f87171':'#6ee7a0';
-    el.innerHTML += `<span style="color:${color}">${msg}</span>\n`;
-    el.parentElement.scrollTop = el.parentElement.scrollHeight;
-  }
-}
-
-function seoMsg(msg, type='info') {
-  const el = document.getElementById('seoStatus');
-  if(!el) return;
-  el.style.display = 'block';
-  el.style.background = type==='ok'?'rgba(74,222,128,.08)':type==='err'?'rgba(248,113,113,.08)':'var(--bg)';
-  el.style.border = `1px solid ${type==='ok'?'rgba(74,222,128,.2)':type==='err'?'rgba(248,113,113,.2)':'var(--br)'}`;
-  el.style.color  = type==='ok'?'#4ade80':type==='err'?'#f87171':'var(--t2)';
-  el.textContent  = msg;
-}
-
-// ── Preview ──
-window.previewSEO = function() {
-  updateSEOStats();
-  const r = FB_RECIPES[0];
-  if(!r) { toast('لا توجد وصفات','terr'); return; }
-  const html = buildSEOPage(r, r._fbKey||'preview');
-  document.getElementById('seoPreviewCode').textContent = html;
-  document.getElementById('seoPreviewWrap').style.display = 'block';
-};
-
-// ── Main Deploy ──
-window.updateSitemapOnly = async function() {
-  if(!FB_RECIPES.length) { toast('لا توجد وصفات','terr'); return; }
-
-  const cfg = getSEOConfig();
-  cfg.repo   = document.getElementById('seoRepo')?.value.trim()   || cfg.repo;
-  cfg.branch = document.getElementById('seoBranch')?.value.trim() || cfg.branch;
-  cfg.token  = document.getElementById('seoToken')?.value.trim()  || cfg.token;
-
-  if(!cfg.token) { toast('❌ أدخل GitHub Token أولاً','terr'); return; }
-
-  const btn = document.getElementById('sitemapBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ جاري التحديث...';
-
-  try {
-    const today = new Date().toISOString().slice(0,10);
-
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
-  <url>
-    <loc>https://xblm.ab-s.me/</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-${FB_RECIPES.map(r => {
-  const key = r._fbKey;
-  if(!key) return '';
-  const lastmod = r.createdAt
-    ? new Date(r.createdAt).toISOString().slice(0,10)
-    : today;
-  return `  <url>
-    <loc>https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(key)}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`;
-}).filter(Boolean).join('\n')}
-
-</urlset>`;
-
-    // Get existing SHA
-    const existing = await ghGet('sitemap.xml', cfg);
-    await ghPut('sitemap.xml', xml, existing?.sha || null, cfg);
-
-    toast(`✅ تم تحديث sitemap.xml — ${FB_RECIPES.length} وصفة`);
-  } catch(e) {
-    toast('❌ فشل: ' + e.message, 'terr');
-  }
-
-  btn.disabled = false;
-  btn.textContent = '🗺️ تحديث Sitemap';
-};
-
-window.deploySEO = async function() {
-  updateSEOStats();
-  if(!FB_RECIPES.length) { toast('لا توجد وصفات','terr'); return; }
-
-  const cfg = getSEOConfig();
-  // Also read from fields directly in case user didn't hit save
-  cfg.repo   = document.getElementById('seoRepo')?.value.trim()   || cfg.repo;
-  cfg.branch = document.getElementById('seoBranch')?.value.trim() || cfg.branch;
-  cfg.token  = document.getElementById('seoToken')?.value.trim()  || cfg.token;
-
-  if(!cfg.token) { seoMsg('❌ أدخل GitHub Token أولاً','err'); return; }
-
-  const btn = document.getElementById('seoGenBtn');
-  btn.disabled = true; btn.textContent = '⏳ جاري النشر…';
-  document.getElementById('seoProgress').style.display = 'block';
-  document.getElementById('seoLogWrap').style.display  = 'block';
-  document.getElementById('seoLog').innerHTML = '';
-  _seoLog = [];
-
-  const includeAll = document.getElementById('seoIncludeAll')?.checked;
-  const genSitemap = document.getElementById('seoGenSitemap')?.checked;
-  const skipExist  = document.getElementById('seoSkipExisting')?.checked;
-
-  const recipes = includeAll ? FB_RECIPES : FB_RECIPES.filter(r => r.link);
-  let uploaded = 0, failed = 0;
-  const sitemapUrls = [];
-  const startTime = Date.now();
-
-  // Cache existing files if skip mode
-  let existingFiles = new Set();
-  if(skipExist) {
-    seoLogAdd('⏳ جاري جلب قائمة الملفات الموجودة…');
-    try {
-      const res = await fetch(`https://api.github.com/repos/${cfg.repo}/git/trees/${cfg.branch}?recursive=1`, {
-        headers: { Authorization: `token ${cfg.token}` }
-      });
-      if(res.ok) {
-        const data = await res.json();
-        existingFiles = new Set((data.tree||[]).filter(f=>f.path.startsWith('recipes/')).map(f=>f.path));
-        seoLogAdd(`✅ ${existingFiles.size} ملف موجود مسبقاً`, 'ok');
-      }
-    } catch(e) { seoLogAdd('⚠️ تعذّر جلب القائمة — سيتم رفع الكل'); }
-  }
-
-  for(let i = 0; i < recipes.length; i++) {
-    const r     = recipes[i];
-    const fbKey = r._fbKey || ('r'+i);
-    const slug  = seoSlug(r.name) + '-' + fbKey.slice(-4);
-    const path  = `recipes/${slug}.html`;
-
-    // Update progress
-    const pct = Math.round((i+1)/recipes.length*100);
-    document.getElementById('seoProgressBar').style.width  = pct+'%';
-    document.getElementById('seoProgressPct').textContent  = pct+'%';
-    document.getElementById('seoProgressLabel').textContent= `${i+1} / ${recipes.length}`;
-    document.getElementById('seoCurrentFile').textContent  = path;
-
-    // ETA
-    if(i > 0) {
-      const elapsed = (Date.now()-startTime)/1000;
-      const eta = Math.round((elapsed/i)*(recipes.length-i));
-      document.getElementById('seoETA').textContent = eta > 60 ? Math.round(eta/60)+'د' : eta+'ث';
-    }
-
-    sitemapUrls.push(`https://xblm.ab-s.me/recipe.html?key=${encodeURIComponent(fbKey)}`);
-
-    if(skipExist && existingFiles.has(path)) {
-      seoLogAdd(`⏭ تخطي: ${path}`);
-      uploaded++;
-      document.getElementById('seoUploaded').textContent = uploaded;
-      continue;
-    }
-
-    const html = buildSEOPage(r, fbKey);
-    try {
-      // Get existing SHA if file exists (needed for update)
-      const existing = await ghGet(path, cfg);
-      const sha = existing?.sha || null;
-      await ghPut(path, html, sha, cfg);
-      uploaded++;
-      seoLogAdd(`✅ ${path}`, 'ok');
-    } catch(e) {
-      failed++;
-      seoLogAdd(`❌ ${path}: ${e.message}`, 'err');
-    }
-
-    document.getElementById('seoUploaded').textContent = uploaded;
-    document.getElementById('seoFailed').textContent   = failed;
-
-    // Rate limit: ~1 req/sec to be safe with GitHub API
-    await new Promise(res => setTimeout(res, 350));
-  }
-
-  // Upload sitemap
-  if(genSitemap) {
-    seoLogAdd('📋 رفع sitemap-recipes.xml…');
-    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xblm.ab-s.me/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-${sitemapUrls.map(u=>`  <url><loc>${u}</loc><lastmod>${new Date().toISOString().slice(0,10)}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`).join('\n')}
-</urlset>`;
-    try {
-      const ex = await ghGet('sitemap-recipes.xml', cfg);
-      await ghPut('sitemap-recipes.xml', sitemapXml, ex?.sha||null, cfg);
-      seoLogAdd('✅ sitemap-recipes.xml', 'ok');
-    } catch(e) { seoLogAdd('❌ sitemap: '+e.message, 'err'); }
-  }
-
-  const total = recipes.length;
-  document.getElementById('seoETA').textContent = '✅';
-  btn.disabled = false; btn.textContent = '🚀 نشر الآن';
-
-  if(failed === 0) {
-    seoMsg(`✅ تم نشر ${uploaded} صفحة على GitHub Pages بنجاح!`, 'ok');
-    toast(`✅ نُشرت ${uploaded} صفحة SEO`);
-  } else {
-    seoMsg(`⚠️ ${uploaded} نجحت، ${failed} فشلت — راجع السجل`, 'err');
-  }
-};
-
-// ════ GOOGLE SHEET SYNC ════
-const SHEET_COLS = { name:0, brewer:1, author:2, dose:3, ratio:4, link:5 };
-let SHEET_ROWS = []; // raw from sheet
-let SHEET_NEW  = []; // after dedup
-let _sheetDecisions = {}; // { rowIdx: 'approve'|'ignore' }
 
 function sheetStatus(msg, type='info') {
   const el = document.getElementById('sheetStatus');
@@ -3279,6 +2655,188 @@ window.sheetBulkIgnore = function() {
 };
 
 
+// ════ مولّد المحتوى ════
+(function(){
+  // Sync radio visual selection
+  document.querySelectorAll('#tcTypeGrid input[type=radio]').forEach(radio=>{
+    radio.addEventListener('change', ()=>{
+      document.querySelectorAll('#tcTypeGrid .tc-type-opt').forEach(o=>o.classList.remove('tc-type-sel'));
+      radio.closest('label').querySelector('.tc-type-opt').classList.add('tc-type-sel');
+    });
+  });
+
+  const TYPE_LABELS = {
+    guide:   'دليل شامل',
+    compare: 'مقارنة',
+    steps:   'خطوة بخطوة',
+    faq:     'أسئلة وأجوبة (FAQ)',
+    review:  'مراجعة'
+  };
+  const AUDIENCE_LABELS = {
+    beginners:   'مبتدئون في عالم القهوة',
+    enthusiasts: 'محبو القهوة (مستوى متوسط)',
+    pros:        'محترفون وبارستا',
+    general:     'جمهور عام'
+  };
+
+  window.generateContentPrompt = function(){
+    const topic    = document.getElementById('tcTopic').value.trim();
+    const keywords = document.getElementById('tcKeywords').value.trim();
+    const type     = document.querySelector('input[name="tcType"]:checked')?.value || 'guide';
+    const audience = document.getElementById('tcAudience').value;
+    const lang     = document.getElementById('tcLang').value;
+    const filename = document.getElementById('tcFilename').value.trim() || 'article';
+    const incFaq   = document.getElementById('tcIncludeFaq').checked;
+    const incCta   = document.getElementById('tcIncludeCta').checked;
+    const incSeo   = document.getElementById('tcIncludeSeo').checked;
+
+    if(!topic){ toast('أدخل موضوع المقال ❗','terr'); return; }
+
+    const isAr     = lang === 'ar';
+    const typeLbl  = TYPE_LABELS[type]  || type;
+    const audLbl   = AUDIENCE_LABELS[audience] || audience;
+    const seoBlock = incSeo ? (isAr
+      ? `\n- أضف <meta name="description"> وصفاً جذاباً للمحرك\n- أضف JSON-LD من نوع Article أو HowTo حسب نوع المحتوى`
+      : `\n- Add SEO <meta name="description">\n- Add JSON-LD Article or HowTo schema`)
+      : '';
+    const faqBlock = incFaq ? (isAr
+      ? `\n- أضف قسم "الأسئلة الشائعة" يحتوي على 4-6 أسئلة واضحة مع إجاباتها`
+      : `\n- Add a FAQ section with 4-6 clear questions and answers`)
+      : '';
+    const ctaBlock = incCta ? (isAr
+      ? `\n- في نهاية المقال أضف CTA يشجع القارئ على تصفح وصفات xBloom على الرابط: https://xblm.ab-s.me`
+      : `\n- At the end, add a CTA encouraging readers to browse xBloom recipes at: https://xblm.ab-s.me`)
+      : '';
+    const kwBlock  = keywords
+      ? (isAr ? `\n- الكلمات المفتاحية التي يجب أن تظهر بشكل طبيعي: ${keywords}` : `\n- Keywords to naturally include: ${keywords}`)
+      : '';
+
+    const prompt = isAr
+? `أنت كاتب محتوى متخصص في عالم القهوة المتخصصة (Specialty Coffee) باللغة العربية.
+
+المطلوب: اكتب مقال من نوع "${typeLbl}" بعنوان:
+"${topic}"
+
+متطلبات المحتوى:
+- الجمهور المستهدف: ${audLbl}
+- الأسلوب: عربي فصيح سهل مع لمسة عصرية — لا رسمي جامد ولا عامية
+- الطول: 800-1200 كلمة تقريباً${kwBlock}${faqBlock}${ctaBlock}${seoBlock}
+
+متطلبات الكود:
+- أعطني ملف HTML كامل وجاهز للرفع مباشرة
+- اسم الملف: guides/${filename}.html
+- استخدم هذا الـ template بالضبط:
+
+${'<'}!DOCTYPE html>
+${'<'}html lang="ar" dir="rtl">
+${'<'}head>
+  ${'<'}meta charset="UTF-8">
+  ${'<'}meta name="viewport" content="width=device-width, initial-scale=1.0">
+  ${'<'}title>[عنوان المقال] | Xbloom Recipes${'<'}/title>
+  [meta description هنا إذا طُلب SEO]
+  ${'<'}link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  ${'<'}style>
+    * { margin:0; padding:0; box-sizing:border-box }
+    :root { --bg:#0A0A0A; --card:#1A1A1A; --br:#2A2A2A; --t1:#fff; --t2:#A0A0A0; --ta:#00A896; --gr:linear-gradient(135deg,#00A896,#4A90E2) }
+    body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--t1); padding:20px; max-width:860px; margin:0 auto; line-height:1.8 }
+    h1 { font-size:2em; font-weight:900; background:var(--gr); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px }
+    h2 { font-size:1.3em; font-weight:700; color:var(--ta); margin:28px 0 12px; border-right:3px solid var(--ta); padding-right:10px }
+    h3 { font-size:1.05em; font-weight:700; margin:18px 0 8px }
+    p { color:var(--t2); margin-bottom:14px }
+    ul, ol { padding-right:22px; color:var(--t2); margin-bottom:14px }
+    li { margin-bottom:6px }
+    .hero { background:var(--card); border-radius:16px; padding:32px; margin-bottom:32px; border:1px solid var(--br); position:relative; overflow:hidden }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--gr) }
+    .meta { font-size:.8em; color:var(--t2); margin-bottom:16px }
+    .cta-box { background:linear-gradient(135deg,rgba(0,168,150,.12),rgba(74,144,226,.08)); border:1px solid rgba(0,168,150,.3); border-radius:14px; padding:24px; text-align:center; margin:32px 0 }
+    .cta-box a { display:inline-block; background:var(--gr); color:#fff; padding:12px 28px; border-radius:10px; text-decoration:none; font-weight:700; margin-top:10px }
+    .faq-item { background:var(--card); border:1px solid var(--br); border-radius:10px; padding:16px; margin-bottom:10px }
+    .faq-q { font-weight:700; margin-bottom:6px; color:var(--t1) }
+    .faq-a { color:var(--t2); font-size:.9em }
+    .back-link { display:inline-block; color:var(--ta); text-decoration:none; margin-bottom:20px; font-size:.88em }
+    [schema-placeholder] { display:none }
+  ${'<'}/style>
+${'<'}/head>
+${'<'}body>
+  ${'<'}a href="/" class="back-link">← العودة للوصفات${'<'}/a>
+  [محتوى المقال الكامل هنا]
+  [schema JSON-LD هنا إذا طُلب SEO]
+${'<'}/body>
+${'<'}/html>
+
+ملاحظة مهمة: أعطني فقط كود HTML نظيف بدون شرح خارج الكود — الكود يبدأ من ${'<'}!DOCTYPE ويكتمل بـ ${'<'}/html>`
+: `You are a specialty coffee content writer.
+
+Task: Write a "${typeLbl}" article titled:
+"${topic}"
+
+Content requirements:
+- Target audience: ${audLbl}
+- Tone: friendly, informative, modern
+- Length: ~900-1200 words${kwBlock}${faqBlock}${ctaBlock}${seoBlock}
+
+Code requirements:
+- Provide a complete, ready-to-upload HTML file
+- Filename: guides/${filename}.html
+- Use this exact template:
+
+${'<'}!DOCTYPE html>
+${'<'}html lang="en">
+${'<'}head>
+  ${'<'}meta charset="UTF-8">
+  ${'<'}meta name="viewport" content="width=device-width, initial-scale=1.0">
+  ${'<'}title>[Article Title] | Xbloom Recipes${'<'}/title>
+  [meta description if SEO requested]
+  ${'<'}link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  ${'<'}style>
+    * { margin:0; padding:0; box-sizing:border-box }
+    :root { --bg:#0A0A0A; --card:#1A1A1A; --br:#2A2A2A; --t1:#fff; --t2:#A0A0A0; --ta:#00A896; --gr:linear-gradient(135deg,#00A896,#4A90E2) }
+    body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--t1); padding:20px; max-width:860px; margin:0 auto; line-height:1.8 }
+    h1 { font-size:2em; font-weight:900; background:var(--gr); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px }
+    h2 { font-size:1.3em; font-weight:700; color:var(--ta); margin:28px 0 12px; border-left:3px solid var(--ta); padding-left:10px }
+    p { color:var(--t2); margin-bottom:14px }
+    ul, ol { padding-left:22px; color:var(--t2); margin-bottom:14px }
+    .hero { background:var(--card); border-radius:16px; padding:32px; margin-bottom:32px; border:1px solid var(--br); position:relative; overflow:hidden }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--gr) }
+    .cta-box { background:linear-gradient(135deg,rgba(0,168,150,.12),rgba(74,144,226,.08)); border:1px solid rgba(0,168,150,.3); border-radius:14px; padding:24px; text-align:center; margin:32px 0 }
+    .cta-box a { display:inline-block; background:var(--gr); color:#fff; padding:12px 28px; border-radius:10px; text-decoration:none; font-weight:700; margin-top:10px }
+    .faq-item { background:var(--card); border:1px solid var(--br); border-radius:10px; padding:16px; margin-bottom:10px }
+    .back-link { display:inline-block; color:var(--ta); text-decoration:none; margin-bottom:20px; font-size:.88em }
+  ${'<'}/style>
+${'<'}/head>
+${'<'}body>
+  ${'<'}a href="/" class="back-link">← Back to Recipes${'<'}/a>
+  [Full article content here]
+${'<'}/body>
+${'<'}/html>
+
+Important: Give me only clean HTML code — no explanation outside the code block. Start from ${'<'}!DOCTYPE and end with ${'<'}/html>`;
+
+    // Update filename hint
+    document.getElementById('tcFilenameHint').textContent = filename + '.html';
+
+    // Show result
+    document.getElementById('tcPromptBox').textContent = prompt;
+    const res = document.getElementById('tcResult');
+    res.style.display = 'block';
+    res.scrollIntoView({behavior:'smooth', block:'nearest'});
+    toast('✅ الـ Prompt جاهز — انسخه وافتح Claude');
+  };
+
+  window.copyContentPrompt = function(){
+    const text = document.getElementById('tcPromptBox').textContent;
+    navigator.clipboard.writeText(text)
+      .then(()=>toast('تم نسخ الـ Prompt 📋'))
+      .catch(()=>{
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast('تم النسخ 📋');
+      });
+  };
+})();
+
 // ════ DUPLICATE SCANNER ════
 window.scanDuplicates = function(){
   const recipes = FB_RECIPES;
@@ -3371,373 +2929,9 @@ window.scanDuplicates = function(){
     suspectEl.innerHTML = '';
   }
 
-// ══════════ CONTENT GENERATOR ══════════
-
-const TYPE_LABELS = {
-  guide:'دليل شامل',comparison:'مقارنة تفصيلية',
-  review:'مراجعة خبير',howto:'خطوة بخطوة',faq:'أسئلة وأجوبة'
-};
-let currentType = 'guide';
-
-function setType(btn) {
-  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  currentType = btn.dataset.type;
-  clearPrompt();
-}
-
-function useSuggest(btn) {
-  document.getElementById('topic').value = btn.textContent;
-  clearPrompt();
-}
-
-function clearPrompt() {
-  document.getElementById('promptWrap').style.display = 'none';
-  document.getElementById('claudeCta').style.display = 'none';
-  document.getElementById('uploadSection').style.display = 'none';
-}
-
-function generatePrompt() {
-  const topic    = document.getElementById('topic').value.trim();
-  const keywords = document.getElementById('keywords').value.trim();
-  if(!topic) { alert('أدخل موضوع المقال أولاً'); return; }
-
-  const withFaq   = document.getElementById('withFaq').checked;
-  const withTable = document.getElementById('withTable').checked;
-  const withTips  = document.getElementById('withTips').checked;
-  const withLinks = document.getElementById('withLinks').checked;
-
-  const extras = [
-    withFaq   ? '- قسم FAQ بـ 5 أسئلة وأجوبة تفصيلية' : '',
-    withTable ? '- جدول مقارنة واضح ومنظم' : '',
-    withTips  ? '- قسم "نصائح عملية" في النهاية' : '',
-    withLinks ? '- أضف في النهاية: <a href="https://xblm.ab-s.me">اكتشف وصفات xBloom</a>' : ''
-  ].filter(Boolean).join('\n');
-
-  const slug = topic.toLowerCase()
-    .replace(/[أإآا]/g,'a').replace(/[ةه]/g,'h').replace(/[يى]/g,'y')
-    .replace(/[وؤ]/g,'w').replace(/ب/g,'b').replace(/ت/g,'t')
-    .replace(/[جچ]/g,'j').replace(/ح/g,'h').replace(/خ/g,'kh')
-    .replace(/د/g,'d').replace(/[ذ]/g,'th').replace(/ر/g,'r')
-    .replace(/ز/g,'z').replace(/س/g,'s').replace(/ش/g,'sh')
-    .replace(/ص/g,'s').replace(/ض/g,'d').replace(/ط/g,'t')
-    .replace(/ظ/g,'z').replace(/ع/g,'a').replace(/غ/g,'gh')
-    .replace(/ف/g,'f').replace(/ق/g,'q').replace(/ك/g,'k')
-    .replace(/ل/g,'l').replace(/م/g,'m').replace(/ن/g,'n')
-    .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-')
-    .slice(0,50) || 'article';
-
-  document.getElementById('slugInput').value = slug;
-
-  const prompt = `أنت خبير قهوة مختصة عربي ومتخصص في SEO. اكتب ${TYPE_LABELS[currentType]} احترافي باللغة العربية عن:
-
-"${topic}"
-
-الموقع: xBloom Recipes Hub (xblm.ab-s.me) — أكبر مجتمع عربي لوصفات القهوة المختصة.
-الكلمات المفتاحية: ${keywords || topic}
-
-المتطلبات:
-- مقدمة جذابة 150-200 كلمة (تبدأ بسؤال أو إحصائية)
-- 4-5 أقسام تفصيلية مع معلومات تقنية دقيقة
-${extras}
-- اللغة: عربية فصحى بسيطة، أسلوب خبير وليس تسويقي
-
-أعطني الكود HTML كاملاً بهذا القالب بالضبط (لا تضف أي شرح قبله أو بعده):
-
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[عنوان SEO 60 حرف] | xBloom Recipes Hub</title>
-<meta name="description" content="[وصف 150-155 حرف]">
-<meta name="keywords" content="${keywords || topic}, xbloom, قهوة مختصة">
-<link rel="canonical" href="https://xblm.ab-s.me/guides/${slug}.html">
-<meta property="og:title" content="[عنوان]">
-<meta property="og:description" content="[وصف]">
-<meta property="og:image" content="https://xblm.ab-s.me/og-image.png">
-<meta property="og:url" content="https://xblm.ab-s.me/guides/${slug}.html">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"[عنوان]","description":"[وصف]","url":"https://xblm.ab-s.me/guides/${slug}.html","author":{"@type":"Organization","name":"xBloom Recipes Hub"},"publisher":{"@type":"Organization","name":"xBloom Recipes Hub","logo":{"@type":"ImageObject","url":"https://xblm.ab-s.me/icon-192.png"}},"datePublished":"${new Date().toISOString().slice(0,10)}","inLanguage":"ar","keywords":"${keywords||topic}"}
-<\/script>
-${'<'}style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;background:#0A0A0A;color:#fff;line-height:1.8;direction:rtl}
-.container{max-width:800px;margin:0 auto;padding:40px 20px}
-.breadcrumb{font-size:.8em;color:#A0A0A0;margin-bottom:24px}
-.breadcrumb a{color:#00A896;text-decoration:none}
-h1{font-size:clamp(1.5em,4vw,2.2em);font-weight:900;line-height:1.3;margin-bottom:16px;background:linear-gradient(135deg,#fff,#A0A0A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.meta{font-size:.8em;color:#A0A0A0;margin-bottom:32px;display:flex;gap:16px;flex-wrap:wrap}
-.intro{background:#1A1A1A;border-right:4px solid #00A896;padding:20px 24px;border-radius:8px;margin-bottom:32px;font-size:1.05em;color:#E0E0E0}
-h2{font-size:1.25em;font-weight:800;color:#fff;margin:36px 0 14px;padding-bottom:8px;border-bottom:2px solid #2A2A2A}
-h2::before{content:"◆ ";color:#00A896;font-size:.8em}
-p{color:#C0C0C0;margin-bottom:14px}
-ul,ol{color:#C0C0C0;padding-right:20px;margin-bottom:14px}
-li{margin-bottom:6px}
-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.9em}
-th{background:#00A896;color:#fff;padding:12px;text-align:right;font-weight:700}
-td{padding:12px;border-bottom:1px solid #2A2A2A;color:#C0C0C0}
-tr:hover td{background:#1A1A1A}
-.faq-section{margin-top:40px}
-.faq-item{background:#1A1A1A;border:1px solid #2A2A2A;border-radius:10px;padding:18px;margin-bottom:12px}
-.faq-item h3{color:#00A896;font-size:.95em;margin-bottom:8px}
-.faq-item p{font-size:.9em;margin:0}
-.tips-box{background:linear-gradient(135deg,rgba(0,168,150,.1),rgba(74,144,226,.05));border:1px solid rgba(0,168,150,.3);border-radius:12px;padding:20px;margin:24px 0}
-.tips-box h3{color:#00A896;margin-bottom:12px}
-.conclusion{background:#1A1A1A;border-radius:12px;padding:24px;margin:32px 0}
-.back-home{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#00A896,#4A90E2);border-radius:50px;color:#fff;text-decoration:none;font-weight:800;margin-top:16px}
-@media(max-width:600px){h1{font-size:1.4em}.container{padding:24px 16px}}
-${'<'}/style>
-</head>
-<body>
-<div class="container">
-<div class="breadcrumb"><a href="https://xblm.ab-s.me">الرئيسية</a> ← <a href="https://xblm.ab-s.me/guides/">المقالات</a> ← [عنوان المقال]</div>
-[المحتوى الكامل هنا]
-<a href="https://xblm.ab-s.me" class="back-home">← العودة لوصفات xBloom</a>
-</div>
-</body>
-</html>`;
-
-  document.getElementById('promptText').textContent = prompt;
-  document.getElementById('promptWrap').style.display = 'block';
-  document.getElementById('claudeCta').style.display = 'flex';
-  document.getElementById('uploadSection').style.display = 'block';
-  document.getElementById('promptWrap').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function copyPrompt() {
-  const text = document.getElementById('promptText').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '✅ تم النسخ!';
-    btn.classList.add('done');
-    setTimeout(() => { btn.textContent = '📋 نسخ الكل'; btn.classList.remove('done'); }, 2500);
-  });
-}
-
-function openGithub() {
-  const slug = document.getElementById('slugInput').value.trim() || 'article';
-  window.open(`https://github.com/abllo/xblm/new/main/guides?filename=${slug}.html`, '_blank');
-}
-
   // Clean message
   document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
 };
-
-
-// ═══════════════════════════════════════
-// REPORTS SYSTEM
-// ═══════════════════════════════════════
-let _allReports = {};
-
-window.loadReports = function() {
-  if(!db) return;
-  onValue(ref(db,'reports'), snap => {
-    _allReports = snap.val() || {};
-    renderReports();
-    updateReportsBadge();
-  }, { onlyOnce: true });
-};
-
-function updateReportsBadge() {
-  const newCount = Object.values(_allReports).filter(r => r.status === 'new').length;
-  const badge = document.getElementById('reportsBadge');
-  const banner = document.getElementById('reportsAlertBanner');
-  const alertText = document.getElementById('reportsAlertText');
-  if(newCount > 0) {
-    if(badge) { badge.textContent = newCount; badge.style.display = 'inline'; }
-    if(banner) {
-      banner.style.display = 'flex';
-      if(alertText) alertText.textContent = `${newCount} بلاغ جديد يحتاج مراجعة`;
-    }
-  } else {
-    if(badge) badge.style.display = 'none';
-    if(banner) banner.style.display = 'none';
-  }
-}
-
-window.renderReports = function() {
-  const container = document.getElementById('reportsList');
-  if(!container) return;
-  const filter = (document.getElementById('reportsFilter')||{}).value || 'all';
-  const reports = Object.entries(_allReports)
-    .filter(([,r]) => filter === 'all' || r.status === filter)
-    .sort(([,a],[,b]) => (b.ts||0) - (a.ts||0));
-
-  if(!reports.length) {
-    container.innerHTML = `<p style="text-align:center;color:var(--t2);padding:30px">${filter==='new'?'لا توجد بلاغات جديدة 🎉':'لا توجد بلاغات'}</p>`;
-    return;
-  }
-
-  const typeIcons = { broken_link:'🔗', wrong_info:'📝', duplicate:'📋', other:'⚠️' };
-  const statusLabels = { new:'🔴 جديد', reviewed:'✅ مراجَع', resolved:'🗃️ محلول' };
-
-  container.innerHTML = reports.map(([key, r]) => {
-    const date = r.ts ? new Date(r.ts).toLocaleString('ar-SA') : '—';
-    const badgeClass = r.status === 'new' ? 'badge-new' : r.status === 'reviewed' ? 'badge-reviewed' : 'badge-resolved';
-    return `
-    <div class="report-card status-${r.status||'new'}" id="rcard-${key}">
-      <div class="report-card-header">
-        <div>
-          <div class="report-card-name">${esc(r.recipeName||'وصفة غير معروفة')}</div>
-          <div class="report-card-type">${typeIcons[r.type]||'⚠️'} ${esc(r.typeLabel||r.type||'')}</div>
-        </div>
-        <span class="report-card-badge ${badgeClass}">${statusLabels[r.status||'new']||r.status}</span>
-      </div>
-      ${r.note ? `<div class="report-card-note">💬 "${esc(r.note)}"</div>` : ''}
-      <div class="report-card-meta">🕐 ${date} &nbsp;|&nbsp; 🔑 وصفة: ${esc(r.recipeKey||'—')}</div>
-      <div class="report-card-actions">
-        ${r.status==='new' ? `<button onclick="updateReportStatus('${key}','reviewed')">✅ تعيين كمراجَع</button>` : ''}
-        ${r.status!=='resolved' ? `<button class="btn-resolve" onclick="updateReportStatus('${key}','resolved')">🗃️ تعيين كمحلول</button>` : ''}
-        <button onclick="window.open('https://xblm.ab-s.me','_blank')" style="font-size:.75em">🌐 فتح الموقع</button>
-        <button class="btn-del" onclick="deleteReport('${key}')">🗑️ حذف</button>
-      </div>
-    </div>`;
-  }).join('');
-};
-
-window.updateReportStatus = function(key, status) {
-  if(!db) return;
-  set(ref(db, `reports/${key}/status`), status)
-    .then(() => {
-      if(_allReports[key]) _allReports[key].status = status;
-      renderReports();
-      updateReportsBadge();
-      toast(`تم التحديث: ${status==='reviewed'?'مراجَع':'محلول'} ✅`);
-    })
-    .catch(() => toast('خطأ في التحديث','terr'));
-};
-
-window.deleteReport = function(key) {
-  if(!confirm('حذف هذا البلاغ نهائياً؟')) return;
-  set(ref(db, `reports/${key}`), null)
-    .then(() => {
-      delete _allReports[key];
-      renderReports();
-      updateReportsBadge();
-      toast('تم حذف البلاغ');
-    })
-    .catch(() => toast('خطأ في الحذف','terr'));
-};
-
-window.markAllReportsReviewed = function() {
-  if(!db) return;
-  const newOnes = Object.keys(_allReports).filter(k => _allReports[k].status === 'new');
-  if(!newOnes.length) { toast('لا توجد بلاغات جديدة'); return; }
-  Promise.all(newOnes.map(k => set(ref(db,`reports/${k}/status`),'reviewed')))
-    .then(() => {
-      newOnes.forEach(k => { if(_allReports[k]) _allReports[k].status = 'reviewed'; });
-      renderReports();
-      updateReportsBadge();
-      toast(`تم تعيين ${newOnes.length} بلاغ كمراجَع ✅`);
-    })
-    .catch(() => toast('خطأ','terr'));
-};
-
-// تحميل البلاغات عند فتح الأدمن لمعرفة العدد
-setTimeout(() => { if(db) {
-  onValue(ref(db,'reports'), snap => {
-    _allReports = snap.val() || {};
-    updateReportsBadge();
-  });
-}}, 3000);
-
-// ══ CONTENT GENERATOR ══
-const TYPE_LABELS = {
-  guide:'دليل شامل',comparison:'مقارنة تفصيلية',
-  review:'مراجعة خبير',howto:'خطوة بخطوة',faq:'أسئلة وأجوبة'
-};
-let currentType = 'guide';
-
-function setType(btn) {
-  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  currentType = btn.dataset.type;
-  clearPrompt();
-}
-
-function useSuggest(btn) {
-  document.getElementById('topic').value = btn.textContent;
-  clearPrompt();
-}
-
-function clearPrompt() {
-  document.getElementById('promptWrap').style.display = 'none';
-  document.getElementById('claudeCta').style.display = 'none';
-  document.getElementById('uploadSection').style.display = 'none';
-}
-
-function generatePrompt() {
-  const topic    = document.getElementById('topic').value.trim();
-  const keywords = document.getElementById('keywords').value.trim();
-  if(!topic) { alert('أدخل موضوع المقال أولاً'); return; }
-
-  const withFaq   = document.getElementById('withFaq').checked;
-  const withTable = document.getElementById('withTable').checked;
-  const withTips  = document.getElementById('withTips').checked;
-  const withLinks = document.getElementById('withLinks').checked;
-
-  const extras = [
-    withFaq   ? '- قسم FAQ بـ 5 أسئلة وأجوبة تفصيلية' : '',
-    withTable ? '- جدول مقارنة واضح ومنظم' : '',
-    withTips  ? '- قسم "نصائح عملية" في النهاية' : '',
-    withLinks ? '- أضف في النهاية: <a href="https://xblm.ab-s.me">اكتشف وصفات xBloom</a>' : ''
-  ].filter(Boolean).join('\n');
-
-  const slug = topic.toLowerCase()
-    .replace(/[أإآا]/g,'a').replace(/[ةه]/g,'h').replace(/[يى]/g,'y')
-    .replace(/[وؤ]/g,'w').replace(/ب/g,'b').replace(/ت/g,'t')
-    .replace(/[جچ]/g,'j').replace(/ح/g,'h').replace(/خ/g,'kh')
-    .replace(/د/g,'d').replace(/[ذ]/g,'th').replace(/ر/g,'r')
-    .replace(/ز/g,'z').replace(/س/g,'s').replace(/ش/g,'sh')
-    .replace(/ص/g,'s').replace(/ض/g,'d').replace(/ط/g,'t')
-    .replace(/ظ/g,'z').replace(/ع/g,'a').replace(/غ/g,'gh')
-    .replace(/ف/g,'f').replace(/ق/g,'q').replace(/ك/g,'k')
-    .replace(/ل/g,'l').replace(/م/g,'m').replace(/ن/g,'n')
-    .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-')
-    .slice(0,50) || 'article';
-
-  document.getElementById('slugInput').value = slug;
-
-  const prompt = `أنت خبير قهوة مختصة عربي ومتخصص في SEO. اكتب ${TYPE_LABELS[currentType]} احترافي باللغة العربية عن:
-
-"${topic}"
-
-الموقع: xBloom Recipes Hub (xblm.ab-s.me) — أكبر مجتمع عربي لوصفات القهوة المختصة.
-الكلمات المفتاحية: ${keywords || topic}
-
-المتطلبات:
-- مقدمة جذابة 150-200 كلمة (تبدأ بسؤال أو إحصائية)
-- 4-5 أقسام تفصيلية مع معلومات تقنية دقيقة
-${extras}
-- اللغة: عربية فصحى بسيطة، أسلوب خبير وليس تسويقي
-
-أعطني الكود HTML كاملاً بهذا القالب بالضبط (لا تضف أي شرح قبله أو بعده):
-`;
-
-  document.getElementById('promptText').textContent = prompt;
-  document.getElementById('promptWrap').style.display = 'block';
-  document.getElementById('claudeCta').style.display = 'flex';
-  document.getElementById('uploadSection').style.display = 'block';
-  document.getElementById('promptWrap').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function copyPrompt() {
-  const text = document.getElementById('promptText').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '✅ تم النسخ!';
-    btn.classList.add('done');
-    setTimeout(() => { btn.textContent = '📋 نسخ الكل'; btn.classList.remove('done'); }, 2500);
-  });
-}
-
-function openGithub() {
-  const slug = document.getElementById('slugInput').value.trim() || 'article';
-  window.open(`https://github.com/abllo/xblm/new/main/guides?filename=${slug}.html`, '_blank');
-}
-
 </script>
 </body>
 </html>
