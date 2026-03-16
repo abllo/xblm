@@ -635,6 +635,15 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 }
 .site-banner-top{margin-bottom:16px}
 .site-banner-bottom{margin-top:16px}
+/* Article Cards (Home) */
+.art-card{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:16px;text-decoration:none;display:flex;flex-direction:column;gap:8px;transition:.25s;position:relative;overflow:hidden}
+.art-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gr);transform:scaleX(0);transition:.3s;transform-origin:right}
+.art-card:hover{border-color:rgba(0,168,150,.35);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,168,150,.1)}
+.art-card:hover::before{transform:scaleX(1)}
+.art-card-type{font-size:.7em;font-weight:800;color:var(--ta);text-transform:uppercase;letter-spacing:.5px}
+.art-card-title{font-size:.9em;font-weight:800;color:var(--t1);line-height:1.4}
+.art-card-desc{font-size:.78em;color:var(--t2);line-height:1.55;flex:1}
+.art-card-footer{font-size:.72em;color:var(--ta);font-weight:700;margin-top:4px}
 @media(max-width:700px){
   .site-banner{border-radius:10px}
   .site-banner iframe{border-radius:10px}
@@ -1077,8 +1086,8 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 
 
-    <!-- CTA -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+    <!-- CTA -->\n    <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+      <a href="/guides/" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(0,168,150,.3);color:var(--ta);text-decoration:none;font-size:.82em;font-weight:700;transition:.2s;display:inline-flex;align-items:center;gap:5px">📖 المقالات</a>
       <button class="btn add-header-btn" onclick="openAddModal()">
         ✦ نشر وصفة جديدة
       </button>
@@ -1178,6 +1187,18 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
     <img id="siteBannerBottomImg" src="" alt="بنر إعلاني" style="display:none">
   </a>
   <iframe id="siteBannerBottomFrame" scrolling="no" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none;width:100%;border:0;overflow:hidden"></iframe>
+</div>
+
+<!-- ═══ ARTICLES SECTION ═══ -->
+<div id="articlesHomeSection" style="margin-top:32px;display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-size:.75em;color:var(--ta);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">📖 مركز المعرفة</div>
+      <h2 style="font-size:1.1em;font-weight:900;color:var(--t1)">أحدث المقالات</h2>
+    </div>
+    <a href="/guides/" style="padding:8px 16px;border-radius:8px;background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);color:var(--ta);text-decoration:none;font-size:.82em;font-weight:700;transition:.2s">كل المقالات ←</a>
+  </div>
+  <div id="articlesHomeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
 </div>
 
 <footer id="siteFooter">
@@ -3416,6 +3437,57 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js").catch(()=>{});
   });
 }
+</script>
+
+<script>
+// ── تحميل المقالات في الرئيسية ──
+(async function loadHomeArticles() {
+  const section = document.getElementById('articlesHomeSection');
+  const grid    = document.getElementById('articlesHomeGrid');
+  if(!section || !grid) return;
+
+  const TYPE_ICONS  = {guide:'📖',comparison:'⚖️',review:'⭐',howto:'🔧',faq:'❓'};
+  const TYPE_LABELS = {guide:'دليل',comparison:'مقارنة',review:'مراجعة',howto:'خطوة بخطوة',faq:'FAQ'};
+
+  try {
+    const res = await fetch('https://api.github.com/repos/abllo/xblm/contents/guides?ref=main');
+    if(!res.ok) return;
+    const files = await res.json();
+    const htmlFiles = files.filter(f => f.name.endsWith('.html') && f.name !== 'index.html');
+    if(!htmlFiles.length) return;
+
+    // جلب آخر 3 مقالات فقط
+    const latest = htmlFiles.slice(-3).reverse();
+    const articles = await Promise.all(latest.map(async f => {
+      try {
+        const r = await fetch(f.download_url);
+        const html = await r.text();
+        const titleM = html.match(/<title>([^<]+)<\/title>/);
+        const descM  = html.match(/<meta name="description" content="([^"]+)"/);
+        const typeM  = html.match(/data-type="([^"]+)"/);
+        return {
+          url:   `https://xblm.ab-s.me/guides/${f.name}`,
+          title: titleM ? titleM[1].replace(' | xBloom Recipes Hub','') : f.name,
+          desc:  descM  ? descM[1].slice(0,90)+'...' : '',
+          type:  typeM  ? typeM[1] : 'guide'
+        };
+      } catch { return null; }
+    }));
+
+    const valid = articles.filter(Boolean);
+    if(!valid.length) return;
+
+    grid.innerHTML = valid.map(a => `
+      <a href="${a.url}" class="art-card">
+        <div class="art-card-type">${TYPE_ICONS[a.type]||'📖'} ${TYPE_LABELS[a.type]||'مقال'}</div>
+        <div class="art-card-title">${a.title}</div>
+        <div class="art-card-desc">${a.desc}</div>
+        <div class="art-card-footer">اقرأ المقال ←</div>
+      </a>`).join('');
+
+    section.style.display = 'block';
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>
