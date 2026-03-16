@@ -3367,6 +3367,7 @@ window.scanDuplicates = function(){
   }
 
 // ══════════ CONTENT GENERATOR ══════════
+
 const TYPE_LABELS = {
   guide:'دليل شامل',comparison:'مقارنة تفصيلية',
   review:'مراجعة خبير',howto:'خطوة بخطوة',faq:'أسئلة وأجوبة'
@@ -3484,6 +3485,231 @@ tr:hover td{background:#1A1A1A}
 @media(max-width:600px){h1{font-size:1.4em}.container{padding:24px 16px}}
 ${'<'}/style>
 </head>
-<body></script>
+<body>
+<div class="container">
+<div class="breadcrumb"><a href="https://xblm.ab-s.me">الرئيسية</a> ← <a href="https://xblm.ab-s.me/guides/">المقالات</a> ← [عنوان المقال]</div>
+[المحتوى الكامل هنا]
+<a href="https://xblm.ab-s.me" class="back-home">← العودة لوصفات xBloom</a>
+</div>
+</body>
+</html>`;
+
+  document.getElementById('promptText').textContent = prompt;
+  document.getElementById('promptWrap').style.display = 'block';
+  document.getElementById('claudeCta').style.display = 'flex';
+  document.getElementById('uploadSection').style.display = 'block';
+  document.getElementById('promptWrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ تم النسخ!';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = '📋 نسخ الكل'; btn.classList.remove('done'); }, 2500);
+  });
+}
+
+function openGithub() {
+  const slug = document.getElementById('slugInput').value.trim() || 'article';
+  window.open(`https://github.com/abllo/xblm/new/main/guides?filename=${slug}.html`, '_blank');
+}
+
+  // Clean message
+  document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
+};
+
+
+// ═══════════════════════════════════════
+// REPORTS SYSTEM
+// ═══════════════════════════════════════
+let _allReports = {};
+
+window.loadReports = function() {
+  if(!db) return;
+  onValue(ref(db,'reports'), snap => {
+    _allReports = snap.val() || {};
+    renderReports();
+    updateReportsBadge();
+  }, { onlyOnce: true });
+};
+
+function updateReportsBadge() {
+  const newCount = Object.values(_allReports).filter(r => r.status === 'new').length;
+  const badge = document.getElementById('reportsBadge');
+  const banner = document.getElementById('reportsAlertBanner');
+  const alertText = document.getElementById('reportsAlertText');
+  if(newCount > 0) {
+    if(badge) { badge.textContent = newCount; badge.style.display = 'inline'; }
+    if(banner) {
+      banner.style.display = 'flex';
+      if(alertText) alertText.textContent = `${newCount} بلاغ جديد يحتاج مراجعة`;
+    }
+  } else {
+    if(badge) badge.style.display = 'none';
+    if(banner) banner.style.display = 'none';
+  }
+}
+
+window.renderReports = function() {
+  const container = document.getElementById('reportsList');
+  if(!container) return;
+  const filter = (document.getElementById('reportsFilter')||{}).value || 'all';
+  const reports = Object.entries(_allReports)
+    .filter(([,r]) => filter === 'all' || r.status === filter)
+    .sort(([,a],[,b]) => (b.ts||0) - (a.ts||0));
+
+  if(!reports.length) {
+    container.innerHTML = `<p style="text-align:center;color:var(--t2);padding:30px">${filter==='new'?'لا توجد بلاغات جديدة 🎉':'لا توجد بلاغات'}</p>`;
+    return;
+  }
+
+  const typeIcons = { broken_link:'🔗', wrong_info:'📝', duplicate:'📋', other:'⚠️' };
+  const statusLabels = { new:'🔴 جديد', reviewed:'✅ مراجَع', resolved:'🗃️ محلول' };
+
+  container.innerHTML = reports.map(([key, r]) => {
+    const date = r.ts ? new Date(r.ts).toLocaleString('ar-SA') : '—';
+    const badgeClass = r.status === 'new' ? 'badge-new' : r.status === 'reviewed' ? 'badge-reviewed' : 'badge-resolved';
+    return `
+    <div class="report-card status-${r.status||'new'}" id="rcard-${key}">
+      <div class="report-card-header">
+        <div>
+          <div class="report-card-name">${esc(r.recipeName||'وصفة غير معروفة')}</div>
+          <div class="report-card-type">${typeIcons[r.type]||'⚠️'} ${esc(r.typeLabel||r.type||'')}</div>
+        </div>
+        <span class="report-card-badge ${badgeClass}">${statusLabels[r.status||'new']||r.status}</span>
+      </div>
+      ${r.note ? `<div class="report-card-note">💬 "${esc(r.note)}"</div>` : ''}
+      <div class="report-card-meta">🕐 ${date} &nbsp;|&nbsp; 🔑 وصفة: ${esc(r.recipeKey||'—')}</div>
+      <div class="report-card-actions">
+        ${r.status==='new' ? `<button onclick="updateReportStatus('${key}','reviewed')">✅ تعيين كمراجَع</button>` : ''}
+        ${r.status!=='resolved' ? `<button class="btn-resolve" onclick="updateReportStatus('${key}','resolved')">🗃️ تعيين كمحلول</button>` : ''}
+        <button onclick="window.open('https://xblm.ab-s.me','_blank')" style="font-size:.75em">🌐 فتح الموقع</button>
+        <button class="btn-del" onclick="deleteReport('${key}')">🗑️ حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+window.updateReportStatus = function(key, status) {
+  if(!db) return;
+  set(ref(db, `reports/${key}/status`), status)
+    .then(() => {
+      if(_allReports[key]) _allReports[key].status = status;
+      renderReports();
+      updateReportsBadge();
+      toast(`تم التحديث: ${status==='reviewed'?'مراجَع':'محلول'} ✅`);
+    })
+    .catch(() => toast('خطأ في التحديث','terr'));
+};
+
+window.deleteReport = function(key) {
+  if(!confirm('حذف هذا البلاغ نهائياً؟')) return;
+  set(ref(db, `reports/${key}`), null)
+    .then(() => {
+      delete _allReports[key];
+      renderReports();
+      updateReportsBadge();
+      toast('تم حذف البلاغ');
+    })
+    .catch(() => toast('خطأ في الحذف','terr'));
+};
+
+window.markAllReportsReviewed = function() {
+  if(!db) return;
+  const newOnes = Object.keys(_allReports).filter(k => _allReports[k].status === 'new');
+  if(!newOnes.length) { toast('لا توجد بلاغات جديدة'); return; }
+  Promise.all(newOnes.map(k => set(ref(db,`reports/${k}/status`),'reviewed')))
+    .then(() => {
+      newOnes.forEach(k => { if(_allReports[k]) _allReports[k].status = 'reviewed'; });
+      renderReports();
+      updateReportsBadge();
+      toast(`تم تعيين ${newOnes.length} بلاغ كمراجَع ✅`);
+    })
+    .catch(() => toast('خطأ','terr'));
+};
+
+// تحميل البلاغات عند فتح الأدمن لمعرفة العدد
+setTimeout(() => { if(db) {
+  onValue(ref(db,'reports'), snap => {
+    _allReports = snap.val() || {};
+    updateReportsBadge();
+  });
+}}, 3000);
+
+// ══ CONTENT GENERATOR ══
+const TYPE_LABELS = {
+  guide:'دليل شامل',comparison:'مقارنة تفصيلية',
+  review:'مراجعة خبير',howto:'خطوة بخطوة',faq:'أسئلة وأجوبة'
+};
+let currentType = 'guide';
+
+function setType(btn) {
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  currentType = btn.dataset.type;
+  clearPrompt();
+}
+
+function useSuggest(btn) {
+  document.getElementById('topic').value = btn.textContent;
+  clearPrompt();
+}
+
+function clearPrompt() {
+  document.getElementById('promptWrap').style.display = 'none';
+  document.getElementById('claudeCta').style.display = 'none';
+  document.getElementById('uploadSection').style.display = 'none';
+}
+
+function generatePrompt() {
+  const topic    = document.getElementById('topic').value.trim();
+  const keywords = document.getElementById('keywords').value.trim();
+  if(!topic) { alert('أدخل موضوع المقال أولاً'); return; }
+
+  const withFaq   = document.getElementById('withFaq').checked;
+  const withTable = document.getElementById('withTable').checked;
+  const withTips  = document.getElementById('withTips').checked;
+  const withLinks = document.getElementById('withLinks').checked;
+
+  const extras = [
+    withFaq   ? '- قسم FAQ بـ 5 أسئلة وأجوبة تفصيلية' : '',
+    withTable ? '- جدول مقارنة واضح ومنظم' : '',
+    withTips  ? '- قسم "نصائح عملية" في النهاية' : '',
+    withLinks ? '- أضف في النهاية: <a href="https://xblm.ab-s.me">اكتشف وصفات xBloom</a>' : ''
+  ].filter(Boolean).join('\n');
+
+  const slug = topic.toLowerCase()
+    .replace(/[أإآا]/g,'a').replace(/[ةه]/g,'h').replace(/[يى]/g,'y')
+    .replace(/[وؤ]/g,'w').replace(/ب/g,'b').replace(/ت/g,'t')
+    .replace(/[جچ]/g,'j').replace(/ح/g,'h').replace(/خ/g,'kh')
+    .replace(/د/g,'d').replace(/[ذ]/g,'th').replace(/ر/g,'r')
+    .replace(/ز/g,'z').replace(/س/g,'s').replace(/ش/g,'sh')
+    .replace(/ص/g,'s').replace(/ض/g,'d').replace(/ط/g,'t')
+    .replace(/ظ/g,'z').replace(/ع/g,'a').replace(/غ/g,'gh')
+    .replace(/ف/g,'f').replace(/ق/g,'q').replace(/ك/g,'k')
+    .replace(/ل/g,'l').replace(/م/g,'m').replace(/ن/g,'n')
+    .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-')
+    .slice(0,50) || 'article';
+
+  document.getElementById('slugInput').value = slug;
+
+  const prompt = `أنت خبير قهوة مختصة عربي ومتخصص في SEO. اكتب ${TYPE_LABELS[currentType]} احترافي باللغة العربية عن:
+
+"${topic}"
+
+الموقع: xBloom Recipes Hub (xblm.ab-s.me) — أكبر مجتمع عربي لوصفات القهوة المختصة.
+الكلمات المفتاحية: ${keywords || topic}
+
+المتطلبات:
+- مقدمة جذابة 150-200 كلمة (تبدأ بسؤال أو إحصائية)
+- 4-5 أقسام تفصيلية مع معلومات تقنية دقيقة
+${extras}
+- اللغة: عربية فصحى بسيطة، أسلوب خبير وليس تسويقي
+
+أعطني الكود HTML كاملاً بهذا القالب بالضبط (لا تضف أي شرح قبله أو بعده):
+
+</script>
 </body>
 </html>
