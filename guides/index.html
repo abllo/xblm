@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مقالات القهوة المختصة | xBloom Recipes Hub</title>
+<meta name="description" content="دليلك الشامل للقهوة المختصة — مقالات خبراء، مقارنات الفلاتر، أسرار الطحن، وأفضل المحامص السعودية على جهاز xBloom.">
+<meta name="keywords" content="مقالات قهوة مختصة, دليل xbloom, فلاتر قهوة, محامص سعودية, أسرار القهوة">
+<link rel="canonical" href="https://xblm.ab-s.me/guides/">
+<meta property="og:title" content="مقالات القهوة المختصة | xBloom Recipes Hub">
+<meta property="og:description" content="دليلك الشامل للقهوة المختصة — مقالات خبراء ومقارنات وأسرار.">
+<meta property="og:image" content="https://xblm.ab-s.me/og-image.png">
+<meta property="og:url" content="https://xblm.ab-s.me/guides/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="https://xblm.ab-s.me/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "مقالات القهوة المختصة",
+  "description": "دليلك الشامل للقهوة المختصة على جهاز xBloom",
+  "url": "https://xblm.ab-s.me/guides/",
+  "publisher": { "@type": "Organization", "name": "xBloom Recipes Hub", "url": "https://xblm.ab-s.me" }
+}
+</script>
+<style>
+:root {
+  --bg:#0A0A0A; --card:#1A1A1A; --up:#252525;
+  --br:#2A2A2A; --t1:#fff; --t2:#A0A0A0;
+  --ta:#00A896; --gr:linear-gradient(135deg,#00A896,#4A90E2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;direction:rtl}
+
+/* ── HEADER ── */
+.site-header{
+  background:linear-gradient(135deg,#0d1f1c 0%,#0a0a0a 60%,#0a1520 100%);
+  border-bottom:1px solid var(--br);
+  padding:16px 20px;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);
+}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;background:var(--gr);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2em;flex-shrink:0}
+.logo-text{font-size:.95em;font-weight:800;color:var(--t1)}
+.logo-text span{color:var(--ta)}
+.header-nav{display:flex;align-items:center;gap:8px}
+.nav-link{padding:7px 14px;border-radius:8px;border:1px solid var(--br);color:var(--t2);text-decoration:none;font-size:.82em;font-weight:600;transition:.2s}
+.nav-link:hover,.nav-link.active{background:rgba(0,168,150,.1);border-color:var(--ta);color:var(--ta)}
+
+/* ── HERO ── */
+.hero{
+  max-width:1200px;margin:0 auto;padding:60px 20px 40px;
+  text-align:center;position:relative;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(0,168,150,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:20px;
+  background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);
+  color:var(--ta);font-size:.8em;font-weight:700;
+  margin-bottom:20px;
+}
+.hero h1{
+  font-size:clamp(1.8em,5vw,3em);font-weight:900;line-height:1.2;
+  margin-bottom:16px;
+  background:linear-gradient(135deg,#fff 30%,#A0A0A0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{font-size:1em;color:var(--t2);max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-size:1.5em;font-weight:900;color:var(--ta)}
+.hero-stat-lbl{font-size:.75em;color:var(--t2)}
+
+/* ── SEARCH & FILTER ── */
+.controls{max-width:1200px;margin:0 auto;padding:0 20px 24px;display:flex;gap:10px;flex-wrap:wrap}
+.search-box{
+  flex:1;min-width:200px;
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1px solid var(--br);border-radius:10px;
+  padding:10px 14px;
+}
+.search-box input{background:none;border:none;outline:none;color:var(--t1);font-family:inherit;font-size:.9em;width:100%;direction:rtl}
+.search-box input::placeholder{color:var(--t2)}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{
+  padding:8px 14px;border-radius:8px;border:1px solid var(--br);
+  background:var(--up);color:var(--t2);font-family:inherit;font-size:.8em;
+  font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap;
+}
+.filter-btn.on{background:rgba(0,168,150,.12);border-color:var(--ta);color:var(--ta)}
+.filter-btn:hover{border-color:var(--ta);color:var(--ta)}
+
+/* ── ARTICLES GRID ── */
+.articles-wrap{max-width:1200px;margin:0 auto;padding:0 20px 60px}
+.articles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.article-card{
+  background:var(--card);border:1px solid var(--br);border-radius:16px;
+  overflow:hidden;text-decoration:none;display:flex;flex-direction:column;
+  transition:.3s cubic-bezier(.22,1,.36,1);position:relative;
+}
+.article-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--gr);transform:scaleX(0);transition:.3s;transform-origin:right;
+}
+.article-card:hover{transform:translateY(-4px);border-color:rgba(0,168,150,.3);box-shadow:0 12px 32px rgba(0,168,150,.12)}
+.article-card:hover::before{transform:scaleX(1)}
+.card-top{padding:20px 20px 0}
+.card-type{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:800;
+  margin-bottom:12px;
+}
+.type-guide{background:rgba(0,168,150,.1);color:var(--ta);border:1px solid rgba(0,168,150,.2)}
+.type-comparison{background:rgba(74,144,226,.1);color:#4A90E2;border:1px solid rgba(74,144,226,.2)}
+.type-review{background:rgba(255,180,0,.1);color:#FFB800;border:1px solid rgba(255,180,0,.2)}
+.type-howto{background:rgba(232,67,147,.1);color:#e84393;border:1px solid rgba(232,67,147,.2)}
+.type-faq{background:rgba(108,92,231,.1);color:#6c5ce7;border:1px solid rgba(108,92,231,.2)}
+.card-title{font-size:1em;font-weight:800;line-height:1.4;color:var(--t1);margin-bottom:8px}
+.card-desc{font-size:.82em;color:var(--t2);line-height:1.6;margin-bottom:16px}
+.card-bottom{
+  padding:12px 20px;margin-top:auto;
+  border-top:1px solid var(--br);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-date{font-size:.72em;color:var(--t2)}
+.card-arrow{font-size:.85em;color:var(--ta);font-weight:700;transition:.2s}
+.article-card:hover .card-arrow{transform:translateX(-4px)}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--t2)}
+.empty-state h3{font-size:1.1em;margin-bottom:8px;color:var(--t1)}
+.empty-icon{font-size:3em;margin-bottom:16px}
+
+/* ── LOADING ── */
+.skeleton{background:linear-gradient(90deg,var(--card) 25%,var(--up) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-card{border-radius:16px;height:200px;margin-bottom:0}
+
+/* ── CTA BANNER ── */
+.cta-banner{
+  max-width:1200px;margin:0 auto 40px;padding:0 20px;
+}
+.cta-inner{
+  background:linear-gradient(135deg,#0d1f1c,#0a1520);
+  border:1px solid rgba(0,168,150,.2);border-radius:16px;
+  padding:32px;text-align:center;position:relative;overflow:hidden;
+}
+.cta-inner::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,168,150,.15),transparent 70%);
+}
+.cta-inner h2{font-size:1.3em;font-weight:900;margin-bottom:8px}
+.cta-inner p{color:var(--t2);font-size:.88em;margin-bottom:20px}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:50px;
+  background:var(--gr);color:#fff;text-decoration:none;
+  font-weight:800;font-size:.9em;transition:.3s;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,168,150,.4)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero{padding:40px 16px 28px}
+  .articles-grid{grid-template-columns:1fr}
+  .controls{padding:0 16px 16px}
+  .articles-wrap{padding:0 16px 40px}
+  .header-nav .nav-link:not(.active){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://xblm.ab-s.me" class="logo">
+      <div class="logo-icon">☕</div>
+      <div class="logo-text">xBloom <span>Recipes</span></div>
+    </a>
+    <nav class="header-nav">
+      <a href="https://xblm.ab-s.me" class="nav-link">🏠 الوصفات</a>
+      <a href="https://xblm.ab-s.me/guides/" class="nav-link active">📖 المقالات</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">📖 مركز المعرفة</div>
+  <h1>دليلك الشامل<br>للقهوة المختصة</h1>
+  <p>مقالات خبراء عميقة — مقارنات الفلاتر، أسرار الطحن، أفضل المحامص السعودية، وكل ما تحتاجه لتحضير قهوة استثنائية على xBloom.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statArticles">—</div>
+      <div class="hero-stat-lbl">مقال خبير</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">208+</div>
+      <div class="hero-stat-lbl">وصفة مجربة</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">100%</div>
+      <div class="hero-stat-lbl">محتوى عربي</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-box">
+    <span style="color:var(--t2)">🔍</span>
+    <input type="text" id="searchInput" placeholder="ابحث في المقالات..." oninput="filterArticles()">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn on" data-type="all"        onclick="setFilter(this,'all')">الكل</button>
+    <button class="filter-btn"    data-type="guide"      onclick="setFilter(this,'guide')">📖 دليل</button>
+    <button class="filter-btn"    data-type="comparison" onclick="setFilter(this,'comparison')">⚖️ مقارنة</button>
+    <button class="filter-btn"    data-type="review"     onclick="setFilter(this,'review')">⭐ مراجعة</button>
+    <button class="filter-btn"    data-type="howto"      onclick="setFilter(this,'howto')">🔧 خطوة بخطوة</button>
+    <button class="filter-btn"    data-type="faq"        onclick="setFilter(this,'faq')">❓ FAQ</button>
+  </div>
+</div>
+
+<!-- ARTICLES GRID -->
+<div class="articles-wrap">
+  <div class="articles-grid" id="articlesGrid">
+    <!-- Skeleton loading -->
+    <div class="skeleton skel-card"></div>
+    <div class="skeleton skel-card"></div>
+    <div class="skeleton skel-card"></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-banner">
+  <div class="cta-inner">
+    <h2>اكتشف 208+ وصفة قهوة مختصة</h2>
+    <p>وصفات مجربة من محامص سعودية مميزة — حارة وباردة وسيرفر</p>
+    <a href="https://xblm.ab-s.me" class="cta-btn">☕ استعرض الوصفات</a>
+  </div>
+</div>
+
+<script>
+const BASE = 'https://xblm.ab-s.me';
+const REPO = 'abllo/xblm';
+const BRANCH = 'main';
+
+const TYPE_LABELS = {
+  guide: 'دليل شامل', comparison: 'مقارنة', review: 'مراجعة',
+  howto: 'خطوة بخطوة', faq: 'أسئلة وأجوبة'
+};
+const TYPE_ICONS = {
+  guide:'📖', comparison:'⚖️', review:'⭐', howto:'🔧', faq:'❓'
+};
+const TYPE_CLASS = {
+  guide:'type-guide', comparison:'type-comparison', review:'type-review',
+  howto:'type-howto', faq:'type-faq'
+};
+
+let ALL_ARTICLES = [];
+let currentFilter = 'all';
+
+// جلب المقالات من GitHub API
+async function loadArticles() {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/guides?ref=${BRANCH}`);
+    if(!res.ok) throw new Error('GitHub API error');
+    const files = await res.json();
+    const htmlFiles = files.filter(f => f.name.endsWith('.html') && f.name !== 'index.html');
+
+    // جلب محتوى كل مقال لاستخراج العنوان والوصف
+    ALL_ARTICLES = await Promise.all(htmlFiles.map(async f => {
+      try {
+        const r = await fetch(f.download_url);
+        const html = await r.text();
+        const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+        const descMatch  = html.match(/<meta name="description" content="([^"]+)"/);
+        const typeMatch  = html.match(/data-type="([^"]+)"/);
+        const dateMatch  = html.match(/datePublished["\s:]+["']([^"']+)/);
+        return {
+          slug: f.name.replace('.html',''),
+          url:  `${BASE}/guides/${f.name}`,
+          title: titleMatch ? titleMatch[1].replace(' | xBloom Recipes Hub','') : f.name,
+          desc:  descMatch  ? descMatch[1]  : '',
+          type:  typeMatch  ? typeMatch[1]  : 'guide',
+          date:  dateMatch  ? dateMatch[1]  : f.sha.slice(0,8)
+        };
+      } catch {
+        return {
+          slug: f.name.replace('.html',''), url: `${BASE}/guides/${f.name}`,
+          title: f.name.replace('.html','').replace(/-/g,' '),
+          desc:'', type:'guide', date:''
+        };
+      }
+    }));
+
+    document.getElementById('statArticles').textContent = ALL_ARTICLES.length + '+';
+    renderArticles(ALL_ARTICLES);
+  } catch(e) {
+    document.getElementById('articlesGrid').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">📭</div>
+        <h3>لا توجد مقالات بعد</h3>
+        <p>استخدم مولّد المحتوى في الأدمن لنشر أول مقال</p>
+      </div>`;
+    document.getElementById('statArticles').textContent = '0';
+  }
+}
+
+function renderArticles(articles) {
+  const grid = document.getElementById('articlesGrid');
+  if(!articles.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">🔍</div>
+        <h3>لا توجد نتائج</h3>
+        <p>جرب كلمة بحث مختلفة أو فلتر آخر</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = articles.map(a => {
+    const typeClass = TYPE_CLASS[a.type] || 'type-guide';
+    const typeLabel = TYPE_LABELS[a.type] || 'مقال';
+    const typeIcon  = TYPE_ICONS[a.type]  || '📖';
+    const dateStr   = a.date ? new Date(a.date).toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'}) : '';
+    return `
+    <a href="${a.url}" class="article-card" data-type="${a.type}">
+      <div class="card-top">
+        <div class="card-type ${typeClass}">${typeIcon} ${typeLabel}</div>
+        <div class="card-title">${a.title}</div>
+        <div class="card-desc">${a.desc || 'اقرأ المقال كاملاً...'}</div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-date">📅 ${dateStr}</span>
+        <span class="card-arrow">← اقرأ المقال</span>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+let currentType = 'all';
+function setFilter(btn, type) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentType = type;
+  filterArticles();
+}
+
+function filterArticles() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  let filtered = ALL_ARTICLES;
+  if(currentType !== 'all') filtered = filtered.filter(a => a.type === currentType);
+  if(q) filtered = filtered.filter(a =>
+    a.title.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q)
+  );
+  renderArticles(filtered);
+}
+
+loadArticles();
+</script>
+</body>
+</html>
