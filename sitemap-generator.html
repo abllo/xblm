@@ -33,20 +33,54 @@ const db = getDatabase(app);
 const BASE = 'https://xblm.ab-s.me';
 
 window.generateSitemap = async function() {
-  document.getElementById('status').textContent = '⏳ جاري جلب الوصفات من Firebase...';
-  try {
-    const snap = await get(ref(db, 'recipes'));
-    const data = snap.val() || {};
-    const recipes = Object.entries(data);
-    document.getElementById('status').textContent = `✅ تم جلب ${recipes.length} وصفة`;
+  const statusEl = document.getElementById('status');
+  statusEl.textContent = '⏳ جاري جلب الوصفات والمقالات...';
 
-    const today = new Date().toISOString().split('T')[0];
+  try {
+    // ── جلب الوصفات من Firebase والمقالات من GitHub بالتوازي ──
+    const [snap, ghRes] = await Promise.all([
+      get(ref(db, 'recipes')),
+      fetch('https://api.github.com/repos/abllo/xblm/contents/guides?ref=main')
+    ]);
+
+    // ── الوصفات ──
+    const data    = snap.val() || {};
+    const recipes = Object.entries(data);
+
+    // ── المقالات ──
+    let articles = [];
+    if(ghRes.ok) {
+      const files = await ghRes.json();
+      const htmlFiles = files.filter(f => f.name.endsWith('.html') && f.name !== 'index.html');
+
+      // جلب تاريخ آخر commit لكل مقال
+      statusEl.textContent = `⏳ جاري جلب تواريخ ${htmlFiles.length} مقال...`;
+      articles = await Promise.all(htmlFiles.map(async f => {
+        try {
+          const cr = await fetch(
+            `https://api.github.com/repos/abllo/xblm/commits?path=guides/${f.name}&per_page=1&ref=main`
+          );
+          const commits = cr.ok ? await cr.json() : [];
+          const lastmod = commits[0]?.commit?.committer?.date?.slice(0,10)
+                       || commits[0]?.commit?.author?.date?.slice(0,10)
+                       || new Date().toISOString().slice(0,10);
+          return { name: f.name, lastmod };
+        } catch {
+          return { name: f.name, lastmod: new Date().toISOString().slice(0,10) };
+        }
+      }));
+      // ترتيب من الأحدث للأقدم
+      articles.sort((a,b) => b.lastmod.localeCompare(a.lastmod));
+    }
+
+    const today = new Date().toISOString().slice(0,10);
+    const total  = 3 + articles.length + recipes.length; // صفحات ثابتة + مقالات + وصفات
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- ══ الصفحة الرئيسية ══ -->
+  <!-- ══ الصفحات الأساسية ══ -->
   <url>
     <loc>${BASE}/</loc>
     <lastmod>${today}</lastmod>
@@ -54,14 +88,37 @@ window.generateSitemap = async function() {
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="${BASE}/"/>
   </url>
+  <url>
+    <loc>${BASE}/about-us.html</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${BASE}/guides/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <!-- ══ الوصفات (${recipes.length} وصفة) ══ -->\n`;
+  <!-- ══ المقالات (${articles.length} مقال) ══ -->\n`;
+
+    for(const a of articles) {
+      xml += `  <url>
+    <loc>${BASE}/guides/${a.name}</loc>
+    <lastmod>${a.lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>\n`;
+    }
+
+    xml += `\n  <!-- ══ الوصفات (${recipes.length} وصفة) ══ -->\n`;
 
     for(const [key, r] of recipes) {
       if(!r || !r.name) continue;
-      const url = `${BASE}/recipe.html?key=${encodeURIComponent(key)}`;
-      const lastmod = r.createdAt
-        ? new Date(r.createdAt).toISOString().split('T')[0]
+      const url     = `${BASE}/recipe.html?key=${encodeURIComponent(key)}`;
+      const lastmod = r.addedAt
+        ? new Date(r.addedAt).toISOString().slice(0,10)
         : today;
       xml += `  <url>
     <loc>${url}</loc>
@@ -71,15 +128,15 @@ window.generateSitemap = async function() {
   </url>\n`;
     }
 
-    xml += `</urlset>`;
+    xml += `\n</urlset>`;
 
     document.getElementById('output').value = xml;
-    document.getElementById('status').textContent =
-      `✅ Sitemap جاهز — ${recipes.length} وصفة + الصفحة الرئيسية = ${recipes.length+1} URL`;
-
+    statusEl.textContent =
+      `✅ Sitemap جاهز — ${articles.length} مقال + ${recipes.length} وصفة + 3 صفحات ثابتة = ${total} URL`;
     window._sitemapXML = xml;
+
   } catch(e) {
-    document.getElementById('status').textContent = '❌ خطأ: ' + e.message;
+    statusEl.textContent = '❌ خطأ: ' + e.message;
   }
 };
 
