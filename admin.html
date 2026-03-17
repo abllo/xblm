@@ -1104,6 +1104,12 @@ let SELECTED_AFF_ICON = '🛒';
 let FB_RECIPES = [], FB_RATINGS = {}, ALL_RECIPES = [], FB_COMMENTS = {};
 let editingKey = null;
 
+// ════ SHEET SYNC GLOBALS ════
+let SHEET_ROWS = [];
+let SHEET_NEW  = [];
+let _sheetDecisions = {};
+const SHEET_COLS = { name:0, brewer:1, author:2, dose:3, ratio:4, link:5 };
+
 function toast(msg, cls='tok') {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast ' + cls + ' show';
