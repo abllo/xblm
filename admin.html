@@ -162,6 +162,28 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
 @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .acard.open{animation:slideIn .25s ease}
+/* ═══ Analytics ═══ */
+.ana-card{background:var(--up);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--br)}
+.ana-val{font-size:1.8em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.ana-lbl{font-size:.72em;color:var(--t2);margin-top:4px}
+.ana-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.ana-bar-label{width:130px;font-size:.78em;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;flex-shrink:0}
+.ana-bar-track{flex:1;height:20px;background:var(--up);border-radius:5px;overflow:hidden;position:relative}
+.ana-bar-fill{height:100%;background:var(--gr);border-radius:5px;transition:.6s}
+.ana-bar-val{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:.72em;font-weight:700;color:#fff;mix-blend-mode:difference}
+/* ═══ Reports ═══ */
+.report-ftab{padding:7px 14px;border-radius:9px;background:var(--up);border:1.5px solid var(--br);color:var(--t2);font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.report-ftab.on{background:var(--gr);color:#fff;border-color:transparent}
+.report-item{background:var(--up);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px;position:relative}
+.report-item.new{border-color:rgba(245,87,108,.4);background:rgba(245,87,108,.04)}
+.report-item.resolved{border-color:rgba(67,233,123,.25);opacity:.65}
+.report-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700}
+.report-badge-new{background:rgba(245,87,108,.2);color:#f5576c}
+.report-badge-resolved{background:rgba(67,233,123,.15);color:#43e97b}
+/* ═══ Tags ═══ */
+.tag-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:.8em;font-weight:700;cursor:pointer;transition:.2s;border:1.5px solid transparent}
+.tag-chip-del{background:none;border:none;color:inherit;cursor:pointer;font-size:.9em;opacity:.6;padding:0;margin-right:-4px;line-height:1}
+.tag-chip-del:hover{opacity:1}
 /* ═══ #tContent — مولّد المحتوى (scoped) ═══ */
 #tContent .tc-type-opt{padding:10px 14px;border-radius:9px;border:2px solid var(--br);text-align:center;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;color:var(--t2);background:var(--up)}
 #tContent label:has(input[type=radio]:checked) .tc-type-opt,
@@ -217,6 +239,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div class="atab-group-label">عام</div>
       <div class="atabs">
         <button class="atb on" onclick="switchTab(this,'tStats')">📊 الإحصائيات</button>
+        <button class="atb" onclick="switchTab(this,'tAnalytics');loadAnalytics()">📈 التحليلات</button>
       </div>
     </div>
 
@@ -228,8 +251,10 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <button class="atb" onclick="switchTab(this,'tRec')">📋 إدارة الوصفات</button>
         <button class="atb" onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
         <button class="atb" onclick="switchTab(this,'tComments')">💬 التعليقات</button>
+        <button class="atb" onclick="switchTab(this,'tReports');loadReports()">🚩 البلاغات</button>
         <button class="atb" onclick="switchTab(this,'tPinned')">📌 وصفات مثبتة</button>
         <button class="atb" onclick="switchTab(this,'tRoastery')">🏪 المحامص</button>
+        <button class="atb" onclick="switchTab(this,'tTags')">🏷️ التاقات</button>
         <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 كاشف التكرار</button>
       </div>
     </div>
@@ -1244,6 +1269,132 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
+  <!-- ═══ التحليلات الداخلية ═══ -->
+  <div id="tAnalytics" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+      <div>
+        <h3 style="margin-bottom:4px">📈 التحليلات الداخلية</h3>
+        <p style="color:var(--t2);font-size:.82em">إحصائيات حية من Firebase — بدون أدوات خارجية</p>
+      </div>
+      <button class="btn bp bsm" onclick="loadAnalytics()">🔄 تحديث</button>
+    </div>
+
+    <!-- Stats cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:24px" id="analyticsCards">
+      <div class="ana-card"><div class="ana-val" id="anaRecipes">—</div><div class="ana-lbl">📋 إجمالي الوصفات</div></div>
+      <div class="ana-card"><div class="ana-val" id="anaRatings">—</div><div class="ana-lbl">⭐ إجمالي التقييمات</div></div>
+      <div class="ana-card"><div class="ana-val" id="anaComments">—</div><div class="ana-lbl">💬 إجمالي التعليقات</div></div>
+      <div class="ana-card"><div class="ana-val" id="anaRoasteries">—</div><div class="ana-lbl">🏪 المحامص</div></div>
+      <div class="ana-card"><div class="ana-val" id="anaBrewClicks">—</div><div class="ana-lbl">👆 نقرات التحضير</div></div>
+      <div class="ana-card"><div class="ana-val" id="anaAffClicks">—</div><div class="ana-lbl">🛒 نقرات الشراء</div></div>
+    </div>
+
+    <!-- Top recipes by brew clicks -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:.88em;font-weight:700;margin-bottom:14px;color:var(--t2)">🔥 أكثر الوصفات تحضيراً</div>
+      <div id="anaTopBrews" style="display:flex;flex-direction:column;gap:8px">
+        <div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">اضغط تحديث لتحميل البيانات</div>
+      </div>
+    </div>
+
+    <!-- Top rated -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:.88em;font-weight:700;margin-bottom:14px;color:var(--t2)">⭐ أعلى الوصفات تقييماً</div>
+      <div id="anaTopRated" style="display:flex;flex-direction:column;gap:8px">
+        <div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">اضغط تحديث لتحميل البيانات</div>
+      </div>
+    </div>
+
+    <!-- Roastery distribution -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:.88em;font-weight:700;margin-bottom:14px;color:var(--t2)">☕ توزيع الوصفات حسب المحمصة</div>
+      <div id="anaRoastDist" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+
+    <!-- Category distribution -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px">
+      <div style="font-size:.88em;font-weight:700;margin-bottom:14px;color:var(--t2)">📊 توزيع أنواع الوصفات</div>
+      <div id="anaCatDist" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+    </div>
+  </div>
+
+  <!-- ═══ البلاغات ═══ -->
+  <div id="tReports" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+      <div>
+        <h3 style="margin-bottom:4px">🚩 مركز البلاغات</h3>
+        <p style="color:var(--t2);font-size:.82em">بلاغات الزوار على الوصفات — راجعها وحدد مصيرها</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="loadReports()">🔄 تحديث</button>
+        <button class="btn bsm bd" onclick="clearResolvedReports()">🗑️ حذف المحلولة</button>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px" id="reportsFilter">
+      <button class="report-ftab on" onclick="filterReports('all',this)">الكل <span id="rCountAll" style="background:rgba(255,255,255,.15);padding:1px 7px;border-radius:8px;font-size:.85em">0</span></button>
+      <button class="report-ftab" onclick="filterReports('new',this)">🆕 جديدة <span id="rCountNew" style="background:rgba(245,87,108,.3);padding:1px 7px;border-radius:8px;font-size:.85em">0</span></button>
+      <button class="report-ftab" onclick="filterReports('resolved',this)">✅ محلولة <span id="rCountResolved" style="background:rgba(67,233,123,.2);padding:1px 7px;border-radius:8px;font-size:.85em">0</span></button>
+    </div>
+
+    <div id="reportsList">
+      <div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">اضغط تحديث لتحميل البلاغات</div>
+    </div>
+  </div>
+
+  <!-- ═══ التاقات ═══ -->
+  <div id="tTags" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+      <div>
+        <h3 style="margin-bottom:4px">🏷️ إدارة التاقات</h3>
+        <p style="color:var(--t2);font-size:.82em">أضف تاقات مخصصة للوصفات — يمكن للزوار التصفية بها</p>
+      </div>
+      <button class="btn bp bsm" onclick="saveTagsList()">💾 حفظ التاقات</button>
+    </div>
+
+    <!-- Add tag -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-size:.85em;font-weight:700;margin-bottom:10px">➕ إضافة تاق جديد</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <input class="form-input" id="newTagName" placeholder="اسم التاق — مثال: فروتي" style="flex:1;min-width:140px">
+        <input class="form-input" id="newTagEmoji" placeholder="إيموجي" style="width:70px;text-align:center">
+        <input type="color" id="newTagColor" value="#00A896" style="width:44px;height:44px;border-radius:8px;border:1px solid var(--br);cursor:pointer;padding:2px;background:none">
+        <button class="btn bp bsm" onclick="addTag()" style="white-space:nowrap">إضافة</button>
+      </div>
+      <!-- Preset suggestions -->
+      <div style="font-size:.75em;color:var(--t2);margin-bottom:8px">اقتراحات سريعة:</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${['🍓 فروتي','🫐 بري','🍫 شوكولاتة','🌸 زهري','☁️ ناعم','⚡ حامض','🌿 عشبي','🏔️ يمني','🌍 إثيوبي','🇨🇴 كولومبي','🌊 لاهوائي','✨ مغسول'].map(t => {
+          const [emoji, ...rest] = t.split(' '); const name = rest.join(' ');
+          return `<button onclick="quickAddTag('${emoji}','${name}')" style="padding:4px 10px;border-radius:20px;background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);color:var(--ta);font-size:.78em;cursor:pointer;font-family:inherit">${t}</button>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Tags list -->
+    <div style="font-size:.85em;font-weight:700;margin-bottom:10px;color:var(--t2)">التاقات الحالية:</div>
+    <div id="tagsList" style="display:flex;flex-wrap:wrap;gap:8px;min-height:60px;background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px">
+      <div style="color:var(--t2);font-size:.82em">لا توجد تاقات بعد — أضف من الأعلى</div>
+    </div>
+
+    <div style="height:1px;background:var(--br);margin:20px 0"></div>
+
+    <!-- Assign tags to recipes -->
+    <div>
+      <div style="font-size:.88em;font-weight:700;margin-bottom:10px">🔖 إضافة تاق لوصفة</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <input class="form-input" id="tagRecipeSearch" placeholder="ابحث عن وصفة..." style="flex:1" oninput="searchRecipesForTag(this.value)">
+      </div>
+      <div id="tagRecipeResults" style="display:none;max-height:200px;overflow-y:auto;border:1px solid var(--br);border-radius:10px;margin-bottom:10px"></div>
+      <div id="tagSelectedRecipe" style="display:none;background:rgba(0,168,150,.08);border:1px solid rgba(0,168,150,.3);border-radius:10px;padding:12px;margin-bottom:10px">
+        <div style="font-size:.85em;font-weight:700;margin-bottom:8px" id="tagSelName">—</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="tagSelTags"></div>
+        <button class="btn bp bsm" onclick="saveRecipeTags()" style="margin-top:10px">💾 حفظ تاقات الوصفة</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -1355,6 +1506,7 @@ function initFirebase() {
       renderAffList();
     });
     commentsRef = ref(db,'comments');
+    loadTags();
   } catch(e) {
     setFbStatus('err','خطأ: ' + e.message); return;
   }
@@ -3183,6 +3335,322 @@ window.scanDuplicates = function(){
   // Clean message
   document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
 };
+
+// ════════════════════════════════════════════
+// 📈 ANALYTICS
+// ════════════════════════════════════════════
+window.loadAnalytics = async function() {
+  if(!db) { toast('Firebase غير متصل', 'terr'); return; }
+
+  // Basic counts
+  document.getElementById('anaRecipes').textContent    = FB_RECIPES.length;
+  document.getElementById('anaRatings').textContent    = Object.keys(FB_RATINGS).length;
+  document.getElementById('anaRoasteries').textContent = Object.keys(FB_ROASTERIES).length;
+  let totalComments = 0;
+  Object.values(FB_COMMENTS).forEach(r => { if(typeof r==='object') totalComments += Object.keys(r).length; });
+  document.getElementById('anaComments').textContent = totalComments;
+
+  // Brew clicks
+  try {
+    const bcSnap = await get(ref(db,'brew_clicks'));
+    const bc = bcSnap.val() || {};
+    const totalBC = Object.values(bc).reduce((s,v)=>s+(v||0),0);
+    document.getElementById('anaBrewClicks').textContent = totalBC;
+
+    // Top 10 by brew clicks
+    const topBrews = Object.entries(bc)
+      .sort((a,b)=>b[1]-a[1]).slice(0,10);
+    const maxBC = topBrews[0]?.[1] || 1;
+    const brewEl = document.getElementById('anaTopBrews');
+    if(!topBrews.length) { brewEl.innerHTML='<div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">لا توجد بيانات بعد</div>'; }
+    else {
+      brewEl.innerHTML = topBrews.map(([key,cnt])=>{
+        const recipe = FB_RECIPES.find(r=>{ try{ return btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===key; }catch(e){return false;} });
+        const name = recipe ? str(recipe.name) : key.slice(0,20)+'…';
+        const pct = Math.round((cnt/maxBC)*100);
+        return `<div class="ana-bar-row">
+          <div class="ana-bar-label" title="${esc(name)}">${esc(name)}</div>
+          <div class="ana-bar-track">
+            <div class="ana-bar-fill" style="width:${pct}%"></div>
+            <div class="ana-bar-val">${cnt}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e){}
+
+  // Affiliate clicks
+  try {
+    const acSnap = await get(ref(db,'affiliate_clicks'));
+    const ac = acSnap.val() || {};
+    document.getElementById('anaAffClicks').textContent = Object.values(ac).reduce((s,v)=>s+(v||0),0);
+  } catch(e){}
+
+  // Top rated recipes
+  const rated = Object.entries(FB_RATINGS).map(([key,rd])=>{
+    let avg=0,cnt=0;
+    if(rd && rd._legacy){ avg=rd.count>0?rd.total/rd.count:0; cnt=rd.count||0; }
+    else if(rd){ const entries=Object.entries(rd).filter(([,v])=>typeof v==='number'&&v>=1&&v<=5); cnt=entries.length; avg=cnt>0?entries.reduce((s,[,v])=>s+v,0)/cnt:0; }
+    return {key,avg:Math.round(avg*10)/10,cnt};
+  }).filter(x=>x.avg>0&&x.cnt>=2).sort((a,b)=>b.avg-a.avg||b.cnt-a.cnt).slice(0,8);
+
+  const topRatedEl = document.getElementById('anaTopRated');
+  if(!rated.length) { topRatedEl.innerHTML='<div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">لا توجد تقييمات كافية بعد</div>'; }
+  else {
+    topRatedEl.innerHTML = rated.map(({key,avg,cnt})=>{
+      const recipe = FB_RECIPES.find(r=>{ try{ return btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===key; }catch(e){return false;} });
+      const name = recipe ? str(recipe.name) : '—';
+      const stars = '⭐'.repeat(Math.round(avg));
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.15);border-radius:8px;gap:8px;flex-wrap:wrap">
+        <div style="font-size:.85em;font-weight:700;flex:1">${esc(name)}</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <span style="color:#ffd700;font-size:.88em">${stars}</span>
+          <span style="font-size:.8em;font-weight:700;color:#ffd700">${avg}</span>
+          <span style="font-size:.72em;color:var(--t2)">(${cnt} تقييم)</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Roastery distribution
+  const roastCount = {};
+  FB_RECIPES.forEach(r=>{ const rn=r.roastery||'بدون محمصة'; roastCount[rn]=(roastCount[rn]||0)+1; });
+  const sortedRoast = Object.entries(roastCount).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  const maxR = sortedRoast[0]?.[1]||1;
+  document.getElementById('anaRoastDist').innerHTML = sortedRoast.map(([name,cnt])=>{
+    const pct = Math.round((cnt/maxR)*100);
+    return `<div class="ana-bar-row">
+      <div class="ana-bar-label">${esc(name)}</div>
+      <div class="ana-bar-track"><div class="ana-bar-fill" style="width:${pct}%"></div><div class="ana-bar-val">${cnt}</div></div>
+    </div>`;
+  }).join('');
+
+  // Category distribution
+  let hot=0,cold=0,srv=0;
+  FB_RECIPES.forEach(r=>{ const c=r.category||'hot'; if(c==='hot')hot++; else if(c==='cold')cold++; else srv++; });
+  const total = hot+cold+srv||1;
+  document.getElementById('anaCatDist').innerHTML = [
+    {label:'🔥 حارة', count:hot, color:'#ff6b6b'},
+    {label:'🧊 باردة', count:cold, color:'#48dbfb'},
+    {label:'⚙️ سيرفر', count:srv, color:'#a29bfe'},
+  ].map(({label,count,color})=>`
+    <div style="flex:1;min-width:100px;background:var(--up);border:1px solid var(--br);border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:1.6em;font-weight:900;color:${color}">${count}</div>
+      <div style="font-size:.75em;color:var(--t2);margin-top:3px">${label}</div>
+      <div style="font-size:.7em;color:var(--t2);margin-top:2px">${Math.round(count/total*100)}%</div>
+    </div>`).join('');
+};
+
+// ════════════════════════════════════════════
+// 🚩 REPORTS
+// ════════════════════════════════════════════
+let FB_REPORTS = {};
+let _reportsFilter = 'all';
+
+window.loadReports = async function() {
+  if(!db) { toast('Firebase غير متصل','terr'); return; }
+  try {
+    const snap = await get(ref(db,'reports'));
+    FB_REPORTS = snap.val() || {};
+    renderReports();
+  } catch(e) { toast('خطأ في تحميل البلاغات','terr'); }
+};
+
+function renderReports() {
+  const all      = Object.entries(FB_REPORTS);
+  const newReps  = all.filter(([,r])=>r.status==='new'||!r.status);
+  const resolved = all.filter(([,r])=>r.status==='resolved');
+
+  document.getElementById('rCountAll').textContent      = all.length;
+  document.getElementById('rCountNew').textContent      = newReps.length;
+  document.getElementById('rCountResolved').textContent = resolved.length;
+
+  let filtered = all;
+  if(_reportsFilter==='new')      filtered = newReps;
+  if(_reportsFilter==='resolved') filtered = resolved;
+
+  const el = document.getElementById('reportsList');
+  if(!filtered.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">لا توجد بلاغات</div>';
+    return;
+  }
+
+  filtered.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+
+  const typeIcons = { broken_link:'🔗', wrong_info:'📝', duplicate:'📋', other:'⚠️' };
+  el.innerHTML = filtered.map(([key,r])=>{
+    const isNew = r.status==='new'||!r.status;
+    const date  = r.ts ? new Date(r.ts).toLocaleDateString('ar-SA',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<div class="report-item ${isNew?'new':'resolved'}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:1.1em">${typeIcons[r.type]||'⚠️'}</span>
+          <span style="font-size:.88em;font-weight:700">${esc(r.typeLabel||r.type||'—')}</span>
+          <span class="report-badge ${isNew?'report-badge-new':'report-badge-resolved'}">${isNew?'🆕 جديد':'✅ محلول'}</span>
+        </div>
+        <div style="font-size:.72em;color:var(--t2)">${date}</div>
+      </div>
+      <div style="font-size:.82em;color:var(--t2);margin-bottom:6px">📋 الوصفة: <span style="color:var(--t1);font-weight:700">${esc(r.recipeName||'—')}</span></div>
+      ${r.note ? `<div style="font-size:.8em;background:var(--bg);border-radius:7px;padding:8px 10px;color:var(--t2);margin-bottom:8px">${esc(r.note)}</div>` : ''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${isNew ? `<button class="btn bsm bg" onclick="resolveReport('${key}')">✅ تم الحل</button>` : ''}
+        <button class="btn bsm" style="background:rgba(245,87,108,.1);border:1px solid rgba(245,87,108,.3);color:#f5576c" onclick="deleteReport('${key}')">🗑️ حذف</button>
+        ${r.recipeKey ? `<button class="btn bsm bgray" onclick="editRec('${r.recipeKey}')">✏️ تعديل الوصفة</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.filterReports = function(filter, btn) {
+  _reportsFilter = filter;
+  document.querySelectorAll('.report-ftab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderReports();
+};
+
+window.resolveReport = function(key) {
+  set(ref(db,'reports/'+key+'/status'),'resolved')
+    .then(()=>{ FB_REPORTS[key].status='resolved'; renderReports(); toast('تم تحديد البلاغ كمحلول ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+window.deleteReport = function(key) {
+  if(!confirm('حذف هذا البلاغ؟')) return;
+  remove(ref(db,'reports/'+key))
+    .then(()=>{ delete FB_REPORTS[key]; renderReports(); toast('تم الحذف ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+window.clearResolvedReports = function() {
+  const resolved = Object.entries(FB_REPORTS).filter(([,r])=>r.status==='resolved');
+  if(!resolved.length) { toast('لا توجد بلاغات محلولة'); return; }
+  if(!confirm(`حذف ${resolved.length} بلاغ محلول؟`)) return;
+  Promise.all(resolved.map(([key])=>remove(ref(db,'reports/'+key))))
+    .then(()=>{ resolved.forEach(([key])=>delete FB_REPORTS[key]); renderReports(); toast('تم الحذف ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+// ════════════════════════════════════════════
+// 🏷️ TAGS
+// ════════════════════════════════════════════
+let FB_TAGS = [];
+let _selectedTagRecipeKey = null;
+let _selectedTagRecipeTags = [];
+
+// Load tags on init
+function loadTags() {
+  if(!db) return;
+  onValue(ref(db,'tags'), snap=>{
+    FB_TAGS = snap.val() || [];
+    if(!Array.isArray(FB_TAGS)) FB_TAGS = Object.values(FB_TAGS);
+    renderTagsList();
+  },()=>{});
+}
+
+function renderTagsList() {
+  const el = document.getElementById('tagsList');
+  if(!el) return;
+  if(!FB_TAGS.length) {
+    el.innerHTML = '<div style="color:var(--t2);font-size:.82em">لا توجد تاقات بعد — أضف من الأعلى</div>';
+    return;
+  }
+  el.innerHTML = FB_TAGS.map((tag,i)=>`
+    <span class="tag-chip" style="background:${tag.color}22;border-color:${tag.color}66;color:${tag.color}">
+      ${tag.emoji||''} ${esc(tag.name)}
+      <button class="tag-chip-del" onclick="removeTag(${i})" title="حذف">✕</button>
+    </span>`).join('');
+}
+
+window.addTag = function() {
+  const name  = document.getElementById('newTagName').value.trim();
+  const emoji = document.getElementById('newTagEmoji').value.trim();
+  const color = document.getElementById('newTagColor').value;
+  if(!name) { toast('أدخل اسم التاق ❗','terr'); return; }
+  if(FB_TAGS.find(t=>t.name===name)) { toast('هذا التاق موجود بالفعل','terr'); return; }
+  FB_TAGS.push({name,emoji,color});
+  saveTagsList(true);
+  document.getElementById('newTagName').value='';
+  document.getElementById('newTagEmoji').value='';
+};
+
+window.quickAddTag = function(emoji,name) {
+  if(FB_TAGS.find(t=>t.name===name)) { toast('موجود بالفعل'); return; }
+  const colors = ['#00A896','#4A90E2','#E07B39','#9B59B6','#E74C3C','#27AE60','#F39C12','#1ABC9C'];
+  const color = colors[FB_TAGS.length % colors.length];
+  FB_TAGS.push({name,emoji,color});
+  saveTagsList(true);
+};
+
+window.removeTag = function(i) {
+  if(!confirm(`حذف تاق "${FB_TAGS[i]?.name}"؟`)) return;
+  FB_TAGS.splice(i,1);
+  saveTagsList(true);
+};
+
+window.saveTagsList = function(silent=false) {
+  if(!db) { toast('Firebase غير متصل','terr'); return; }
+  set(ref(db,'tags'), FB_TAGS)
+    .then(()=>{ renderTagsList(); if(!silent) toast('تم حفظ التاقات ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+window.searchRecipesForTag = function(q) {
+  const el = document.getElementById('tagRecipeResults');
+  if(!q.trim()) { el.style.display='none'; return; }
+  const matches = FB_RECIPES.filter(r=>(str(r.name)+' '+str(r.author)).toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  if(!matches.length) { el.style.display='none'; return; }
+  el.style.display='block';
+  el.innerHTML = matches.map(r=>`
+    <div onclick="selectRecipeForTag('${r._fbKey}')" style="padding:10px 14px;cursor:pointer;font-size:.85em;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;transition:.15s" onmouseover="this.style.background='var(--up)'" onmouseout="this.style.background=''">
+      <span>${esc(str(r.name))}</span>
+      <span style="font-size:.72em;color:var(--t2)">${esc(str(r.author||''))}</span>
+    </div>`).join('');
+};
+
+window.selectRecipeForTag = async function(fbKey) {
+  const r = FB_RECIPES.find(x=>x._fbKey===fbKey);
+  if(!r) return;
+  _selectedTagRecipeKey = fbKey;
+  document.getElementById('tagRecipeResults').style.display='none';
+  document.getElementById('tagRecipeSearch').value = str(r.name);
+
+  // Load existing tags for this recipe
+  try {
+    const snap = await get(ref(db,'recipe_tags/'+fbKey));
+    _selectedTagRecipeTags = snap.val() || [];
+    if(!Array.isArray(_selectedTagRecipeTags)) _selectedTagRecipeTags=[];
+  } catch(e) { _selectedTagRecipeTags=[]; }
+
+  document.getElementById('tagSelName').textContent = str(r.name);
+  renderRecipeTagPicker();
+  document.getElementById('tagSelectedRecipe').style.display='block';
+};
+
+function renderRecipeTagPicker() {
+  const el = document.getElementById('tagSelTags');
+  if(!FB_TAGS.length) { el.innerHTML='<div style="color:var(--t2);font-size:.82em">لا توجد تاقات — أضفها أولاً</div>'; return; }
+  el.innerHTML = FB_TAGS.map(tag=>{
+    const active = _selectedTagRecipeTags.includes(tag.name);
+    return `<span onclick="toggleRecipeTag('${esc(tag.name)}')" class="tag-chip" style="background:${active?tag.color+'33':'transparent'};border-color:${active?tag.color:tag.color+'44'};color:${active?tag.color:tag.color+'99'};cursor:pointer;user-select:none">
+      ${tag.emoji||''} ${esc(tag.name)} ${active?'✓':''}
+    </span>`;
+  }).join('');
+}
+
+window.toggleRecipeTag = function(name) {
+  const i = _selectedTagRecipeTags.indexOf(name);
+  if(i>=0) _selectedTagRecipeTags.splice(i,1);
+  else _selectedTagRecipeTags.push(name);
+  renderRecipeTagPicker();
+};
+
+window.saveRecipeTags = function() {
+  if(!_selectedTagRecipeKey||!db) return;
+  set(ref(db,'recipe_tags/'+_selectedTagRecipeKey), _selectedTagRecipeTags)
+    .then(()=>toast('تم حفظ تاقات الوصفة ✅'))
+    .catch(()=>toast('خطأ','terr'));
+};
+
 </script>
 </body>
 </html>
