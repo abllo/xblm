@@ -41,7 +41,18 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .fb-lbl{font-size:.78em;color:var(--t2)}
 .acts{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.atabs-wrap{display:flex;flex-direction:column;gap:0;margin-bottom:16px;background:var(--card);border-radius:14px;border:1px solid var(--br);overflow:hidden}
+.atab-group{padding:10px 14px;border-bottom:1px solid var(--br)}
+.atab-group:last-child{border-bottom:none}
+.atab-group-label{font-size:.7em;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-right:2px}
+/* Site settings sub-tabs */
+.site-tab-btn{padding:8px 16px;border-radius:9px;background:var(--up);border:1.5px solid var(--br);color:var(--t2);font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.site-tab-btn.active{background:var(--gr);color:#fff;border-color:transparent}
+.site-tab-btn:hover:not(.active){border-color:var(--ta);color:var(--t1)}
+/* Settings sections */
+.settings-section{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px}
+.settings-section-title{font-size:.82em;font-weight:800;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:6px}
 .atb{padding:10px 16px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
 .atb.on{background:var(--gr);color:#fff;border-color:transparent}
 .atb:hover:not(.on){border-color:var(--ta)}
@@ -199,24 +210,60 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   </div>
 
   <!-- Tabs -->
-  <div class="atabs">
-    <button class="atb on" onclick="switchTab(this,'tStats')">📊 إحصائيات</button>
-    <button class="atb" onclick="switchTab(this,'tAdd')">➕ إضافة وصفة</button>
-    <button class="atb" onclick="switchTab(this,'tRec')">📝 إدارة الوصفات</button>
-    <button class="atb" onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
-    <button class="atb" onclick="switchTab(this,'tComments')">💬 التعليقات</button>
-    <button class="atb" onclick="switchTab(this,'tAds')">📢 الإعلانات</button>
-    <button class="atb" onclick="switchTab(this,'tPinned')">📌 وصفات مثبتة</button>
-    <button class="atb" onclick="switchTab(this,'tPromo')">🎫 أكواد الخصم</button>
-    <button class="atb" onclick="switchTab(this,'tSite')">⚙️ إعدادات الموقع</button>
-    <button class="atb" onclick="switchTab(this,'tSheet')">📊 مزامنة الشيت</button>
-    <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد</button>
-    <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير</button>
-    <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
-    <button class="atb" onclick="switchTab(this,'tRoastery')">☕ إدارة المحامص</button>
-    <button class="atb" onclick="switchTab(this,'tAff')">🛒 الأفلييت</button>
-    <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 مكررات الروابط</button>
-    <button class="atb" onclick="switchTab(this,'tContent')">🧠 مولّد المحتوى</button>
+  <div class="atabs-wrap">
+
+    <!-- ── القسم العام ── -->
+    <div class="atab-group">
+      <div class="atab-group-label">عام</div>
+      <div class="atabs">
+        <button class="atb on" onclick="switchTab(this,'tStats')">📊 الإحصائيات</button>
+      </div>
+    </div>
+
+    <!-- ── قسم الوصفات ── -->
+    <div class="atab-group">
+      <div class="atab-group-label">☕ الوصفات</div>
+      <div class="atabs">
+        <button class="atb" onclick="switchTab(this,'tAdd')">➕ إضافة وصفة</button>
+        <button class="atb" onclick="switchTab(this,'tRec')">📋 إدارة الوصفات</button>
+        <button class="atb" onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
+        <button class="atb" onclick="switchTab(this,'tComments')">💬 التعليقات</button>
+        <button class="atb" onclick="switchTab(this,'tPinned')">📌 وصفات مثبتة</button>
+        <button class="atb" onclick="switchTab(this,'tRoastery')">🏪 المحامص</button>
+        <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 كاشف التكرار</button>
+      </div>
+    </div>
+
+    <!-- ── قسم التسويق ── -->
+    <div class="atab-group">
+      <div class="atab-group-label">📣 التسويق</div>
+      <div class="atabs">
+        <button class="atb" onclick="switchTab(this,'tAff')">🏷️ روابط الشراء</button>
+        <button class="atb" onclick="switchTab(this,'tPromo')">🎫 أكواد الخصم</button>
+        <button class="atb" onclick="switchTab(this,'tAds')">📢 الإعلانات</button>
+        <button class="atb" onclick="switchTab(this,'tContent')">🧠 مولّد المحتوى</button>
+      </div>
+    </div>
+
+    <!-- ── قسم البيانات ── -->
+    <div class="atab-group">
+      <div class="atab-group-label">📁 البيانات</div>
+      <div class="atabs">
+        <button class="atb" onclick="switchTab(this,'tSheet')">🔄 مزامنة ملف Excel</button>
+        <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد Excel</button>
+        <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير البيانات</button>
+      </div>
+    </div>
+
+    <!-- ── قسم الإعدادات ── -->
+    <div class="atab-group">
+      <div class="atab-group-label">⚙️ الإعدادات</div>
+      <div class="atabs">
+        <button class="atb" onclick="switchTab(this,'tSite')">⚙️ إعدادات الموقع</button>
+        <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- STATS -->
@@ -399,187 +446,323 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
   <!-- SITE SETTINGS -->
   <div id="tSite" class="acard">
-    <h3 style="margin-bottom:16px">⚙️ إعدادات الموقع (سحابية)</h3>
-    <p style="color:var(--t2);font-size:.85em;margin-bottom:16px">تغيير هذه الإعدادات يؤثر فوراً على جميع زوار الموقع دون الحاجة للمس الكود.</p>
-    
-    <div class="fg">
-      <label>🏷️ عنوان الموقع (Site Title)</label>
-      <input class="form-input" id="siteTitle" placeholder="Xbloom Recipes | وصفات اكس بلوم">
+    <h3 style="margin-bottom:6px">⚙️ إعدادات الموقع</h3>
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:20px">جميع التغييرات تظهر للزوار فوراً دون الحاجة للمس الكود.</p>
+
+    <!-- ══ Sub-tabs ══ -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px" id="siteTabs">
+      <button type="button" class="site-tab-btn active" onclick="showSiteTab('sTabGeneral',this)">🌐 عام</button>
+      <button type="button" class="site-tab-btn" onclick="showSiteTab('sTabSEO',this)">🔍 SEO وتحليلات</button>
+      <button type="button" class="site-tab-btn" onclick="showSiteTab('sTabDisplay',this)">🎛️ العرض</button>
+      <button type="button" class="site-tab-btn" onclick="showSiteTab('sTabPages',this)">📄 صفحات</button>
+      <button type="button" class="site-tab-btn" onclick="showSiteTab('sTabMaint',this)">🚦 صيانة</button>
     </div>
-    <div class="fg">
-      <label>📝 الوصف التعريفي (Subtitle)</label>
-      <input class="form-input" id="siteSubtitle" placeholder="وصفات مجتمع اكس بلوم">
-    </div>
-    <div class="section-divider"></div>
-    <h4 style="margin-bottom:14px;color:var(--t2);display:flex;align-items:center;gap:8px">
-      🖼️ البنرات الإعلانية
-      <span style="font-size:.72em;font-weight:400;color:var(--t2);background:rgba(0,168,150,.1);padding:2px 8px;border-radius:6px">صورة حرة بحجم مناسب للجوال والكمبيوتر</span>
-    </h4>
-    <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.8em">
-      <div style="font-weight:700;margin-bottom:8px;color:var(--ta)">📐 المقاسات المثالية للجودة العالية:</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <div style="background:var(--card);border-radius:8px;padding:8px 10px">
-          <div style="font-weight:700;margin-bottom:3px">📌 بنر الهيدر</div>
-          <div style="color:var(--ta);font-weight:700">1920 × 400 px</div>
-          <div style="color:var(--t2)">أو 1200 × 300 (كافي)</div>
+
+    <!-- ══ TAB: عام ══ -->
+    <div id="sTabGeneral" class="site-tab-content">
+      <div class="settings-section">
+        <div class="settings-section-title">🏷️ هوية الموقع</div>
+        <div class="fg"><label>عنوان الموقع</label>
+          <input class="form-input" id="siteTitle" placeholder="Xbloom Recipes | وصفات اكس بلوم">
         </div>
-        <div style="background:var(--card);border-radius:8px;padding:8px 10px">
-          <div style="font-weight:700;margin-bottom:3px">📌 بنر الفوتر</div>
-          <div style="color:var(--ta);font-weight:700">1920 × 250 px</div>
-          <div style="color:var(--t2)">أو 1200 × 200 (كافي)</div>
+        <div class="fg"><label>الوصف التعريفي</label>
+          <input class="form-input" id="siteSubtitle" placeholder="وصفات مجتمع اكس بلوم">
+        </div>
+        <div class="fg"><label>📧 بريد التواصل</label>
+          <input class="form-input" id="siteEmail" placeholder="info@ab-s.me" type="email">
+          <div style="font-size:.74em;color:var(--t2);margin-top:4px">يظهر في صفحة "اتصل بنا" وفي Footer الموقع</div>
+        </div>
+        <div class="fg"><label>📱 اسم التطبيق (PWA)</label>
+          <input class="form-input" id="sitePwaName" placeholder="xBloom Recipes">
+          <div style="font-size:.74em;color:var(--t2);margin-top:4px">الاسم الذي يظهر على شاشة الهاتف عند تثبيت الموقع كتطبيق</div>
         </div>
       </div>
-      <div style="color:var(--t2)">✅ العرض يمتد تلقائياً بعرض الشاشة كاملاً · الارتفاع يتناسب أوتوماتيك · الصورة تُضغط بجودة عالية</div>
-    </div>
 
-    <!-- TOP BANNER -->
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-        <b style="font-size:.9em">📌 بنر الهيدر (أعلى الصفحة)</b>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" id="bannerTopEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
-          <span style="font-size:.82em">تفعيل وإظهار</span>
-        </label>
+      <div class="settings-section">
+        <div class="settings-section-title">📝 نصوص الـ Footer</div>
+        <div class="fg"><label>نص حقوق النشر</label>
+          <input class="form-input" id="footerCopy" placeholder="© 2026 Xbloom Recipes">
+        </div>
+        <div class="fg"><label>نص ثانوي</label>
+          <input class="form-input" id="footerSub" placeholder="جميع حقوق الوصفات محفوظة لمنشئيها">
+        </div>
+        <div class="fg"><label>اسم المطوّر</label>
+          <input class="form-input" id="footerDev" placeholder="ABDULELAH ALSUFAYAN">
+        </div>
       </div>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع من الجهاز</button>
-        <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
-        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
-      </div>
-      <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:8px">
-      <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
-      <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
-      <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
-      </div>
-    </div>
 
-    <!-- BOTTOM BANNER -->
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-        <b style="font-size:.9em">📌 بنر الفوتر (أسفل الصفحة)</b>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" id="bannerBottomEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
-          <span style="font-size:.82em">تفعيل وإظهار</span>
-        </label>
-      </div>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع من الجهاز</button>
-        <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
-        <span style="font-size:.78em;color:var(--t2);align-self:center">أو أدخل رابط مباشر:</span>
-      </div>
-      <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:8px">
-      <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر على البنر (اختياري)" style="margin-bottom:8px">
-      <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:10px">
-      <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-        <div style="padding:6px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة — العرض الفعلي سيكون بكامل عرض الصفحة</div>
+      <div class="settings-section">
+        <div class="settings-section-title">📢 شريط الإشعارات العلوي</div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="annoEnabled" onchange="saveAnnoSetting()">
+          <label class="toggle-label" for="annoEnabled">تفعيل شريط الإشعارات</label>
+        </div>
+        <div class="fg"><label>نص الإشعار</label>
+          <input class="form-input" id="annoText" placeholder="مثال: 🎉 أضفنا وصفات جديدة!">
+        </div>
+        <div class="fg"><label>نوع الإشعار</label>
+          <select class="form-input" id="annoType">
+            <option value="info">💙 معلومة (أزرق)</option>
+            <option value="success">💚 نجاح (أخضر)</option>
+            <option value="warning">🟡 تحذير (أصفر)</option>
+            <option value="promo">🎫 عرض (تدرج)</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <div class="section-divider"></div>
-    <h4 style="margin-bottom:12px;color:var(--t2)">نصوص الـ Footer</h4>
-    <div class="fg">
-      <label>نص حقوق النشر</label>
-      <input class="form-input" id="footerCopy" placeholder="© 2026 Xbloom Recipes">
-    </div>
-    <div class="fg">
-      <label>نص ثانوي</label>
-      <input class="form-input" id="footerSub" placeholder="جميع حقوق الوصفات محفوظة لمنشئيها">
-    </div>
-    <div class="fg">
-      <label>اسم المطوّر / العلامة</label>
-      <input class="form-input" id="footerDev" placeholder="ABDULELAH ALSUFAYAN">
-    </div>
-    <div class="section-divider"></div>
-    <h4 style="margin-bottom:12px;color:var(--t2)">📢 Announcement Bar — شريط الإشعارات العلوي</h4>
-    <div class="toggle-switch">
-      <input type="checkbox" id="annoEnabled" onchange="saveAnnoSetting()">
-      <label class="toggle-label" for="annoEnabled">تفعيل شريط الإشعارات</label>
-    </div>
-    <div class="fg">
-      <label>نص الإشعار</label>
-      <input class="form-input" id="annoText" placeholder="مثال: 🎉 أضفنا وصفات جديدة! شاركنا وصفتك المفضلة">
-    </div>
-    <div class="fg">
-      <label>نوع الإشعار</label>
-      <select class="form-input" id="annoType">
-        <option value="info">💙 معلومة (أزرق)</option>
-        <option value="success">💚 نجاح (أخضر)</option>
-        <option value="warning">🟡 تحذير (أصفر)</option>
-        <option value="promo">🎫 عرض (تدرج)</option>
-      </select>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- PAGES MANAGEMENT -->
-    <h4 style="margin-bottom:14px;color:var(--t2);display:flex;align-items:center;gap:8px">
-      📄 إدارة صفحات الموقع
-      <span style="font-size:.72em;font-weight:400;color:var(--t2);background:rgba(0,168,150,.1);padding:2px 8px;border-radius:6px">من نحن · اتصل بنا · سياسة الخصوصية</span>
-    </h4>
-
-    <!-- Tabs selector -->
-    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap" id="pgTabBtns">
-      <button type="button" onclick="showPgTab('about',this)" class="pg-tab-btn on" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:rgba(0,168,150,.15);border:1.5px solid rgba(0,168,150,.4);color:var(--ta)">☕ من نحن</button>
-      <button type="button" onclick="showPgTab('contact',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">✉️ اتصل بنا</button>
-      <button type="button" onclick="showPgTab('privacy',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">🔒 سياسة الخصوصية</button>
-    </div>
-
-    <!-- ABOUT TAB -->
-    <div id="pg-about" class="pg-tab-content" style="display:block">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-        <b style="font-size:.88em">☕ صفحة «من نحن»</b>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" id="pg_about_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
-          <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
-        </label>
+    <!-- ══ TAB: SEO وتحليلات ══ -->
+    <div id="sTabSEO" class="site-tab-content" style="display:none">
+      <div class="settings-section">
+        <div class="settings-section-title">🔍 Google Search Console</div>
+        <div class="fg"><label>كود التحقق (Verification Meta Tag)</label>
+          <input class="form-input" id="seoGscCode" placeholder="مثال: 5wFrgh3GGc257ZviftC61UnKG0zcvStnDB1acYRosCA">
+          <div style="font-size:.74em;color:var(--t2);margin-top:4px">المحتوى فقط من <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">content="..."</code> في الـ meta tag</div>
+        </div>
       </div>
-      <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_about_title" placeholder="من نحن"></div>
-      <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_about_subtitle" placeholder="قصة Xbloom Recipes ورحلة القهوة"></div>
-      <div class="fg">
-        <label>المحتوى النصي (HTML مسموح)</label>
-        <textarea class="form-input" id="pg_about_body" rows="5" placeholder="اكتب محتوى صفحة من نحن هنا..." style="resize:vertical;font-size:.84em;line-height:1.6"></textarea>
+
+      <div class="settings-section">
+        <div class="settings-section-title">📊 Google Analytics</div>
+        <div class="fg"><label>Measurement ID</label>
+          <input class="form-input" id="seoGaId" placeholder="مثال: G-XXXXXXXXXX" style="font-family:monospace">
+          <div style="font-size:.74em;color:var(--t2);margin-top:4px">بعد الحفظ يُضاف كود Analytics تلقائياً لكل صفحة</div>
+        </div>
+        <div id="gaStatus" style="display:none;padding:8px 12px;border-radius:8px;font-size:.78em;margin-top:6px"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🌐 SEO متقدم</div>
+        <div class="fg"><label>رابط الموقع الرسمي (Canonical URL)</label>
+          <input class="form-input" id="seoCanonical" placeholder="https://xblm.ab-s.me" style="font-family:monospace;direction:ltr;text-align:left">
+        </div>
+        <div class="fg"><label>كلمات مفتاحية إضافية</label>
+          <input class="form-input" id="seoKeywords" placeholder="وصفات xbloom, قهوة مختصة, xBloom Studio...">
+          <div style="font-size:.74em;color:var(--t2);margin-top:4px">افصل بينها بفاصلة</div>
+        </div>
+        <div class="fg"><label>صورة المشاركة (OG Image)</label>
+          <input class="form-input" id="seoOgImage" placeholder="https://xblm.ab-s.me/og-image.png" style="direction:ltr;text-align:left">
+          <div style="font-size:.74em;color:var(--t2);margin-top:4px">تظهر عند مشاركة الموقع على واتساب وتويتر — المقاس المثالي 1200×630</div>
+        </div>
       </div>
     </div>
 
-    <!-- CONTACT TAB -->
-    <div id="pg-contact" class="pg-tab-content" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-        <b style="font-size:.88em">✉️ صفحة «اتصل بنا»</b>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" id="pg_contact_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
-          <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
-        </label>
+    <!-- ══ TAB: العرض ══ -->
+    <div id="sTabDisplay" class="site-tab-content" style="display:none">
+      <div class="settings-section">
+        <div class="settings-section-title">📋 إعدادات عرض الوصفات</div>
+        <div class="fr2">
+          <div class="fg"><label>عدد الوصفات في الصفحة (افتراضي)</label>
+            <select class="form-input" id="displayPerPage">
+              <option value="12">12 وصفة</option>
+              <option value="24" selected>24 وصفة</option>
+              <option value="48">48 وصفة</option>
+              <option value="96">96 وصفة</option>
+            </select>
+          </div>
+          <div class="fg"><label>ترتيب الوصفات الافتراضي</label>
+            <select class="form-input" id="displaySort">
+              <option value="newest">🆕 الأحدث إضافةً</option>
+              <option value="top">⭐ الأعلى تقييماً</option>
+              <option value="popular">🔥 الأكثر تحضيراً</option>
+              <option value="default">📋 الافتراضي</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_contact_title" placeholder="اتصل بنا"></div>
-      <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_contact_subtitle" placeholder="نرد على جميع الاستفسارات خلال 48 ساعة"></div>
-      <div class="fg"><label>📧 البريد الإلكتروني المعروض</label><input class="form-input" id="pg_contact_email" placeholder="info@ab-s.me"></div>
-      <div class="fg">
-        <label>محتوى إضافي (HTML مسموح)</label>
-        <textarea class="form-input" id="pg_contact_body" rows="4" placeholder="نص إضافي يظهر في صفحة التواصل..." style="resize:vertical;font-size:.84em;line-height:1.6"></textarea>
+
+      <div class="settings-section">
+        <div class="settings-section-title">💬 تفعيل / إيقاف الميزات</div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="featureComments" checked>
+          <label class="toggle-label" for="featureComments">💬 تفعيل التعليقات على الوصفات</label>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="featureRatings" checked>
+          <label class="toggle-label" for="featureRatings">⭐ تفعيل التقييمات على الوصفات</label>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="featureShare" checked>
+          <label class="toggle-label" for="featureShare">📤 تفعيل مشاركة الوصفات</label>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="featureAdd" checked>
+          <label class="toggle-label" for="featureAdd">➕ السماح للزوار بإضافة وصفات</label>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="featureReports" checked>
+          <label class="toggle-label" for="featureReports">🚩 تفعيل البلاغات على الوصفات</label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🖼️ بنرات الموقع</div>
+        <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em">
+          <div style="font-weight:700;margin-bottom:6px;color:var(--ta)">📐 المقاسات المثالية:</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:var(--card);border-radius:8px;padding:8px 10px">
+              <div style="font-weight:700;margin-bottom:2px">📌 بنر الهيدر</div>
+              <div style="color:var(--ta);font-weight:700">1920 × 400 px</div>
+            </div>
+            <div style="background:var(--card);border-radius:8px;padding:8px 10px">
+              <div style="font-weight:700;margin-bottom:2px">📌 بنر الفوتر</div>
+              <div style="color:var(--ta);font-weight:700">1920 × 250 px</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOP BANNER -->
+        <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px;margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+            <b style="font-size:.88em">📌 بنر الهيدر (أعلى الصفحة)</b>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="bannerTopEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
+              <span style="font-size:.82em">تفعيل وإظهار</span>
+            </label>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع صورة</button>
+            <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
+            <span style="font-size:.78em;color:var(--t2);align-self:center">أو رابط مباشر:</span>
+          </div>
+          <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:6px">
+          <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر (اختياري)" style="margin-bottom:6px">
+          <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:8px">
+          <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+            <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+            <div style="padding:5px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة</div>
+          </div>
+        </div>
+
+        <!-- BOTTOM BANNER -->
+        <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+            <b style="font-size:.88em">📌 بنر الفوتر (أسفل الصفحة)</b>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="bannerBottomEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
+              <span style="font-size:.82em">تفعيل وإظهار</span>
+            </label>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع صورة</button>
+            <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
+            <span style="font-size:.78em;color:var(--t2);align-self:center">أو رابط مباشر:</span>
+          </div>
+          <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:6px">
+          <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر (اختياري)" style="margin-bottom:6px">
+          <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:8px">
+          <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+            <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+            <div style="padding:5px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- PRIVACY TAB -->
-    <div id="pg-privacy" class="pg-tab-content" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-        <b style="font-size:.88em">🔒 صفحة «سياسة الخصوصية»</b>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" id="pg_privacy_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
-          <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
-        </label>
-      </div>
-      <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_privacy_title" placeholder="سياسة الخصوصية"></div>
-      <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_privacy_subtitle" placeholder="آخر تحديث: مارس 2026"></div>
-      <div class="fg">
-        <label>نص السياسة الكامل (HTML مسموح)</label>
-        <textarea class="form-input" id="pg_privacy_body" rows="8" placeholder="اكتب سياسة الخصوصية هنا..." style="resize:vertical;font-size:.84em;line-height:1.6"></textarea>
+    <!-- ══ TAB: صفحات ══ -->
+    <div id="sTabPages" class="site-tab-content" style="display:none">
+      <div class="settings-section">
+        <div class="settings-section-title">📄 إدارة صفحات الموقع</div>
+        <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap" id="pgTabBtns">
+          <button type="button" onclick="showPgTab('about',this)" class="pg-tab-btn on" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:rgba(0,168,150,.15);border:1.5px solid rgba(0,168,150,.4);color:var(--ta)">☕ من نحن</button>
+          <button type="button" onclick="showPgTab('contact',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">✉️ اتصل بنا</button>
+          <button type="button" onclick="showPgTab('privacy',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">🔒 سياسة الخصوصية</button>
+        </div>
+        <div id="pg-about" class="pg-tab-content" style="display:block">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+            <b style="font-size:.88em">☕ صفحة «من نحن»</b>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="pg_about_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
+              <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
+            </label>
+          </div>
+          <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_about_title" placeholder="من نحن"></div>
+          <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_about_subtitle" placeholder="قصة Xbloom Recipes ورحلة القهوة"></div>
+          <div class="fg"><label>المحتوى النصي (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_about_body" rows="5" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="اكتب محتوى صفحة من نحن هنا..."></textarea>
+          </div>
+        </div>
+        <div id="pg-contact" class="pg-tab-content" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+            <b style="font-size:.88em">✉️ صفحة «اتصل بنا»</b>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="pg_contact_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
+              <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
+            </label>
+          </div>
+          <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_contact_title" placeholder="اتصل بنا"></div>
+          <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_contact_subtitle" placeholder="نرد على جميع الاستفسارات خلال 48 ساعة"></div>
+          <div class="fg"><label>📧 البريد الإلكتروني المعروض</label><input class="form-input" id="pg_contact_email" placeholder="info@ab-s.me"></div>
+          <div class="fg"><label>محتوى إضافي (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_contact_body" rows="4" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="نص إضافي يظهر في صفحة التواصل..."></textarea>
+          </div>
+        </div>
+        <div id="pg-privacy" class="pg-tab-content" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+            <b style="font-size:.88em">🔒 صفحة «سياسة الخصوصية»</b>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="pg_privacy_hidden" style="width:15px;height:15px;accent-color:var(--ta)">
+              <span style="font-size:.8em;color:#f87183">🚫 إخفاء من القائمة</span>
+            </label>
+          </div>
+          <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_privacy_title" placeholder="سياسة الخصوصية"></div>
+          <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_privacy_subtitle" placeholder="آخر تحديث: مارس 2026"></div>
+          <div class="fg"><label>نص السياسة الكامل (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_privacy_body" rows="8" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="اكتب سياسة الخصوصية هنا..."></textarea>
+          </div>
+        </div>
       </div>
     </div>
 
-    <button class="btn bp bbl" onclick="saveSiteSettings()" style="margin-top:6px">💾 حفظ جميع الإعدادات</button>
+    <!-- ══ TAB: صيانة ══ -->
+    <div id="sTabMaint" class="site-tab-content" style="display:none">
+      <div class="settings-section">
+        <div class="settings-section-title">🚦 وضع الصيانة</div>
+        <div class="toggle-switch" style="border-color:rgba(245,87,108,.3)">
+          <input type="checkbox" id="maintenanceMode">
+          <label class="toggle-label" for="maintenanceMode" style="color:#f87183">🚧 تفعيل وضع الصيانة (يُخفي الموقع عن الزوار)</label>
+        </div>
+        <div class="fg" style="margin-top:10px"><label>رسالة الصيانة</label>
+          <input class="form-input" id="maintenanceMsg" placeholder="الموقع تحت الصيانة، سنعود قريباً ☕">
+        </div>
+        <div style="background:rgba(245,87,108,.06);border:1px solid rgba(245,87,108,.2);border-radius:10px;padding:12px;font-size:.8em;color:var(--t2);margin-top:8px">
+          ⚠️ عند التفعيل يرى الزوار رسالة الصيانة فقط — أنت كأدمن تظل تشتغل بشكل طبيعي
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">📋 نسخة احتياطية سريعة</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn bp bsm" onclick="expBackup()">💾 نسخ احتياطي كامل الآن</button>
+          <button class="btn bgray bsm" onclick="expJSON()">📄 تصدير JSON</button>
+        </div>
+        <div style="font-size:.74em;color:var(--t2);margin-top:8px">يُنصح بعمل نسخة احتياطية قبل أي تغييرات كبيرة</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">🔢 إحصائيات سريعة</div>
+        <div id="maintStats" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">
+          <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:1.4em;font-weight:900;color:var(--ta)" id="mStatRecipes">—</div>
+            <div style="font-size:.72em;color:var(--t2);margin-top:3px">📋 الوصفات</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:1.4em;font-weight:900;color:#ffd700" id="mStatRatings">—</div>
+            <div style="font-size:.72em;color:var(--t2);margin-top:3px">⭐ التقييمات</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:1.4em;font-weight:900;color:#4A90E2" id="mStatComments">—</div>
+            <div style="font-size:.72em;color:var(--t2);margin-top:3px">💬 التعليقات</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:1.4em;font-weight:900;color:#43e97b" id="mStatRoast">—</div>
+            <div style="font-size:.72em;color:var(--t2);margin-top:3px">☕ المحامص</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--br);margin:18px 0"></div>
+    <button class="btn bp bbl" onclick="saveSiteSettings()">💾 حفظ جميع الإعدادات</button>
   </div>
 
   <!-- ═══ مزامنة الشيت ═══ -->
@@ -1200,14 +1383,37 @@ function initFirebase() {
   // Load site settings
   onValue(settingsRef, snap => {
     const s = snap.val() || {};
-    if(s.siteTitle) document.getElementById('siteTitle').value = s.siteTitle;
-    if(s.siteSubtitle) document.getElementById('siteSubtitle').value = s.siteSubtitle;
-    if(s.footerCopy) document.getElementById('footerCopy').value = s.footerCopy;
-    if(s.footerSub) document.getElementById('footerSub').value = s.footerSub;
-    if(s.footerDev) document.getElementById('footerDev').value = s.footerDev;
-    if(s.annoText) document.getElementById('annoText').value = s.annoText;
-    if(s.annoType) document.getElementById('annoType').value = s.annoType;
-    document.getElementById('annoEnabled').checked = !!s.annoEnabled;
+    const sv = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined && val !== null) el.value = val; };
+    const sc = (id, val) => { const el = document.getElementById(id); if(el) el.checked = !!val; };
+    // General
+    sv('siteTitle',    s.siteTitle);
+    sv('siteSubtitle', s.siteSubtitle);
+    sv('siteEmail',    s.siteEmail);
+    sv('sitePwaName',  s.sitePwaName);
+    sv('footerCopy',   s.footerCopy);
+    sv('footerSub',    s.footerSub);
+    sv('footerDev',    s.footerDev);
+    sv('annoText',     s.annoText);
+    sv('annoType',     s.annoType);
+    sc('annoEnabled',  s.annoEnabled);
+    // SEO
+    sv('seoGscCode',   s.seoGscCode);
+    sv('seoGaId',      s.seoGaId);
+    sv('seoCanonical', s.seoCanonical);
+    sv('seoKeywords',  s.seoKeywords);
+    sv('seoOgImage',   s.seoOgImage);
+    // Display
+    sv('displayPerPage', s.displayPerPage);
+    sv('displaySort',    s.displaySort);
+    sc('featureComments', s.featureComments !== false);
+    sc('featureRatings',  s.featureRatings  !== false);
+    sc('featureShare',    s.featureShare    !== false);
+    sc('featureAdd',      s.featureAdd      !== false);
+    sc('featureReports',  s.featureReports  !== false);
+    // Maintenance
+    sc('maintenanceMode', s.maintenanceMode);
+    sv('maintenanceMsg',  s.maintenanceMsg);
+    // Ads
     if(s.adsCode) document.getElementById('adsCode').value = s.adsCode;
     if(s.adsPosition) document.getElementById('adsPosition').value = s.adsPosition;
     document.getElementById('adsEnabled').checked = !!s.adsEnabled;
@@ -1800,50 +2006,94 @@ window.handleBannerUpload = function(input, urlInputId, previewId){
   reader.readAsDataURL(file);
 };
 
+// ════ SITE SETTINGS SUB-TABS ════
+window.showSiteTab = function(id, btn) {
+  document.querySelectorAll('.site-tab-content').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.site-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).style.display = 'block';
+  btn.classList.add('active');
+  // Update maintenance stats when that tab opens
+  if(id === 'sTabMaint') updateMaintStats();
+};
+
+function updateMaintStats() {
+  const el = id => document.getElementById(id);
+  if(el('mStatRecipes'))  el('mStatRecipes').textContent  = FB_RECIPES.length || '—';
+  if(el('mStatRatings'))  el('mStatRatings').textContent  = Object.keys(FB_RATINGS).length || '—';
+  if(el('mStatRoast'))    el('mStatRoast').textContent    = Object.keys(FB_ROASTERIES).length || '—';
+  let tc = 0;
+  Object.values(FB_COMMENTS).forEach(r => { if(typeof r === 'object') tc += Object.keys(r).length; });
+  if(el('mStatComments')) el('mStatComments').textContent = tc || '—';
+}
+
 window.saveSiteSettings = function(){
   if(!db){ toast('Firebase غير متصل!','terr'); return; }
-  const s={
-    siteTitle: document.getElementById('siteTitle').value.trim(),
-    siteSubtitle: document.getElementById('siteSubtitle').value.trim(),
-    footerCopy: document.getElementById('footerCopy').value.trim(),
-    footerSub: document.getElementById('footerSub').value.trim(),
-    footerDev: document.getElementById('footerDev').value.trim(),
-    annoText: document.getElementById('annoText').value.trim(),
-    annoType: document.getElementById('annoType').value,
-    annoEnabled: document.getElementById('annoEnabled').checked,
+  const g = id => document.getElementById(id);
+  const s = {
+    siteTitle:    g('siteTitle')?.value.trim(),
+    siteSubtitle: g('siteSubtitle')?.value.trim(),
+    siteEmail:    g('siteEmail')?.value.trim(),
+    sitePwaName:  g('sitePwaName')?.value.trim(),
+    footerCopy:   g('footerCopy')?.value.trim(),
+    footerSub:    g('footerSub')?.value.trim(),
+    footerDev:    g('footerDev')?.value.trim(),
+    annoText:     g('annoText')?.value.trim(),
+    annoType:     g('annoType')?.value,
+    annoEnabled:  g('annoEnabled')?.checked,
+    // SEO
+    seoGscCode:   g('seoGscCode')?.value.trim(),
+    seoGaId:      g('seoGaId')?.value.trim(),
+    seoCanonical: g('seoCanonical')?.value.trim(),
+    seoKeywords:  g('seoKeywords')?.value.trim(),
+    seoOgImage:   g('seoOgImage')?.value.trim(),
+    // Display
+    displayPerPage: g('displayPerPage')?.value,
+    displaySort:    g('displaySort')?.value,
+    featureComments: g('featureComments')?.checked,
+    featureRatings:  g('featureRatings')?.checked,
+    featureShare:    g('featureShare')?.checked,
+    featureAdd:      g('featureAdd')?.checked,
+    featureReports:  g('featureReports')?.checked,
+    // Banners
     bannerTop: {
-      enabled: document.getElementById('bannerTopEnabled').checked,
-      url: document.getElementById('bannerTopUrl').value.trim(),
-      link: document.getElementById('bannerTopLink').value.trim(),
-      alt: document.getElementById('bannerTopAlt').value.trim()
+      enabled: g('bannerTopEnabled')?.checked,
+      url:     g('bannerTopUrl')?.value.trim(),
+      link:    g('bannerTopLink')?.value.trim(),
+      alt:     g('bannerTopAlt')?.value.trim()
     },
     bannerBottom: {
-      enabled: document.getElementById('bannerBottomEnabled').checked,
-      url: document.getElementById('bannerBottomUrl').value.trim(),
-      link: document.getElementById('bannerBottomLink').value.trim(),
-      alt: document.getElementById('bannerBottomAlt').value.trim()
-    }
+      enabled: g('bannerBottomEnabled')?.checked,
+      url:     g('bannerBottomUrl')?.value.trim(),
+      link:    g('bannerBottomLink')?.value.trim(),
+      alt:     g('bannerBottomAlt')?.value.trim()
+    },
+    // Maintenance
+    maintenanceMode: g('maintenanceMode')?.checked,
+    maintenanceMsg:  g('maintenanceMsg')?.value.trim(),
   };
-  // Pages content — save separately
+  // Pages content
   const pages = {
-    about_title:      document.getElementById('pg_about_title').value.trim(),
-    about_subtitle:   document.getElementById('pg_about_subtitle').value.trim(),
-    about_body:       document.getElementById('pg_about_body').value.trim(),
-    about_hidden:     document.getElementById('pg_about_hidden').checked,
-    contact_title:    document.getElementById('pg_contact_title').value.trim(),
-    contact_subtitle: document.getElementById('pg_contact_subtitle').value.trim(),
-    contact_email:    document.getElementById('pg_contact_email').value.trim(),
-    contact_body:     document.getElementById('pg_contact_body').value.trim(),
-    contact_hidden:   document.getElementById('pg_contact_hidden').checked,
-    privacy_title:    document.getElementById('pg_privacy_title').value.trim(),
-    privacy_subtitle: document.getElementById('pg_privacy_subtitle').value.trim(),
-    privacy_body:     document.getElementById('pg_privacy_body').value.trim(),
-    privacy_hidden:   document.getElementById('pg_privacy_hidden').checked,
+    about_title:      g('pg_about_title')?.value.trim(),
+    about_subtitle:   g('pg_about_subtitle')?.value.trim(),
+    about_body:       g('pg_about_body')?.value.trim(),
+    about_hidden:     g('pg_about_hidden')?.checked,
+    contact_title:    g('pg_contact_title')?.value.trim(),
+    contact_subtitle: g('pg_contact_subtitle')?.value.trim(),
+    contact_email:    g('pg_contact_email')?.value.trim(),
+    contact_body:     g('pg_contact_body')?.value.trim(),
+    contact_hidden:   g('pg_contact_hidden')?.checked,
+    privacy_title:    g('pg_privacy_title')?.value.trim(),
+    privacy_subtitle: g('pg_privacy_subtitle')?.value.trim(),
+    privacy_body:     g('pg_privacy_body')?.value.trim(),
+    privacy_hidden:   g('pg_privacy_hidden')?.checked,
   };
+  // Remove undefined keys
+  Object.keys(s).forEach(k => s[k] === undefined && delete s[k]);
   Promise.all([
-    set(ref(db,'siteSettings'),{...s}),
+    set(ref(db,'siteSettings'), s),
     set(ref(db,'pagesContent'), pages)
-  ]).then(()=>toast('تم حفظ جميع الإعدادات ✅ ستظهر للزوار فوراً')).catch(err=>toast('خطأ: '+err.message,'terr'));
+  ]).then(() => toast('✅ تم حفظ جميع الإعدادات — ستظهر للزوار فوراً'))
+    .catch(err => toast('خطأ: ' + err.message, 'terr'));
 };
 
 window.saveAnnoSetting = function(){
