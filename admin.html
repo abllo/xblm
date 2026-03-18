@@ -1514,7 +1514,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:16px">
       <div style="font-size:.88em;font-weight:700;margin-bottom:14px;color:var(--t2)">🔥 أكثر الوصفات تحضيراً</div>
       <div id="anaTopBrews" style="display:flex;flex-direction:column;gap:8px">
-        <div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">اضغط تحديث لتحميل البيانات</div>
+        <div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">⏳ جاري التحميل...</div>
       </div>
     </div>
 
@@ -1522,7 +1522,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:16px">
       <div style="font-size:.88em;font-weight:700;margin-bottom:14px;color:var(--t2)">⭐ أعلى الوصفات تقييماً</div>
       <div id="anaTopRated" style="display:flex;flex-direction:column;gap:8px">
-        <div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">اضغط تحديث لتحميل البيانات</div>
+        <div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">⏳ جاري التحميل...</div>
       </div>
     </div>
 
@@ -1767,13 +1767,15 @@ function initFirebase() {
     ALL_RECIPES = FB_RECIPES;
     setFbStatus('ok', '✅ متصل — ' + FB_RECIPES.length + ' وصفة Firebase');
     updateStats(); renderTable();
-    renderAffList(); // refresh after recipes load
+    renderAffList();
+    refreshAnalyticsData();
   }, err => { setFbStatus('err','فشل — '+err.message); });
 
   onValue(ratingsRef, snap => {
     FB_RATINGS = {};
     snap.forEach(child=>{ FB_RATINGS[child.key]=child.val(); });
     renderRatings(); updateStats();
+    refreshAnalyticsData();
   }, ()=>{});
 
   onValue(commentsRef, snap => {
@@ -1807,8 +1809,20 @@ function initFirebase() {
     snap.forEach(c=>{ FB_ROASTERIES[c.key]=c.val(); });
     if(document.getElementById('tRoastery')?.classList.contains('open')) renderRoasteryList();
     if(document.getElementById('tAdd')?.classList.contains('open')) renderAdminRoasteryDD('');
-    if(document.getElementById('tAnalytics')?.classList.contains('open')) loadAnalytics();
+    refreshAnalyticsData();
   }, ()=>{});
+
+  // ── Real-time: Brew clicks ──
+  onValue(ref(db,'brew_clicks'), snap => {
+    window._FB_BREW_CLICKS = snap.val() || {};
+    refreshAnalyticsData();
+  }, ()=>{ window._FB_BREW_CLICKS = {}; });
+
+  // ── Real-time: Affiliate clicks ──
+  onValue(ref(db,'affiliate_clicks'), snap => {
+    window._FB_AFF_CLICKS = snap.val() || {};
+    refreshAnalyticsData();
+  }, ()=>{ window._FB_AFF_CLICKS = {}; });
 
   // Load site settings
   onValue(settingsRef, snap => {
@@ -3631,52 +3645,42 @@ window.scanDuplicates = function(){
 // ════════════════════════════════════════════
 // 📈 ANALYTICS
 // ════════════════════════════════════════════
-window.loadAnalytics = async function() {
-  if(!db) { toast('Firebase غير متصل', 'terr'); return; }
+// refreshAnalyticsData — called automatically by real-time listeners
+function refreshAnalyticsData() {
+  const bc = window._FB_BREW_CLICKS || {};
+  const ac = window._FB_AFF_CLICKS || {};
 
-  // Basic counts
-  document.getElementById('anaRecipes').textContent    = FB_RECIPES.length;
-  document.getElementById('anaRatings').textContent    = Object.keys(FB_RATINGS).length;
-  document.getElementById('anaRoasteries').textContent = Object.keys(FB_ROASTERIES).length;
-  let totalComments = 0;
-  Object.values(FB_COMMENTS).forEach(r => { if(typeof r==='object') totalComments += Object.keys(r).length; });
-  document.getElementById('anaComments').textContent = totalComments;
+  // Basic counts (always up to date from FB listeners)
+  const anaRecipes = document.getElementById('anaRecipes');
+  const anaRatings = document.getElementById('anaRatings');
+  const anaRoast   = document.getElementById('anaRoasteries');
+  const anaComm    = document.getElementById('anaComments');
+  const anaBC      = document.getElementById('anaBrewClicks');
+  const anaAC      = document.getElementById('anaAffClicks');
+  if(anaRecipes) anaRecipes.textContent = FB_RECIPES.length;
+  if(anaRatings) anaRatings.textContent = Object.keys(FB_RATINGS).length;
+  if(anaRoast)   anaRoast.textContent   = Object.keys(FB_ROASTERIES||{}).length;
+  if(anaComm) {
+    let total=0; Object.values(FB_COMMENTS).forEach(r=>{if(typeof r==='object') total+=Object.keys(r).length;}); anaComm.textContent=total;
+  }
+  if(anaBC) anaBC.textContent = Object.values(bc).reduce((s,v)=>s+(v||0),0);
+  if(anaAC) anaAC.textContent = Object.values(ac).reduce((s,v)=>s+(v||0),0);
 
-  // Brew clicks
-  try {
-    const bcSnap = await get(ref(db,'brew_clicks'));
-    const bc = bcSnap.val() || {};
-    const totalBC = Object.values(bc).reduce((s,v)=>s+(v||0),0);
-    document.getElementById('anaBrewClicks').textContent = totalBC;
-
-    // Top 10 by brew clicks
-    const topBrews = Object.entries(bc)
-      .sort((a,b)=>b[1]-a[1]).slice(0,10);
-    const maxBC = topBrews[0]?.[1] || 1;
-    const brewEl = document.getElementById('anaTopBrews');
+  // Top brews
+  const brewEl = document.getElementById('anaTopBrews');
+  if(brewEl) {
+    const topBrews = Object.entries(bc).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    const maxBC = topBrews[0]?.[1]||1;
     if(!topBrews.length) { brewEl.innerHTML='<div style="color:var(--t2);font-size:.82em;text-align:center;padding:16px">لا توجد بيانات بعد</div>'; }
     else {
       brewEl.innerHTML = topBrews.map(([key,cnt])=>{
         const recipe = FB_RECIPES.find(r=>{ try{ return btoa(unescape(encodeURIComponent(r.link))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===key; }catch(e){return false;} });
         const name = recipe ? str(recipe.name) : key.slice(0,20)+'…';
         const pct = Math.round((cnt/maxBC)*100);
-        return `<div class="ana-bar-row">
-          <div class="ana-bar-label" title="${esc(name)}">${esc(name)}</div>
-          <div class="ana-bar-track">
-            <div class="ana-bar-fill" style="width:${pct}%"></div>
-            <div class="ana-bar-val">${cnt}</div>
-          </div>
-        </div>`;
+        return `<div class="ana-bar-row"><div class="ana-bar-label" title="${esc(name)}">${esc(name)}</div><div class="ana-bar-track"><div class="ana-bar-fill" style="width:${pct}%"></div><div class="ana-bar-val">${cnt}</div></div></div>`;
       }).join('');
     }
-  } catch(e){}
-
-  // Affiliate clicks
-  try {
-    const acSnap = await get(ref(db,'affiliate_clicks'));
-    const ac = acSnap.val() || {};
-    document.getElementById('anaAffClicks').textContent = Object.values(ac).reduce((s,v)=>s+(v||0),0);
-  } catch(e){}
+  }
 
   // Top rated recipes
   const rated = Object.entries(FB_RATINGS).map(([key,rd])=>{
@@ -3816,6 +3820,8 @@ window.clearResolvedReports = function() {
     .catch(()=>toast('خطأ','terr'));
 };
 
+window.loadAnalytics = function() { if(typeof refreshAnalyticsData === "function") refreshAnalyticsData(); };
+
 // ════ REAL-TIME NOTIFICATIONS ════
 let _alertDismissed = false;
 let _alertTimer = null;
@@ -3881,9 +3887,7 @@ window.goToReports = function() {
 };
 
 // Make analytics auto-refresh when visible
-window.loadAnalytics = (function(_orig) {
-  return function() { _orig(); };
-})(window.loadAnalytics || function(){});
+
 
 </script>
 </body>
