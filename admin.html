@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--red:linear-gradient(135deg,#f093fb,#f5576c);--green:linear-gradient(135deg,#43e97b,#38f9d7);--orange:linear-gradient(135deg,#ffd89b,#ff9a56)}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+body{font-family:'Cairo',sans-serif;background:radial-gradient(ellipse at 80% 0%,rgba(0,168,150,.06) 0%,var(--bg) 60%);color:var(--t1);min-height:100vh}
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .lbox{background:var(--card);border-radius:18px;border:1px solid var(--br);padding:36px;text-align:center;width:100%;max-width:380px;position:relative;overflow:hidden}
 .lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
@@ -33,40 +33,127 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .admin-layout{display:flex;min-height:100vh}
 
 /* Sidebar */
-.sidebar{width:230px;min-width:230px;background:#111;border-left:1px solid var(--br);display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:100;overflow-y:auto;overflow-x:hidden}
-.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px}
-.sidebar-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0}
-.sidebar-logo-text{font-size:.95em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
-.sidebar-logo-sub{font-size:.68em;color:var(--t2);margin-top:1px}
-.sidebar-user{padding:12px 16px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:9px}
-.sidebar-avatar{width:32px;height:32px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:.85em;flex-shrink:0;color:#fff;font-weight:700}
+/* ══ SIDEBAR — redesigned ══ */
+.sidebar{
+  width:260px;min-width:260px;
+  background:linear-gradient(180deg,#0d0d0d 0%,#111 100%);
+  border-left:1px solid rgba(255,255,255,.06);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;right:0;bottom:0;z-index:100;
+  overflow:hidden;
+  box-shadow:-4px 0 30px rgba(0,0,0,.4);
+}
+/* custom scrollbar inside sidebar */
+.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:8px}
+.sidebar-scroll::-webkit-scrollbar{width:4px}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,168,150,.4)}
+
+/* Logo */
+.sidebar-logo{
+  padding:22px 20px 18px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  flex-shrink:0;
+}
+.sidebar-logo-icon{
+  width:40px;height:40px;border-radius:12px;
+  background:var(--gr);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2em;flex-shrink:0;
+  box-shadow:0 4px 14px rgba(0,168,150,.35);
+}
+.sidebar-logo-text{font-size:1.05em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.sidebar-logo-sub{font-size:.7em;color:#555;margin-top:2px}
+
+/* User card */
+.sidebar-user{
+  padding:14px 20px;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.025);
+  border-bottom:1px solid rgba(255,255,255,.05);
+  flex-shrink:0;
+}
+.sidebar-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--gr);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9em;flex-shrink:0;color:#fff;font-weight:800;
+  box-shadow:0 2px 10px rgba(0,168,150,.3);
+}
 .sidebar-user-info{flex:1;min-width:0}
-.sidebar-user-name{font-size:.8em;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sidebar-user-role{font-size:.67em;color:var(--ta)}
-.sidebar-section{padding:10px 10px 4px}
-.sidebar-section-label{font-size:.63em;font-weight:800;color:#555;text-transform:uppercase;letter-spacing:1px;padding:0 6px;margin-bottom:4px}
-.sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 10px 6px}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:.15s;color:var(--t2);font-size:.82em;font-weight:600;border:none;background:none;width:100%;text-align:right;font-family:inherit;white-space:nowrap}
-.sidebar-item:hover{background:rgba(255,255,255,.05);color:var(--t1)}
-.sidebar-item.active{background:rgba(0,168,150,.12);color:var(--ta)}
-.sidebar-item.active .sidebar-item-icon{color:var(--ta)}
-.sidebar-item-icon{width:20px;text-align:center;font-size:1em;flex-shrink:0}
-.sidebar-item-text{flex:1}
-.sidebar-divider{height:1px;background:var(--br);margin:6px 10px}
-.sidebar-bottom{margin-top:auto;padding:12px 10px;border-top:1px solid var(--br)}
-.sidebar-fb-status{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.03);margin-bottom:8px}
+.sidebar-user-name{font-size:.88em;font-weight:700;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:.72em;color:var(--ta);margin-top:1px;font-weight:600}
+
+/* Section labels */
+.sidebar-section{padding:20px 20px 6px}
+.sidebar-section-label{
+  font-size:.68em;font-weight:800;
+  color:rgba(255,255,255,.2);
+  text-transform:uppercase;letter-spacing:1.5px;
+}
+
+/* Nav items */
+.sidebar-nav{display:flex;flex-direction:column;gap:1px;padding:4px 12px 8px}
+.sidebar-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:10px;
+  cursor:pointer;transition:all .18s ease;
+  color:rgba(255,255,255,.45);
+  font-size:.875em;font-weight:600;
+  border:none;background:none;width:100%;
+  text-align:right;font-family:inherit;
+  white-space:nowrap;position:relative;
+}
+.sidebar-item:hover{
+  background:rgba(255,255,255,.055);
+  color:rgba(255,255,255,.85);
+  transform:translateX(-2px);
+}
+.sidebar-item.active{
+  background:linear-gradient(135deg,rgba(0,168,150,.18),rgba(74,144,226,.1));
+  color:#fff;
+  border:1px solid rgba(0,168,150,.25);
+}
+.sidebar-item.active::before{
+  content:'';position:absolute;right:0;top:20%;bottom:20%;
+  width:3px;background:var(--gr);border-radius:0 3px 3px 0;
+}
+.sidebar-item-icon{
+  width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1em;flex-shrink:0;
+  opacity:.7;transition:opacity .18s;
+}
+.sidebar-item.active .sidebar-item-icon{opacity:1}
+.sidebar-item:hover .sidebar-item-icon{opacity:.9}
+.sidebar-item-text{flex:1;letter-spacing:.2px}
+
+/* Divider */
+.sidebar-divider{height:1px;background:rgba(255,255,255,.05);margin:6px 16px}
+
+/* Bottom */
+.sidebar-bottom{padding:14px 12px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}
+.sidebar-fb-status{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;border-radius:10px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.05);
+  margin-bottom:10px;
+}
 
 /* Main content */
-.main-content{flex:1;margin-right:230px;padding:20px;min-width:0}
+.main-content{flex:1;margin-right:260px;padding:24px;min-width:0}
 .apwrap{max-width:1000px;margin:0 auto}
 
 /* Top bar */
-.aheader{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;overflow:hidden}
-.aheader::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
-.aheader-title{display:flex;align-items:center;gap:10px}
-.aheader-title h1{font-size:1.1em;font-weight:900;color:var(--t1)}
+.aheader{background:rgba(255,255,255,.03);backdrop-filter:blur(12px);border-radius:16px;border:1px solid rgba(255,255,255,.07);padding:16px 24px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.25)}
+.aheader::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gr)}
+.aheader-title{display:flex;align-items:center;gap:12px}
+.aheader-title h1{font-size:1.2em;font-weight:900;color:#fff;letter-spacing:-.2px}
 .fb-dot{width:8px;height:8px;border-radius:50%;background:#555;transition:.5s}
-.fb-dot.ok{background:#43e97b;box-shadow:0 0 8px #43e97b}
+.fb-dot.ok{background:#43e97b;box-shadow:0 0 10px #43e97b88}
 .fb-dot.err{background:#f5576c}
 .fb-dot.loading{background:#ffd700;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -77,10 +164,10 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .sidebar-toggle{display:none;position:fixed;bottom:20px;left:20px;z-index:200;width:46px;height:46px;border-radius:12px;background:var(--gr);border:none;color:#fff;font-size:1.3em;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99}
 
-@media(max-width:768px){
-  .sidebar{transform:translateX(100%);transition:.25s}
+@media(max-width:900px){
+  .sidebar{transform:translateX(100%);transition:.28s cubic-bezier(.4,0,.2,1)}
   .sidebar.open{transform:translateX(0)}
-  .main-content{margin-right:0;padding:12px}
+  .main-content{margin-right:0;padding:14px}
   .sidebar-toggle{display:flex;align-items:center;justify-content:center}
   .sidebar-overlay.open{display:block}
 }
@@ -96,27 +183,28 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .site-tab-btn.active{background:var(--gr);color:#fff;border-color:transparent}
 .site-tab-btn:hover:not(.active){border-color:var(--ta);color:var(--t1)}
 /* Settings sections */
-.settings-section{background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px}
+.settings-section{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;margin-bottom:16px}
 .settings-section-title{font-size:.82em;font-weight:800;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:6px}
 .atb{padding:10px 16px;border-radius:9px;background:var(--card);border:2px solid var(--br);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
 .atb.on{background:var(--gr);color:#fff;border-color:transparent}
 .atb:hover:not(.on){border-color:var(--ta)}
-.acard{background:var(--card);border-radius:12px;border:1px solid var(--br);padding:20px;margin-bottom:14px;display:none}
+.acard{background:rgba(255,255,255,.03);border-radius:18px;border:1px solid rgba(255,255,255,.07);padding:24px;margin-bottom:18px;display:none;box-shadow:0 2px 24px rgba(0,0,0,.2)}
 .acard.open{display:block}
 .alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;font-size:.88em;line-height:1.6;display:none}
 .alert.show{display:block}
 .alert-warn{background:rgba(255,213,101,.12);border:1px solid rgba(255,213,101,.4);color:#ffd565}
 .alert-err{background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.4);color:#f5576c}
 .alert code{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:.93em}
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-.sc{background:var(--up);border-radius:10px;padding:16px;text-align:center}
-.sv{font-size:2em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
-.sl{font-size:.78em;color:var(--t2);margin-top:4px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.sc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:20px;text-align:center;transition:.2s}
+.sc:hover{background:rgba(255,255,255,.07);transform:translateY(-2px)}
+.sv{font-size:2.2em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+.sl{font-size:.78em;color:rgba(255,255,255,.4);margin-top:6px;font-weight:600}
 .sc.fb-sc{border:1px solid rgba(0,168,150,.3)}
 .tw{overflow-x:auto;margin-top:12px}
 .tbl{width:100%;border-collapse:collapse;min-width:650px}
-.tbl th,.tbl td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--br);font-size:.83em}
-.tbl th{background:var(--up);font-weight:700;color:var(--t2);position:sticky;top:0}
+.tbl th,.tbl td{padding:12px 14px;text-align:right;border-bottom:1px solid rgba(255,255,255,.05);font-size:.85em}
+.tbl th{background:rgba(255,255,255,.04);font-weight:700;color:rgba(255,255,255,.5);position:sticky;top:0;letter-spacing:.3px;font-size:.78em;text-transform:uppercase}
 .tbl tr:hover td{background:rgba(255,255,255,.03)}
 .tbl a{color:var(--ta);text-decoration:none}
 .tbl a:hover{text-decoration:underline}
@@ -124,8 +212,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .badge-fb{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#00A896,#4A90E2);color:#fff}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .fg label{font-size:.82em;color:var(--t2);font-weight:700}
-.form-input{padding:11px 13px;background:var(--up);border:2px solid var(--br);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit;width:100%;transition:.2s}
-.form-input:focus{outline:none;border-color:var(--ta)}
+.form-input{padding:11px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;color:var(--t1);font-size:14px;font-family:inherit;width:100%;transition:all .2s}
+.form-input:focus{outline:none;border-color:var(--ta);background:rgba(0,168,150,.06);box-shadow:0 0 0 3px rgba(0,168,150,.12)}
 .fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .tsel{display:flex;flex-direction:column;gap:7px}
 .topt{padding:11px 14px;border-radius:9px;border:2px solid var(--br);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.9em;transition:.2s}
@@ -151,7 +239,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .rlist{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto}
 /* === ADS & NEW FEATURES === */
 .ads-preview{background:var(--up);border:1px solid var(--br);border-radius:10px;padding:14px;margin-top:10px;font-size:.82em;color:var(--t2);min-height:60px;font-family:monospace;word-break:break-all;white-space:pre-wrap}
-.toggle-switch{display:flex;align-items:center;gap:10px;padding:12px;background:var(--up);border-radius:9px;border:1px solid var(--br);margin-bottom:10px;cursor:pointer}
+.toggle-switch{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,255,255,.04);border-radius:10px;border:1px solid rgba(255,255,255,.07);margin-bottom:10px;cursor:pointer;transition:.2s}
+.toggle-switch:hover{background:rgba(255,255,255,.07)}
 .toggle-switch input[type=checkbox]{width:44px;height:24px;cursor:pointer;accent-color:var(--ta)}
 .toggle-label{font-size:.88em;font-weight:700;flex:1}
 .promo-card{background:var(--up);border:1px solid var(--br);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
@@ -205,8 +294,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .pass-strength-fair{color:#ffd700!important}
 .pass-strength-good{color:#43e97b!important}
 
-@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.acard.open{animation:slideIn .25s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.acard.open{animation:slideIn .28s cubic-bezier(.4,0,.2,1)}
 /* ═══ Analytics ═══ */
 .ana-card{background:var(--up);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--br)}
 .ana-val{font-size:1.8em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
@@ -225,10 +314,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .report-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700}
 .report-badge-new{background:rgba(245,87,108,.2);color:#f5576c}
 .report-badge-resolved{background:rgba(67,233,123,.15);color:#43e97b}
-/* ═══ Tags ═══ */
-.tag-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:.8em;font-weight:700;cursor:pointer;transition:.2s;border:1.5px solid transparent}
-.tag-chip-del{background:none;border:none;color:inherit;cursor:pointer;font-size:.9em;opacity:.6;padding:0;margin-right:-4px;line-height:1}
-.tag-chip-del:hover{opacity:1}
+
 /* ═══ #tContent — مولّد المحتوى (scoped) ═══ */
 #tContent .tc-type-opt{padding:10px 14px;border-radius:9px;border:2px solid var(--br);text-align:center;font-size:.82em;font-weight:700;cursor:pointer;transition:.2s;color:var(--t2);background:var(--up)}
 #tContent label:has(input[type=radio]:checked) .tc-type-opt,
@@ -276,6 +362,9 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div class="sidebar-user-role">مشرف</div>
     </div>
   </div>
+
+  <!-- Scrollable nav -->
+  <div class="sidebar-scroll">
 
   <!-- عام -->
   <div class="sidebar-section">
@@ -327,11 +416,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <span class="sidebar-item-icon">🏪</span>
       <span class="sidebar-item-text">المحامص</span>
     </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tTags')" data-tab="tTags">
-      <span class="sidebar-item-icon">🏷️</span>
-      <span class="sidebar-item-text">التاقات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tDupes');scanDuplicates()" data-tab="tDupes">
+<button class="sidebar-item" onclick="switchTab(this,'tDupes');scanDuplicates()" data-tab="tDupes">
       <span class="sidebar-item-icon">🔍</span>
       <span class="sidebar-item-text">كاشف التكرار</span>
     </button>
@@ -403,6 +488,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <span class="sidebar-item-text">كلمة المرور</span>
     </button>
   </div>
+
+  </div><!-- /sidebar-scroll -->
 
   <!-- Bottom: Firebase status + logout -->
   <div class="sidebar-bottom">
@@ -1426,34 +1513,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">اضغط تحديث لتحميل البلاغات</div>
     </div>
   </div>
-
-  <!-- ═══ التاقات ═══ -->
-  <div id="tTags" class="acard">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px">
-      <div>
-        <h3 style="margin-bottom:4px">🏷️ إدارة التاقات</h3>
-        <p style="color:var(--t2);font-size:.82em">أضف تاقات مخصصة للوصفات — يمكن للزوار التصفية بها</p>
-      </div>
-      <button class="btn bp bsm" onclick="saveTagsList()">💾 حفظ التاقات</button>
-    </div>
-
-    <!-- Add tag -->
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px;margin-bottom:16px">
-      <div style="font-size:.85em;font-weight:700;margin-bottom:10px">➕ إضافة تاق جديد</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-        <input class="form-input" id="newTagName" placeholder="اسم التاق — مثال: فروتي" style="flex:1;min-width:140px">
-        <input class="form-input" id="newTagEmoji" placeholder="إيموجي" style="width:70px;text-align:center">
-        <input type="color" id="newTagColor" value="#00A896" style="width:44px;height:44px;border-radius:8px;border:1px solid var(--br);cursor:pointer;padding:2px;background:none">
-        <button class="btn bp bsm" onclick="addTag()" style="white-space:nowrap">إضافة</button>
-      </div>
-      <!-- Preset suggestions -->
-      <div style="font-size:.75em;color:var(--t2);margin-bottom:8px">اقتراحات سريعة:</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${['🍓 فروتي','🫐 بري','🍫 شوكولاتة','🌸 زهري','☁️ ناعم','⚡ حامض','🌿 عشبي','🏔️ يمني','🌍 إثيوبي','🇨🇴 كولومبي','🌊 لاهوائي','✨ مغسول'].map(t => {
-          const [emoji, ...rest] = t.split(' '); const name = rest.join(' ');
-          return `<button onclick="quickAddTag('${emoji}','${name}')" style="padding:4px 10px;border-radius:20px;background:rgba(0,168,150,.1);border:1px solid rgba(0,168,150,.3);color:var(--ta);font-size:.78em;cursor:pointer;font-family:inherit">${t}</button>`;
-        }).join('')}
-      </div>
     </div>
 
     <!-- Tags list -->
@@ -1662,7 +1721,6 @@ function initFirebase() {
       renderAffList();
     });
     commentsRef = ref(db,'comments');
-    loadTags();
   } catch(e) {
     setFbStatus('err','خطأ: ' + e.message); return;
   }
@@ -3692,141 +3750,6 @@ window.clearResolvedReports = function() {
     .then(()=>{ resolved.forEach(([key])=>delete FB_REPORTS[key]); renderReports(); toast('تم الحذف ✅'); })
     .catch(()=>toast('خطأ','terr'));
 };
-
-// ════════════════════════════════════════════
-// 🏷️ TAGS
-// ════════════════════════════════════════════
-let FB_TAGS = [];
-let _selectedTagRecipeKey = null;
-let _selectedTagRecipeTags = [];
-
-// Load tags on init
-function loadTags() {
-  if(!db) return;
-  onValue(ref(db,'tags'), snap=>{
-    FB_TAGS = snap.val() || [];
-    if(!Array.isArray(FB_TAGS)) FB_TAGS = Object.values(FB_TAGS);
-    renderTagsList();
-  },()=>{});
-}
-
-function renderTagsList() {
-  const el = document.getElementById('tagsList');
-  if(!el) return;
-  if(!FB_TAGS.length) {
-    el.innerHTML = '<div style="color:var(--t2);font-size:.82em">لا توجد تاقات بعد — أضف من الأعلى</div>';
-    return;
-  }
-  el.innerHTML = FB_TAGS.map((tag,i)=>`
-    <span class="tag-chip" style="background:${tag.color}22;border-color:${tag.color}66;color:${tag.color}">
-      ${tag.emoji||''} ${esc(tag.name)}
-      <button class="tag-chip-del" onclick="removeTag(${i})" title="حذف">✕</button>
-    </span>`).join('');
-}
-
-window.addTag = function() {
-  const name  = document.getElementById('newTagName').value.trim();
-  const emoji = document.getElementById('newTagEmoji').value.trim();
-  const color = document.getElementById('newTagColor').value;
-  if(!name) { toast('أدخل اسم التاق ❗','terr'); return; }
-  if(FB_TAGS.find(t=>t.name===name)) { toast('هذا التاق موجود بالفعل','terr'); return; }
-  FB_TAGS.push({name,emoji,color});
-  saveTagsList(true);
-  document.getElementById('newTagName').value='';
-  document.getElementById('newTagEmoji').value='';
-};
-
-window.quickAddTag = function(emoji,name) {
-  if(FB_TAGS.find(t=>t.name===name)) { toast('موجود بالفعل'); return; }
-  const colors = ['#00A896','#4A90E2','#E07B39','#9B59B6','#E74C3C','#27AE60','#F39C12','#1ABC9C'];
-  const color = colors[FB_TAGS.length % colors.length];
-  FB_TAGS.push({name,emoji,color});
-  saveTagsList(true);
-};
-
-window.removeTag = function(i) {
-  if(!confirm(`حذف تاق "${FB_TAGS[i]?.name}"؟`)) return;
-  FB_TAGS.splice(i,1);
-  saveTagsList(true);
-};
-
-window.saveTagsList = function(silent=false) {
-  if(!db) { toast('Firebase غير متصل','terr'); return; }
-  set(ref(db,'tags'), FB_TAGS)
-    .then(()=>{ renderTagsList(); if(!silent) toast('تم حفظ التاقات ✅'); })
-    .catch(()=>toast('خطأ','terr'));
-};
-
-window.searchRecipesForTag = function(q) {
-  const el = document.getElementById('tagRecipeResults');
-  if(!q.trim()) { el.style.display='none'; return; }
-  const matches = FB_RECIPES.filter(r=>(str(r.name)+' '+str(r.author)).toLowerCase().includes(q.toLowerCase())).slice(0,8);
-  if(!matches.length) { el.style.display='none'; return; }
-  el.style.display='block';
-  el.innerHTML = matches.map(r=>`
-    <div onclick="selectRecipeForTag('${r._fbKey}')" style="padding:10px 14px;cursor:pointer;font-size:.85em;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;transition:.15s" onmouseover="this.style.background='var(--up)'" onmouseout="this.style.background=''">
-      <span>${esc(str(r.name))}</span>
-      <span style="font-size:.72em;color:var(--t2)">${esc(str(r.author||''))}</span>
-    </div>`).join('');
-};
-
-window.selectRecipeForTag = async function(fbKey) {
-  const r = FB_RECIPES.find(x=>x._fbKey===fbKey);
-  if(!r) return;
-  _selectedTagRecipeKey = fbKey;
-  document.getElementById('tagRecipeResults').style.display='none';
-  document.getElementById('tagRecipeSearch').value = str(r.name);
-
-  // Load existing tags for this recipe
-  try {
-    const snap = await get(ref(db,'recipe_tags/'+fbKey));
-    _selectedTagRecipeTags = snap.val() || [];
-    if(!Array.isArray(_selectedTagRecipeTags)) _selectedTagRecipeTags=[];
-  } catch(e) { _selectedTagRecipeTags=[]; }
-
-  document.getElementById('tagSelName').textContent = str(r.name);
-  renderRecipeTagPicker();
-  document.getElementById('tagSelectedRecipe').style.display='block';
-};
-
-function renderRecipeTagPicker() {
-  const el = document.getElementById('tagSelTags');
-  if(!FB_TAGS.length) { el.innerHTML='<div style="color:var(--t2);font-size:.82em">لا توجد تاقات — أضفها أولاً</div>'; return; }
-  el.innerHTML = FB_TAGS.map(tag=>{
-    const active = _selectedTagRecipeTags.includes(tag.name);
-    return `<span onclick="toggleRecipeTag('${esc(tag.name)}')" class="tag-chip" style="background:${active?tag.color+'33':'transparent'};border-color:${active?tag.color:tag.color+'44'};color:${active?tag.color:tag.color+'99'};cursor:pointer;user-select:none">
-      ${tag.emoji||''} ${esc(tag.name)} ${active?'✓':''}
-    </span>`;
-  }).join('');
-}
-
-window.toggleRecipeTag = function(name) {
-  const i = _selectedTagRecipeTags.indexOf(name);
-  if(i>=0) _selectedTagRecipeTags.splice(i,1);
-  else _selectedTagRecipeTags.push(name);
-  renderRecipeTagPicker();
-};
-
-window.saveRecipeTags = function() {
-  if(!_selectedTagRecipeKey||!db) return;
-  set(ref(db,'recipe_tags/'+_selectedTagRecipeKey), _selectedTagRecipeTags)
-    .then(()=>toast('تم حفظ تاقات الوصفة ✅'))
-    .catch(()=>toast('خطأ','terr'));
-};
-
-
-// ════ SIDEBAR TOGGLE ════
-window.toggleSidebar = function() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('open');
-};
-window.closeSidebar = function() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('open');
-};
-
-// Load banners settings into tBanners tab when site settings load
-const _origOnValue = window.__bannersPatch;
 
 </script>
 </body>
