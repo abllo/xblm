@@ -2549,7 +2549,7 @@ onValue(settingsRef2, snap => {
         b.classList.toggle('on', b.dataset.brew === fB);
       });
     }
-    if((fT && fT!=='all') || (fB && fB!=='all')) { PAGE=1; if(typeof render==='function') render(); }
+    // نحفظ القيم فقط — render() ستُطبقها تلقائياً عند تحميل الوصفات
   }
   if(s.siteSubtitle) { const el=document.querySelector('.sub'); if(el) el.textContent=s.siteSubtitle; }
   
@@ -2606,18 +2606,16 @@ onValue(settingsRef2, snap => {
   window._featureReports = featureReports;
   window._featureComments= featureComments;
   window._featureRatings = featureRatings;
-  // Re-render to apply feature flags to cards
-  if(typeof render === 'function') render();
+  // لا نستدعي render() هنا — الوصفات لم تتحمل بعد
+  // render() ستُستدعى تلقائياً عند وصول الوصفات من Firebase
 
   // ══ DISPLAY SETTINGS ══
   if(s.displayPerPage) {
     const newPP = parseInt(s.displayPerPage);
-    if(newPP > 0 && newPP !== PP) { PP = newPP; PAGE = 1; if(typeof render==='function') render(); }
+    if(newPP > 0) { PP = newPP; }
   }
-  if(s.displaySort && s.displaySort !== SORT) {
+  if(s.displaySort) {
     SORT = s.displaySort;
-    PAGE = 1;
-    if(typeof render==='function') render();
   }
 
   // ══ SEO SETTINGS ══
