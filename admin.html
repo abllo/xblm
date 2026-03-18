@@ -28,21 +28,66 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .bsm{padding:7px 12px;font-size:12px}
 .bbl{width:100%;justify-content:center}
 .bgray{background:var(--up);border:1px solid var(--br);color:var(--t2)}
-#adminPanel{display:none;min-height:100vh;padding:16px}
-.apwrap{max-width:1200px;margin:0 auto}
-.aheader{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;overflow:hidden}
+/* ═══ SIDEBAR LAYOUT ═══ */
+#adminPanel{display:none;min-height:100vh}
+.admin-layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:230px;min-width:230px;background:#111;border-left:1px solid var(--br);display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:100;overflow-y:auto;overflow-x:hidden}
+.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px}
+.sidebar-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0}
+.sidebar-logo-text{font-size:.95em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.sidebar-logo-sub{font-size:.68em;color:var(--t2);margin-top:1px}
+.sidebar-user{padding:12px 16px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:9px}
+.sidebar-avatar{width:32px;height:32px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:.85em;flex-shrink:0;color:#fff;font-weight:700}
+.sidebar-user-info{flex:1;min-width:0}
+.sidebar-user-name{font-size:.8em;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:.67em;color:var(--ta)}
+.sidebar-section{padding:10px 10px 4px}
+.sidebar-section-label{font-size:.63em;font-weight:800;color:#555;text-transform:uppercase;letter-spacing:1px;padding:0 6px;margin-bottom:4px}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 10px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:.15s;color:var(--t2);font-size:.82em;font-weight:600;border:none;background:none;width:100%;text-align:right;font-family:inherit;white-space:nowrap}
+.sidebar-item:hover{background:rgba(255,255,255,.05);color:var(--t1)}
+.sidebar-item.active{background:rgba(0,168,150,.12);color:var(--ta)}
+.sidebar-item.active .sidebar-item-icon{color:var(--ta)}
+.sidebar-item-icon{width:20px;text-align:center;font-size:1em;flex-shrink:0}
+.sidebar-item-text{flex:1}
+.sidebar-divider{height:1px;background:var(--br);margin:6px 10px}
+.sidebar-bottom{margin-top:auto;padding:12px 10px;border-top:1px solid var(--br)}
+.sidebar-fb-status{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.03);margin-bottom:8px}
+
+/* Main content */
+.main-content{flex:1;margin-right:230px;padding:20px;min-width:0}
+.apwrap{max-width:1000px;margin:0 auto}
+
+/* Top bar */
+.aheader{background:var(--card);border-radius:14px;border:1px solid var(--br);padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;overflow:hidden}
 .aheader::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
-.aheader-title{display:flex;align-items:center;gap:12px}
-.aheader-title h1{font-size:1.25em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.fb-dot{width:9px;height:9px;border-radius:50%;background:#555;transition:.5s}
+.aheader-title{display:flex;align-items:center;gap:10px}
+.aheader-title h1{font-size:1.1em;font-weight:900;color:var(--t1)}
+.fb-dot{width:8px;height:8px;border-radius:50%;background:#555;transition:.5s}
 .fb-dot.ok{background:#43e97b;box-shadow:0 0 8px #43e97b}
 .fb-dot.err{background:#f5576c}
 .fb-dot.loading{background:#ffd700;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.fb-lbl{font-size:.78em;color:var(--t2)}
+.fb-lbl{font-size:.75em;color:var(--t2)}
 .acts{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+
+/* Mobile sidebar toggle */
+.sidebar-toggle{display:none;position:fixed;bottom:20px;left:20px;z-index:200;width:46px;height:46px;border-radius:12px;background:var(--gr);border:none;color:#fff;font-size:1.3em;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(100%);transition:.25s}
+  .sidebar.open{transform:translateX(0)}
+  .main-content{margin-right:0;padding:12px}
+  .sidebar-toggle{display:flex;align-items:center;justify-content:center}
+  .sidebar-overlay.open{display:block}
+}
+
+/* keep old classes that may be referenced */
 .atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
-.atabs-wrap{display:flex;flex-direction:column;gap:0;margin-bottom:16px;background:var(--card);border-radius:14px;border:1px solid var(--br);overflow:hidden}
+.atabs-wrap{display:none}
 .atab-group{padding:10px 14px;border-bottom:1px solid var(--br)}
 .atab-group:last-child{border-bottom:none}
 .atab-group-label{font-size:.7em;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-right:2px}
@@ -208,87 +253,188 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel">
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">☕</div>
+    <div>
+      <div class="sidebar-logo-text">Xbloom</div>
+      <div class="sidebar-logo-sub">لوحة التحكم</div>
+    </div>
+  </div>
+
+  <!-- User info -->
+  <div class="sidebar-user">
+    <div class="sidebar-avatar">A</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name">Abdulelah</div>
+      <div class="sidebar-user-role">مشرف</div>
+    </div>
+  </div>
+
+  <!-- عام -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">عام</div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item active" onclick="switchTab(this,'tStats')" data-tab="tStats">
+      <span class="sidebar-item-icon">📊</span>
+      <span class="sidebar-item-text">الإحصائيات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tAnalytics');loadAnalytics()" data-tab="tAnalytics">
+      <span class="sidebar-item-icon">📈</span>
+      <span class="sidebar-item-text">التحليلات</span>
+    </button>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- الوصفات -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">☕ الوصفات</div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item" onclick="switchTab(this,'tAdd')" data-tab="tAdd">
+      <span class="sidebar-item-icon">➕</span>
+      <span class="sidebar-item-text">إضافة وصفة</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tRec')" data-tab="tRec">
+      <span class="sidebar-item-icon">📋</span>
+      <span class="sidebar-item-text">إدارة الوصفات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tRatings')" data-tab="tRatings">
+      <span class="sidebar-item-icon">⭐</span>
+      <span class="sidebar-item-text">التقييمات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tComments')" data-tab="tComments">
+      <span class="sidebar-item-icon">💬</span>
+      <span class="sidebar-item-text">التعليقات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tReports');loadReports()" data-tab="tReports">
+      <span class="sidebar-item-icon">🚩</span>
+      <span class="sidebar-item-text">البلاغات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tPinned')" data-tab="tPinned">
+      <span class="sidebar-item-icon">📌</span>
+      <span class="sidebar-item-text">وصفات مثبتة</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tRoastery')" data-tab="tRoastery">
+      <span class="sidebar-item-icon">🏪</span>
+      <span class="sidebar-item-text">المحامص</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tTags')" data-tab="tTags">
+      <span class="sidebar-item-icon">🏷️</span>
+      <span class="sidebar-item-text">التاقات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tDupes');scanDuplicates()" data-tab="tDupes">
+      <span class="sidebar-item-icon">🔍</span>
+      <span class="sidebar-item-text">كاشف التكرار</span>
+    </button>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- التسويق -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">📣 التسويق</div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item" onclick="switchTab(this,'tAff')" data-tab="tAff">
+      <span class="sidebar-item-icon">🛒</span>
+      <span class="sidebar-item-text">روابط الشراء</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tPromo')" data-tab="tPromo">
+      <span class="sidebar-item-icon">🎫</span>
+      <span class="sidebar-item-text">أكواد الخصم</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tAds')" data-tab="tAds">
+      <span class="sidebar-item-icon">📢</span>
+      <span class="sidebar-item-text">الإعلانات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tBanners')" data-tab="tBanners">
+      <span class="sidebar-item-icon">🖼️</span>
+      <span class="sidebar-item-text">البنرات</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tContent')" data-tab="tContent">
+      <span class="sidebar-item-icon">🧠</span>
+      <span class="sidebar-item-text">مولّد المحتوى</span>
+    </button>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- البيانات -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">📁 البيانات</div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item" onclick="switchTab(this,'tSheet')" data-tab="tSheet">
+      <span class="sidebar-item-icon">🔄</span>
+      <span class="sidebar-item-text">مزامنة Excel</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tImp')" data-tab="tImp">
+      <span class="sidebar-item-icon">📤</span>
+      <span class="sidebar-item-text">استيراد Excel</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tExp')" data-tab="tExp">
+      <span class="sidebar-item-icon">📥</span>
+      <span class="sidebar-item-text">تصدير البيانات</span>
+    </button>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- الإعدادات -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">⚙️ الإعدادات</div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item" onclick="switchTab(this,'tSite')" data-tab="tSite">
+      <span class="sidebar-item-icon">⚙️</span>
+      <span class="sidebar-item-text">إعدادات الموقع</span>
+    </button>
+    <button class="sidebar-item" onclick="switchTab(this,'tPass')" data-tab="tPass">
+      <span class="sidebar-item-icon">🔑</span>
+      <span class="sidebar-item-text">كلمة المرور</span>
+    </button>
+  </div>
+
+  <!-- Bottom: Firebase status + logout -->
+  <div class="sidebar-bottom">
+    <div class="sidebar-fb-status">
+      <div class="fb-dot loading" id="fbDot"></div>
+      <div style="font-size:.72em;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="fbLbl">جاري الاتصال...</div>
+    </div>
+    <div style="display:flex;gap:7px">
+      <a href="/" class="btn bgray bsm" target="_blank" style="flex:1;justify-content:center">🌐 الموقع</a>
+      <button class="btn bd bsm" onclick="doLogout()" style="flex:1;justify-content:center">🚪 خروج</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile toggle -->
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- Main content -->
+<div class="admin-layout">
+<div class="main-content">
 <div class="apwrap">
 
-  <!-- Header -->
+  <!-- Top bar -->
   <div class="aheader">
     <div class="aheader-title">
-      <div><div class="fb-dot loading" id="fbDot"></div></div>
-      <div>
-        <h1>📊 لوحة التحكم — Xbloom</h1>
-        <div class="fb-lbl" id="fbLbl">جاري الاتصال بـ Firebase...</div>
-      </div>
+      <h1 id="pageTitle">📊 الإحصائيات</h1>
     </div>
     <div class="acts">
-      <a href="/" class="btn bgray bsm" target="_blank">🌐 الموقع</a>
-      <button class="btn bd bsm" onclick="doLogout()">🚪 خروج</button>
-    </div>
-  </div>
-
-  <div class="alert alert-err" id="fbAlert">
-    ⚠️ <strong>تعذّر الاتصال بـ Firebase</strong> — افتح
-    <a href="https://console.firebase.google.com/project/xbloom-recipes-hub/database/xbloom-recipes-hub-default-rtdb/rules" target="_blank" style="color:#f5576c;font-weight:700">Firebase Console ← Rules</a>
-    وغيّر إلى: <code>{ "rules": { ".read": true, ".write": true } }</code>
-  </div>
-
-  <!-- Tabs -->
-  <div class="atabs-wrap">
-
-    <!-- ── القسم العام ── -->
-    <div class="atab-group">
-      <div class="atab-group-label">عام</div>
-      <div class="atabs">
-        <button class="atb on" onclick="switchTab(this,'tStats')">📊 الإحصائيات</button>
-        <button class="atb" onclick="switchTab(this,'tAnalytics');loadAnalytics()">📈 التحليلات</button>
+      <div class="alert alert-err" id="fbAlert" style="margin:0;padding:8px 12px;font-size:.78em">
+        ⚠️ <a href="https://console.firebase.google.com/project/xbloom-recipes-hub/database/xbloom-recipes-hub-default-rtdb/rules" target="_blank" style="color:#f5576c;font-weight:700">تعذّر الاتصال — إصلاح</a>
       </div>
     </div>
-
-    <!-- ── قسم الوصفات ── -->
-    <div class="atab-group">
-      <div class="atab-group-label">☕ الوصفات</div>
-      <div class="atabs">
-        <button class="atb" onclick="switchTab(this,'tAdd')">➕ إضافة وصفة</button>
-        <button class="atb" onclick="switchTab(this,'tRec')">📋 إدارة الوصفات</button>
-        <button class="atb" onclick="switchTab(this,'tRatings')">⭐ التقييمات</button>
-        <button class="atb" onclick="switchTab(this,'tComments')">💬 التعليقات</button>
-        <button class="atb" onclick="switchTab(this,'tReports');loadReports()">🚩 البلاغات</button>
-        <button class="atb" onclick="switchTab(this,'tPinned')">📌 وصفات مثبتة</button>
-        <button class="atb" onclick="switchTab(this,'tRoastery')">🏪 المحامص</button>
-        <button class="atb" onclick="switchTab(this,'tTags')">🏷️ التاقات</button>
-        <button class="atb" onclick="switchTab(this,'tDupes');scanDuplicates()">🔍 كاشف التكرار</button>
-      </div>
-    </div>
-
-    <!-- ── قسم التسويق ── -->
-    <div class="atab-group">
-      <div class="atab-group-label">📣 التسويق</div>
-      <div class="atabs">
-        <button class="atb" onclick="switchTab(this,'tAff')">🏷️ روابط الشراء</button>
-        <button class="atb" onclick="switchTab(this,'tPromo')">🎫 أكواد الخصم</button>
-        <button class="atb" onclick="switchTab(this,'tAds')">📢 الإعلانات</button>
-        <button class="atb" onclick="switchTab(this,'tContent')">🧠 مولّد المحتوى</button>
-      </div>
-    </div>
-
-    <!-- ── قسم البيانات ── -->
-    <div class="atab-group">
-      <div class="atab-group-label">📁 البيانات</div>
-      <div class="atabs">
-        <button class="atb" onclick="switchTab(this,'tSheet')">🔄 مزامنة ملف Excel</button>
-        <button class="atb" onclick="switchTab(this,'tImp')">📤 استيراد Excel</button>
-        <button class="atb" onclick="switchTab(this,'tExp')">📥 تصدير البيانات</button>
-      </div>
-    </div>
-
-    <!-- ── قسم الإعدادات ── -->
-    <div class="atab-group">
-      <div class="atab-group-label">⚙️ الإعدادات</div>
-      <div class="atabs">
-        <button class="atb" onclick="switchTab(this,'tSite')">⚙️ إعدادات الموقع</button>
-        <button class="atb" onclick="switchTab(this,'tPass')">🔑 كلمة المرور</button>
-      </div>
-    </div>
-
   </div>
 
   <!-- STATS -->
@@ -619,68 +765,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title">🖼️ بنرات الموقع</div>
-        <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em">
-          <div style="font-weight:700;margin-bottom:6px;color:var(--ta)">📐 المقاسات المثالية:</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div style="background:var(--card);border-radius:8px;padding:8px 10px">
-              <div style="font-weight:700;margin-bottom:2px">📌 بنر الهيدر</div>
-              <div style="color:var(--ta);font-weight:700">1920 × 400 px</div>
-            </div>
-            <div style="background:var(--card);border-radius:8px;padding:8px 10px">
-              <div style="font-weight:700;margin-bottom:2px">📌 بنر الفوتر</div>
-              <div style="color:var(--ta);font-weight:700">1920 × 250 px</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TOP BANNER -->
-        <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px;margin-bottom:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-            <b style="font-size:.88em">📌 بنر الهيدر (أعلى الصفحة)</b>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-              <input type="checkbox" id="bannerTopEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
-              <span style="font-size:.82em">تفعيل وإظهار</span>
-            </label>
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-            <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع صورة</button>
-            <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
-            <span style="font-size:.78em;color:var(--t2);align-self:center">أو رابط مباشر:</span>
-          </div>
-          <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:6px">
-          <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر (اختياري)" style="margin-bottom:6px">
-          <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:8px">
-          <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-            <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-            <div style="padding:5px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة</div>
-          </div>
-        </div>
-
-        <!-- BOTTOM BANNER -->
-        <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-            <b style="font-size:.88em">📌 بنر الفوتر (أسفل الصفحة)</b>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-              <input type="checkbox" id="bannerBottomEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
-              <span style="font-size:.82em">تفعيل وإظهار</span>
-            </label>
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-            <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع صورة</button>
-            <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
-            <span style="font-size:.78em;color:var(--t2);align-self:center">أو رابط مباشر:</span>
-          </div>
-          <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:6px">
-          <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر (اختياري)" style="margin-bottom:6px">
-          <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:8px">
-          <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
-            <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
-            <div style="padding:5px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة</div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ══ TAB: صفحات ══ -->
@@ -1395,8 +1479,79 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 
-</div>
-</div>
+  <!-- ═══ البنرات ═══ -->
+  <div id="tBanners" class="acard">
+    <h3 style="margin-bottom:6px">🖼️ بنرات الموقع</h3>
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:20px;line-height:1.6">تحكم في بنر الهيدر وبنر الفوتر — تُحفظ الإعدادات في Firebase وتظهر فوراً للزوار.</p>
+
+    <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:.8em">
+      <div style="font-weight:700;margin-bottom:6px;color:var(--ta)">📐 المقاسات المثالية:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--card);border-radius:8px;padding:8px 10px">
+          <div style="font-weight:700;margin-bottom:2px">📌 بنر الهيدر</div>
+          <div style="color:var(--ta);font-weight:700">1920 × 400 px</div>
+        </div>
+        <div style="background:var(--card);border-radius:8px;padding:8px 10px">
+          <div style="font-weight:700;margin-bottom:2px">📌 بنر الفوتر</div>
+          <div style="color:var(--ta);font-weight:700">1920 × 250 px</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP BANNER -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.88em">📌 بنر الهيدر (أعلى الصفحة)</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="bannerTopEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
+          <span style="font-size:.82em">تفعيل وإظهار</span>
+        </label>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerTopFile').click()">📁 رفع صورة</button>
+        <input type="file" id="bannerTopFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerTopUrl','bannerTopPreview')">
+        <span style="font-size:.78em;color:var(--t2);align-self:center">أو رابط مباشر:</span>
+      </div>
+      <input class="form-input" id="bannerTopUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerTopUrl','bannerTopPreview')" style="margin-bottom:6px">
+      <input class="form-input" id="bannerTopLink" placeholder="رابط عند النقر (اختياري)" style="margin-bottom:6px">
+      <input class="form-input" id="bannerTopAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:8px">
+      <div id="bannerTopPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+        <div style="padding:5px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة</div>
+      </div>
+    </div>
+
+    <!-- BOTTOM BANNER -->
+    <div style="background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <b style="font-size:.88em">📌 بنر الفوتر (أسفل الصفحة)</b>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="bannerBottomEnabled" style="width:16px;height:16px;accent-color:var(--ta)">
+          <span style="font-size:.82em">تفعيل وإظهار</span>
+        </label>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <button type="button" class="btn bsm bp" onclick="document.getElementById('bannerBottomFile').click()">📁 رفع صورة</button>
+        <input type="file" id="bannerBottomFile" accept="image/*" style="display:none" onchange="handleBannerUpload(this,'bannerBottomUrl','bannerBottomPreview')">
+        <span style="font-size:.78em;color:var(--t2);align-self:center">أو رابط مباشر:</span>
+      </div>
+      <input class="form-input" id="bannerBottomUrl" placeholder="https://example.com/banner.jpg" oninput="previewBanner('bannerBottomUrl','bannerBottomPreview')" style="margin-bottom:6px">
+      <input class="form-input" id="bannerBottomLink" placeholder="رابط عند النقر (اختياري)" style="margin-bottom:6px">
+      <input class="form-input" id="bannerBottomAlt" placeholder="نص بديل للصورة (SEO)" style="margin-bottom:8px">
+      <div id="bannerBottomPreview" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--br)">
+        <img src="" style="width:100%;height:auto;display:block" alt="معاينة">
+        <div style="padding:5px 10px;font-size:.72em;color:var(--t2);background:var(--card)">📐 معاينة</div>
+      </div>
+    </div>
+
+    <button class="btn bp bbl" onclick="saveSiteSettings()">💾 حفظ إعدادات البنرات</button>
+  </div>
+
+</div><!-- /apwrap -->
+</div><!-- /main-content -->
+</div><!-- /admin-layout -->
+
+</div><!-- /adminPanel -->
 
 <!-- Confirm Modal -->
 <div class="ov" id="confirmOv">
@@ -1488,6 +1643,7 @@ window.doLogout = function() { sessionStorage.removeItem('xba'); location.reload
 if(sessionStorage.getItem('xba')==='1'){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminPanel').style.display='block';
+  loadRoasteries();
   initFirebase();
 }
 
@@ -1613,11 +1769,18 @@ function updateStats() {
 }
 
 window.switchTab = function(btn,id){
-  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.atb,.sidebar-item').forEach(b=>b.classList.remove('on','active'));
   document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
-  btn.classList.add('on');
+  btn.classList.add('on'); btn.classList.add('active');
   document.getElementById(id).classList.add('open');
+  const titleEl = document.getElementById('pageTitle');
+  if(titleEl) {
+    const textEl = btn.querySelector('.sidebar-item-text');
+    const iconEl = btn.querySelector('.sidebar-item-icon');
+    titleEl.textContent = (iconEl ? iconEl.textContent+' ' : '') + (textEl ? textEl.textContent : btn.textContent.trim());
+  }
   if(id==='tRoastery' || id==='tAdd') loadRoasteries();
+  closeSidebar();
 };
 
 // ════ TABLE ════
@@ -3650,6 +3813,20 @@ window.saveRecipeTags = function() {
     .then(()=>toast('تم حفظ تاقات الوصفة ✅'))
     .catch(()=>toast('خطأ','terr'));
 };
+
+
+// ════ SIDEBAR TOGGLE ════
+window.toggleSidebar = function() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+};
+window.closeSidebar = function() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+};
+
+// Load banners settings into tBanners tab when site settings load
+const _origOnValue = window.__bannersPatch;
 
 </script>
 </body>
