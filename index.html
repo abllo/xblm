@@ -1052,7 +1052,6 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 /* ── Footer ── */
 [data-theme="light"] footer { background: #DEDAD2; border-color: #C4C0B8 }
 [data-theme="light"] footer a { color: var(--ta) }
-.feat-hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -1985,7 +1984,7 @@ function cardHTML(r,i){
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
       </div>
       <div class="ib" onclick="shareAsImage(${idx})" title="مشاركة كصورة" style="font-size:14px">🖼️</div>
-      ${(window._featureReports!==false)?('<div class="ib report" onclick="openReportModal(\'' + rKey + '\',\'' + esc(str(r.name)) + '\')" title="الإبلاغ عن مشكلة" style="font-size:14px;color:var(--t2)">🚩</div>'):''}
+      <div class="ib report" onclick="openReportModal('${rKey}','${esc(str(r.name))}')" title="الإبلاغ عن مشكلة" style="font-size:14px;color:var(--t2)">🚩</div>
     </div></div>
     ${str(r.author)?`<div class="cauth">بواسطة ${esc(str(r.author))}</div>`:''}
     <div class="ctags"><span class="tag ${bTag}">${esc(str(r.brewer))}</span><span class="tag ${cTag}">${cLbl}</span>${(function(){try{var _m=matchRoastery(r);return _m?roasteryTag(_m):''}catch(e){return ''}})()}</div>
@@ -2002,7 +2001,7 @@ function cardHTML(r,i){
     </div>
     <div class="cacts">
       <a href="${r.link||'#'}" target="_blank" class="btn bp bbl bsm" onclick="trackBrewClick('${rKey}')">فتح الوصفة في xBloom</a>
-      ${(window._featureShare!==false)?('<button class="btn-share-friend" onclick="openShareModal(' + idx + ')">📤 أرسل الوصفة لصديق</button>'):''}
+      <button class="btn-share-friend" onclick="openShareModal(${idx})">📤 أرسل الوصفة لصديق</button>
       ${getAffBtn(r)}
     </div>
     <div class="comments-section">
@@ -2458,26 +2457,12 @@ onValue(settingsRef2, snap => {
           }
         });
         // Inject postMessage responder into HTML before loading
-        const htmlWithResize = val.replace('
-<!-- MAINTENANCE OVERLAY -->
-<div id="maintenanceOverlay" style="display:none;position:fixed;inset:0;background:#0A0A0A;z-index:99999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;font-family:'Cairo',sans-serif">
-  <div style="font-size:3.5em;margin-bottom:20px">☕</div>
-  <h1 style="font-size:1.8em;font-weight:900;color:#fff;margin-bottom:12px">الموقع تحت الصيانة</h1>
-  <p id="maintenanceMsgEl" style="color:#888;font-size:1em;max-width:400px;line-height:1.7">الموقع تحت الصيانة، سنعود قريباً ☕</p>
-</div>
-</body>', `
+        const htmlWithResize = val.replace('</body>', `
 <script>
   function sendH(){ parent.postMessage({height:document.body.scrollHeight},'*'); }
   window.addEventListener('load', sendH);
   window.addEventListener('message', function(e){ if(e.data==='getHeight') sendH(); });
-<\/script>
-<!-- MAINTENANCE OVERLAY -->
-<div id="maintenanceOverlay" style="display:none;position:fixed;inset:0;background:#0A0A0A;z-index:99999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;font-family:'Cairo',sans-serif">
-  <div style="font-size:3.5em;margin-bottom:20px">☕</div>
-  <h1 style="font-size:1.8em;font-weight:900;color:#fff;margin-bottom:12px">الموقع تحت الصيانة</h1>
-  <p id="maintenanceMsgEl" style="color:#888;font-size:1em;max-width:400px;line-height:1.7">الموقع تحت الصيانة، سنعود قريباً ☕</p>
-</div>
-</body>`);
+<\/script></body>`);
         frame.srcdoc = htmlWithResize;
       } else {
         // ── Image Banner ──
@@ -2531,26 +2516,6 @@ onValue(settingsRef2, snap => {
   
   // Site title
   if(s.siteTitle) document.title = s.siteTitle;
-
-  // ══ FILTERS FROM ADMIN ══
-  if(s.filters) {
-    const fT = s.filters.temperature;
-    const fB = s.filters.brewer;
-    if(fT && fT !== 'all') {
-      fTemp = fT;
-      // Sync UI buttons
-      document.querySelectorAll('[data-temp]').forEach(b => {
-        b.classList.toggle('on', b.dataset.temp === fT);
-      });
-    }
-    if(fB && fB !== 'all') {
-      fBrew = fB;
-      document.querySelectorAll('[data-brew]').forEach(b => {
-        b.classList.toggle('on', b.dataset.brew === fB);
-      });
-    }
-    // نحفظ القيم فقط — render() ستُطبقها تلقائياً عند تحميل الوصفات
-  }
   if(s.siteSubtitle) { const el=document.querySelector('.sub'); if(el) el.textContent=s.siteSubtitle; }
   
   // AdSense injection - all positions
@@ -2578,80 +2543,6 @@ onValue(settingsRef2, snap => {
     }
   }
   
-  // ══ MAINTENANCE MODE ══
-  const mainOv = document.getElementById('maintenanceOverlay');
-  if(mainOv) {
-    if(s.maintenanceMode) {
-      mainOv.style.display = 'flex';
-      const msgEl = document.getElementById('maintenanceMsgEl');
-      if(msgEl && s.maintenanceMsg) msgEl.textContent = s.maintenanceMsg;
-    } else {
-      mainOv.style.display = 'none';
-    }
-  }
-
-  // ══ FEATURE FLAGS ══
-  const featureComments = s.featureComments !== false;
-  const featureRatings  = s.featureRatings  !== false;
-  const featureShare    = s.featureShare    !== false;
-  const featureAdd      = s.featureAdd      !== false;
-  const featureReports  = s.featureReports  !== false;
-
-  // Add FAB (إضافة وصفة)
-  const addFab = document.querySelector('.add-fab');
-  if(addFab) addFab.style.display = featureAdd ? 'flex' : 'none';
-
-  // Hide share/report buttons already rendered (and set global flags for future renders)
-  window._featureShare   = featureShare;
-  window._featureReports = featureReports;
-  window._featureComments= featureComments;
-  window._featureRatings = featureRatings;
-  // لا نستدعي render() هنا — الوصفات لم تتحمل بعد
-  // render() ستُستدعى تلقائياً عند وصول الوصفات من Firebase
-
-  // ══ DISPLAY SETTINGS ══
-  if(s.displayPerPage) {
-    const newPP = parseInt(s.displayPerPage);
-    if(newPP > 0) { PP = newPP; }
-  }
-  if(s.displaySort) {
-    SORT = s.displaySort;
-  }
-
-  // ══ SEO SETTINGS ══
-  if(s.seoGscCode) {
-    let gscMeta = document.querySelector('meta[name="google-site-verification"]');
-    if(!gscMeta) { gscMeta = document.createElement('meta'); gscMeta.name='google-site-verification'; document.head.appendChild(gscMeta); }
-    gscMeta.content = s.seoGscCode;
-  }
-  if(s.seoGaId) {
-    if(!document.getElementById('gaScript')) {
-      const gs = document.createElement('script'); gs.id='gaScript'; gs.async=true;
-      gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + s.seoGaId;
-      document.head.appendChild(gs);
-      const gi = document.createElement('script');
-      gi.textContent = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${s.seoGaId}');`;
-      document.head.appendChild(gi);
-    }
-  }
-  if(s.seoCanonical) {
-    let cLink = document.querySelector('link[rel="canonical"]');
-    if(!cLink) { cLink = document.createElement('link'); cLink.rel='canonical'; document.head.appendChild(cLink); }
-    cLink.href = s.seoCanonical;
-  }
-  if(s.seoKeywords) {
-    let kwMeta = document.querySelector('meta[name="keywords"]');
-    if(!kwMeta) { kwMeta = document.createElement('meta'); kwMeta.name='keywords'; document.head.appendChild(kwMeta); }
-    kwMeta.content = s.seoKeywords;
-  }
-  if(s.seoOgImage) {
-    let ogImg = document.querySelector('meta[property="og:image"]');
-    if(ogImg) ogImg.content = s.seoOgImage;
-  }
-  if(s.siteEmail) {
-    document.querySelectorAll('a[href^="mailto:"]').forEach(a => { a.href = 'mailto:' + s.siteEmail; });
-  }
-
   // Pinned recipes
   const pinnedBanner = document.getElementById('pinnedBanner');
   const pinnedGrid = document.getElementById('pinnedGrid');
@@ -3665,12 +3556,5 @@ function initArtStrip(el) {
   el.addEventListener('touchmove',  e => { el.scrollLeft = scrollL - (e.touches[0].clientX - startX); }, {passive:true});
 }
 </script>
-
-<!-- MAINTENANCE OVERLAY -->
-<div id="maintenanceOverlay" style="display:none;position:fixed;inset:0;background:#0A0A0A;z-index:99999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;font-family:'Cairo',sans-serif">
-  <div style="font-size:3.5em;margin-bottom:20px">☕</div>
-  <h1 style="font-size:1.8em;font-weight:900;color:#fff;margin-bottom:12px">الموقع تحت الصيانة</h1>
-  <p id="maintenanceMsgEl" style="color:#888;font-size:1em;max-width:400px;line-height:1.7">الموقع تحت الصيانة، سنعود قريباً ☕</p>
-</div>
 </body>
 </html>
