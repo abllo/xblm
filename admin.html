@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--up:#252525;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896;--red:linear-gradient(135deg,#f093fb,#f5576c);--green:linear-gradient(135deg,#43e97b,#38f9d7);--orange:linear-gradient(135deg,#ffd89b,#ff9a56)}
-body{font-family:'Cairo',sans-serif;background:radial-gradient(ellipse at 80% 0%,rgba(0,168,150,.06) 0%,var(--bg) 60%);color:var(--t1);min-height:100vh}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .lbox{background:var(--card);border-radius:18px;border:1px solid var(--br);padding:36px;text-align:center;width:100%;max-width:380px;position:relative;overflow:hidden}
 .lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
@@ -529,7 +529,6 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(ellipse at 80% 0%
     <h3 style="margin-bottom:14px;font-size:1em;color:var(--t2)">إجمالي الموقع</h3>
     <div class="sg">
       <div class="sc"><div class="sv" id="sTotal">—</div><div class="sl">📋 الكل</div></div>
-      <div class="sc fb-sc"><div class="sv" id="sFB">—</div><div class="sl">☁️ Firebase</div></div>
       <div class="sc"><div class="sv" id="sH">—</div><div class="sl">🔥 حارة</div></div>
       <div class="sc"><div class="sv" id="sC">—</div><div class="sl">🧊 باردة</div></div>
       <div class="sc"><div class="sv" id="sS">—</div><div class="sl">⚙️ سيرفر</div></div>
@@ -1513,29 +1512,6 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(ellipse at 80% 0%
       <div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">اضغط تحديث لتحميل البلاغات</div>
     </div>
   </div>
-    </div>
-
-    <!-- Tags list -->
-    <div style="font-size:.85em;font-weight:700;margin-bottom:10px;color:var(--t2)">التاقات الحالية:</div>
-    <div id="tagsList" style="display:flex;flex-wrap:wrap;gap:8px;min-height:60px;background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px">
-      <div style="color:var(--t2);font-size:.82em">لا توجد تاقات بعد — أضف من الأعلى</div>
-    </div>
-
-    <div style="height:1px;background:var(--br);margin:20px 0"></div>
-
-    <!-- Assign tags to recipes -->
-    <div>
-      <div style="font-size:.88em;font-weight:700;margin-bottom:10px">🔖 إضافة تاق لوصفة</div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <input class="form-input" id="tagRecipeSearch" placeholder="ابحث عن وصفة..." style="flex:1" oninput="searchRecipesForTag(this.value)">
-      </div>
-      <div id="tagRecipeResults" style="display:none;max-height:200px;overflow-y:auto;border:1px solid var(--br);border-radius:10px;margin-bottom:10px"></div>
-      <div id="tagSelectedRecipe" style="display:none;background:rgba(0,168,150,.08);border:1px solid rgba(0,168,150,.3);border-radius:10px;padding:12px;margin-bottom:10px">
-        <div style="font-size:.85em;font-weight:700;margin-bottom:8px" id="tagSelName">—</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px" id="tagSelTags"></div>
-        <button class="btn bp bsm" onclick="saveRecipeTags()" style="margin-top:10px">💾 حفظ تاقات الوصفة</button>
-      </div>
-    </div>
   </div>
 
   <!-- ═══ البنرات ═══ -->
@@ -1817,7 +1793,7 @@ function updateStats() {
     if(cat==='hot')h++; else if(cat==='cold')c++; else s++;
     if(b==='Omni')o++; else if(b==='xPod')x++; else ot++;
   });
-  setEl('sTotal',ALL_RECIPES.length); setEl('sFB',FB_RECIPES.length);
+  setEl('sTotal',ALL_RECIPES.length);
   setEl('sH',h); setEl('sC',c); setEl('sS',s);
   setEl('sO',o); setEl('sX',x); setEl('sOth',ot);
   setEl('sRated',Object.keys(FB_RATINGS).length);
