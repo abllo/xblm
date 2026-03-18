@@ -33,115 +33,132 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .admin-layout{display:flex;min-height:100vh}
 
 /* Sidebar */
-/* ══ SIDEBAR — redesigned ══ */
+/* ══ SIDEBAR ══ */
 .sidebar{
-  width:260px;min-width:260px;
-  background:linear-gradient(180deg,#0d0d0d 0%,#111 100%);
+  width:256px;min-width:256px;
+  background:#0e0e0e;
   border-left:1px solid rgba(255,255,255,.06);
   display:flex;flex-direction:column;
   position:fixed;top:0;right:0;bottom:0;z-index:100;
   overflow:hidden;
-  box-shadow:-4px 0 30px rgba(0,0,0,.4);
+  box-shadow:-6px 0 40px rgba(0,0,0,.5);
 }
-/* custom scrollbar inside sidebar */
-.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:8px}
-.sidebar-scroll::-webkit-scrollbar{width:4px}
+/* scrollbar */
+.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:12px}
+.sidebar-scroll::-webkit-scrollbar{width:3px}
 .sidebar-scroll::-webkit-scrollbar-track{background:transparent}
-.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
-.sidebar-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,168,150,.4)}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:3px}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,168,150,.5)}
 
-/* Logo */
-.sidebar-logo{
-  padding:22px 20px 18px;
-  display:flex;align-items:center;gap:12px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  flex-shrink:0;
+/* Top bar inside sidebar: logo + actions */
+.sidebar-top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  flex-shrink:0;gap:8px;
 }
+.sidebar-logo-wrap{display:flex;align-items:center;gap:10px}
 .sidebar-logo-icon{
-  width:40px;height:40px;border-radius:12px;
+  width:36px;height:36px;border-radius:10px;
   background:var(--gr);
   display:flex;align-items:center;justify-content:center;
-  font-size:1.2em;flex-shrink:0;
-  box-shadow:0 4px 14px rgba(0,168,150,.35);
+  font-size:1.1em;flex-shrink:0;
+  box-shadow:0 3px 12px rgba(0,168,150,.3);
 }
-.sidebar-logo-text{font-size:1.05em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
-.sidebar-logo-sub{font-size:.7em;color:#555;margin-top:2px}
+.sidebar-logo-text{font-size:.95em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-logo-sub{font-size:.65em;color:#444;margin-top:1px}
+.sidebar-top-actions{display:flex;gap:5px;flex-shrink:0}
+.sidebar-top-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);color:rgba(255,255,255,.55);
+  font-size:.72em;font-weight:700;cursor:pointer;
+  font-family:inherit;text-decoration:none;
+  transition:.15s;white-space:nowrap;
+}
+.sidebar-top-btn:hover{background:rgba(255,255,255,.09);color:#fff}
+.sidebar-top-btn.danger{border-color:rgba(245,87,108,.25);color:rgba(245,87,108,.7)}
+.sidebar-top-btn.danger:hover{background:rgba(245,87,108,.12);color:#f5576c}
 
-/* User card */
+/* User strip */
 .sidebar-user{
-  padding:14px 20px;
-  display:flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.025);
+  padding:11px 16px;
+  display:flex;align-items:center;gap:10px;
   border-bottom:1px solid rgba(255,255,255,.05);
   flex-shrink:0;
 }
 .sidebar-avatar{
-  width:36px;height:36px;border-radius:50%;
+  width:32px;height:32px;border-radius:50%;
   background:var(--gr);
   display:flex;align-items:center;justify-content:center;
-  font-size:.9em;flex-shrink:0;color:#fff;font-weight:800;
-  box-shadow:0 2px 10px rgba(0,168,150,.3);
+  font-size:.82em;flex-shrink:0;color:#fff;font-weight:800;
 }
-.sidebar-user-info{flex:1;min-width:0}
-.sidebar-user-name{font-size:.88em;font-weight:700;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sidebar-user-role{font-size:.72em;color:var(--ta);margin-top:1px;font-weight:600}
+.sidebar-user-name{font-size:.82em;font-weight:700;color:#ccc}
+.sidebar-user-role{font-size:.67em;color:var(--ta);font-weight:600}
 
-/* Section labels */
-.sidebar-section{padding:20px 20px 6px}
-.sidebar-section-label{
-  font-size:.68em;font-weight:800;
-  color:rgba(255,255,255,.2);
-  text-transform:uppercase;letter-spacing:1.5px;
+/* Firebase status */
+.sidebar-fb{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 16px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  flex-shrink:0;
 }
 
-/* Nav items */
-.sidebar-nav{display:flex;flex-direction:column;gap:1px;padding:4px 12px 8px}
-.sidebar-item{
-  display:flex;align-items:center;gap:11px;
-  padding:10px 12px;border-radius:10px;
-  cursor:pointer;transition:all .18s ease;
-  color:rgba(255,255,255,.45);
-  font-size:.875em;font-weight:600;
+/* ── Collapsible groups ── */
+.nav-group{margin:6px 10px 0}
+.nav-group-header{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:10px;
+  cursor:pointer;user-select:none;
+  transition:.18s;
+  border:none;background:none;width:100%;text-align:right;
+  font-family:inherit;
+}
+.nav-group-header:hover{background:rgba(255,255,255,.04)}
+.nav-group-icon{font-size:.95em;opacity:.9;flex-shrink:0}
+.nav-group-label{
+  flex:1;font-size:.8em;font-weight:800;
+  color:rgba(255,255,255,.75);
+  letter-spacing:.3px;
+}
+.nav-group-arrow{
+  font-size:.6em;color:rgba(255,255,255,.3);
+  transition:transform .22s ease;
+  flex-shrink:0;
+}
+.nav-group.open .nav-group-arrow{transform:rotate(90deg)}
+.nav-group-body{
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .28s cubic-bezier(.4,0,.2,1);
+}
+.nav-group.open .nav-group-body{max-height:600px}
+
+/* Items inside group */
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px 8px 14px;
+  border-radius:9px;margin:1px 0;
+  cursor:pointer;transition:.15s;
+  color:rgba(255,255,255,.38);
+  font-size:.83em;font-weight:600;
   border:none;background:none;width:100%;
-  text-align:right;font-family:inherit;
-  white-space:nowrap;position:relative;
+  text-align:right;font-family:inherit;white-space:nowrap;
+  position:relative;
 }
-.sidebar-item:hover{
-  background:rgba(255,255,255,.055);
-  color:rgba(255,255,255,.85);
-  transform:translateX(-2px);
-}
-.sidebar-item.active{
-  background:linear-gradient(135deg,rgba(0,168,150,.18),rgba(74,144,226,.1));
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.75)}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(0,168,150,.16),rgba(74,144,226,.08));
   color:#fff;
-  border:1px solid rgba(0,168,150,.25);
+  border:1px solid rgba(0,168,150,.22);
 }
-.sidebar-item.active::before{
-  content:'';position:absolute;right:0;top:20%;bottom:20%;
+.nav-item.active::after{
+  content:'';position:absolute;right:0;top:25%;bottom:25%;
   width:3px;background:var(--gr);border-radius:0 3px 3px 0;
 }
-.sidebar-item-icon{
-  width:22px;height:22px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1em;flex-shrink:0;
-  opacity:.7;transition:opacity .18s;
-}
-.sidebar-item.active .sidebar-item-icon{opacity:1}
-.sidebar-item:hover .sidebar-item-icon{opacity:.9}
-.sidebar-item-text{flex:1;letter-spacing:.2px}
-
-/* Divider */
-.sidebar-divider{height:1px;background:rgba(255,255,255,.05);margin:6px 16px}
-
-/* Bottom */
-.sidebar-bottom{padding:14px 12px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}
-.sidebar-fb-status{
-  display:flex;align-items:center;gap:8px;
-  padding:9px 12px;border-radius:10px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.05);
-  margin-bottom:10px;
-}
+.nav-item-icon{width:18px;text-align:center;font-size:.95em;flex-shrink:0;opacity:.6;transition:.15s}
+.nav-item.active .nav-item-icon,.nav-item:hover .nav-item-icon{opacity:1}
+.nav-item-text{flex:1}
 
 /* Main content */
 .main-content{flex:1;margin-right:260px;padding:24px;min-width:0}
@@ -320,6 +337,50 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 #tContent label:has(input[type=radio]:checked) .tc-type-opt,
 #tContent .tc-type-sel{border-color:var(--ta);background:rgba(0,168,150,.1);color:var(--ta)}
 #tContent .fg label{font-size:.82em;color:var(--t2);font-weight:700}
+
+/* ══ REAL-TIME NOTIFICATIONS ══ */
+.notif-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:18px;height:18px;border-radius:9px;
+  background:#f5576c;color:#fff;font-size:.65em;font-weight:900;
+  padding:0 5px;margin-right:auto;
+  animation:badgePop .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* Global alert banner */
+.rt-alert-banner{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-120px);
+  z-index:9999;
+  background:linear-gradient(135deg,#1a0a0a,#2a0d0d);
+  border:1px solid rgba(245,87,108,.5);
+  border-radius:16px;padding:14px 22px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:0 8px 40px rgba(245,87,108,.3),0 2px 10px rgba(0,0,0,.5);
+  max-width:420px;width:90%;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  cursor:pointer;
+}
+.rt-alert-banner.show{transform:translateX(-50%) translateY(0)}
+.rt-alert-icon{font-size:1.8em;flex-shrink:0;animation:shake .5s .2s ease}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.rt-alert-title{font-size:.95em;font-weight:900;color:#fff;margin-bottom:2px}
+.rt-alert-sub{font-size:.78em;color:rgba(255,255,255,.55)}
+.rt-alert-close{margin-right:auto;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.5);
+  width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.8em;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rt-alert-close:hover{background:rgba(255,255,255,.18);color:#fff}
+
+/* Pulse dot on nav items with alerts */
+.nav-item-pulse{
+  width:7px;height:7px;border-radius:50%;background:#f5576c;flex-shrink:0;
+  box-shadow:0 0 0 0 rgba(245,87,108,.6);
+  animation:pulse-ring 1.4s infinite;
+}
+@keyframes pulse-ring{
+  0%{box-shadow:0 0 0 0 rgba(245,87,108,.6)}
+  70%{box-shadow:0 0 0 6px rgba(245,87,108,0)}
+  100%{box-shadow:0 0 0 0 rgba(245,87,108,0)}
+}
 </style>
 </head>
 <body>
@@ -345,163 +406,155 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
-  <!-- Logo -->
-  <div class="sidebar-logo">
-    <div class="sidebar-logo-icon">☕</div>
-    <div>
-      <div class="sidebar-logo-text">Xbloom</div>
-      <div class="sidebar-logo-sub">لوحة التحكم</div>
+
+  <!-- Top bar: logo + action buttons -->
+  <div class="sidebar-top-bar">
+    <div class="sidebar-logo-wrap">
+      <div class="sidebar-logo-icon">☕</div>
+      <div>
+        <div class="sidebar-logo-text">Xbloom</div>
+        <div class="sidebar-logo-sub">لوحة التحكم</div>
+      </div>
+    </div>
+    <div class="sidebar-top-actions">
+      <a href="/" class="sidebar-top-btn" target="_blank">🌐</a>
+      <button class="sidebar-top-btn danger" onclick="doLogout()">🚪</button>
     </div>
   </div>
 
-  <!-- User info -->
+  <!-- User + Firebase status -->
   <div class="sidebar-user">
     <div class="sidebar-avatar">A</div>
-    <div class="sidebar-user-info">
+    <div>
       <div class="sidebar-user-name">Abdulelah</div>
       <div class="sidebar-user-role">مشرف</div>
     </div>
+  </div>
+  <div class="sidebar-fb">
+    <div class="fb-dot loading" id="fbDot"></div>
+    <div style="font-size:.7em;color:#555;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="fbLbl">جاري الاتصال...</div>
   </div>
 
   <!-- Scrollable nav -->
   <div class="sidebar-scroll">
 
-  <!-- عام -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">عام</div>
-  </div>
-  <div class="sidebar-nav">
-    <button class="sidebar-item active" onclick="switchTab(this,'tStats')" data-tab="tStats">
-      <span class="sidebar-item-icon">📊</span>
-      <span class="sidebar-item-text">الإحصائيات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tAnalytics');loadAnalytics()" data-tab="tAnalytics">
-      <span class="sidebar-item-icon">📈</span>
-      <span class="sidebar-item-text">التحليلات</span>
-    </button>
-  </div>
+    <!-- ── عام (no group, always visible) ── -->
+    <div style="padding:10px 10px 0;display:flex;flex-direction:column;gap:1px">
+      <button class="nav-item active" onclick="switchTab(this,'tStats')" data-tab="tStats">
+        <span class="nav-item-icon">📊</span><span class="nav-item-text">الإحصائيات</span>
+      </button>
+      <button class="nav-item" onclick="switchTab(this,'tAnalytics');loadAnalytics()" data-tab="tAnalytics">
+        <span class="nav-item-icon">📈</span><span class="nav-item-text">التحليلات</span>
+      </button>
+    </div>
 
-  <div class="sidebar-divider"></div>
+    <!-- ── الوصفات ── -->
+    <div class="nav-group open" id="grp-recipes">
+      <button class="nav-group-header" onclick="toggleGroup('grp-recipes')">
+        <span class="nav-group-icon">☕</span>
+        <span class="nav-group-label">الوصفات</span>
+        <span class="nav-group-arrow">▶</span>
+      </button>
+      <div class="nav-group-body">
+        <div style="padding:0 0 4px;display:flex;flex-direction:column;gap:1px">
+          <button class="nav-item" onclick="switchTab(this,'tAdd')" data-tab="tAdd">
+            <span class="nav-item-icon">➕</span><span class="nav-item-text">إضافة وصفة</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tRec')" data-tab="tRec">
+            <span class="nav-item-icon">📋</span><span class="nav-item-text">إدارة الوصفات</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tRatings')" data-tab="tRatings">
+            <span class="nav-item-icon">⭐</span><span class="nav-item-text">التقييمات</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tComments')" data-tab="tComments">
+            <span class="nav-item-icon">💬</span><span class="nav-item-text">التعليقات</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tReports')" data-tab="tReports">
+            <span class="nav-item-icon">🚩</span><span class="nav-item-text">البلاغات</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tPinned')" data-tab="tPinned">
+            <span class="nav-item-icon">📌</span><span class="nav-item-text">وصفات مثبتة</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tRoastery')" data-tab="tRoastery">
+            <span class="nav-item-icon">🏪</span><span class="nav-item-text">المحامص</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tDupes');scanDuplicates()" data-tab="tDupes">
+            <span class="nav-item-icon">🔍</span><span class="nav-item-text">كاشف التكرار</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <!-- الوصفات -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">☕ الوصفات</div>
-  </div>
-  <div class="sidebar-nav">
-    <button class="sidebar-item" onclick="switchTab(this,'tAdd')" data-tab="tAdd">
-      <span class="sidebar-item-icon">➕</span>
-      <span class="sidebar-item-text">إضافة وصفة</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tRec')" data-tab="tRec">
-      <span class="sidebar-item-icon">📋</span>
-      <span class="sidebar-item-text">إدارة الوصفات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tRatings')" data-tab="tRatings">
-      <span class="sidebar-item-icon">⭐</span>
-      <span class="sidebar-item-text">التقييمات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tComments')" data-tab="tComments">
-      <span class="sidebar-item-icon">💬</span>
-      <span class="sidebar-item-text">التعليقات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tReports');loadReports()" data-tab="tReports">
-      <span class="sidebar-item-icon">🚩</span>
-      <span class="sidebar-item-text">البلاغات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tPinned')" data-tab="tPinned">
-      <span class="sidebar-item-icon">📌</span>
-      <span class="sidebar-item-text">وصفات مثبتة</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tRoastery')" data-tab="tRoastery">
-      <span class="sidebar-item-icon">🏪</span>
-      <span class="sidebar-item-text">المحامص</span>
-    </button>
-<button class="sidebar-item" onclick="switchTab(this,'tDupes');scanDuplicates()" data-tab="tDupes">
-      <span class="sidebar-item-icon">🔍</span>
-      <span class="sidebar-item-text">كاشف التكرار</span>
-    </button>
-  </div>
+    <!-- ── التسويق ── -->
+    <div class="nav-group" id="grp-marketing">
+      <button class="nav-group-header" onclick="toggleGroup('grp-marketing')">
+        <span class="nav-group-icon">📣</span>
+        <span class="nav-group-label">التسويق</span>
+        <span class="nav-group-arrow">▶</span>
+      </button>
+      <div class="nav-group-body">
+        <div style="padding:0 0 4px;display:flex;flex-direction:column;gap:1px">
+          <button class="nav-item" onclick="switchTab(this,'tAff')" data-tab="tAff">
+            <span class="nav-item-icon">🛒</span><span class="nav-item-text">روابط الشراء</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tPromo')" data-tab="tPromo">
+            <span class="nav-item-icon">🎫</span><span class="nav-item-text">أكواد الخصم</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tAds')" data-tab="tAds">
+            <span class="nav-item-icon">📢</span><span class="nav-item-text">الإعلانات</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tBanners')" data-tab="tBanners">
+            <span class="nav-item-icon">🖼️</span><span class="nav-item-text">البنرات</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tContent')" data-tab="tContent">
+            <span class="nav-item-icon">🧠</span><span class="nav-item-text">مولّد المحتوى</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <div class="sidebar-divider"></div>
+    <!-- ── البيانات ── -->
+    <div class="nav-group" id="grp-data">
+      <button class="nav-group-header" onclick="toggleGroup('grp-data')">
+        <span class="nav-group-icon">📁</span>
+        <span class="nav-group-label">البيانات</span>
+        <span class="nav-group-arrow">▶</span>
+      </button>
+      <div class="nav-group-body">
+        <div style="padding:0 0 4px;display:flex;flex-direction:column;gap:1px">
+          <button class="nav-item" onclick="switchTab(this,'tSheet')" data-tab="tSheet">
+            <span class="nav-item-icon">🔄</span><span class="nav-item-text">مزامنة Excel</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tImp')" data-tab="tImp">
+            <span class="nav-item-icon">📤</span><span class="nav-item-text">استيراد Excel</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tExp')" data-tab="tExp">
+            <span class="nav-item-icon">📥</span><span class="nav-item-text">تصدير البيانات</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <!-- التسويق -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">📣 التسويق</div>
-  </div>
-  <div class="sidebar-nav">
-    <button class="sidebar-item" onclick="switchTab(this,'tAff')" data-tab="tAff">
-      <span class="sidebar-item-icon">🛒</span>
-      <span class="sidebar-item-text">روابط الشراء</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tPromo')" data-tab="tPromo">
-      <span class="sidebar-item-icon">🎫</span>
-      <span class="sidebar-item-text">أكواد الخصم</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tAds')" data-tab="tAds">
-      <span class="sidebar-item-icon">📢</span>
-      <span class="sidebar-item-text">الإعلانات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tBanners')" data-tab="tBanners">
-      <span class="sidebar-item-icon">🖼️</span>
-      <span class="sidebar-item-text">البنرات</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tContent')" data-tab="tContent">
-      <span class="sidebar-item-icon">🧠</span>
-      <span class="sidebar-item-text">مولّد المحتوى</span>
-    </button>
-  </div>
-
-  <div class="sidebar-divider"></div>
-
-  <!-- البيانات -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">📁 البيانات</div>
-  </div>
-  <div class="sidebar-nav">
-    <button class="sidebar-item" onclick="switchTab(this,'tSheet')" data-tab="tSheet">
-      <span class="sidebar-item-icon">🔄</span>
-      <span class="sidebar-item-text">مزامنة Excel</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tImp')" data-tab="tImp">
-      <span class="sidebar-item-icon">📤</span>
-      <span class="sidebar-item-text">استيراد Excel</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tExp')" data-tab="tExp">
-      <span class="sidebar-item-icon">📥</span>
-      <span class="sidebar-item-text">تصدير البيانات</span>
-    </button>
-  </div>
-
-  <div class="sidebar-divider"></div>
-
-  <!-- الإعدادات -->
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">⚙️ الإعدادات</div>
-  </div>
-  <div class="sidebar-nav">
-    <button class="sidebar-item" onclick="switchTab(this,'tSite')" data-tab="tSite">
-      <span class="sidebar-item-icon">⚙️</span>
-      <span class="sidebar-item-text">إعدادات الموقع</span>
-    </button>
-    <button class="sidebar-item" onclick="switchTab(this,'tPass')" data-tab="tPass">
-      <span class="sidebar-item-icon">🔑</span>
-      <span class="sidebar-item-text">كلمة المرور</span>
-    </button>
-  </div>
+    <!-- ── الإعدادات ── -->
+    <div class="nav-group" id="grp-settings">
+      <button class="nav-group-header" onclick="toggleGroup('grp-settings')">
+        <span class="nav-group-icon">⚙️</span>
+        <span class="nav-group-label">الإعدادات</span>
+        <span class="nav-group-arrow">▶</span>
+      </button>
+      <div class="nav-group-body">
+        <div style="padding:0 0 4px;display:flex;flex-direction:column;gap:1px">
+          <button class="nav-item" onclick="switchTab(this,'tSite')" data-tab="tSite">
+            <span class="nav-item-icon">⚙️</span><span class="nav-item-text">إعدادات الموقع</span>
+          </button>
+          <button class="nav-item" onclick="switchTab(this,'tPass')" data-tab="tPass">
+            <span class="nav-item-icon">🔑</span><span class="nav-item-text">كلمة المرور</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
   </div><!-- /sidebar-scroll -->
-
-  <!-- Bottom: Firebase status + logout -->
-  <div class="sidebar-bottom">
-    <div class="sidebar-fb-status">
-      <div class="fb-dot loading" id="fbDot"></div>
-      <div style="font-size:.72em;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="fbLbl">جاري الاتصال...</div>
-    </div>
-    <div style="display:flex;gap:7px">
-      <a href="/" class="btn bgray bsm" target="_blank" style="flex:1;justify-content:center">🌐 الموقع</a>
-      <button class="btn bd bsm" onclick="doLogout()" style="flex:1;justify-content:center">🚪 خروج</button>
-    </div>
-  </div>
 </nav>
 
 <!-- Mobile toggle -->
@@ -1133,7 +1186,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <p style="color:var(--t2);font-size:.82em">أضف روابط "اشتري القهوة" لكل محمصة — تظهر تلقائياً في بطاقات الوصفات</p>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn" onclick="renderAffList()" style="background:var(--up);border:1px solid var(--br);color:var(--t2);padding:9px 14px;font-size:.82em">🔄 تحديث</button>
         <button class="btn" onclick="saveAffGlobal()" style="background:var(--gr);color:#fff;border:none;padding:9px 18px;font-size:.85em">💾 حفظ الكل</button>
       </div>
     </div>
@@ -1446,7 +1498,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <h3 style="margin-bottom:4px">📈 التحليلات الداخلية</h3>
         <p style="color:var(--t2);font-size:.82em">إحصائيات حية من Firebase — بدون أدوات خارجية</p>
       </div>
-      <button class="btn bp bsm" onclick="loadAnalytics()">🔄 تحديث</button>
     </div>
 
     <!-- Stats cards -->
@@ -1492,11 +1543,10 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   <div id="tReports" class="acard">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px">
       <div>
-        <h3 style="margin-bottom:4px">🚩 مركز البلاغات</h3>
+        <h3 style="margin-bottom:4px">🚩 مركز البلاغات <span style="font-size:.6em;background:rgba(67,233,123,.15);border:1px solid rgba(67,233,123,.25);color:#43e97b;padding:2px 8px;border-radius:20px;font-weight:700;vertical-align:middle">● مباشر</span></h3>
         <p style="color:var(--t2);font-size:.82em">بلاغات الزوار على الوصفات — راجعها وحدد مصيرها</p>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn bsm" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="loadReports()">🔄 تحديث</button>
         <button class="btn bsm bd" onclick="clearResolvedReports()">🗑️ حذف المحلولة</button>
       </div>
     </div>
@@ -1509,7 +1559,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
 
     <div id="reportsList">
-      <div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">اضغط تحديث لتحميل البلاغات</div>
+      <div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">⏳ جاري تحميل البلاغات...</div>
     </div>
   </div>
   </div>
@@ -1588,6 +1638,16 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 
 </div><!-- /adminPanel -->
 
+
+<!-- Real-time Alert Banner -->
+<div class="rt-alert-banner" id="rtAlertBanner" onclick="goToReports()">
+  <div class="rt-alert-icon" id="rtAlertIcon">🚩</div>
+  <div style="flex:1;min-width:0">
+    <div class="rt-alert-title" id="rtAlertTitle">بلاغ جديد</div>
+    <div class="rt-alert-sub" id="rtAlertSub">اضغط لعرض البلاغات</div>
+  </div>
+  <button class="rt-alert-close" onclick="event.stopPropagation();dismissAlert()">✕</button>
+</div>
 <!-- Confirm Modal -->
 <div class="ov" id="confirmOv">
   <div class="cmod">
@@ -1720,6 +1780,34 @@ function initFirebase() {
     FB_COMMENTS = {};
     snap.forEach(child=>{ FB_COMMENTS[child.key]=child.val(); });
     renderComments(); updateStats();
+    // auto-refresh analytics if open
+    if(document.getElementById('tAnalytics')?.classList.contains('open')) loadAnalytics();
+  }, ()=>{});
+
+  // ── Real-time: Reports ──
+  let _prevNewReportsCount = 0;
+  onValue(ref(db,'reports'), snap => {
+    FB_REPORTS = snap.val() || {};
+    renderReports();
+    // Count new reports
+    const newCount = Object.values(FB_REPORTS).filter(r=>r.status==='new'||!r.status).length;
+    // Update badge on nav item
+    updateReportsBadge(newCount);
+    // Show alert if new ones arrived
+    if(newCount > _prevNewReportsCount && _prevNewReportsCount >= 0) {
+      const diff = newCount - _prevNewReportsCount;
+      if(_prevNewReportsCount >= 0 && diff > 0) showReportsAlert(newCount, diff);
+    }
+    _prevNewReportsCount = newCount;
+  }, ()=>{});
+
+  // ── Real-time: Roasteries ──
+  onValue(ref(db,'roasteries'), snap => {
+    FB_ROASTERIES = {};
+    snap.forEach(c=>{ FB_ROASTERIES[c.key]=c.val(); });
+    if(document.getElementById('tRoastery')?.classList.contains('open')) renderRoasteryList();
+    if(document.getElementById('tAdd')?.classList.contains('open')) renderAdminRoasteryDD('');
+    if(document.getElementById('tAnalytics')?.classList.contains('open')) loadAnalytics();
   }, ()=>{});
 
   // Load site settings
@@ -1803,18 +1891,25 @@ function updateStats() {
 }
 
 window.switchTab = function(btn,id){
-  document.querySelectorAll('.atb,.sidebar-item').forEach(b=>b.classList.remove('on','active'));
+  document.querySelectorAll('.atb,.sidebar-item,.nav-item').forEach(b=>b.classList.remove('on','active'));
   document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
   btn.classList.add('on'); btn.classList.add('active');
   document.getElementById(id).classList.add('open');
+  // Update page title
   const titleEl = document.getElementById('pageTitle');
   if(titleEl) {
-    const textEl = btn.querySelector('.sidebar-item-text');
-    const iconEl = btn.querySelector('.sidebar-item-icon');
-    titleEl.textContent = (iconEl ? iconEl.textContent+' ' : '') + (textEl ? textEl.textContent : btn.textContent.trim());
+    const textEl = btn.querySelector('.nav-item-text,.sidebar-item-text');
+    const iconEl = btn.querySelector('.nav-item-icon,.sidebar-item-icon');
+    titleEl.textContent = (iconEl?iconEl.textContent+' ':'') + (textEl?textEl.textContent:btn.textContent.trim());
   }
-  if(id==='tRoastery' || id==='tAdd') loadRoasteries();
+  if(id==='tRoastery'||id==='tAdd') loadRoasteries();
   closeSidebar();
+};
+
+window.toggleGroup = function(id) {
+  const grp = document.getElementById(id);
+  if(!grp) return;
+  grp.classList.toggle('open');
 };
 
 // ════ TABLE ════
@@ -3644,14 +3739,8 @@ window.loadAnalytics = async function() {
 let FB_REPORTS = {};
 let _reportsFilter = 'all';
 
-window.loadReports = async function() {
-  if(!db) { toast('Firebase غير متصل','terr'); return; }
-  try {
-    const snap = await get(ref(db,'reports'));
-    FB_REPORTS = snap.val() || {};
-    renderReports();
-  } catch(e) { toast('خطأ في تحميل البلاغات','terr'); }
-};
+// loadReports now auto-called via real-time listener (see initReports)
+window.loadReports = function() { /* no-op — real-time */ };
 
 function renderReports() {
   const all      = Object.entries(FB_REPORTS);
@@ -3726,6 +3815,75 @@ window.clearResolvedReports = function() {
     .then(()=>{ resolved.forEach(([key])=>delete FB_REPORTS[key]); renderReports(); toast('تم الحذف ✅'); })
     .catch(()=>toast('خطأ','terr'));
 };
+
+// ════ REAL-TIME NOTIFICATIONS ════
+let _alertDismissed = false;
+let _alertTimer = null;
+
+window.updateReportsBadge = function(count) {
+  // Update badge in nav
+  const btn = document.querySelector('[data-tab="tReports"]');
+  if(!btn) return;
+  let badge = btn.querySelector('.notif-badge');
+  if(count > 0) {
+    if(!badge) {
+      badge = document.createElement('span');
+      badge.className = 'notif-badge';
+      btn.appendChild(badge);
+    }
+    badge.textContent = count;
+    // Add pulse dot to group header
+    const grp = document.getElementById('grp-recipes');
+    if(grp) {
+      const hdr = grp.querySelector('.nav-group-header');
+      if(hdr && !hdr.querySelector('.nav-item-pulse')) {
+        const dot = document.createElement('span');
+        dot.className = 'nav-item-pulse';
+        dot.id = 'reportsPulseDot';
+        hdr.appendChild(dot);
+      }
+    }
+  } else {
+    if(badge) badge.remove();
+    const dot = document.getElementById('reportsPulseDot');
+    if(dot) dot.remove();
+  }
+};
+
+window.showReportsAlert = function(total, newOnes) {
+  _alertDismissed = false;
+  const banner = document.getElementById('rtAlertBanner');
+  document.getElementById('rtAlertIcon').textContent = '🚩';
+  document.getElementById('rtAlertTitle').textContent =
+    newOnes === 1 ? 'بلاغ جديد وصل!' : `${newOnes} بلاغات جديدة!`;
+  document.getElementById('rtAlertSub').textContent =
+    `إجمالي البلاغات المعلقة: ${total} — اضغط للمراجعة`;
+  banner.classList.add('show');
+  if(_alertTimer) clearTimeout(_alertTimer);
+  _alertTimer = setTimeout(() => { if(!_alertDismissed) banner.classList.remove('show'); }, 7000);
+};
+
+window.dismissAlert = function() {
+  _alertDismissed = true;
+  document.getElementById('rtAlertBanner').classList.remove('show');
+  if(_alertTimer) clearTimeout(_alertTimer);
+};
+
+window.goToReports = function() {
+  dismissAlert();
+  const btn = document.querySelector('[data-tab="tReports"]');
+  if(btn) {
+    // Open the recipes group if collapsed
+    const grp = document.getElementById('grp-recipes');
+    if(grp && !grp.classList.contains('open')) grp.classList.add('open');
+    switchTab(btn, 'tReports');
+  }
+};
+
+// Make analytics auto-refresh when visible
+window.loadAnalytics = (function(_orig) {
+  return function() { _orig(); };
+})(window.loadAnalytics || function(){});
 
 </script>
 </body>
