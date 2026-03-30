@@ -2026,6 +2026,13 @@ window.saveRec = function(e){
     ratio:document.getElementById('rR').value.trim(),link:document.getElementById('rL').value.trim(),
     category:catSel.value,
     roastery:document.getElementById('rRoastery').value.trim()||null};
+  // احتفظ بـ addedAt القديم عند التعديل — بدونه تروح الوصفة لآخر الترتيب
+  if(editingKey){
+    const existing = FB_RECIPES.find(x=>x._fbKey===editingKey);
+    if(existing?.addedAt) r.addedAt = existing.addedAt;
+  } else {
+    r.addedAt = Date.now();
+  }
   const btn=document.getElementById('saveBtn');
   btn.textContent='⏳...'; btn.disabled=true;
   const op=editingKey ? set(ref(db,'recipes/'+editingKey),r) : push(recipesRef,r);
