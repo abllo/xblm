@@ -1989,7 +1989,7 @@ window.editRec = function(fbKey){
   document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked=true;
   document.getElementById('addFormTitle').textContent='✏️ تعديل الوصفة';
   document.getElementById('saveBtn').textContent='💾 حفظ التعديل';
-  // Switch to tAdd tab by data-tab attribute
+  // Switch to tAdd tab by ID (not index — index breaks after tab removal)
   const addBtn = document.querySelector('[data-tab="tAdd"]');
   if(addBtn) switchTab(addBtn, 'tAdd');
   // Pre-load roasteries for dropdown
@@ -2755,7 +2755,7 @@ window.editRoastery = function(key){
     document.getElementById('rImgPreview').style.display='block';
     document.getElementById('rImgPreviewImg').src = v.image;
   }
-  switchTab(document.querySelector('[onclick*="tRoastery"]'), 'tRoastery');
+  switchTab(document.querySelector('[data-tab="tRoastery"]'), 'tRoastery');
   document.getElementById('rName').focus();
   toast('تم تحميل بيانات المحمصة للتعديل');
 };
