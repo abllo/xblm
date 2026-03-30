@@ -1903,6 +1903,15 @@ function updateStats() {
   setEl('sComments', totalComments);
 }
 
+window.closeSidebar = function(){
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('open');
+};
+window.toggleSidebar = function(){
+  document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('sidebarOverlay')?.classList.toggle('open');
+};
+
 window.switchTab = function(btn,id){
   document.querySelectorAll('.atb,.sidebar-item,.nav-item').forEach(b=>b.classList.remove('on','active'));
   document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
