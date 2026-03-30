@@ -2695,7 +2695,7 @@ function loadRoasteries(){
   onValue(rRef, snap=>{
     FB_ROASTERIES = {};
     snap.forEach(child=>{ FB_ROASTERIES[child.key]=child.val(); });
-    renderRoasteryList();
+    if(!_editingRoasteryKey) renderRoasteryList();
   },()=>{});
 }
 
@@ -2744,26 +2744,29 @@ window.editRoastery = function(key){
   // فتح التاب أولاً (سيستدعي loadRoasteries داخلياً)
   _editingRoasteryKey = key;
   switchTab(document.querySelector('[data-tab="tRoastery"]'), 'tRoastery');
-  // ملء الحقول بعد فتح التاب مباشرةً
-  document.getElementById('editRoasteryKey').value = key;
-  document.getElementById('rName').value = v.name||'';
-  document.getElementById('rOrder').value = v.order||1;
-  document.getElementById('rImageUrl').value = v.image||'';
-  document.getElementById('rPinned').checked = !!v.pinned;
-  document.getElementById('rHiddenFromVisitors').checked = !!v.hiddenFromVisitors;
-  const col = v.color||'#1a3a2a';
-  document.getElementById('rColor').value = col;
-  document.getElementById('rColorHex').value = col;
-  document.getElementById('colorPreviewBox').style.background = col;
-  if(v.image){
-    document.getElementById('rImgPreview').style.display='block';
-    document.getElementById('rImgPreviewImg').src = v.image;
-  } else {
-    document.getElementById('rImgPreview').style.display='none';
-  }
-  _editingRoasteryKey = null;
-  document.getElementById('rName').focus();
-  toast('تم تحميل بيانات المحمصة للتعديل ✅');
+  // ملء الحقول بعد انتهاء أي عمليات async
+  setTimeout(()=>{
+    document.getElementById('editRoasteryKey').value = key;
+    document.getElementById('rName').value = v.name||'';
+    document.getElementById('rOrder').value = v.order||1;
+    document.getElementById('rImageUrl').value = v.image||'';
+    document.getElementById('rPinned').checked = !!v.pinned;
+    document.getElementById('rHiddenFromVisitors').checked = !!v.hiddenFromVisitors;
+    const col = v.color||'#1a3a2a';
+    document.getElementById('rColor').value = col;
+    document.getElementById('rColorHex').value = col;
+    document.getElementById('colorPreviewBox').style.background = col;
+    if(v.image){
+      document.getElementById('rImgPreview').style.display='block';
+      document.getElementById('rImgPreviewImg').src = v.image;
+    } else {
+      document.getElementById('rImgPreview').style.display='none';
+    }
+    _editingRoasteryKey = null;
+    document.getElementById('rName').focus();
+    window.scrollTo({top:0,behavior:'smooth'});
+    toast('تم تحميل بيانات المحمصة للتعديل ✅');
+  }, 150);
 };
 
 window.clearRoasteryForm = function(){
