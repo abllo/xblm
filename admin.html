@@ -2685,10 +2685,11 @@ window.copyPassCode = function(){
 // ════ إدارة المحامص ════
 let FB_ROASTERIES = {};
 let _roasteriesListenerActive = false;
+let _editingRoasteryKey = null;
 
 function loadRoasteries(){
   if(!db) return;
-  if(_roasteriesListenerActive){ renderRoasteryList(); return; }
+  if(_roasteriesListenerActive){ if(!_editingRoasteryKey) renderRoasteryList(); return; }
   _roasteriesListenerActive = true;
   const rRef = ref(db,'roasteries');
   onValue(rRef, snap=>{
@@ -2740,6 +2741,10 @@ function renderRoasteryList(){
 window.editRoastery = function(key){
   const v = FB_ROASTERIES[key];
   if(!v) return;
+  // فتح التاب أولاً (سيستدعي loadRoasteries داخلياً)
+  _editingRoasteryKey = key;
+  switchTab(document.querySelector('[data-tab="tRoastery"]'), 'tRoastery');
+  // ملء الحقول بعد فتح التاب مباشرةً
   document.getElementById('editRoasteryKey').value = key;
   document.getElementById('rName').value = v.name||'';
   document.getElementById('rOrder').value = v.order||1;
@@ -2753,10 +2758,12 @@ window.editRoastery = function(key){
   if(v.image){
     document.getElementById('rImgPreview').style.display='block';
     document.getElementById('rImgPreviewImg').src = v.image;
+  } else {
+    document.getElementById('rImgPreview').style.display='none';
   }
-  switchTab(document.querySelector('[data-tab="tRoastery"]'), 'tRoastery');
+  _editingRoasteryKey = null;
   document.getElementById('rName').focus();
-  toast('تم تحميل بيانات المحمصة للتعديل');
+  toast('تم تحميل بيانات المحمصة للتعديل ✅');
 };
 
 window.clearRoasteryForm = function(){
