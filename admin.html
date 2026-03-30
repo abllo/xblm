@@ -1989,12 +1989,9 @@ window.editRec = function(fbKey){
   document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked=true;
   document.getElementById('addFormTitle').textContent='✏️ تعديل الوصفة';
   document.getElementById('saveBtn').textContent='💾 حفظ التعديل';
-  // Switch to tAdd tab by ID (not index — index breaks after tab removal)
-  document.querySelectorAll('.atb').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.acard').forEach(c=>c.classList.remove('open'));
-  const addBtn = document.querySelector('.atb[onclick*="tAdd"]');
-  if(addBtn) addBtn.classList.add('on');
-  document.getElementById('tAdd').classList.add('open');
+  // Switch to tAdd tab by data-tab attribute
+  const addBtn = document.querySelector('[data-tab="tAdd"]');
+  if(addBtn) switchTab(addBtn, 'tAdd');
   // Pre-load roasteries for dropdown
   if(!Object.keys(FB_ROASTERIES).length && db){
     get(ref(db,'roasteries')).then(snap=>{
