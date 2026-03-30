@@ -1456,6 +1456,12 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       </div>
     </div>
 
+    <!-- اسم الملف المخصص -->
+    <div class="fg" style="margin-bottom:14px">
+      <label>اسم الملف (اختياري)</label>
+      <input class="form-input" id="tcFilename" placeholder="مثال: omni-guide — إذا تركته فارغاً يختاره Claude تلقائياً" style="font-family:monospace;font-size:.85em">
+    </div>
+
     <!-- زر التوليد -->
     <button class="btn bp bbl" onclick="generateContentPrompt()" style="margin-bottom:20px;font-size:.95em;padding:14px">
       ⚡ توليد الـ Prompt
@@ -1662,7 +1668,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, push, set, remove, get, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // ════ CREDENTIALS (obfuscated) ════
 // user: abdulelah | pass: 490238
@@ -2560,7 +2566,14 @@ window.saveSiteSettings = function(){
 
 window.saveAnnoSetting = function(){
   if(!db) return;
-  set(ref(db,'siteSettings/annoEnabled'),document.getElementById('annoEnabled').checked).then(()=>toast('تم الحفظ ✅'));
+  const enabled = document.getElementById('annoEnabled').checked;
+  const text    = document.getElementById('annoText')?.value.trim() || '';
+  const type    = document.getElementById('annoType')?.value || 'info';
+  set(ref(db,'siteSettings/annoEnabled'), enabled);
+  set(ref(db,'siteSettings/annoText'),    text);
+  set(ref(db,'siteSettings/annoType'),    type)
+    .then(()=>toast('تم حفظ إعدادات الإشعار ✅'))
+    .catch(err=>toast('خطأ: '+err.message,'terr'));
 };
 
 // ════ IMPORT ════
@@ -2842,10 +2855,32 @@ window.saveRoastery = function(){
   const hiddenFromVisitors = document.getElementById('rHiddenFromVisitors').checked;
   const data = { name, pinned, order, color, hiddenFromVisitors, createdAt: FB_ROASTERIES[key]?.createdAt||Date.now() };
   if(image) data.image = image;
-  
+
+  // ══ تحديث الوصفات اللي فيها الاسم القديم ══
+  const oldName = existingKey && FB_ROASTERIES[existingKey]?.name;
+  const nameChanged = oldName && oldName.toLowerCase() !== name.toLowerCase();
+
   set(ref(db,'roasteries/'+key), data)
     .then(()=>{
-      toast(existingKey ? 'تم تحديث المحمصة ✅' : 'تمت إضافة المحمصة ✅');
+      if(nameChanged){
+        // ابحث عن كل وصفات Firebase اللي فيها الاسم القديم وحدّثها
+        const updates = {};
+        FB_RECIPES.forEach(r=>{
+          if(r._fbKey && r.roastery && r.roastery.trim().toLowerCase() === oldName.trim().toLowerCase()){
+            updates['recipes/'+r._fbKey+'/roastery'] = name;
+          }
+        });
+        const count = Object.keys(updates).length;
+        if(count > 0){
+            update(ref(db,'/'), updates)
+              .then(()=> toast(`✅ تم تحديث المحمصة + ${count} وصفة تلقائياً`))
+              .catch(()=> toast('تم حفظ المحمصة ⚠️ لكن تعذّر تحديث الوصفات','twin'));
+        } else {
+          toast('تم تحديث المحمصة ✅ (لا توجد وصفات بالاسم القديم)');
+        }
+      } else {
+        toast(existingKey ? 'تم تحديث المحمصة ✅' : 'تمت إضافة المحمصة ✅');
+      }
       clearRoasteryForm();
     })
     .catch(err=>toast('خطأ: '+err.message,'terr'));
@@ -2887,7 +2922,13 @@ window.clearBrewData = function(){
   Promise.all([
     set(ref(db,'brew_clicks'), null),
     set(ref(db,'affiliate_clicks'), null)
-  ]).then(()=>{ toast('تم مسح البيانات ✅'); document.getElementById('brewChart').innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">تمت إعادة التعيين</p>'; document.getElementById('affClicksChart').innerHTML='<p style="color:var(--t2);font-size:.83em">لا توجد بيانات</p>'; }).catch(err=>toast('خطأ: '+err.message,'terr'));
+  ]).then(()=>{ 
+    toast('تم مسح البيانات ✅'); 
+    const bc = document.getElementById('brewChart') || document.getElementById('anaTopBrews');
+    if(bc) bc.innerHTML='<p style="color:var(--t2);font-size:.85em;text-align:center;padding:20px">تمت إعادة التعيين</p>';
+    const ac = document.getElementById('affClicksChart');
+    if(ac) ac.innerHTML='<p style="color:var(--t2);font-size:.83em">لا توجد بيانات</p>';
+  }).catch(err=>toast('خطأ: '+err.message,'terr'));
 };
 
 

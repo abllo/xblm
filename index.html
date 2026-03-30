@@ -1845,8 +1845,8 @@ function getList(){
     if(SHOW_FAVS){const k=r._fbKey||r.link||str(r.name);if(!FAVS[k])return false;}
     if(fTemp!=='all'&&(r.category||'hot')!==fTemp)return false;
     if(fBrew!=='all'&&(r.brewer||'')!==fBrew)return false;
-    if(activeRoastery&&(r.roastery||'').toLowerCase()!==activeRoastery.toLowerCase())return false;
-    if(Q){const t=(str(r.name)+' '+str(r.author)+' '+str(r.dose)+' '+str(r.ratio)+' '+str(r.roastery)).toLowerCase();if(!t.includes(Q))return false;}
+    if(activeRoastery){const rm=matchRoastery(r);if(!rm||rm.trim().toLowerCase()!==activeRoastery.toLowerCase())return false;}
+    if(Q){const _rm=matchRoastery(r)||'';const t=(str(r.name)+' '+str(r.author)+' '+str(r.dose)+' '+str(r.ratio)+' '+_rm).toLowerCase();if(!t.includes(Q))return false;}
     return true;
   });
   if(SORT==='top'){
