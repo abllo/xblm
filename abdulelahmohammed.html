@@ -475,9 +475,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <button class="nav-item" onclick="switchTab(this,'tRoastery')" data-tab="tRoastery">
             <span class="nav-item-icon">🏪</span><span class="nav-item-text">المحامص</span>
           </button>
-          <button class="nav-item" onclick="switchTab(this,'tDupes');scanDuplicates()" data-tab="tDupes">
-            <span class="nav-item-icon">🔍</span><span class="nav-item-text">كاشف التكرار</span>
-          </button>
         </div>
       </div>
     </div>
@@ -1267,31 +1264,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div style="margin-top:20px;background:var(--bg);border:1px solid var(--br);border-radius:12px;padding:14px 16px">
       <div style="font-size:.85em;font-weight:700;margin-bottom:10px">📊 إحصائيات النقرات</div>
       <div id="affClicksChart" style="color:var(--t2);font-size:.82em">لا توجد بيانات بعد</div>
-    </div>
-  </div>
-
-  <!-- ═══ مكررات الروابط ═══ -->
-  <div id="tDupes" class="acard">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-      <div>
-        <h3 style="margin-bottom:4px">🔍 كاشف مكررات الروابط</h3>
-        <p style="color:var(--t2);font-size:.82em">يقارن روابط xBloom — يكتشف نفس الرابط باسم مختلف، أو وصفات مشبوهة</p>
-      </div>
-      <button class="btn bp" onclick="scanDuplicates()" style="min-width:120px">🔄 مسح الآن</button>
-    </div>
-
-    <!-- Stats bar -->
-    <div id="dupesStats" style="display:none;gap:12px;flex-wrap:wrap;margin-bottom:16px"></div>
-
-    <!-- Exact duplicates -->
-    <div id="dupesExact" style="margin-bottom:20px"></div>
-
-    <!-- Suspicious (same link, different name) -->
-    <div id="dupesSuspect" style="margin-bottom:20px"></div>
-
-    <!-- Clean message -->
-    <div id="dupesClean" style="display:none;text-align:center;padding:40px;color:var(--t2)">
-      ✅ لا توجد مكررات أو وصفات مشبوهة
     </div>
   </div>
 
@@ -3609,100 +3581,6 @@ Important: Give me only clean HTML code — no explanation outside the code bloc
 })();
 
 // ════ DUPLICATE SCANNER ════
-window.scanDuplicates = function(){
-  const recipes = FB_RECIPES;
-  if(!recipes.length){ toast('بيانات Firebase غير محملة بعد','terr'); return; }
-
-  // Normalize link for comparison
-  const normLink = l => String(l||'').trim().toLowerCase()
-    .replace(/[?&]utm[^&]*/gi,'')   // strip UTM params
-    .replace(/\/+$/,'')             // trailing slash
-    .replace(/^https?:\/\//,'');   // strip protocol
-
-  // Group by normalized link
-  const groups = {};
-  recipes.forEach(r=>{
-    const nl = normLink(r.link);
-    if(!nl) return;
-    if(!groups[nl]) groups[nl]=[];
-    groups[nl].push(r);
-  });
-
-  const exact   = []; // same link, same name
-  const suspect = []; // same link, different name
-
-  Object.entries(groups).forEach(([nl, grp])=>{
-    if(grp.length < 2) return;
-    const names = [...new Set(grp.map(r=>String(r.name||'').trim().toLowerCase()))];
-    if(names.length === 1){
-      exact.push({ link: grp[0].link, name: grp[0].name, count: grp.length, recipes: grp });
-    } else {
-      suspect.push({ link: grp[0].link, names: grp.map(r=>r.name), count: grp.length, recipes: grp });
-    }
-  });
-
-  // Render stats
-  const statsEl = document.getElementById('dupesStats');
-  statsEl.style.display = 'flex';
-  statsEl.innerHTML = [
-    ['🔢 إجمالي الوصفات', recipes.length, '#4a90e2'],
-    ['🔁 مكررة تماماً', exact.reduce((s,g)=>s+g.count-1,0), exact.length?'#e25c5c':'#00a896'],
-    ['🤔 مشبوهة (اسم مختلف)', suspect.reduce((s,g)=>s+g.count-1,0), suspect.length?'#f39c12':'#00a896'],
-  ].map(([label,val,color])=>`
-    <div style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px 18px;min-width:150px;flex:1">
-      <div style="font-size:1.4em;font-weight:800;color:${color}">${val}</div>
-      <div style="font-size:.78em;color:var(--t2);margin-top:3px">${label}</div>
-    </div>`).join('');
-
-  // Render exact duplicates
-  const exactEl = document.getElementById('dupesExact');
-  if(exact.length){
-    exactEl.innerHTML = `<h4 style="margin-bottom:12px;color:#e25c5c">🔁 مكررة تماماً — نفس الرابط ونفس الاسم (${exact.length} مجموعة)</h4>`
-      + exact.map(g=>`
-        <div style="background:rgba(226,92,92,.06);border:1px solid rgba(226,92,92,.25);border-radius:10px;padding:14px;margin-bottom:10px">
-          <div style="font-weight:700;margin-bottom:8px">📌 ${esc(g.name)} <span style="font-size:.75em;color:var(--t2)">(${g.count} نسخة)</span></div>
-          <div style="font-size:.78em;color:var(--t2);word-break:break-all;margin-bottom:10px">🔗 ${esc(g.link)}</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            ${g.recipes.map((r,i)=>`
-              <div style="background:var(--bg);border:1px solid var(--br);border-radius:8px;padding:8px 12px;font-size:.8em;display:flex;align-items:center;gap:8px">
-                <span style="color:var(--t2)">#${i+1}</span>
-                <span>${esc(r.author||'—')}</span>
-                ${i>0?`<button class="btn bsm bd" style="padding:3px 8px;font-size:.78em" onclick="confirmDel('${r._fbKey}','${esc(String(r.name||''))}')">🗑️ حذف</button>`:'<span style="font-size:.72em;color:#00a896">✅ احتفظ</span>'}
-              </div>`).join('')}
-          </div>
-        </div>`).join('');
-  } else {
-    exactEl.innerHTML = '';
-  }
-
-  // Render suspect (same link different name)
-  const suspectEl = document.getElementById('dupesSuspect');
-  if(suspect.length){
-    suspectEl.innerHTML = `<h4 style="margin-bottom:12px;color:#f39c12">🤔 مشبوهة — نفس الرابط بأسماء مختلفة (${suspect.length} مجموعة)</h4>`
-      + suspect.map(g=>`
-        <div style="background:rgba(243,156,18,.06);border:1px solid rgba(243,156,18,.25);border-radius:10px;padding:14px;margin-bottom:10px">
-          <div style="font-size:.78em;color:var(--t2);word-break:break-all;margin-bottom:8px">🔗 ${esc(g.link)}</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            ${g.recipes.map((r,i)=>`
-              <div style="background:var(--bg);border:1px solid var(--br);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-                <div>
-                  <div style="font-weight:700;font-size:.88em">${esc(r.name||'—')}</div>
-                  <div style="font-size:.75em;color:var(--t2)">بواسطة ${esc(r.author||'—')} · ${esc(r.brewer||'—')}</div>
-                </div>
-                <div style="display:flex;gap:6px">
-                  <button class="btn bsm bw" onclick="editRec('${r._fbKey}')">✏️ تعديل</button>
-                  <button class="btn bsm bd" onclick="confirmDel('${r._fbKey}','${esc(String(r.name||''))}')">🗑️ حذف</button>
-                </div>
-              </div>`).join('')}
-          </div>
-        </div>`).join('');
-  } else {
-    suspectEl.innerHTML = '';
-  }
-
-  // Clean message
-  document.getElementById('dupesClean').style.display = (!exact.length && !suspect.length) ? 'block' : 'none';
-};
 
 // ════════════════════════════════════════════
 // 📈 ANALYTICS
