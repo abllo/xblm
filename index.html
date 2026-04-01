@@ -521,6 +521,19 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .add-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,168,150,.7)}
 .add-fab:active{transform:scale(.94)}
 /* add-header-btn merged into header redesign */
+/* ── Feature Toggles (controlled by siteSettings) ── */
+body.no-comments .comments-section{display:none!important}
+body.no-ratings .rating-wrap{display:none!important}
+body.no-share .btn-share-friend{display:none!important}
+body.no-share .ib[onclick*="shareAsImage"]{display:none!important}
+body.no-add .add-fab{display:none!important}
+body.no-reports .ib.report{display:none!important}
+/* ── Maintenance Overlay ── */
+#maintOverlay{display:none;position:fixed;inset:0;background:#0A0A0A;z-index:9999;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;direction:rtl}
+#maintOverlay.show{display:flex}
+.maint-icon{font-size:3.5em;margin-bottom:16px}
+.maint-title{font-size:1.5em;font-weight:900;background:linear-gradient(135deg,#00A896,#4A90E2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.maint-msg{color:#A0A0A0;font-size:.95em;line-height:1.7;max-width:340px}
 .badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
 .spinning{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -1256,6 +1269,13 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
       <button class="btn" style="background:var(--up);border:1px solid var(--br);color:var(--t2)" onclick="document.getElementById('shareImgOv').classList.remove('open')">✕ إغلاق</button>
     </div>
   </div>
+</div>
+
+<!-- Maintenance Overlay -->
+<div id="maintOverlay">
+  <div class="maint-icon">🚧</div>
+  <div class="maint-title">الموقع تحت الصيانة</div>
+  <div class="maint-msg" id="maintMsg">سنعود قريباً ☕</div>
 </div>
 
 <!-- FAB زر عائم -->
@@ -2581,6 +2601,25 @@ onValue(settingsRef2, snap => {
   } else {
     pinnedBanner.style.display = 'none';
   }
+
+  // ═══ MAINTENANCE MODE ═══
+  const mo = document.getElementById('maintOverlay');
+  const mm = document.getElementById('maintMsg');
+  if(s.maintenanceMode) {
+    if(mm && s.maintenanceMsg) mm.textContent = s.maintenanceMsg;
+    if(mo) mo.classList.add('show');
+  } else {
+    if(mo) mo.classList.remove('show');
+  }
+
+  // ═══ FEATURE TOGGLES ═══
+  const b = document.body;
+  b.classList.toggle('no-comments', s.featureComments === false);
+  b.classList.toggle('no-ratings',  s.featureRatings  === false);
+  b.classList.toggle('no-share',    s.featureShare    === false);
+  b.classList.toggle('no-add',      s.featureAdd      === false);
+  b.classList.toggle('no-reports',  s.featureReports  === false);
+
 }, err => { console.warn('settings:', err); });
 
 // ════ COMMENTS SYSTEM ════
