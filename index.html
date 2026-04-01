@@ -2131,7 +2131,7 @@ window.goToConfirm = function(e){
 
   _pendingRecipe = {
     name,
-    author:   document.getElementById('rA').value.trim(),
+    author:   document.getElementById('rA').value.trim() || 'غير معروف',
     brewer:   document.getElementById('rBr').value,
     dose:     document.getElementById('rD').value.trim(),
     ratio:    document.getElementById('rR').value.trim(),
@@ -3120,7 +3120,7 @@ window.submitRecipe = function(e) {
   }
   const r = {
     name,
-    author:   document.getElementById('rA').value.trim(),
+    author:   document.getElementById('rA').value.trim() || 'غير معروف',
     brewer:   document.getElementById('rBr').value,
     dose:     document.getElementById('rD').value.trim(),
     ratio:    document.getElementById('rR').value.trim(),
