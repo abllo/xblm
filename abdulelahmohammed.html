@@ -2113,9 +2113,17 @@ window.resetForm = function(){
 };
 
 window.editRec = function(fbKey){
-  const r=FB_RECIPES.find(x=>x._fbKey===fbKey);
-  if(!r) return;
-  document.getElementById('eFbKey').value=fbKey;
+  // Primary: match by Firebase push key
+  let r=FB_RECIPES.find(x=>x._fbKey===fbKey);
+  // Fallback: key might be a ratingKey from the reports section (base64 hash of link)
+  if(!r){
+    r=FB_RECIPES.find(x=>{
+      try{return btoa(unescape(encodeURIComponent(x.link||''))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'')===fbKey;}
+      catch(e){return false;}
+    });
+  }
+  if(!r){ toast('⚠️ لم يتم العثور على الوصفة — قد تكون محذوفة','terr'); return; }
+  document.getElementById('eFbKey').value=r._fbKey;
   document.getElementById('eN').value=str(r.name);
   document.getElementById('eA').value=str(r.author==='غير معروف'?'':r.author);
   document.getElementById('eBr').value=str(r.brewer);
