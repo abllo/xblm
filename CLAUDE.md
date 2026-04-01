@@ -33,7 +33,7 @@ Arabic-language specialty coffee recipe platform.
 | File | Purpose |
 |---|---|
 | `index.html` | Public-facing site |
-| `admin.html` | Admin panel (password-protected) |
+| `abdulelahmohammed.html` | Admin panel (password-protected) |
 | `recipe.html` | Individual recipe page |
 | `guides/` | SEO Arabic guide articles (10+ files) |
 | `link-fixer.html` | Tool to repair corrupted Firebase link fields |

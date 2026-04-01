@@ -1122,7 +1122,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   <div id="tPass" class="acard">
     <h3 style="margin-bottom:6px">🔑 تغيير كلمة المرور</h3>
     <p style="color:var(--t2);font-size:.83em;margin-bottom:18px;line-height:1.6">
-      أدخل كلمة المرور الجديدة وسيتم تشفيرها فوراً — انسخ الكود المُنتج والصقه في ملف <code style="background:rgba(255,255,255,.08);padding:1px 6px;border-radius:4px">admin.html</code> ليحل محل كلمة المرور القديمة.
+      أدخل كلمة المرور الجديدة وسيتم تشفيرها فوراً — انسخ الكود المُنتج والصقه في ملف <code style="background:rgba(255,255,255,.08);padding:1px 6px;border-radius:4px">abdulelahmohammed.html</code> ليحل محل كلمة المرور القديمة.
     </p>
     
     <div style="background:rgba(245,87,108,.06);border:1px solid rgba(245,87,108,.2);border-radius:10px;padding:14px;margin-bottom:18px;font-size:.83em;color:var(--t2);line-height:1.7">
@@ -1164,7 +1164,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <button class="btn bg bsm" onclick="copyPassCode()">📋 نسخ الكود</button>
         </div>
         <p style="font-size:.78em;color:var(--t2);margin-bottom:10px">
-          في ملف admin.html ابحث عن السطر التالي واستبدله بالكود أدناه:
+          في ملف abdulelahmohammed.html ابحث عن السطر التالي واستبدله بالكود أدناه:
         </p>
         <div style="background:var(--bg);border:1px solid var(--br);border-radius:7px;padding:12px;font-family:monospace;font-size:.78em;line-height:1.8;color:var(--t2)">
           <span style="color:#f093fb">const</span> <span style="color:var(--t1)">_CP</span> <span style="color:#f5576c">=</span> <span style="color:#43e97b">'<span id="passOldLine">NDkwMjM4</span>'</span>;
@@ -2694,14 +2694,14 @@ window.generateNewPass = function(){
   document.getElementById('passNewLine').textContent = encoded;
   document.getElementById('passResult').style.display='block';
   document.getElementById('passResult').scrollIntoView({behavior:'smooth',block:'nearest'});
-  toast('تم توليد الكود ✅ انسخه والصقه في admin.html','tok');
+  toast('تم توليد الكود ✅ انسخه والصقه في abdulelahmohammed.html','tok');
 };
 
 window.copyPassCode = function(){
   const val = document.getElementById('passNewLine').textContent;
   const fullLine = "const _CP = '" + val + "';";
   navigator.clipboard.writeText(fullLine)
-    .then(()=>toast('تم النسخ! 📋 الصقه في admin.html'))
+    .then(()=>toast('تم النسخ! 📋 الصقه في abdulelahmohammed.html'))
     .catch(()=>{
       const ta=document.createElement('textarea');
       ta.value=fullLine; document.body.appendChild(ta);
