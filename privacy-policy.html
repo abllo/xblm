@@ -65,6 +65,37 @@ a:hover{text-decoration:underline}
   .topbar-inner{height:auto;padding:10px 0}
 }
 </style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const db = getDatabase(initializeApp({
+  apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"xbloom-recipes-hub"
+}));
+function dyn(id, val, isHtml){
+  if(!val) return;
+  const el = document.getElementById('dyn-'+id);
+  if(!el) return;
+  isHtml ? (el.innerHTML = val) : (el.textContent = val);
+}
+onValue(ref(db,'pagesContent'), snap => {
+  const p = snap.val() || {};
+  dyn('title',   p.privacy2_title);
+  dyn('updated', p.privacy2_updated);
+  dyn('intro',   p.privacy2_intro,   true);
+  dyn('data',    p.privacy2_data,    true);
+  dyn('use',     p.privacy2_use,     true);
+  dyn('storage', p.privacy2_storage, true);
+  dyn('rights',  p.privacy2_rights,  true);
+  if(p.privacy2_email){
+    document.querySelectorAll('.dyn-email').forEach(el=>{
+      el.href='mailto:'+p.privacy2_email;
+      el.textContent=p.privacy2_email;
+    });
+  }
+}, {onlyOnce:true});
+</script>
 </head>
 <body>
 
@@ -82,13 +113,13 @@ a:hover{text-decoration:underline}
 
   <div class="page-header">
     <span class="page-icon">🔒</span>
-    <h1 class="page-title">سياسة الخصوصية</h1>
-    <p class="page-subtitle">آخر تحديث: أبريل 2026</p>
+    <h1 class="page-title" id="dyn-title">سياسة الخصوصية</h1>
+    <p class="page-subtitle">آخر تحديث: <span id="dyn-updated">أبريل 2026</span></p>
   </div>
 
   <div class="highlight-box" style="margin-bottom:18px">
     <span class="hi-icon">📋</span>
-    هذه السياسة تشرح كيف يتعامل موقع <strong>xBloom Recipes Hub</strong> مع بياناتك. نلتزم بالشفافية الكاملة.
+    <span id="dyn-intro">هذه السياسة تشرح كيف يتعامل موقع <strong>xBloom Recipes Hub</strong> مع بياناتك. نلتزم بالشفافية الكاملة.</span>
   </div>
 
   <!-- فهرس -->
@@ -117,7 +148,7 @@ a:hover{text-decoration:underline}
 
   <div class="section-card" id="data">
     <div class="section-title">البيانات التي نجمعها</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-data">
       <p>الموقع لا يطلب تسجيل حساب ولا يجمع بيانات شخصية مباشرة، باستثناء ما يقوم المستخدم بإدخاله طوعاً:</p>
       <ul>
         <li><strong>الوصفات المنشورة:</strong> الاسم الذي تدخله (يمكن أن يكون أي اسم أو لقب)، تفاصيل الوصفة، وجهاز التحضير</li>
@@ -130,7 +161,7 @@ a:hover{text-decoration:underline}
 
   <div class="section-card" id="use">
     <div class="section-title">كيف نستخدم البيانات</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-use">
       <ul>
         <li>عرض الوصفات والتعليقات للزوار</li>
         <li>تحسين تجربة الموقع واكتشاف الأخطاء التقنية</li>
@@ -142,7 +173,7 @@ a:hover{text-decoration:underline}
 
   <div class="section-card" id="storage">
     <div class="section-title">التخزين والأمان</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-storage">
       <p>
         يُخزَّن محتوى الموقع على خوادم <strong>Firebase (Google)</strong> في أوروبا. تخضع هذه الخدمة لسياسة خصوصية Google وتلتزم بمعايير أمان عالية.
       </p>
@@ -189,7 +220,7 @@ a:hover{text-decoration:underline}
 
   <div class="section-card" id="rights">
     <div class="section-title">حقوقك</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-rights">
       <p>لك الحق في أي وقت في:</p>
       <ul>
         <li><strong>الاطلاع</strong> على أي بيانات أدخلتها</li>
@@ -211,7 +242,7 @@ a:hover{text-decoration:underline}
   </div>
 
   <div class="last-update">
-    صدرت هذه السياسة بتاريخ أبريل 2026 · للاستفسار: <a href="mailto:info@ab-s.me">info@ab-s.me</a>
+    صدرت هذه السياسة بتاريخ أبريل 2026 · للاستفسار: <a href="mailto:info@ab-s.me" class="dyn-email">info@ab-s.me</a>
     · <a href="about.html">من نحن</a>
   </div>
 

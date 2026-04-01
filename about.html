@@ -71,6 +71,40 @@ a:hover{text-decoration:underline}
   .topbar-inner{height:auto;padding:10px 0}
 }
 </style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const db = getDatabase(initializeApp({
+  apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
+  databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"xbloom-recipes-hub"
+}));
+function dyn(id, val, isHtml){
+  if(!val) return;
+  const el = document.getElementById('dyn-'+id);
+  if(!el) return;
+  isHtml ? (el.innerHTML = val) : (el.textContent = val);
+}
+onValue(ref(db,'pagesContent'), snap => {
+  const p = snap.val() || {};
+  dyn('title',    p.about2_title);
+  dyn('subtitle', p.about2_subtitle);
+  dyn('stat1_num',p.about2_stat1_num);
+  dyn('stat1_lbl',p.about2_stat1_lbl);
+  dyn('stat2_num',p.about2_stat2_num);
+  dyn('stat2_lbl',p.about2_stat2_lbl);
+  dyn('stat3_num',p.about2_stat3_num);
+  dyn('stat3_lbl',p.about2_stat3_lbl);
+  dyn('story',    p.about2_story,    true);
+  dyn('features', p.about2_features, true);
+  dyn('future',   p.about2_future,   true);
+  if(p.about2_email){
+    const el = document.getElementById('dyn-email');
+    if(el){ el.href='mailto:'+p.about2_email; el.textContent=p.about2_email; }
+  }
+  dyn('updated',  p.about2_updated);
+}, {onlyOnce:true});
+</script>
 </head>
 <body>
 
@@ -88,28 +122,28 @@ a:hover{text-decoration:underline}
 
   <div class="page-header">
     <span class="page-icon">☕</span>
-    <h1 class="page-title">من نحن</h1>
-    <p class="page-subtitle">قصة xBloom Recipes Hub ورحلة القهوة المختصة</p>
+    <h1 class="page-title" id="dyn-title">من نحن</h1>
+    <p class="page-subtitle" id="dyn-subtitle">قصة xBloom Recipes Hub ورحلة القهوة المختصة</p>
   </div>
 
   <div class="stats-row">
     <div class="stat-box">
-      <div class="stat-num">+200</div>
-      <div class="stat-lbl">وصفة متاحة</div>
+      <div class="stat-num" id="dyn-stat1_num">+200</div>
+      <div class="stat-lbl" id="dyn-stat1_lbl">وصفة متاحة</div>
     </div>
     <div class="stat-box">
-      <div class="stat-num">2025</div>
-      <div class="stat-lbl">تاريخ الإطلاق</div>
+      <div class="stat-num" id="dyn-stat2_num">2025</div>
+      <div class="stat-lbl" id="dyn-stat2_lbl">تاريخ الإطلاق</div>
     </div>
     <div class="stat-box">
-      <div class="stat-num">مجاني</div>
-      <div class="stat-lbl">للجميع دائماً</div>
+      <div class="stat-num" id="dyn-stat3_num">مجاني</div>
+      <div class="stat-lbl" id="dyn-stat3_lbl">للجميع دائماً</div>
     </div>
   </div>
 
   <div class="section-card">
     <div class="section-title">الفكرة والبداية</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-story">
       <p>
         xBloom Recipes موقع شخصي أنشأه <strong>عبدالإله</strong> بدافع الشغف بالقهوة المختصة وأجهزة xBloom.
         الفكرة جاءت من مجتمع نشط يتشارك فيه المهتمون بالقهوة وصفاتهم الشخصية يومياً.
@@ -133,7 +167,7 @@ a:hover{text-decoration:underline}
 
   <div class="section-card">
     <div class="section-title">ما يقدمه الموقع</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-features">
       <ul>
         <li>تصفح وصفات قهوة مختصة بأجهزة xBloom (Omni، xPod، وغيرها)</li>
         <li>فلترة حسب النوع (حار / بارد) وجهاز التحضير والمحمصة</li>
@@ -159,7 +193,7 @@ a:hover{text-decoration:underline}
 
   <div class="section-card">
     <div class="section-title">المستقبل والتطوير</div>
-    <div class="section-body">
+    <div class="section-body" id="dyn-future">
       <p>
         الموقع في تطوير مستمر. من المخطط مستقبلاً: تصنيفات أوسع للمحامص، وربما شراكات مع محامص مختارة لعرض وصفاتها بشكل مميز.
       </p>
@@ -172,12 +206,12 @@ a:hover{text-decoration:underline}
   <div class="section-card">
     <div class="section-title">تواصل معنا</div>
     <div class="section-body">
-      <p>📧 البريد الإلكتروني: <a href="mailto:info@ab-s.me">info@ab-s.me</a></p>
+      <p>📧 البريد الإلكتروني: <a href="mailto:info@ab-s.me" id="dyn-email">info@ab-s.me</a></p>
       <p>🌐 الموقع: <a href="https://xblm.ab-s.me">xblm.ab-s.me</a></p>
     </div>
   </div>
 
-  <div class="last-update">آخر تحديث: أبريل 2026 · <a href="privacy-policy.html">سياسة الخصوصية</a></div>
+  <div class="last-update">آخر تحديث: <span id="dyn-updated">أبريل 2026</span> · <a href="privacy-policy.html">سياسة الخصوصية</a></div>
 
 </div>
 </body>

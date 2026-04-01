@@ -907,9 +907,11 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div class="settings-section">
         <div class="settings-section-title">📄 إدارة صفحات الموقع</div>
         <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap" id="pgTabBtns">
-          <button type="button" onclick="showPgTab('about',this)" class="pg-tab-btn on" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:rgba(0,168,150,.15);border:1.5px solid rgba(0,168,150,.4);color:var(--ta)">☕ من نحن</button>
+          <button type="button" onclick="showPgTab('about',this)" class="pg-tab-btn on" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:rgba(0,168,150,.15);border:1.5px solid rgba(0,168,150,.4);color:var(--ta)">☕ من نحن (قديم)</button>
           <button type="button" onclick="showPgTab('contact',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">✉️ اتصل بنا</button>
-          <button type="button" onclick="showPgTab('privacy',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">🔒 سياسة الخصوصية</button>
+          <button type="button" onclick="showPgTab('privacy',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">🔒 خصوصية (قديم)</button>
+          <button type="button" onclick="showPgTab('about2',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">👤 about.html</button>
+          <button type="button" onclick="showPgTab('privacy2',this)" class="pg-tab-btn" style="padding:7px 16px;border-radius:8px;font-size:.82em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;background:var(--up);border:1.5px solid var(--br);color:var(--t2)">🔒 privacy-policy.html</button>
         </div>
         <div id="pg-about" class="pg-tab-content" style="display:block">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
@@ -953,6 +955,57 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <div class="fg"><label>نص السياسة الكامل (HTML مسموح)</label>
             <textarea class="form-input" id="pg_privacy_body" rows="8" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="اكتب سياسة الخصوصية هنا..."></textarea>
           </div>
+        </div>
+
+        <!-- ══ about.html ══ -->
+        <div id="pg-about2" class="pg-tab-content" style="display:none">
+          <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em;color:var(--t2)">
+            🔗 هذه الإعدادات تتحكم في صفحة <strong style="color:var(--ta)">about.html</strong>
+          </div>
+          <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_about2_title" placeholder="من نحن"></div>
+          <div class="fg"><label>العنوان الفرعي</label><input class="form-input" id="pg_about2_subtitle" placeholder="قصة xBloom Recipes Hub ورحلة القهوة المختصة"></div>
+          <div class="fg"><label>إحصائية 1 — الرقم</label><input class="form-input" id="pg_about2_stat1_num" placeholder="+200"></div>
+          <div class="fg"><label>إحصائية 1 — التسمية</label><input class="form-input" id="pg_about2_stat1_lbl" placeholder="وصفة متاحة"></div>
+          <div class="fg"><label>إحصائية 2 — الرقم</label><input class="form-input" id="pg_about2_stat2_num" placeholder="2025"></div>
+          <div class="fg"><label>إحصائية 2 — التسمية</label><input class="form-input" id="pg_about2_stat2_lbl" placeholder="تاريخ الإطلاق"></div>
+          <div class="fg"><label>إحصائية 3 — الرقم</label><input class="form-input" id="pg_about2_stat3_num" placeholder="مجاني"></div>
+          <div class="fg"><label>إحصائية 3 — التسمية</label><input class="form-input" id="pg_about2_stat3_lbl" placeholder="للجميع دائماً"></div>
+          <div class="fg"><label>قسم «الفكرة والبداية» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_about2_story" rows="4" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="اكتب قصة الموقع هنا..."></textarea>
+          </div>
+          <div class="fg"><label>قسم «ما يقدمه الموقع» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_about2_features" rows="4" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="قائمة مميزات الموقع..."></textarea>
+          </div>
+          <div class="fg"><label>قسم «المستقبل والتطوير» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_about2_future" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="خطط المستقبل..."></textarea>
+          </div>
+          <div class="fg"><label>بريد التواصل</label><input class="form-input" id="pg_about2_email" placeholder="info@ab-s.me"></div>
+          <div class="fg"><label>تاريخ آخر تحديث</label><input class="form-input" id="pg_about2_updated" placeholder="أبريل 2026"></div>
+        </div>
+
+        <!-- ══ privacy-policy.html ══ -->
+        <div id="pg-privacy2" class="pg-tab-content" style="display:none">
+          <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em;color:var(--t2)">
+            🔗 هذه الإعدادات تتحكم في صفحة <strong style="color:var(--ta)">privacy-policy.html</strong>
+          </div>
+          <div class="fg"><label>عنوان الصفحة</label><input class="form-input" id="pg_privacy2_title" placeholder="سياسة الخصوصية"></div>
+          <div class="fg"><label>تاريخ آخر تحديث</label><input class="form-input" id="pg_privacy2_updated" placeholder="أبريل 2026"></div>
+          <div class="fg"><label>نص التنبيه الأعلى (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_privacy2_intro" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="هذه السياسة تشرح كيف..."></textarea>
+          </div>
+          <div class="fg"><label>قسم «البيانات التي نجمعها» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_privacy2_data" rows="4" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder=""></textarea>
+          </div>
+          <div class="fg"><label>قسم «كيف نستخدم البيانات» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_privacy2_use" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder=""></textarea>
+          </div>
+          <div class="fg"><label>قسم «التخزين والأمان» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_privacy2_storage" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder=""></textarea>
+          </div>
+          <div class="fg"><label>قسم «حقوقك» (HTML مسموح)</label>
+            <textarea class="form-input" id="pg_privacy2_rights" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder=""></textarea>
+          </div>
+          <div class="fg"><label>بريد التواصل</label><input class="form-input" id="pg_privacy2_email" placeholder="info@ab-s.me"></div>
         </div>
       </div>
     </div>
@@ -1939,6 +1992,29 @@ function initFirebase() {
     setVal('pg_privacy_subtitle', p.privacy_subtitle);
     setVal('pg_privacy_body',     p.privacy_body);
     setCk ('pg_privacy_hidden',   p.privacy_hidden);
+    // about.html
+    setVal('pg_about2_title',    p.about2_title);
+    setVal('pg_about2_subtitle', p.about2_subtitle);
+    setVal('pg_about2_stat1_num',p.about2_stat1_num);
+    setVal('pg_about2_stat1_lbl',p.about2_stat1_lbl);
+    setVal('pg_about2_stat2_num',p.about2_stat2_num);
+    setVal('pg_about2_stat2_lbl',p.about2_stat2_lbl);
+    setVal('pg_about2_stat3_num',p.about2_stat3_num);
+    setVal('pg_about2_stat3_lbl',p.about2_stat3_lbl);
+    setVal('pg_about2_story',    p.about2_story);
+    setVal('pg_about2_features', p.about2_features);
+    setVal('pg_about2_future',   p.about2_future);
+    setVal('pg_about2_email',    p.about2_email);
+    setVal('pg_about2_updated',  p.about2_updated);
+    // privacy-policy.html
+    setVal('pg_privacy2_title',   p.privacy2_title);
+    setVal('pg_privacy2_updated', p.privacy2_updated);
+    setVal('pg_privacy2_intro',   p.privacy2_intro);
+    setVal('pg_privacy2_data',    p.privacy2_data);
+    setVal('pg_privacy2_use',     p.privacy2_use);
+    setVal('pg_privacy2_storage', p.privacy2_storage);
+    setVal('pg_privacy2_rights',  p.privacy2_rights);
+    setVal('pg_privacy2_email',   p.privacy2_email);
   }, {onlyOnce:true});
 }
 
@@ -2682,6 +2758,29 @@ window.saveSiteSettings = function(){
     privacy_subtitle: g('pg_privacy_subtitle')?.value.trim(),
     privacy_body:     g('pg_privacy_body')?.value.trim(),
     privacy_hidden:   g('pg_privacy_hidden')?.checked,
+    // about.html
+    about2_title:    g('pg_about2_title')?.value.trim(),
+    about2_subtitle: g('pg_about2_subtitle')?.value.trim(),
+    about2_stat1_num:g('pg_about2_stat1_num')?.value.trim(),
+    about2_stat1_lbl:g('pg_about2_stat1_lbl')?.value.trim(),
+    about2_stat2_num:g('pg_about2_stat2_num')?.value.trim(),
+    about2_stat2_lbl:g('pg_about2_stat2_lbl')?.value.trim(),
+    about2_stat3_num:g('pg_about2_stat3_num')?.value.trim(),
+    about2_stat3_lbl:g('pg_about2_stat3_lbl')?.value.trim(),
+    about2_story:    g('pg_about2_story')?.value.trim(),
+    about2_features: g('pg_about2_features')?.value.trim(),
+    about2_future:   g('pg_about2_future')?.value.trim(),
+    about2_email:    g('pg_about2_email')?.value.trim(),
+    about2_updated:  g('pg_about2_updated')?.value.trim(),
+    // privacy-policy.html
+    privacy2_title:   g('pg_privacy2_title')?.value.trim(),
+    privacy2_updated: g('pg_privacy2_updated')?.value.trim(),
+    privacy2_intro:   g('pg_privacy2_intro')?.value.trim(),
+    privacy2_data:    g('pg_privacy2_data')?.value.trim(),
+    privacy2_use:     g('pg_privacy2_use')?.value.trim(),
+    privacy2_storage: g('pg_privacy2_storage')?.value.trim(),
+    privacy2_rights:  g('pg_privacy2_rights')?.value.trim(),
+    privacy2_email:   g('pg_privacy2_email')?.value.trim(),
   };
   // Remove undefined keys
   Object.keys(s).forEach(k => s[k] === undefined && delete s[k]);
