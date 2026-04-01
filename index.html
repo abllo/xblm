@@ -1229,9 +1229,9 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 
 <footer id="siteFooter">
   <div class="footer-links">
-    <a href="about-us.html" id="footer-nav-about" style="display:none">من نحن</a>
+    <a href="about.html">من نحن</a>
     <a href="about-us.html#contact" id="footer-nav-contact" style="display:none">اتصل بنا</a>
-    <a href="about-us.html#privacy" id="footer-nav-privacy" style="display:none">سياسة الخصوصية</a>
+    <a href="privacy-policy.html">سياسة الخصوصية</a>
   </div>
   <p id="footerCopy">&#169; 2026 Xbloom Recipes</p>
   <p id="footerSub" style="margin-top:6px;font-size:.8em"© 2026 Xbloom Recipes</p>
@@ -2847,13 +2847,8 @@ onValue(ratingsRef,snap=>{
 // ════ PAGES CONTENT — footer nav visibility ════
 onValue(ref(db,'pagesContent'), snap => {
   const d = snap.val() || {};
-  const show = (id, visible) => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = visible ? '' : 'none';
-  };
-  show('footer-nav-about',   !d.about_hidden);
-  show('footer-nav-contact', !d.contact_hidden);
-  show('footer-nav-privacy', !d.privacy_hidden);
+  const el = document.getElementById('footer-nav-contact');
+  if(el) el.style.display = d.contact_hidden ? 'none' : '';
 }, {onlyOnce: true});
 
 // ════ ROASTERY KEYWORD MATCHING ════
