@@ -2118,6 +2118,12 @@ window.goToConfirm = function(e){
   e.preventDefault();
   const catSel = document.querySelector('input[name="rc"]:checked');
   if(!catSel){ toast('اختر نوع التحضير ❗','terr'); return; }
+  const linkVal = document.getElementById('rL').value.trim();
+  if(linkVal && RR.some(r => r.link && r.link.trim() === linkVal)){
+    toast('⚠️ هذه الوصفة موجودة مسبقاً في الموقع!','terr');
+    document.getElementById('rL').focus();
+    return;
+  }
   const category = catSel.value;
   let name = document.getElementById('rN').value.trim();
   const iceVal = document.getElementById('rIce').value.trim();
@@ -3099,6 +3105,12 @@ window.submitRecipe = function(e) {
   e.preventDefault();
   const catSel = document.querySelector('input[name="rc"]:checked');
   if(!catSel){ toast('اختر نوع التحضير ❗','terr'); return; }
+  const linkVal = document.getElementById('rL').value.trim();
+  if(linkVal && RR.some(r => r.link && r.link.trim() === linkVal)){
+    toast('⚠️ هذه الوصفة موجودة مسبقاً في الموقع!','terr');
+    document.getElementById('rL').focus();
+    return;
+  }
   const category = catSel.value;
   let name = document.getElementById('rN').value.trim();
   const iceVal = document.getElementById('rIce').value.trim();

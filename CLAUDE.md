@@ -87,3 +87,8 @@ Arabic-language specialty coffee recipe platform.
 - Platform focus: Specialty coffee
 - Style: Dark, refined, high-quality
 - Delivery: Always full files, never partial code
+
+---
+
+## Communication Language
+- **Always respond in Arabic only** — every message, explanation, and comment must be in Arabic, regardless of the language used in the user's message.
