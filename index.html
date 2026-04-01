@@ -583,8 +583,12 @@ footer{text-align:center;padding:28px 15px;border-top:1px solid var(--br);color:
 .comment-text{font-size:.85em;line-height:1.5;margin-top:4px}
 
 @media(min-width:768px){body{padding:20px}.grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}.card{padding:22px}}
-@keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.ani{animation:fi .35s ease forwards}
+@keyframes fi{
+  0%{opacity:0;transform:translateY(28px) scale(.96);filter:blur(4px)}
+  60%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+.ani{opacity:0;animation:fi .5s cubic-bezier(.22,1,.36,1) forwards}
 /* ═══ ROASTERIES SECTION ═══ */
 .roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 0 14px;position:relative;overflow:hidden}
 .roasteries-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
