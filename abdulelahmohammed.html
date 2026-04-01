@@ -1636,6 +1636,83 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     </div>
   </div>
 </div>
+<!-- ═══ EDIT RECIPE MODAL ═══ -->
+<div class="ov" id="editOv" style="align-items:center;z-index:3000">
+  <div style="background:var(--card);border-radius:18px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:24px;position:relative;border:1px solid var(--br);box-shadow:0 24px 80px rgba(0,0,0,.7)">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--br)">
+      <h3 style="font-size:1.1em;font-weight:800">✏️ تعديل الوصفة</h3>
+      <button onclick="closeEditModal()" style="background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.3);color:#f5576c;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <!-- Form -->
+    <form id="editForm" onsubmit="saveEditRec(event)">
+      <input type="hidden" id="eFbKey">
+      <div class="fr2">
+        <div class="fg">
+          <label>اسم الوصفة *</label>
+          <input class="fi" id="eN" required placeholder="اسم الوصفة">
+        </div>
+        <div class="fg">
+          <label>اسم صاحب الوصفة</label>
+          <input class="fi" id="eA" placeholder="اسم صاحب الوصفة">
+        </div>
+      </div>
+      <div class="fr2">
+        <div class="fg">
+          <label>المحضّر *</label>
+          <select class="fi" id="eBr" required>
+            <option value="">اختر</option>
+            <option value="Omni">Omni</option>
+            <option value="xPod">xPod</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>الجرعة *</label>
+          <input class="fi" id="eD" required placeholder="15g">
+        </div>
+      </div>
+      <div class="fg">
+        <label>النسبة *</label>
+        <input class="fi" id="eR" required placeholder="1:16 - 225ML">
+      </div>
+      <div class="fg">
+        <label>☕ المحمصة (اختياري)</label>
+        <div style="position:relative">
+          <input class="fi" id="eRoastery" placeholder="اكتب اسم المحمصة..." autocomplete="off"
+            oninput="editRoasteryInput()" onfocus="editRoasteryShow()" onblur="setTimeout(editRoasteryHide,200)">
+          <div id="editRoasteryDd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;background:var(--card);border:1px solid var(--br);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+        </div>
+        <div style="font-size:.75em;color:var(--ta);margin-top:3px">💡 إذا لم تجد المحمصة اكتب اسمها مباشرة</div>
+      </div>
+      <div class="fg">
+        <label>نوع التحضير *</label>
+        <div class="tsel">
+          <div class="topt"><input type="radio" name="ec" id="eHot" value="hot" required onchange="editTypeChange(this)"><label for="eHot">🔥 وصفة حارة</label></div>
+          <div class="topt"><input type="radio" name="ec" id="eCold" value="cold" onchange="editTypeChange(this)"><label for="eCold">🧊 وصفة باردة</label></div>
+          <div class="topt"><input type="radio" name="ec" id="eSrv" value="server" onchange="editTypeChange(this)"><label for="eSrv">⚙️ غسيل وترطيب السيرفر</label></div>
+        </div>
+      </div>
+      <div class="fg" id="eIceField" style="display:none">
+        <label style="color:#48dbfb">🧊 وزن الثلج في الكوب *</label>
+        <div style="position:relative">
+          <input class="fi" type="number" id="eIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>رابط الوصفة من xBloom *</label>
+        <input class="fi" type="url" id="eL" required placeholder="https://share-h5.xbloom.com/?id=...">
+        <div style="font-size:.75em;color:var(--t2);margin-top:3px">افتح الوصفة في تطبيق xBloom ثم اضغط مشاركة وانسخ الرابط</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button type="button" onclick="closeEditModal()" style="flex:0 0 auto;padding:12px 18px;font-size:13px;background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.35);color:#f5576c;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:700">✕ إلغاء</button>
+        <button type="submit" class="btn bp" style="flex:1;justify-content:center;padding:14px;font-size:15px;font-weight:900" id="editSaveBtn">💾 حفظ التعديل</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script type="module">
 
@@ -1963,30 +2040,102 @@ window.resetForm = function(){
 window.editRec = function(fbKey){
   const r=FB_RECIPES.find(x=>x._fbKey===fbKey);
   if(!r) return;
-  editingKey=fbKey;
-  document.getElementById('rFbKey').value=fbKey;
-  document.getElementById('rN').value=str(r.name);
-  document.getElementById('rA').value=str(r.author);
-  document.getElementById('rBr').value=str(r.brewer);
-  document.getElementById('rD').value=str(r.dose);
-  document.getElementById('rR').value=str(r.ratio);
-  document.getElementById('rL').value=str(r.link);
-  document.getElementById('rRoastery').value=str(r.roastery||'');
+  document.getElementById('eFbKey').value=fbKey;
+  document.getElementById('eN').value=str(r.name);
+  document.getElementById('eA').value=str(r.author==='غير معروف'?'':r.author);
+  document.getElementById('eBr').value=str(r.brewer);
+  document.getElementById('eD').value=str(r.dose);
+  document.getElementById('eR').value=str(r.ratio);
+  document.getElementById('eL').value=str(r.link);
+  document.getElementById('eRoastery').value=str(r.roastery||'');
   const cat=r.category||'hot';
-  document.getElementById(cat==='cold'?'rCold':cat==='server'?'rSrv':'rHot').checked=true;
-  document.getElementById('addFormTitle').textContent='✏️ تعديل الوصفة';
-  document.getElementById('saveBtn').textContent='💾 حفظ التعديل';
-  const addBtn = document.querySelector('[data-tab="tAdd"]');
-  if(addBtn) switchTab(addBtn, 'tAdd');
-  // Pre-load roasteries for dropdown
-  if(!Object.keys(FB_ROASTERIES).length && db){
-    get(ref(db,'roasteries')).then(snap=>{
-      FB_ROASTERIES={};
-      snap.forEach(child=>{ FB_ROASTERIES[child.key]=child.val(); });
-    }).catch(()=>{});
+  document.getElementById(cat==='cold'?'eCold':cat==='server'?'eSrv':'eHot').checked=true;
+  const iceField=document.getElementById('eIceField');
+  const iceInput=document.getElementById('eIce');
+  if(cat==='cold'){
+    iceField.style.display='block';
+    iceInput.required=true;
+    iceInput.value=str(r.ice||'');
+  } else {
+    iceField.style.display='none';
+    iceInput.required=false;
+    iceInput.value='';
   }
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('editOv').classList.add('open');
+  document.body.style.overflow='hidden';
 };
+
+window.closeEditModal = function(){
+  document.getElementById('editOv').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('editForm').reset();
+  document.getElementById('eIceField').style.display='none';
+};
+
+window.editTypeChange = function(radio){
+  const iceField=document.getElementById('eIceField');
+  const iceInput=document.getElementById('eIce');
+  if(radio.value==='cold'){
+    iceField.style.display='block';
+    iceInput.required=true;
+  } else {
+    iceField.style.display='none';
+    iceInput.required=false;
+    iceInput.value='';
+  }
+};
+
+window.saveEditRec = function(e){
+  e.preventDefault();
+  if(!db){ toast('Firebase غير متصل!','terr'); return; }
+  const fbKey=document.getElementById('eFbKey').value;
+  if(!fbKey) return;
+  const catSel=document.querySelector('input[name="ec"]:checked');
+  if(!catSel){ toast('اختر نوع التحضير','terr'); return; }
+  const category=catSel.value;
+  const iceVal=document.getElementById('eIce').value.trim();
+  const authorVal=document.getElementById('eA').value.trim()||'غير معروف';
+  const existing=FB_RECIPES.find(x=>x._fbKey===fbKey);
+  const r={
+    name:     document.getElementById('eN').value.trim(),
+    author:   authorVal,
+    brewer:   document.getElementById('eBr').value,
+    dose:     document.getElementById('eD').value.trim(),
+    ratio:    document.getElementById('eR').value.trim(),
+    link:     document.getElementById('eL').value.trim(),
+    roastery: document.getElementById('eRoastery').value.trim()||null,
+    category,
+    addedAt:  existing?.addedAt||Date.now()
+  };
+  if(category==='cold' && iceVal) r.ice=iceVal;
+  const btn=document.getElementById('editSaveBtn');
+  btn.textContent='⏳...'; btn.disabled=true;
+  set(ref(db,'recipes/'+fbKey),r)
+    .then(()=>{ toast('تم التعديل ✅'); closeEditModal(); })
+    .catch(err=>{ toast('خطأ: '+err.message,'terr'); })
+    .finally(()=>{ btn.textContent='💾 حفظ التعديل'; btn.disabled=false; });
+};
+
+// Roastery dropdown for edit modal
+window.editRoasteryInput = function(){
+  const val=document.getElementById('eRoastery').value.trim().toLowerCase();
+  const dd=document.getElementById('editRoasteryDd');
+  const names=Object.values(FB_ROASTERIES||{}).map(v=>v?.name).filter(Boolean);
+  const filtered=val?names.filter(n=>n.toLowerCase().includes(val)):names;
+  if(!filtered.length){ dd.style.display='none'; return; }
+  dd.style.display='block';
+  dd.innerHTML=filtered.slice(0,10).map(n=>`<div style="padding:10px 14px;cursor:pointer;font-size:.9em;border-bottom:1px solid var(--br)" onmousedown="document.getElementById('eRoastery').value='${n.replace(/'/g,"\\'")}';document.getElementById('editRoasteryDd').style.display='none'">${n}</div>`).join('');
+};
+window.editRoasteryShow = function(){
+  if(Object.keys(FB_ROASTERIES||{}).length) editRoasteryInput();
+};
+window.editRoasteryHide = function(){
+  document.getElementById('editRoasteryDd').style.display='none';
+};
+
+document.getElementById('editOv').addEventListener('click',e=>{
+  if(e.target===e.currentTarget) closeEditModal();
+});
 
 window.saveRec = function(e){
   e.preventDefault();
