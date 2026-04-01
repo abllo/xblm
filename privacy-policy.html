@@ -131,8 +131,6 @@ onValue(ref(db,'pagesContent'), snap => {
       <li><a href="#use">كيف نستخدم البيانات</a></li>
       <li><a href="#storage">التخزين والأمان</a></li>
       <li><a href="#cookies">ملفات تعريف الارتباط</a></li>
-      <li><a href="#ads">الإعلانات والشراكات</a></li>
-      <li><a href="#telegram">الوصفات المنقولة</a></li>
       <li><a href="#rights">حقوقك</a></li>
       <li><a href="#changes">تغييرات على السياسة</a></li>
     </ul>
@@ -175,10 +173,10 @@ onValue(ref(db,'pagesContent'), snap => {
     <div class="section-title">التخزين والأمان</div>
     <div class="section-body" id="dyn-storage">
       <p>
-        يُخزَّن محتوى الموقع على خوادم <strong>Firebase (Google)</strong> في أوروبا. تخضع هذه الخدمة لسياسة خصوصية Google وتلتزم بمعايير أمان عالية.
+        يُخزَّن محتوى الموقع على خوادم سحابية آمنة تلتزم بمعايير حماية البيانات الدولية.
       </p>
       <p>
-        الموقع مستضاف على <strong>GitHub Pages</strong> مع اتصال آمن HTTPS. لا يملك المشغل وصولاً مباشراً لعناوين IP الزوار.
+        الاتصال بالموقع مشفّر بالكامل عبر HTTPS. لا يملك المشغل وصولاً مباشراً لعناوين IP الزوار.
       </p>
     </div>
   </div>
@@ -187,34 +185,9 @@ onValue(ref(db,'pagesContent'), snap => {
     <div class="section-title">ملفات تعريف الارتباط (Cookies)</div>
     <div class="section-body">
       <p>
-        الموقع لا يستخدم ملفات تعريف ارتباط خاصة به. قد تستخدم خدمات الطرف الثالث المُدمجة (مثل Firebase) ملفاتها الخاصة وفق سياساتها.
+        الموقع لا يستخدم ملفات تعريف ارتباط خاصة به. قد تستخدم بعض خدمات الطرف الثالث المُدمجة ملفاتها الخاصة وفق سياساتها.
       </p>
       <p>يُخزَّن بعض البيانات محلياً في متصفحك (localStorage) كتفضيلاتك وتقييماتك، ولا يُرسَل منها شيء لخوادمنا.</p>
-    </div>
-  </div>
-
-  <div class="section-card" id="ads">
-    <div class="section-title">الإعلانات والشراكات</div>
-    <div class="section-body">
-      <p>الموقع حالياً خالٍ من الإعلانات. <strong>في المستقبل</strong> قد يتضمن الموقع إعلانات أو شراكات تجارية مع محامص أو علامات تجارية مختارة. في هذه الحالة:</p>
-      <ul>
-        <li>سيتم الإفصاح بوضوح عن أي محتوى مدفوع أو مموّل</li>
-        <li>ستُحدَّث هذه السياسة قبل تفعيل أي إعلانات</li>
-        <li>لن تُستخدم بياناتك الحالية لأغراض إعلانية مستهدفة</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="section-card" id="telegram">
-    <div class="section-title">الوصفات المنقولة من المجتمع</div>
-    <div class="section-body">
-      <p>
-        بعض الوصفات نُقلت من مجتمع مفتوح حيث نشرها أصحابها بأسمائهم المستعارة. نُبيّن اسم صاحب الوصفة كما أُدرج في المصدر الأصلي.
-      </p>
-      <div class="highlight-box">
-        <span class="hi-icon">✋</span>
-        <strong>حق الحذف:</strong> إذا كنت صاحب وصفة ولا ترغب في ظهورها على الموقع، تواصل معنا على <a href="mailto:info@ab-s.me">info@ab-s.me</a> وسنحذفها خلال 72 ساعة.
-      </div>
     </div>
   </div>
 
@@ -228,7 +201,10 @@ onValue(ref(db,'pagesContent'), snap => {
         <li><strong>حذف</strong> أي محتوى نشرته (تعليق أو وصفة)</li>
         <li><strong>الاعتراض</strong> على طريقة استخدام بياناتك</li>
       </ul>
-      <p>لممارسة هذه الحقوق تواصل مع: <a href="mailto:info@ab-s.me">info@ab-s.me</a></p>
+      <div class="highlight-box" style="margin-top:10px">
+        <span class="hi-icon">✋</span>
+        إذا كنت صاحب وصفة ولا ترغب في ظهورها على الموقع، تواصل معنا على <a href="mailto:info@ab-s.me" class="dyn-email">info@ab-s.me</a> وسنحذفها خلال 72 ساعة.
+      </div>
     </div>
   </div>
 
