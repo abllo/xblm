@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — الصفحة غير موجودة | xBloom Recipes Hub</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gr:linear-gradient(135deg,#00A896,#4A90E2);--bg:#0A0A0A;--card:#1A1A1A;--br:#2A2A2A;--t1:#fff;--t2:#A0A0A0;--ta:#00A896}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+
+/* خلفية متحركة */
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0}
+.bg-glow::before{content:'';position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0,168,150,.08) 0%,transparent 70%);border-radius:50%}
+.bg-glow::after{content:'';position:absolute;bottom:10%;left:30%;width:400px;height:400px;background:radial-gradient(circle,rgba(74,144,226,.06) 0%,transparent 70%);border-radius:50%}
+
+.container{position:relative;z-index:1;text-align:center;max-width:520px;width:100%}
+
+/* بطاقة رئيسية */
+.card{background:var(--card);border:1px solid rgba(0,168,150,.15);border-radius:24px;padding:48px 36px;box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 0 1px rgba(0,168,150,.06);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gr)}
+
+/* أيقونة القهوة */
+.icon-wrap{width:88px;height:88px;margin:0 auto 24px;background:linear-gradient(135deg,rgba(0,168,150,.18),rgba(74,144,226,.1));border:1px solid rgba(0,168,150,.3);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:2.8em;box-shadow:0 0 30px rgba(0,168,150,.15),inset 0 1px 0 rgba(255,255,255,.08);animation:pulse 3.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 30px rgba(0,168,150,.15),inset 0 1px 0 rgba(255,255,255,.08)}50%{box-shadow:0 0 50px rgba(0,168,150,.3),0 0 80px rgba(0,168,150,.08),inset 0 1px 0 rgba(255,255,255,.1)}}
+
+/* رقم 404 */
+.num{font-size:clamp(5em,18vw,8em);font-weight:900;line-height:1;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 4s linear infinite}
+@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+
+.title{font-size:clamp(1.2em,4vw,1.6em);font-weight:700;color:var(--t1);margin:8px 0 12px}
+.desc{font-size:.9em;color:var(--t2);line-height:1.7;margin-bottom:32px}
+
+/* أزرار */
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 24px;border-radius:50px;border:none;font-size:.88em;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .25s}
+.btn-primary{background:var(--gr);color:#fff;box-shadow:0 4px 20px rgba(0,168,150,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,168,150,.4)}
+.btn-secondary{background:transparent;border:1.5px solid var(--br);color:var(--t2)}
+.btn-secondary:hover{border-color:var(--ta);color:var(--t1);transform:translateY(-2px)}
+
+/* فاصل */
+.divider{width:48px;height:2px;background:var(--gr);border-radius:2px;margin:28px auto 20px;opacity:.5}
+
+/* اقتراح */
+.suggest{font-size:.78em;color:var(--t2)}
+.suggest a{color:var(--ta);text-decoration:none;font-weight:600}
+.suggest a:hover{text-decoration:underline}
+
+/* انيميشن دخول */
+.card{animation:fadeUp .65s cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="container">
+  <div class="card">
+    <div class="icon-wrap">☕</div>
+    <div class="num">404</div>
+    <div class="title">الصفحة غير موجودة</div>
+    <div class="desc">يبدو أن هذه الوصفة طارت! الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.</div>
+
+    <div class="btns">
+      <a href="/" class="btn btn-primary">🏠 الرئيسية</a>
+      <a href="javascript:history.back()" class="btn btn-secondary">→ رجوع</a>
+    </div>
+
+    <div class="divider"></div>
+    <div class="suggest">هل تبحث عن وصفة معينة؟ <a href="/">تصفح جميع الوصفات</a></div>
+  </div>
+</div>
+
+</body>
+</html>
