@@ -497,6 +497,9 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <button class="nav-item" onclick="switchTab(this,'tAds')" data-tab="tAds">
             <span class="nav-item-icon">📢</span><span class="nav-item-text">الإعلانات</span>
           </button>
+          <button class="nav-item" onclick="switchTab(this,'tAnnouncement')" data-tab="tAnnouncement">
+            <span class="nav-item-icon">🔔</span><span class="nav-item-text">شريط الإشعارات</span>
+          </button>
           <button class="nav-item" onclick="switchTab(this,'tBanners')" data-tab="tBanners">
             <span class="nav-item-icon">🖼️</span><span class="nav-item-text">البنرات</span>
           </button>
@@ -708,6 +711,26 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div class="ads-preview" id="adsPreview">لا يوجد كود محفوظ بعد</div>
   </div>
 
+  <!-- ANNOUNCEMENT BAR -->
+  <div id="tAnnouncement" class="acard">
+    <h3 style="margin-bottom:16px">📢 شريط الإشعارات العلوي</h3>
+    <div class="toggle-switch">
+      <input type="checkbox" id="annoEnabled" onchange="saveAnnoSetting()">
+      <label class="toggle-label" for="annoEnabled">تفعيل شريط الإشعارات</label>
+    </div>
+    <div class="fg"><label>نص الإشعار</label>
+      <input class="form-input" id="annoText" placeholder="مثال: 🎉 أضفنا وصفات جديدة!">
+    </div>
+    <div class="fg"><label>نوع الإشعار</label>
+      <select class="form-input" id="annoType">
+        <option value="info">💙 معلومة (أزرق)</option>
+        <option value="success">💚 نجاح (أخضر)</option>
+        <option value="warning">🟡 تحذير (أصفر)</option>
+        <option value="promo">🎫 عرض (تدرج)</option>
+      </select>
+    </div>
+  </div>
+
   <!-- PINNED RECIPES -->
   <div id="tPinned" class="acard">
     <h3 style="margin-bottom:16px">📌 الوصفات المثبتة (Sponsored)</h3>
@@ -791,24 +814,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title">📢 شريط الإشعارات العلوي</div>
-        <div class="toggle-switch">
-          <input type="checkbox" id="annoEnabled" onchange="saveAnnoSetting()">
-          <label class="toggle-label" for="annoEnabled">تفعيل شريط الإشعارات</label>
-        </div>
-        <div class="fg"><label>نص الإشعار</label>
-          <input class="form-input" id="annoText" placeholder="مثال: 🎉 أضفنا وصفات جديدة!">
-        </div>
-        <div class="fg"><label>نوع الإشعار</label>
-          <select class="form-input" id="annoType">
-            <option value="info">💙 معلومة (أزرق)</option>
-            <option value="success">💚 نجاح (أخضر)</option>
-            <option value="warning">🟡 تحذير (أصفر)</option>
-            <option value="promo">🎫 عرض (تدرج)</option>
-          </select>
-        </div>
-      </div>
     </div>
 
     <!-- ══ TAB: SEO وتحليلات ══ -->
