@@ -609,7 +609,7 @@ body.no-reports .ib.report{display:none!important}
 .roasteries-scroll-wrap::before,.roasteries-scroll-wrap::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
 .roasteries-scroll-wrap::before{right:0;background:linear-gradient(to left,var(--card),transparent)}
 .roasteries-scroll-wrap::after{left:0;background:linear-gradient(to right,var(--card),transparent)}
-.roasteries-grid{display:flex;flex-wrap:nowrap;gap:10px;overflow-x:auto;padding:4px 16px 10px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab}.roasteries-grid::-webkit-scrollbar{display:none}.roasteries-grid.dragging{cursor:grabbing;user-select:none}
+.roasteries-grid{display:flex;flex-wrap:nowrap;gap:10px;padding:4px 0 10px;width:max-content;animation:roastery-marquee var(--rd,24s) linear infinite}.roasteries-grid:hover{animation-play-state:paused}@keyframes roastery-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .roastery-card{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:130px;max-width:160px;flex-shrink:0;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25);scroll-snap-align:start}
 .roastery-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.15),rgba(0,0,0,.05));transition:.25s;pointer-events:none}
 .roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -2626,7 +2626,7 @@ function renderRoasteriesSection(){
 
   if(newKeys !== _lastRoasteryKeys){
     _lastRoasteryKeys = newKeys;
-    grid.innerHTML = sortedEntries.map(([k,v])=>{
+    const cardsHtml = sortedEntries.map(([k,v])=>{
       const name = v.name || k;
       const cnt = counts[normR(name)] || 0;
       const isActive = activeRoastery && activeRoastery.toLowerCase() === name.toLowerCase();
@@ -2642,7 +2642,9 @@ function renderRoasteriesSection(){
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
         + `</div>`;
     }).join('');
-    initRoasteryScroll(grid);
+    grid.innerHTML = cardsHtml + cardsHtml;
+    const dur = Math.max(12, sortedEntries.length * 3);
+    grid.style.setProperty('--rd', dur + 's');
   } else {
     // Update counts only — no scroll restart
     sortedEntries.forEach(([k,v])=>{
@@ -2659,20 +2661,6 @@ function renderRoasteriesSection(){
   }
 }
 
-function initRoasteryScroll(grid){
-  let down=false, startX=0, scrollLeft=0;
-  grid.addEventListener('mousedown', e=>{
-    down=true; startX=e.pageX; scrollLeft=grid.scrollLeft;
-    grid.classList.add('dragging');
-  });
-  window.addEventListener('mouseup', ()=>{ down=false; grid.classList.remove('dragging'); });
-  window.addEventListener('mousemove', e=>{
-    if(!down) return;
-    grid.scrollLeft = scrollLeft - (e.pageX - startX);
-  });
-  grid.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; scrollLeft=grid.scrollLeft; },{passive:true});
-  grid.addEventListener('touchmove', e=>{ grid.scrollLeft=scrollLeft-(e.touches[0].clientX-startX); },{passive:true});
-}
 
 window.filterByRoastery = function(e, name){
   if(e) e.stopPropagation();
