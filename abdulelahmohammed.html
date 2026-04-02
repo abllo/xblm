@@ -789,12 +789,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <div class="fg"><label>نص حقوق النشر</label>
           <input class="form-input" id="footerCopy" placeholder="© 2026 Xbloom Recipes">
         </div>
-        <div class="fg"><label>نص ثانوي</label>
-          <input class="form-input" id="footerSub" placeholder="جميع حقوق الوصفات محفوظة لمنشئيها">
-        </div>
-        <div class="fg"><label>اسم المطوّر</label>
-          <input class="form-input" id="footerDev" placeholder="ABDULELAH ALSUFAYAN">
-        </div>
       </div>
 
       <div class="settings-section">
@@ -1904,8 +1898,6 @@ function initFirebase() {
     sv('siteEmail',    s.siteEmail);
     sv('sitePwaName',  s.sitePwaName);
     sv('footerCopy',   s.footerCopy);
-    sv('footerSub',    s.footerSub);
-    sv('footerDev',    s.footerDev);
     sv('annoText',     s.annoText);
     sv('annoType',     s.annoType);
     sc('annoEnabled',  s.annoEnabled);
@@ -2666,8 +2658,6 @@ window.saveSiteSettings = function(){
     siteEmail:    g('siteEmail')?.value.trim(),
     sitePwaName:  g('sitePwaName')?.value.trim(),
     footerCopy:   g('footerCopy')?.value.trim(),
-    footerSub:    g('footerSub')?.value.trim(),
-    footerDev:    g('footerDev')?.value.trim(),
     annoText:     g('annoText')?.value.trim(),
     annoType:     g('annoType')?.value,
     annoEnabled:  g('annoEnabled')?.checked,
