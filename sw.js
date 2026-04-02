@@ -1,8 +1,7 @@
-const CACHE = 'xbloom-v1';
+const CACHE = 'xbloom-v2';
 const OFFLINE = [
   '/',
   '/index.html',
-  '/about-us.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',

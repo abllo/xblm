@@ -1228,7 +1228,7 @@ body.no-reports .ib.report{display:none!important}
 <footer id="siteFooter">
   <div class="footer-links">
     <a href="about.html">من نحن</a>
-    <a href="about-us.html#contact" id="footer-nav-contact" style="display:none">اتصل بنا</a>
+    <a href="contact.html" id="footer-nav-contact">اتصل بنا</a>
     <a href="privacy-policy.html">سياسة الخصوصية</a>
   </div>
   <p id="footerCopy">&#169; 2026 Xbloom Recipes</p>
@@ -2572,12 +2572,6 @@ onValue(ratingsRef,snap=>{
   if(hRt) hRt.textContent = totalRatings>0 ? '+'+totalRatings : '0';
   render();
 },err=>{console.warn('ratings:',err);});
-// ════ PAGES CONTENT — footer nav visibility ════
-onValue(ref(db,'pagesContent'), snap => {
-  const d = snap.val() || {};
-  const el = document.getElementById('footer-nav-contact');
-  if(el) el.style.display = d.contact_hidden ? 'none' : '';
-}, {onlyOnce: true});
 
 // ════ ROASTERY KEYWORD MATCHING ════
 const ROASTERY_KEYWORDS = [
