@@ -938,6 +938,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <div class="fg"><label>💬 النص الظاهر أسفل النموذج</label>
             <textarea class="form-input" id="pg_contact_body" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="هذا الموقع يُدار بشكل فردي — نضمن الرد على طلبات الحذف والتعديل في أقرب وقت."></textarea>
           </div>
+          <button class="btn bp bbl" onclick="saveContactSettings()">💾 حفظ إعدادات التواصل</button>
         </div>
         <!-- ══ about.html ══ -->
         <div id="pg-about2" class="pg-tab-content" style="display:block">
@@ -2789,6 +2790,15 @@ window.saveSiteSettings = function(){
     set(ref(db,'pagesContent'), pages)
   ]).then(() => toast('✅ تم حفظ جميع الإعدادات — ستظهر للزوار فوراً'))
     .catch(err => toast('خطأ: ' + err.message, 'terr'));
+};
+
+window.saveContactSettings = function(){
+  if(!db) return;
+  const key  = document.getElementById('pg_web3forms_key')?.value.trim() || '';
+  const body = document.getElementById('pg_contact_body')?.value.trim() || '';
+  update(ref(db,'pagesContent'), { web3forms_key: key, contact_body: body })
+    .then(()=>toast('✅ تم حفظ إعدادات التواصل'))
+    .catch(err=>toast('خطأ: '+err.message,'terr'));
 };
 
 window.saveAnnoSetting = function(){
