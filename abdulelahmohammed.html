@@ -381,6 +381,13 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   70%{box-shadow:0 0 0 6px rgba(245,87,108,0)}
   100%{box-shadow:0 0 0 0 rgba(245,87,108,0)}
 }
+
+/* ═══ MESSAGES INBOX ═══ */
+.msg-item{background:var(--up);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px;position:relative;transition:.2s}
+.msg-item.unread{border-color:rgba(0,168,150,.35);background:rgba(0,168,150,.04)}
+.msg-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--ta);flex-shrink:0;box-shadow:0 0 8px rgba(0,168,150,.5);margin-top:4px}
+.msg-badge-new{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:rgba(0,168,150,.18);color:var(--ta)}
+.msg-badge-read{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:.7em;font-weight:700;background:rgba(255,255,255,.06);color:var(--t2)}
 </style>
 </head>
 <body>
@@ -442,6 +449,9 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       </button>
       <button class="nav-item" onclick="switchTab(this,'tAnalytics');loadAnalytics()" data-tab="tAnalytics">
         <span class="nav-item-icon">📈</span><span class="nav-item-text">التحليلات</span>
+      </button>
+      <button class="nav-item" onclick="switchTab(this,'tMessages')" data-tab="tMessages">
+        <span class="nav-item-icon">✉️</span><span class="nav-item-text">الرسائل الواردة</span>
       </button>
     </div>
 
@@ -915,8 +925,13 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em;color:var(--t2)">
             🔗 هذه الإعدادات تتحكم في صفحة <strong style="color:var(--ta)">contact.html</strong>
           </div>
-          <div class="fg"><label>📧 البريد الإلكتروني المعروض</label><input class="form-input" id="pg_contact_email" placeholder="info@ab-s.me"></div>
-          <div class="fg"><label>النص الظاهر تحت الإيميل</label>
+          <div class="fg"><label>📧 البريد الإلكتروني للاستقبال (Web3Forms)</label>
+            <div style="background:rgba(74,144,226,.06);border:1px solid rgba(74,144,226,.2);border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:.78em;color:rgba(255,255,255,.5);line-height:1.6">
+              للحصول على مفتاح API مجاني: اذهب إلى <strong style="color:#4A90E2">web3forms.com</strong> ← اكتب إيميلك ← انسخ المفتاح هنا
+            </div>
+            <input class="form-input" id="pg_web3forms_key" placeholder="مفتاح Web3Forms (للإشعارات على إيميلك)">
+          </div>
+          <div class="fg"><label>💬 النص الظاهر أسفل النموذج</label>
             <textarea class="form-input" id="pg_contact_body" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="هذا الموقع يُدار بشكل فردي — نضمن الرد على طلبات الحذف والتعديل في أقرب وقت."></textarea>
           </div>
         </div>
@@ -1557,6 +1572,31 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   </div>
   </div>
 
+  <!-- ═══ الرسائل الواردة ═══ -->
+  <div id="tMessages" class="acard">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+      <div>
+        <h3 style="margin-bottom:4px">✉️ الرسائل الواردة <span style="font-size:.6em;background:rgba(0,168,150,.15);border:1px solid rgba(0,168,150,.25);color:var(--ta);padding:2px 8px;border-radius:20px;font-weight:700;vertical-align:middle">● مباشر</span></h3>
+        <p style="color:var(--t2);font-size:.82em">رسائل الزوار المُرسلة عبر نموذج التواصل</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn bsm bd" onclick="deleteReadMessages()">🗑️ حذف المقروءة</button>
+        <button class="btn bsm bg" onclick="markAllMessagesRead()">✅ تعيين الكل كمقروء</button>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="report-ftab on" onclick="filterMessages('all',this)">الكل <span id="mCountAll" style="background:rgba(255,255,255,.15);padding:1px 7px;border-radius:8px;font-size:.85em">0</span></button>
+      <button class="report-ftab" onclick="filterMessages('new',this)">🆕 جديدة <span id="mCountNew" style="background:rgba(0,168,150,.3);padding:1px 7px;border-radius:8px;font-size:.85em">0</span></button>
+      <button class="report-ftab" onclick="filterMessages('read',this)">✅ مقروءة <span id="mCountRead" style="background:rgba(255,255,255,.1);padding:1px 7px;border-radius:8px;font-size:.85em">0</span></button>
+    </div>
+
+    <div id="messagesList">
+      <div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">⏳ جاري تحميل الرسائل...</div>
+    </div>
+  </div>
+
   <!-- ═══ البنرات ═══ -->
   <div id="tBanners" class="acard">
     <h3 style="margin-bottom:6px">🖼️ بنرات الموقع</h3>
@@ -1641,6 +1681,16 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   </div>
   <button class="rt-alert-close" onclick="event.stopPropagation();dismissAlert()">✕</button>
 </div>
+<!-- Messages Alert Banner -->
+<div class="rt-alert-banner" id="rtMsgBanner" onclick="goToMessages()" style="top:80px">
+  <div class="rt-alert-icon">✉️</div>
+  <div style="flex:1;min-width:0">
+    <div class="rt-alert-title" id="rtMsgTitle">رسالة جديدة</div>
+    <div class="rt-alert-sub" id="rtMsgSub">اضغط للعرض</div>
+  </div>
+  <button class="rt-alert-close" onclick="event.stopPropagation();dismissMsgAlert()">✕</button>
+</div>
+
 <!-- Confirm Modal -->
 <div class="ov" id="confirmOv">
   <div class="cmod">
@@ -1941,6 +1991,7 @@ function initFirebase() {
     const setCk  = (id, val) => { const el=document.getElementById(id); if(el) el.checked=!!val; };
     setVal('pg_contact_email', p.contact_email);
     setVal('pg_contact_body',  p.contact_body);
+    setVal('pg_web3forms_key', p.web3forms_key);
     // about.html
     setVal('pg_about2_title',    p.about2_title);
     setVal('pg_about2_subtitle', p.about2_subtitle);
@@ -2700,8 +2751,9 @@ window.saveSiteSettings = function(){
   };
   // Pages content
   const pages = {
-    contact_email: g('pg_contact_email')?.value.trim(),
-    contact_body:  g('pg_contact_body')?.value.trim(),
+    contact_email:    g('pg_contact_email')?.value.trim(),
+    contact_body:     g('pg_contact_body')?.value.trim(),
+    web3forms_key:    g('pg_web3forms_key')?.value.trim(),
     // about.html
     about2_title:    g('pg_about2_title')?.value.trim(),
     about2_subtitle: g('pg_about2_subtitle')?.value.trim(),
@@ -4019,6 +4071,143 @@ window.goToReports = function() {
 };
 
 // Make analytics auto-refresh when visible
+
+// ════════════════════════════════════════════
+// ✉️ CONTACT MESSAGES
+// ════════════════════════════════════════════
+let FB_MESSAGES = {};
+let _messagesFilter = 'all';
+let _msgAlertTimer = null;
+
+function renderMessages() {
+  const all  = Object.entries(FB_MESSAGES);
+  const newM = all.filter(([,m])=>m.status==='new'||!m.status);
+  const readM= all.filter(([,m])=>m.status==='read');
+
+  document.getElementById('mCountAll').textContent  = all.length;
+  document.getElementById('mCountNew').textContent  = newM.length;
+  document.getElementById('mCountRead').textContent = readM.length;
+
+  let filtered = all;
+  if(_messagesFilter==='new')  filtered = newM;
+  if(_messagesFilter==='read') filtered = readM;
+
+  const el = document.getElementById('messagesList');
+  if(!filtered.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t2);font-size:.88em">لا توجد رسائل</div>';
+    return;
+  }
+
+  filtered.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  el.innerHTML = filtered.map(([key,m])=>{
+    const isNew = m.status==='new'||!m.status;
+    const date  = m.ts ? new Date(m.ts).toLocaleDateString('ar-SA',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<div class="msg-item ${isNew?'unread':''}">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        ${isNew?'<div class="msg-unread-dot"></div>':''}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:.92em;font-weight:800">${esc(m.name||'—')}</span>
+              <span class="${isNew?'msg-badge-new':'msg-badge-read'}">${isNew?'🆕 جديدة':'✅ مقروءة'}</span>
+            </div>
+            <div style="font-size:.72em;color:var(--t2);white-space:nowrap">${date}</div>
+          </div>
+          <div style="font-size:.8em;color:var(--t2);margin-bottom:4px">📧 <a href="mailto:${esc(m.email||'')}" style="color:var(--ta)">${esc(m.email||'—')}</a></div>
+          ${m.subject?`<div style="font-size:.82em;font-weight:700;margin-bottom:6px;color:rgba(255,255,255,.7)">📌 ${esc(m.subject)}</div>`:''}
+          <div style="font-size:.88em;background:var(--bg);border-radius:8px;padding:10px 12px;color:rgba(255,255,255,.75);line-height:1.7;white-space:pre-wrap;word-break:break-word;margin-bottom:10px">${esc(m.message||'')}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${isNew?`<button class="btn bsm bg" onclick="markMsgRead('${key}')">✅ تعيين كمقروءة</button>`:''}
+            <button class="btn bsm" style="background:rgba(245,87,108,.1);border:1px solid rgba(245,87,108,.3);color:#f5576c" onclick="deleteMsg('${key}')">🗑️ حذف</button>
+            <a href="mailto:${esc(m.email||'')}?subject=رد: ${esc(m.subject||'رسالتك')}" class="btn bsm bgray" style="text-decoration:none">↩️ رد</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.filterMessages = function(filter, btn){
+  _messagesFilter = filter;
+  document.querySelectorAll('#tMessages .report-ftab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderMessages();
+};
+
+window.markMsgRead = function(key){
+  set(ref(db,'contactMessages/'+key+'/status'),'read')
+    .then(()=>{ if(FB_MESSAGES[key]) FB_MESSAGES[key].status='read'; renderMessages(); updateMsgBadge(); toast('تم التعيين كمقروءة ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+window.markAllMessagesRead = function(){
+  const newOnes = Object.entries(FB_MESSAGES).filter(([,m])=>m.status==='new'||!m.status);
+  if(!newOnes.length){ toast('لا توجد رسائل جديدة'); return; }
+  Promise.all(newOnes.map(([key])=>set(ref(db,'contactMessages/'+key+'/status'),'read')))
+    .then(()=>{ newOnes.forEach(([key])=>{ if(FB_MESSAGES[key]) FB_MESSAGES[key].status='read'; }); renderMessages(); updateMsgBadge(); toast('تم تعيين الكل كمقروء ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+window.deleteMsg = function(key){
+  if(!confirm('حذف هذه الرسالة؟')) return;
+  remove(ref(db,'contactMessages/'+key))
+    .then(()=>{ delete FB_MESSAGES[key]; renderMessages(); updateMsgBadge(); toast('تم الحذف ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+window.deleteReadMessages = function(){
+  const readOnes = Object.entries(FB_MESSAGES).filter(([,m])=>m.status==='read');
+  if(!readOnes.length){ toast('لا توجد رسائل مقروءة'); return; }
+  if(!confirm(`حذف ${readOnes.length} رسالة مقروءة؟`)) return;
+  Promise.all(readOnes.map(([key])=>remove(ref(db,'contactMessages/'+key))))
+    .then(()=>{ readOnes.forEach(([key])=>delete FB_MESSAGES[key]); renderMessages(); updateMsgBadge(); toast('تم الحذف ✅'); })
+    .catch(()=>toast('خطأ','terr'));
+};
+
+function updateMsgBadge(){
+  const newCount = Object.values(FB_MESSAGES).filter(m=>m.status==='new'||!m.status).length;
+  const btn = document.querySelector('[data-tab="tMessages"]');
+  if(!btn) return;
+  let badge = btn.querySelector('.notif-badge');
+  if(newCount > 0){
+    if(!badge){ badge=document.createElement('span'); badge.className='notif-badge'; btn.appendChild(badge); }
+    badge.textContent = newCount;
+  } else {
+    if(badge) badge.remove();
+  }
+}
+
+window.dismissMsgAlert = function(){
+  document.getElementById('rtMsgBanner').classList.remove('show');
+  if(_msgAlertTimer) clearTimeout(_msgAlertTimer);
+};
+
+window.goToMessages = function(){
+  dismissMsgAlert();
+  const btn = document.querySelector('[data-tab="tMessages"]');
+  if(btn) switchTab(btn,'tMessages');
+};
+
+// Real-time listener for contact messages
+let _prevNewMsgCount = 0;
+onValue(ref(db,'contactMessages'), snap => {
+  FB_MESSAGES = snap.val() || {};
+  renderMessages();
+  const newCount = Object.values(FB_MESSAGES).filter(m=>m.status==='new'||!m.status).length;
+  updateMsgBadge();
+  if(newCount > _prevNewMsgCount && _prevNewMsgCount >= 0){
+    const diff = newCount - _prevNewMsgCount;
+    if(diff > 0){
+      const banner = document.getElementById('rtMsgBanner');
+      document.getElementById('rtMsgTitle').textContent = diff===1 ? 'رسالة جديدة وصلت!' : `${diff} رسائل جديدة!`;
+      document.getElementById('rtMsgSub').textContent = `إجمالي غير المقروءة: ${newCount} — اضغط للعرض`;
+      banner.classList.add('show');
+      if(_msgAlertTimer) clearTimeout(_msgAlertTimer);
+      _msgAlertTimer = setTimeout(()=>banner.classList.remove('show'), 7000);
+    }
+  }
+  _prevNewMsgCount = newCount;
+}, ()=>{});
 
 
 </script>

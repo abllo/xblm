@@ -33,15 +33,27 @@ a:hover{text-decoration:underline}
 .page-icon{font-size:2.8em;margin-bottom:14px;display:block}
 .page-title{font-size:clamp(1.7em,4vw,2.3em);font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3}
 
-.contact-card{background:var(--card);border-radius:20px;border:1px solid var(--br);padding:36px 32px;position:relative;overflow:hidden;text-align:center}
+.contact-card{background:var(--card);border-radius:20px;border:1px solid var(--br);padding:36px 32px;position:relative;overflow:hidden}
 .contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr)}
 
-.contact-label{font-size:.82em;color:var(--t2);font-weight:700;margin-bottom:10px;letter-spacing:.5px}
-.contact-email{font-size:1.2em;font-weight:900}
-.contact-email a{color:var(--ta);transition:.2s}
-.contact-email a:hover{color:#fff;text-decoration:none}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.fg label{font-size:.82em;color:var(--t2);font-weight:700}
+.fi{width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;color:var(--t1);font-size:15px;font-family:inherit;transition:.2s;direction:rtl}
+.fi:focus{outline:none;border-color:var(--ta);background:rgba(0,168,150,.06);box-shadow:0 0 0 3px rgba(0,168,150,.12)}
+.fi::placeholder{color:rgba(255,255,255,.25)}
+textarea.fi{resize:vertical;min-height:120px;line-height:1.6}
 
-.contact-body{color:var(--t2);font-size:.88em;line-height:1.9;margin-top:20px;padding-top:20px;border-top:1px solid var(--br)}
+.btn-submit{width:100%;padding:14px;border-radius:12px;background:var(--gr);border:none;color:#fff;font-size:1em;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-top:4px}
+.btn-submit:hover{opacity:.88}
+.btn-submit:active{transform:scale(.98)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+
+.form-status{padding:14px 18px;border-radius:10px;margin-top:14px;font-size:.88em;text-align:center;font-weight:700;display:none}
+.form-status.ok{display:block;background:rgba(67,233,123,.1);border:1px solid rgba(67,233,123,.3);color:#43e97b}
+.form-status.err{display:block;background:rgba(245,87,108,.1);border:1px solid rgba(245,87,108,.3);color:#f5576c}
+
+.contact-info{margin-top:24px;padding-top:20px;border-top:1px solid var(--br)}
+.contact-body-text{color:var(--t2);font-size:.88em;line-height:1.9;text-align:center}
 
 .last-update{text-align:center;color:var(--t2);font-size:.78em;margin-top:32px;padding-top:20px;border-top:1px solid var(--br)}
 
@@ -52,23 +64,74 @@ a:hover{text-decoration:underline}
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
 const db = getDatabase(initializeApp({
   apiKey:"AIzaSyDq370Yy4W-TfbyFL5rt4y3h3ngajJVIrE",
   databaseURL:"https://xbloom-recipes-hub-default-rtdb.europe-west1.firebasedatabase.app",
   projectId:"xbloom-recipes-hub"
 }));
+
+let WEB3FORMS_KEY = '';
+
 onValue(ref(db,'pagesContent'), snap => {
   const p = snap.val() || {};
-  if(p.contact_email){
-    const el = document.getElementById('dyn-email');
-    if(el){ el.href='mailto:'+p.contact_email; el.textContent=p.contact_email; }
-  }
+  if(p.web3forms_key) WEB3FORMS_KEY = p.web3forms_key;
   if(p.contact_body){
     const el = document.getElementById('dyn-body');
     if(el) el.innerHTML = p.contact_body;
   }
 }, {onlyOnce:true});
+
+window.submitContact = async function(e){
+  e.preventDefault();
+  const btn    = document.getElementById('submitBtn');
+  const status = document.getElementById('formStatus');
+  const name    = document.getElementById('f-name').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const subject = document.getElementById('f-subject').value.trim();
+  const message = document.getElementById('f-message').value.trim();
+
+  if(!name || !email || !message) return;
+
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري الإرسال...';
+  status.className = 'form-status';
+
+  try {
+    // 1) Save to Firebase
+    await push(ref(db,'contactMessages'), {
+      name, email, subject, message,
+      ts: Date.now(),
+      status: 'new'
+    });
+
+    // 2) Send email via Web3Forms (if key is configured)
+    if(WEB3FORMS_KEY) {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          name, email,
+          subject: subject || 'رسالة جديدة من نموذج التواصل',
+          message,
+          from_name: 'xBloom Recipes Hub'
+        })
+      });
+    }
+
+    status.className = 'form-status ok';
+    status.textContent = '✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
+    document.getElementById('contactForm').reset();
+  } catch(err) {
+    status.className = 'form-status err';
+    status.textContent = '❌ حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '📨 إرسال الرسالة';
+};
 </script>
 </head>
 <body>
@@ -92,9 +155,30 @@ onValue(ref(db,'pagesContent'), snap => {
   </div>
 
   <div class="contact-card">
-    <div class="contact-label">تواصل معنا عبر البريد الإلكتروني</div>
-    <div class="contact-email"><a href="#" id="dyn-email"></a></div>
-    <div class="contact-body" id="dyn-body"></div>
+    <form id="contactForm" onsubmit="submitContact(event)">
+      <div class="fg">
+        <label for="f-name">الاسم *</label>
+        <input class="fi" type="text" id="f-name" placeholder="اسمك الكريم" required>
+      </div>
+      <div class="fg">
+        <label for="f-email">البريد الإلكتروني *</label>
+        <input class="fi" type="email" id="f-email" placeholder="example@email.com" required>
+      </div>
+      <div class="fg">
+        <label for="f-subject">الموضوع</label>
+        <input class="fi" type="text" id="f-subject" placeholder="موضوع رسالتك (اختياري)">
+      </div>
+      <div class="fg">
+        <label for="f-message">الرسالة *</label>
+        <textarea class="fi" id="f-message" placeholder="اكتب رسالتك هنا..." required></textarea>
+      </div>
+      <button class="btn-submit" type="submit" id="submitBtn">📨 إرسال الرسالة</button>
+      <div class="form-status" id="formStatus"></div>
+    </form>
+
+    <div class="contact-info">
+      <div class="contact-body-text" id="dyn-body"></div>
+    </div>
   </div>
 
   <div class="last-update">
