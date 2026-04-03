@@ -605,14 +605,13 @@ body.no-reports .ib.report{display:none!important}
 .roasteries-section{margin-bottom:24px;background:var(--card);border-radius:16px;border:1px solid var(--br);padding:18px 0 14px;position:relative;overflow:hidden}
 .roasteries-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gr);border-radius:16px 16px 0 0}
 .roasteries-label{font-size:.8em;color:var(--t2);font-weight:700;text-align:center;margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase;padding:0 20px}
-.roasteries-scroll-wrap{position:relative;overflow:hidden}
+.roasteries-scroll-wrap{position:relative;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;cursor:grab}
+.roasteries-scroll-wrap::-webkit-scrollbar{display:none}
+.roasteries-scroll-wrap.dragging{cursor:grabbing;user-select:none}
 .roasteries-scroll-wrap::before,.roasteries-scroll-wrap::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
 .roasteries-scroll-wrap::before{right:0;background:linear-gradient(to left,var(--card),transparent)}
 .roasteries-scroll-wrap::after{left:0;background:linear-gradient(to right,var(--card),transparent)}
-.roasteries-grid{display:flex;flex-wrap:nowrap;gap:0;direction:ltr;padding:4px 0 10px;width:max-content;animation:roastery-marquee var(--rd,30s) linear infinite;will-change:transform;cursor:default}
-.roasteries-grid:hover{animation-play-state:paused}
-.roasteries-grid .roastery-card{margin-right:10px;direction:rtl}
-@keyframes roastery-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.roasteries-grid{display:flex;flex-wrap:nowrap;gap:10px;direction:rtl;padding:4px 4px 10px;width:max-content}
 .roastery-card{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.25s;min-width:130px;max-width:160px;flex-shrink:0;position:relative;overflow:hidden;border:2px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.25);scroll-snap-align:start}
 .roastery-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.15),rgba(0,0,0,.05));transition:.25s;pointer-events:none}
 .roastery-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -1141,7 +1140,7 @@ body.no-reports .ib.report{display:none!important}
 <div id="roasteriesBannerWrap">
   <div class="roasteries-section" id="roasteriesSection" style="display:none">
     <div class="roasteries-label">☕ المحامص الرائجة</div>
-    <div class="roasteries-scroll-wrap">
+    <div class="roasteries-scroll-wrap" id="roasteries-wrap">
       <div class="roasteries-grid" id="roasteriesGrid"></div>
     </div>
     <div style="text-align:center;margin-top:10px;padding:0 20px">
@@ -2666,9 +2665,8 @@ function renderRoasteriesSection(){
         + `<div><div class="roastery-name">${esc(name)}</div><div class="roastery-count">${cnt} وصفة</div></div>`
         + `</div>`;
     }).join('');
-    grid.innerHTML = cardsHtml + cardsHtml;
-    const dur = Math.max(14, sortedEntries.length * 3.5);
-    grid.style.setProperty('--rd', dur + 's');
+    grid.innerHTML = cardsHtml;
+    initRoasteryDrag(document.getElementById('roasteries-wrap'));
   } else {
     // Update counts only — no scroll restart
     sortedEntries.forEach(([k,v])=>{
@@ -3270,6 +3268,28 @@ if("serviceWorker" in navigator){
 
   } catch(e) { console.warn('articles:', e); }
 })();
+
+// ── Drag-to-scroll for roasteries ──
+function initRoasteryDrag(el) {
+  if(!el || el._roasteryDragInit) return;
+  el._roasteryDragInit = true;
+  let down = false, startX = 0, scrollL = 0, moved = false;
+  el.addEventListener('mousedown', e => {
+    down = true; moved = false; startX = e.pageX; scrollL = el.scrollLeft;
+    el.classList.add('dragging');
+  });
+  window.addEventListener('mouseup', () => { down = false; el.classList.remove('dragging'); });
+  window.addEventListener('mousemove', e => {
+    if(!down) return;
+    const dx = e.pageX - startX;
+    if(Math.abs(dx) > 3) moved = true;
+    el.scrollLeft = scrollL - dx;
+  });
+  // Prevent click on cards when dragging
+  el.addEventListener('click', e => { if(moved) e.stopPropagation(); }, true);
+  el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; scrollL = el.scrollLeft; }, {passive:true});
+  el.addEventListener('touchmove',  e => { el.scrollLeft = scrollL - (e.touches[0].clientX - startX); }, {passive:true});
+}
 
 // ── Drag-to-scroll for articles strip ──
 function initArtStrip(el) {
