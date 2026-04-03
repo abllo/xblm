@@ -520,6 +520,9 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
           <button class="nav-item" onclick="switchTab(this,'tContent')" data-tab="tContent">
             <span class="nav-item-icon">🧠</span><span class="nav-item-text">مولّد المحتوى</span>
           </button>
+          <button class="nav-item" onclick="switchTab(this,'tPopup')" data-tab="tPopup">
+            <span class="nav-item-icon">📣</span><span class="nav-item-text">البوب-أب الإعلاني</span>
+          </button>
         </div>
       </div>
     </div>
@@ -725,6 +728,38 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
     <div class="ads-preview" id="adsPreview">لا يوجد كود محفوظ بعد</div>
   </div>
 
+  <!-- ═══ البوب-أب الإعلاني ═══ -->
+  <div id="tPopup" class="acard">
+    <h3 style="margin-bottom:6px">📣 البوب-أب الإعلاني</h3>
+    <p style="color:var(--t2);font-size:.83em;margin-bottom:20px;line-height:1.6">يظهر للزائر عند دخول الموقع ويختفي تلقائياً بعد 5 ثواني</p>
+
+    <div class="toggle-switch">
+      <input type="checkbox" id="popupEnabled">
+      <label class="toggle-label" for="popupEnabled">📣 تفعيل البوب-أب عند دخول الموقع</label>
+    </div>
+
+    <div class="fg" style="margin-top:16px"><label>العنوان</label>
+      <input class="form-input" id="popupTitle" placeholder="عنوان الإعلان أو الإشعار">
+    </div>
+    <div class="fg"><label>النص</label>
+      <textarea class="form-input" id="popupText" rows="4" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="تفاصيل الإعلان أو الرسالة للزوار..."></textarea>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label>الرابط (اختياري)</label>
+        <input class="form-input" id="popupLink" placeholder="https://...">
+      </div>
+      <div class="fg"><label>نص الزر</label>
+        <input class="form-input" id="popupLinkText" placeholder="اعرف أكثر">
+      </div>
+    </div>
+
+    <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.15);border-radius:8px;padding:8px 12px;font-size:.78em;color:var(--t2);margin-bottom:16px">
+      ℹ️ يظهر للزائر مرة واحدة عند دخول الصفحة — زر ✕ أو تخطي أو 5 ثواني تلقائياً
+    </div>
+
+    <button class="btn bp bbl" onclick="savePopupSettings()">💾 حفظ البوب-أب</button>
+  </div>
+
   <!-- ANNOUNCEMENT BAR -->
   <div id="tAnnouncement" class="acard">
     <h3 style="margin-bottom:16px">📢 شريط الإشعارات العلوي</h3>
@@ -911,31 +946,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         <div class="toggle-switch">
           <input type="checkbox" id="featureReports" checked>
           <label class="toggle-label" for="featureReports">🚩 تفعيل البلاغات على الوصفات</label>
-        </div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title">📢 البوب-أب الإعلاني عند الدخول</div>
-        <div class="toggle-switch">
-          <input type="checkbox" id="popupEnabled">
-          <label class="toggle-label" for="popupEnabled">📢 تفعيل البوب-أب عند دخول الموقع</label>
-        </div>
-        <div class="fg" style="margin-top:10px"><label>العنوان</label>
-          <input class="form-input" id="popupTitle" placeholder="عنوان الإعلان أو الإشعار">
-        </div>
-        <div class="fg"><label>النص</label>
-          <textarea class="form-input" id="popupText" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="تفاصيل الإعلان أو الرسالة للزوار..."></textarea>
-        </div>
-        <div class="fr2">
-          <div class="fg"><label>الرابط (اختياري)</label>
-            <input class="form-input" id="popupLink" placeholder="https://...">
-          </div>
-          <div class="fg"><label>نص الزر</label>
-            <input class="form-input" id="popupLinkText" placeholder="اعرف أكثر">
-          </div>
-        </div>
-        <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.15);border-radius:8px;padding:8px 12px;font-size:.78em;color:var(--t2);margin-top:4px">
-          ℹ️ يظهر للزائر مرة واحدة عند دخول الصفحة، ويختفي تلقائياً بعد 5 ثواني
         </div>
       </div>
 
@@ -2783,12 +2793,6 @@ window.saveSiteSettings = function(){
     // Maintenance
     maintenanceMode: g('maintenanceMode')?.checked,
     maintenanceMsg:  g('maintenanceMsg')?.value.trim(),
-    // Popup
-    popupEnabled:  g('popupEnabled')?.checked,
-    popupTitle:    g('popupTitle')?.value.trim(),
-    popupText:     g('popupText')?.value.trim(),
-    popupLink:     g('popupLink')?.value.trim(),
-    popupLinkText: g('popupLinkText')?.value.trim(),
   };
   // Pages content
   const pages = {
@@ -2826,6 +2830,19 @@ window.saveSiteSettings = function(){
     set(ref(db,'pagesContent'), pages)
   ]).then(() => toast('✅ تم حفظ جميع الإعدادات — ستظهر للزوار فوراً'))
     .catch(err => toast('خطأ: ' + err.message, 'terr'));
+};
+
+window.savePopupSettings = function(){
+  if(!db) return;
+  const g = id => document.getElementById(id);
+  update(ref(db,'siteSettings'), {
+    popupEnabled:  g('popupEnabled')?.checked || false,
+    popupTitle:    g('popupTitle')?.value.trim()    || '',
+    popupText:     g('popupText')?.value.trim()     || '',
+    popupLink:     g('popupLink')?.value.trim()     || '',
+    popupLinkText: g('popupLinkText')?.value.trim() || '',
+  }).then(()=>toast('✅ تم حفظ البوب-أب'))
+    .catch(err=>toast('خطأ: '+err.message,'terr'));
 };
 
 window.saveContactSettings = function(){
