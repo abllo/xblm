@@ -99,16 +99,21 @@ window.submitContact = async function(e){
   status.className = 'form-status';
 
   try {
-    // 1) Save to Firebase
+    // 1) Save to Firebase — هذا هو الأساسي
     await push(ref(db,'contactMessages'), {
       name, email, subject, message,
       ts: Date.now(),
       status: 'new'
     });
 
-    // 2) Send email via Web3Forms (if key is configured)
+    // نجح الحفظ — أظهر رسالة النجاح فوراً
+    status.className = 'form-status ok';
+    status.textContent = '✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
+    document.getElementById('contactForm').reset();
+
+    // 2) إرسال الإيميل بشكل منفصل — لا يؤثر فشله على النجاح
     if(WEB3FORMS_KEY) {
-      await fetch('https://api.web3forms.com/submit', {
+      fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {'Content-Type':'application/json','Accept':'application/json'},
         body: JSON.stringify({
@@ -118,12 +123,8 @@ window.submitContact = async function(e){
           message,
           from_name: 'xBloom Recipes Hub'
         })
-      });
+      }).catch(()=>{});
     }
-
-    status.className = 'form-status ok';
-    status.textContent = '✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
-    document.getElementById('contactForm').reset();
   } catch(err) {
     status.className = 'form-status err';
     status.textContent = '❌ حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً.';
