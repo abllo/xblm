@@ -370,6 +370,10 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.8em;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .rt-alert-close:hover{background:rgba(255,255,255,.18);color:#fff}
 
+/* Second alert banner (messages) — needs larger hide offset */
+#rtMsgBanner { top: 90px; }
+#rtMsgBanner:not(.show) { transform: translateX(-50%) translateY(-300px); }
+
 /* Pulse dot on nav items with alerts */
 .nav-item-pulse{
   width:7px;height:7px;border-radius:50%;background:#f5576c;flex-shrink:0;
@@ -1682,7 +1686,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
   <button class="rt-alert-close" onclick="event.stopPropagation();dismissAlert()">✕</button>
 </div>
 <!-- Messages Alert Banner -->
-<div class="rt-alert-banner" id="rtMsgBanner" onclick="goToMessages()" style="top:80px">
+<div class="rt-alert-banner" id="rtMsgBanner" onclick="goToMessages()">
   <div class="rt-alert-icon">✉️</div>
   <div style="flex:1;min-width:0">
     <div class="rt-alert-title" id="rtMsgTitle">رسالة جديدة</div>
