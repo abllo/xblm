@@ -3,6 +3,7 @@
   <head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5237747574783843" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
+<meta name="eabc11c1bcefc88485e3646832e785bd2ed683f1" content="eabc11c1bcefc88485e3646832e785bd2ed683f1" />
 <link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -536,6 +537,25 @@ body.no-reports .ib.report{display:none!important}
 .badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7em;font-weight:700;background:linear-gradient(135deg,#43e97b,#38f9d7);color:#000;margin-right:6px}
 .spinning{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══ AD POPUP ═══ */
+.ad-popup-ov{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s ease;pointer-events:none}
+.ad-popup-ov.show{opacity:1;pointer-events:all}
+.ad-popup-box{background:var(--card);border-radius:20px;border:1px solid rgba(255,255,255,.1);width:100%;max-width:420px;overflow:hidden;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.6);transform:translateY(24px) scale(.97);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.ad-popup-ov.show .ad-popup-box{transform:translateY(0) scale(1)}
+.ad-popup-accent{height:3px;background:var(--gr)}
+.ad-popup-body{padding:28px 28px 24px}
+.ad-popup-close{position:absolute;top:12px;left:12px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);font-size:.85em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.ad-popup-close:hover{background:rgba(255,255,255,.16);color:#fff}
+.ad-popup-title{font-size:1.15em;font-weight:900;background:var(--gr);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;line-height:1.3}
+.ad-popup-text{color:rgba(255,255,255,.75);font-size:.9em;line-height:1.8;margin-bottom:20px}
+.ad-popup-btn{display:block;width:100%;padding:13px;border-radius:12px;background:var(--gr);color:#fff;font-size:.95em;font-weight:700;text-align:center;text-decoration:none;font-family:inherit;border:none;cursor:pointer;transition:.2s}
+.ad-popup-btn:hover{opacity:.88;text-decoration:none}
+.ad-popup-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.ad-popup-skip{color:rgba(255,255,255,.35);font-size:.78em;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;transition:.2s}
+.ad-popup-skip:hover{color:rgba(255,255,255,.65)}
+.ad-popup-countdown{font-size:.75em;color:rgba(255,255,255,.3);font-weight:700}
+@keyframes adIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 /* ═══ ANNOUNCEMENT BAR ═══ */
 .anno-bar{padding:10px 16px;text-align:center;font-size:.88em;font-weight:700;position:relative;z-index:200;display:none}
 .anno-bar.show{display:block}
@@ -1262,6 +1282,23 @@ body.no-reports .ib.report{display:none!important}
 
 
 <!-- Maintenance Overlay -->
+<!-- AD POPUP -->
+<div class="ad-popup-ov" id="adPopupOv">
+  <div class="ad-popup-box" id="adPopupBox">
+    <div class="ad-popup-accent"></div>
+    <div class="ad-popup-body">
+      <button class="ad-popup-close" onclick="closeAdPopup()" title="إغلاق">✕</button>
+      <div class="ad-popup-title" id="adPopupTitle"></div>
+      <div class="ad-popup-text" id="adPopupText"></div>
+      <a href="#" class="ad-popup-btn" id="adPopupBtn" target="_blank" rel="noopener" style="display:none"></a>
+      <div class="ad-popup-footer">
+        <button class="ad-popup-skip" onclick="closeAdPopup()">تخطي</button>
+        <div class="ad-popup-countdown" id="adPopupCountdown"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="maintOverlay">
   <div class="maint-icon">🚧</div>
   <div class="maint-title">الموقع تحت الصيانة</div>
@@ -2317,6 +2354,39 @@ onValue(settingsRef2, snap => {
     if(mo) mo.classList.remove('show');
   }
 
+  // ═══ AD POPUP ═══
+  if(s.popupEnabled && (s.popupTitle || s.popupText)) {
+    const t = document.getElementById('adPopupTitle');
+    const x = document.getElementById('adPopupText');
+    const btn = document.getElementById('adPopupBtn');
+    if(t) t.textContent = s.popupTitle || '';
+    if(x) x.textContent = s.popupText  || '';
+    if(btn) {
+      if(s.popupLink) {
+        btn.href = s.popupLink;
+        btn.textContent = s.popupLinkText || 'اعرف أكثر';
+        btn.style.display = 'block';
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+    if(!window._adPopupShown) {
+      window._adPopupShown = true;
+      setTimeout(() => {
+        const ov = document.getElementById('adPopupOv');
+        if(ov) ov.classList.add('show');
+        let sec = 5;
+        const cd = document.getElementById('adPopupCountdown');
+        if(cd) cd.textContent = 'يُغلق تلقائياً بعد ' + sec + 'ث';
+        window._adPopupTimer = setInterval(() => {
+          sec--;
+          if(cd) cd.textContent = sec > 0 ? 'يُغلق تلقائياً بعد ' + sec + 'ث' : '';
+          if(sec <= 0) { clearInterval(window._adPopupTimer); closeAdPopup(); }
+        }, 1000);
+      }, 1200);
+    }
+  }
+
   // ═══ FEATURE TOGGLES ═══
   const b = document.body;
   b.classList.toggle('no-comments', s.featureComments === false);
@@ -3268,6 +3338,13 @@ if("serviceWorker" in navigator){
 
   } catch(e) { console.warn('articles:', e); }
 })();
+
+// ── Ad Popup ──
+window.closeAdPopup = function() {
+  const ov = document.getElementById('adPopupOv');
+  if(ov) ov.classList.remove('show');
+  if(window._adPopupTimer) clearInterval(window._adPopupTimer);
+};
 
 // ── Drag-to-scroll for roasteries ──
 function initRoasteryDrag(el) {

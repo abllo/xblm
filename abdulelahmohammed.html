@@ -914,6 +914,31 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
         </div>
       </div>
 
+      <div class="settings-section">
+        <div class="settings-section-title">📢 البوب-أب الإعلاني عند الدخول</div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="popupEnabled">
+          <label class="toggle-label" for="popupEnabled">📢 تفعيل البوب-أب عند دخول الموقع</label>
+        </div>
+        <div class="fg" style="margin-top:10px"><label>العنوان</label>
+          <input class="form-input" id="popupTitle" placeholder="عنوان الإعلان أو الإشعار">
+        </div>
+        <div class="fg"><label>النص</label>
+          <textarea class="form-input" id="popupText" rows="3" style="resize:vertical;font-size:.84em;line-height:1.6" placeholder="تفاصيل الإعلان أو الرسالة للزوار..."></textarea>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>الرابط (اختياري)</label>
+            <input class="form-input" id="popupLink" placeholder="https://...">
+          </div>
+          <div class="fg"><label>نص الزر</label>
+            <input class="form-input" id="popupLinkText" placeholder="اعرف أكثر">
+          </div>
+        </div>
+        <div style="background:rgba(0,168,150,.06);border:1px solid rgba(0,168,150,.15);border-radius:8px;padding:8px 12px;font-size:.78em;color:var(--t2);margin-top:4px">
+          ℹ️ يظهر للزائر مرة واحدة عند دخول الصفحة، ويختفي تلقائياً بعد 5 ثواني
+        </div>
+      </div>
+
     </div>
 
     <!-- ══ TAB: صفحات ══ -->
@@ -1979,6 +2004,11 @@ function initFirebase() {
     // Maintenance
     sc('maintenanceMode', s.maintenanceMode);
     sv('maintenanceMsg',  s.maintenanceMsg);
+    sc('popupEnabled',  s.popupEnabled);
+    sv('popupTitle',    s.popupTitle);
+    sv('popupText',     s.popupText);
+    sv('popupLink',     s.popupLink);
+    sv('popupLinkText', s.popupLinkText);
     // Ads
     if(s.adsCode) document.getElementById('adsCode').value = s.adsCode;
     if(s.adsPosition) document.getElementById('adsPosition').value = s.adsPosition;
@@ -2753,6 +2783,12 @@ window.saveSiteSettings = function(){
     // Maintenance
     maintenanceMode: g('maintenanceMode')?.checked,
     maintenanceMsg:  g('maintenanceMsg')?.value.trim(),
+    // Popup
+    popupEnabled:  g('popupEnabled')?.checked,
+    popupTitle:    g('popupTitle')?.value.trim(),
+    popupText:     g('popupText')?.value.trim(),
+    popupLink:     g('popupLink')?.value.trim(),
+    popupLinkText: g('popupLinkText')?.value.trim(),
   };
   // Pages content
   const pages = {
