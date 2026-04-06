@@ -3550,7 +3550,6 @@ window.fetchSheet = async function() {
 
 function normalizeLink(link) {
   return link.trim().toLowerCase()
-    .replace(/[?&].*$/, '') // remove query params
     .replace(/\/$/, '');
 }
 
