@@ -1133,25 +1133,9 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <button class="btn" onclick="sheetBulkIgnore()" style="background:rgba(245,87,108,.08);border:1px solid rgba(245,87,108,.2);color:#f5576c;font-size:.78em;padding:7px 14px">🚫 تجاهل الكل</button>
     </div>
 
-    <!-- Category + roastery defaults for new recipes -->
-    <div id="sheetDefaults" style="display:none;background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:.8em;font-weight:700;margin-bottom:8px;color:var(--t2)">⚙️ إعدادات افتراضية للوصفات المعتمدة</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <div style="flex:1;min-width:120px">
-          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">التصنيف الافتراضي</label>
-          <select class="form-input" id="sheetDefCat" style="font-size:.82em;padding:8px">
-            <option value="hot">حار 🔥</option>
-            <option value="cold">بارد 🧊</option>
-          </select>
-        </div>
-        <div style="flex:1;min-width:120px">
-          <label style="font-size:.74em;color:var(--t2);display:block;margin-bottom:4px">المصدر</label>
-          <select class="form-input" id="sheetDefSrc" style="font-size:.82em;padding:8px">
-            <option value="community">Community</option>
-            <option value="xbloom">xBloom</option>
-          </select>
-        </div>
-      </div>
+    <!-- auto-detect note -->
+    <div id="sheetDefaults" style="display:none;background:var(--bg);border:1px solid rgba(0,168,150,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em;color:var(--t2)">
+      💡 يتم اكتشاف نوع الوصفة (حارة/باردة) تلقائياً — يمكنك التعديل قبل الاعتماد
     </div>
 
     <!-- New recipes list -->
@@ -1814,6 +1798,82 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-hei
       <div style="display:flex;gap:10px;margin-top:6px">
         <button type="button" onclick="closeEditModal()" style="flex:0 0 auto;padding:12px 18px;font-size:13px;background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.35);color:#f5576c;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:700">✕ إلغاء</button>
         <button type="submit" class="btn bp" style="flex:1;justify-content:center;padding:14px;font-size:15px;font-weight:900" id="editSaveBtn">💾 حفظ التعديل</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ SHEET REVIEW MODAL ═══ -->
+<div class="ov" id="sheetReviewOv" style="align-items:center;z-index:3500">
+  <div style="background:var(--card);border-radius:18px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:24px;position:relative;border:1px solid var(--br);box-shadow:0 24px 80px rgba(0,0,0,.7)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--br)">
+      <div>
+        <h3 style="font-size:1.1em;font-weight:800;margin-bottom:2px">✏️ مراجعة وصفة من الشيت</h3>
+        <div style="font-size:.75em;color:var(--t2)">عدّل البيانات ثم اعتمد الوصفة</div>
+      </div>
+      <button onclick="closeSheetReview()" style="background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.3);color:#f5576c;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+    </div>
+    <form id="sheetReviewForm" onsubmit="sheetReviewApprove(event)">
+      <input type="hidden" id="srIdx">
+      <div class="fr2">
+        <div class="fg">
+          <label>اسم الوصفة *</label>
+          <input class="fi" id="srN" required placeholder="اسم الوصفة">
+        </div>
+        <div class="fg">
+          <label>صاحب الوصفة</label>
+          <input class="fi" id="srA" placeholder="الاسم">
+        </div>
+      </div>
+      <div class="fr2">
+        <div class="fg">
+          <label>المحضّر *</label>
+          <select class="fi" id="srBr" required>
+            <option value="">اختر</option>
+            <option value="Omni">Omni</option>
+            <option value="xPod">xPod</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>الجرعة *</label>
+          <input class="fi" id="srD" required placeholder="15g">
+        </div>
+      </div>
+      <div class="fg">
+        <label>النسبة *</label>
+        <input class="fi" id="srR" required placeholder="1:16 - 225ML">
+      </div>
+      <div class="fg">
+        <label>☕ المحمصة (اختياري)</label>
+        <div style="position:relative">
+          <input class="fi" id="srRoastery" placeholder="اكتب اسم المحمصة..." autocomplete="off"
+            oninput="srRoasteryInput()" onfocus="srRoasteryShow()" onblur="setTimeout(srRoasteryHide,200)">
+          <div id="srRoasteryDd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;left:0;background:var(--card);border:1px solid var(--br);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+        </div>
+      </div>
+      <div class="fg">
+        <label>نوع التحضير *</label>
+        <div class="tsel">
+          <div class="topt"><input type="radio" name="src" id="srHot" value="hot" required onchange="srTypeChange(this)"><label for="srHot">🔥 وصفة حارة</label></div>
+          <div class="topt"><input type="radio" name="src" id="srCold" value="cold" onchange="srTypeChange(this)"><label for="srCold">🧊 وصفة باردة</label></div>
+          <div class="topt"><input type="radio" name="src" id="srSrv" value="server" onchange="srTypeChange(this)"><label for="srSrv">⚙️ غسيل وترطيب السيرفر</label></div>
+        </div>
+      </div>
+      <div class="fg" id="srIceField" style="display:none">
+        <label style="color:#48dbfb">🧊 وزن الثلج في الكوب *</label>
+        <div style="position:relative">
+          <input class="fi" type="number" id="srIce" placeholder="مثال: 150" min="1" max="999" style="padding-left:50px">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:.88em;font-weight:700">جرام</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>رابط الوصفة *</label>
+        <input class="fi" type="url" id="srL" required placeholder="https://share-h5.xbloom.com/?id=...">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button type="button" onclick="closeSheetReview()" style="flex:0 0 auto;padding:12px 18px;font-size:13px;background:rgba(245,87,108,.12);border:1px solid rgba(245,87,108,.35);color:#f5576c;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:700">✕ إلغاء</button>
+        <button type="submit" class="btn bp" style="flex:1;justify-content:center;padding:14px;font-size:15px;font-weight:900" id="srSaveBtn">✅ اعتماد الوصفة</button>
       </div>
     </form>
   </div>
@@ -3528,16 +3588,17 @@ window.fetchSheet = async function() {
     document.getElementById('sheetStatExist').textContent   = existCount;
     document.getElementById('sheetStatPending').textContent = SHEET_NEW.length;
     document.getElementById('sheetStats').style.display     = 'flex';
-    document.getElementById('sheetDefaults').style.display  = 'block';
 
     if(!SHEET_NEW.length) {
       document.getElementById('sheetEmpty').style.display = 'block';
       document.getElementById('sheetNewList').innerHTML   = '';
       document.getElementById('sheetBulk').style.display  = 'none';
+      document.getElementById('sheetDefaults').style.display = 'none';
       sheetStatus(`✅ تم السحب — كل الوصفات (${existCount}) موجودة مسبقاً`, 'ok');
     } else {
       document.getElementById('sheetEmpty').style.display = 'none';
       document.getElementById('sheetBulk').style.display  = 'flex';
+      document.getElementById('sheetDefaults').style.display = 'block';
       renderSheetCards();
       sheetStatus(`✅ تم السحب — ${SHEET_NEW.length} وصفة جديدة من أصل ${dataRows.length}`, 'ok');
     }
@@ -3600,17 +3661,12 @@ function renderSheetCards() {
           ${dose   ? `<span class="sheet-tag">⚖️ ${esc(dose)}</span>` : ''}
           ${ratio  ? `<span class="sheet-tag">💧 ${esc(ratio)}</span>` : ''}
           ${brewer ? `<span class="sheet-tag">🔧 ${esc(brewer)}</span>` : ''}
-        </div>
-        <div style="margin-bottom:10px">
-          <select class="form-input" id="sheetcat_${idx}" style="font-size:.78em;padding:7px;width:auto">
-            <option value="hot">حار 🔥</option>
-            <option value="cold">بارد 🧊</option>
-            <option value="server">غسيل</option>
-          </select>
+          <span class="sheet-tag" style="color:${autoDetectCategory(name,brewer)==='cold'?'#48dbfb':'#ff9f43'}">${autoDetectCategory(name,brewer)==='cold'?'🧊 بارد':'🔥 حار'}</span>
         </div>
         <div class="sheet-card-foot">
           <a class="sheet-card-link" href="${esc(link)}" target="_blank" title="${esc(link)}">🔗 ${esc(link.replace('https://share-h5.xbloom.com','xbloom…'))}</a>
           <div class="sheet-card-actions">
+            <button class="sca-btn" onclick="sheetEdit(${idx})" style="background:rgba(74,144,226,.12);border:1px solid rgba(74,144,226,.3);color:#4a90e2">✏️ تعديل</button>
             <button class="sca-btn sca-approve" onclick="sheetApprove(${idx})">✅ اعتماد</button>
             <button class="sca-btn sca-ignore"  onclick="sheetIgnore(${idx})">🚫 تجاهل</button>
           </div>
@@ -3620,18 +3676,130 @@ function renderSheetCards() {
   }).join('');
 }
 
+function autoDetectCategory(name, brewer) {
+  const text = (name + ' ' + brewer).toLowerCase();
+  if (/cold|ice|iced|بارد|ثلج|كولد/.test(text)) return 'cold';
+  return 'hot';
+}
+
+window.sheetEdit = function(idx) {
+  const row    = SHEET_NEW[idx];
+  const name   = (row[SHEET_COLS.name]   || '').trim();
+  const brewer = (row[SHEET_COLS.brewer] || '').trim();
+  const author = (row[SHEET_COLS.author] || '').trim();
+  const dose   = (row[SHEET_COLS.dose]   || '').trim();
+  const ratio  = (row[SHEET_COLS.ratio]  || '').trim();
+  const link   = (row[SHEET_COLS.link]   || '').trim();
+  const cat    = autoDetectCategory(name, brewer);
+
+  document.getElementById('srIdx').value = idx;
+  document.getElementById('srN').value   = name;
+  document.getElementById('srA').value   = author;
+  document.getElementById('srD').value   = dose;
+  document.getElementById('srR').value   = ratio;
+  document.getElementById('srL').value   = link;
+  document.getElementById('srRoastery').value = '';
+  document.getElementById('srIce').value = '';
+  document.getElementById('srIceField').style.display = 'none';
+  document.getElementById('srIce').required = false;
+
+  // set brewer select
+  const brSel = document.getElementById('srBr');
+  brSel.value = ['Omni','xPod','Other'].includes(brewer) ? brewer : 'Other';
+
+  // set category radio
+  const radioId = cat === 'cold' ? 'srCold' : cat === 'server' ? 'srSrv' : 'srHot';
+  document.getElementById(radioId).checked = true;
+  if (cat === 'cold') { document.getElementById('srIceField').style.display='block'; document.getElementById('srIce').required=true; }
+
+  document.getElementById('sheetReviewOv').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeSheetReview = function() {
+  document.getElementById('sheetReviewOv').style.display = 'none';
+  document.body.style.overflow = '';
+};
+
+window.srTypeChange = function(radio) {
+  const iceField = document.getElementById('srIceField');
+  const iceInput = document.getElementById('srIce');
+  if (radio.value === 'cold') {
+    iceField.style.display = 'block';
+    iceInput.required = true;
+  } else {
+    iceField.style.display = 'none';
+    iceInput.required = false;
+    iceInput.value = '';
+  }
+};
+
+window.srRoasteryInput = function() {
+  const val = document.getElementById('srRoastery').value.trim().toLowerCase();
+  const dd  = document.getElementById('srRoasteryDd');
+  const names = Object.values(FB_ROASTERIES||{}).map(v=>v?.name).filter(Boolean);
+  const filtered = val ? names.filter(n=>n.toLowerCase().includes(val)) : names;
+  if (!filtered.length) { dd.style.display='none'; return; }
+  dd.style.display = 'block';
+  dd.innerHTML = filtered.slice(0,10).map(n=>`<div style="padding:10px 14px;cursor:pointer;font-size:.9em;border-bottom:1px solid var(--br)" onmousedown="document.getElementById('srRoastery').value='${n.replace(/'/g,"\\'")}';document.getElementById('srRoasteryDd').style.display='none'">${n}</div>`).join('');
+};
+window.srRoasteryShow = function() { if(Object.keys(FB_ROASTERIES||{}).length) srRoasteryInput(); };
+window.srRoasteryHide = function() { document.getElementById('srRoasteryDd').style.display='none'; };
+
+document.getElementById('sheetReviewOv').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeSheetReview();
+});
+
+window.sheetReviewApprove = async function(e) {
+  e.preventDefault();
+  const idx = parseInt(document.getElementById('srIdx').value);
+  const catSel = document.querySelector('input[name="src"]:checked');
+  if (!catSel) { toast('اختر نوع التحضير', 'terr'); return; }
+  const category = catSel.value;
+  const iceVal   = document.getElementById('srIce').value.trim();
+  const recipe = {
+    name:     document.getElementById('srN').value.trim(),
+    author:   document.getElementById('srA').value.trim() || 'غير معروف',
+    brewer:   document.getElementById('srBr').value,
+    dose:     document.getElementById('srD').value.trim(),
+    ratio:    document.getElementById('srR').value.trim(),
+    link:     document.getElementById('srL').value.trim(),
+    roastery: document.getElementById('srRoastery').value.trim() || null,
+    category,
+    source:   'community',
+    addedAt:  Date.now()
+  };
+  if (category === 'cold' && iceVal) recipe.ice = iceVal;
+  Object.keys(recipe).forEach(k => { if (!recipe[k]) delete recipe[k]; });
+  const btn = document.getElementById('srSaveBtn');
+  btn.textContent = '⏳...'; btn.disabled = true;
+  try {
+    await push(ref(db, 'recipes'), recipe);
+    _sheetDecisions[idx] = 'approve';
+    updateSheetCard(idx);
+    updateSheetPendingCount();
+    toast('✅ تمت إضافة "' + recipe.name + '"');
+    closeSheetReview();
+  } catch(err) {
+    toast('خطأ: ' + err.message, 'terr');
+  } finally {
+    btn.textContent = '✅ اعتماد الوصفة'; btn.disabled = false;
+  }
+};
+
 window.sheetApprove = async function(idx) {
   const row  = SHEET_NEW[idx];
-  const cat  = document.getElementById('sheetcat_' + idx)?.value || document.getElementById('sheetDefCat').value || 'hot';
+  const name   = (row[SHEET_COLS.name]   || '').trim();
+  const brewer = (row[SHEET_COLS.brewer] || '').trim();
   const recipe = {
-    name:    (row[SHEET_COLS.name]   || '').trim(),
-    brewer:  (row[SHEET_COLS.brewer] || '').trim(),
+    name,
+    brewer,
     author:  (row[SHEET_COLS.author] || '').trim(),
     dose:    (row[SHEET_COLS.dose]   || '').trim(),
     ratio:   (row[SHEET_COLS.ratio]  || '').trim(),
     link:    (row[SHEET_COLS.link]   || '').trim(),
-    category: cat,
-    source:  document.getElementById('sheetDefSrc')?.value || 'community',
+    category: autoDetectCategory(name, brewer),
+    source:  'community',
     addedAt: Date.now()
   };
   // Remove empty fields
@@ -3672,21 +3840,21 @@ function updateSheetPendingCount() {
 window.sheetBulkApprove = async function() {
   if(!SHEET_NEW.length) return;
   if(!confirm(`اعتماد كل الـ ${SHEET_NEW.filter((_,i)=>!_sheetDecisions[i]).length} وصفة جديدة؟`)) return;
-  const defCat = document.getElementById('sheetDefCat').value || 'hot';
-  const defSrc = document.getElementById('sheetDefSrc').value || 'community';
   let added = 0;
   for(let idx = 0; idx < SHEET_NEW.length; idx++) {
     if(_sheetDecisions[idx]) continue;
     const row = SHEET_NEW[idx];
+    const name   = (row[SHEET_COLS.name]   || '').trim();
+    const brewer = (row[SHEET_COLS.brewer] || '').trim();
     const recipe = {
-      name:     (row[SHEET_COLS.name]   || '').trim(),
-      brewer:   (row[SHEET_COLS.brewer] || '').trim(),
+      name,
+      brewer,
       author:   (row[SHEET_COLS.author] || '').trim(),
       dose:     (row[SHEET_COLS.dose]   || '').trim(),
       ratio:    (row[SHEET_COLS.ratio]  || '').trim(),
       link:     (row[SHEET_COLS.link]   || '').trim(),
-      category: document.getElementById('sheetcat_' + idx)?.value || defCat,
-      source:   defSrc,
+      category: autoDetectCategory(name, brewer),
+      source:   'community',
       addedAt:  Date.now()
     };
     Object.keys(recipe).forEach(k => { if(!recipe[k]) delete recipe[k]; });
