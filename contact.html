@@ -126,10 +126,10 @@ window.sendMessage = async function() {
 
   try {
     // 1. Save to Firebase
-    await push(ref(db,'messages'), {
+    await push(ref(db,'contactMessages'), {
       name, email, subject, message,
       timestamp: Date.now(),
-      read: false
+      status: 'new'
     });
 
     // 2. Send email via EmailJS (if configured)
